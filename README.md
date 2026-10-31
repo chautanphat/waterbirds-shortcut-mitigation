@@ -1,6 +1,6 @@
 # POTER — Local Reproduction Guide (Windows + NVIDIA GPU)
 
-> **Scope:** This is a branch-specific guide for reproducing the POTER implementation and its local Colored-MNIST smoke test. It does not define the overall Waterbirds research protocol or override the project's agreed research guide. Do not transfer the CMNIST split, reference-sample counts, or smoke-test settings to Waterbirds or to other baselines without checking their own protocols.
+> **Scope:** This is a branch-specific guide for reproducing the POTER implementation and its local Colored-MNIST smoke test. It does not define the overall Waterbirds research protocol or override the project's agreed research guide. Do not transfer the CMNIST split, reference-sample counts, or smoke-test settings to Waterbirds or to other baselines. For cross-method Waterbirds comparisons, keep the agreed dataset and held-out test protocol fixed, preserve and document each method's own validation procedure, and never use test results for model or hyperparameter selection.
 
 **Shared branch:** [`phat/poter-windows-cmnist`](https://github.com/chautanphat/waterbirds-shortcut-mitigation/tree/phat/poter-windows-cmnist) in [chautanphat/waterbirds-shortcut-mitigation](https://github.com/chautanphat/waterbirds-shortcut-mitigation).
 
