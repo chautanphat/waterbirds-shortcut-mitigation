@@ -53,9 +53,9 @@ def run_epoch(epoch, model, optimizer, loader, loss_computer, logger, csv_logger
 
             batch = tuple(t.cuda() for t in batch)
             x = batch[0]
-            y = batch[1]
-            g = batch[2]
-            idx = batch[3]  # sample indices
+            y = batch[1].long()
+            g = batch[2].long()
+            idx = batch[3].long()  # sample indices
 
             ###############################
             sample_weight = None

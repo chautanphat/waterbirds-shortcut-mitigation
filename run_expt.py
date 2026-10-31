@@ -184,10 +184,10 @@ def parse_args():
     args.scheduler                 = False
     args.gamma                     = 0.1
     args.minimum_variational_weight = 0
-    args.show_progress             = False
+    args.show_progress             = True
     args.save_step                 = 10000   # effectively never
     args.save_best                 = False
-    args.save_last                 = False
+    args.save_last                 = True
     args.minority_fraction         = None
     args.imbalance_ratio           = None
     args.resume                    = False
@@ -343,7 +343,7 @@ def main():
         gc.collect()
 
     # ── Data loaders ──────────────────────────────────────────────────────────
-    loader_kwargs = {'batch_size': args.batch_size, 'num_workers': 4,
+    loader_kwargs = {'batch_size': args.batch_size, 'num_workers': 0,
                      'pin_memory': torch.cuda.is_available()}
     train_loader = train_data.get_loader(
         train=True, reweight_groups=False,

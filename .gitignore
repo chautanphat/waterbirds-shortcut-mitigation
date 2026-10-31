@@ -9,10 +9,19 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .eggs/
+.venv/
+venv/
 
 # Data
 *.pt
 *.pth
+datasets/
+POTER_data/
+POTER_features/
+POTER_logs/
+*.ckpt
+.conda/
+.env
 
 # Jupyter
 .ipynb_checkpoints/
