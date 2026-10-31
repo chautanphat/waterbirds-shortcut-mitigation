@@ -1,7 +1,5 @@
 # POTER — Local Reproduction Guide (Windows + NVIDIA GPU)
 
-> **Scope:** This is a branch-specific guide for reproducing the POTER implementation and its local Colored-MNIST smoke test. It does not define the overall Waterbirds research protocol or override the project's agreed research guide. Do not transfer the CMNIST split, reference-sample counts, or smoke-test settings to Waterbirds or to other baselines. For cross-method Waterbirds comparisons, keep the agreed dataset and held-out test protocol fixed, preserve and document each method's own validation procedure, and never use test results for model or hyperparameter selection.
-
 **Shared branch:** [`phat/poter-windows-cmnist`](https://github.com/chautanphat/waterbirds-shortcut-mitigation/tree/phat/poter-windows-cmnist) in [chautanphat/waterbirds-shortcut-mitigation](https://github.com/chautanphat/waterbirds-shortcut-mitigation).
 
 This branch includes the source changes described in Section 5. The local smoke-test observations below come from the supplied reproduction report. See also the [Vietnamese overview](docs/README.vi.md) and the [original upstream README](docs/README.upstream.md).
@@ -10,7 +8,7 @@ Clone this branch, including the Windows fixes:
 
 ```cmd
 git clone --branch phat/poter-windows-cmnist --single-branch https://github.com/chautanphat/waterbirds-shortcut-mitigation.git
-cd waterbirds-shortcut-mitigation
+cd POTER
 ```
 
 > **Community reproduction notes, not the official POTER implementation.**  
@@ -114,7 +112,7 @@ The paper's reference hardware was an **RTX 3090**. A laptop GPU with 6 GB VRAM 
 The working folder structure in this guide is illustrative. You can use other drive letters or locations by replacing the paths consistently:
 
 ```text
-C:\waterbirds-shortcut-mitigation\ # Source code (example)
+C:\POTER\                      # Source code (example)
 D:\conda_envs\poter\           # Conda environment
 D:\conda_pkgs\                # Conda download/extraction cache (optional)
 D:\POTER_data\CMNIST\         # Dataset; created automatically
@@ -133,8 +131,8 @@ D:\temp\                      # Optional temporary directory
 The following files come from the official implementation:
 
 ```text
-waterbirds-shortcut-mitigation/
-├── README.md                 # This local reproduction guide
+POTER/
+├── README.md                 # This local reproduction guide, if added to your fork
 ├── extract_features.py       # Create pretrained feature cache
 ├── run_expt.py               # Experiment entry point
 ├── ot_reweight.py            # OT potentials and sample weights
@@ -253,13 +251,13 @@ Check imports:
 python -c "import torch,torchvision,numpy,pandas,scipy,sklearn,transformers,tqdm,PIL; print('Dependencies imported successfully')"
 ```
 
-### 4.6. Clone the shared branch
+### 4.6. Clone the upstream code
 
 For this shared version, clone the branch with the Windows fixes already applied:
 
 ```cmd
 git clone --branch phat/poter-windows-cmnist --single-branch https://github.com/chautanphat/waterbirds-shortcut-mitigation.git
-cd waterbirds-shortcut-mitigation
+cd POTER
 ```
 
 If you already have the code, simply open Anaconda Prompt in the repository folder. **Do not reclone over existing uncommitted edits.**
@@ -268,7 +266,7 @@ If you already have the code, simply open Anaconda Prompt in the repository fold
 
 ## 5. Required local source changes
 
-The shared branch already contains the Windows fixes described below. This section records how those changes differ from an unmodified upstream checkout. **Do not reapply these edits when using `phat/poter-windows-cmnist`**; apply them only if you deliberately start from an unmodified upstream checkout. The README is documentation—the source changes must also be present in the code you run.
+The changes in this section document the edits that enabled the **successful Windows CMNIST smoke test**. **Apply them to a fresh upstream clone**, unless your fork already contains the fixes. Preserve these changes when committing your modified code; a README alone cannot fix the upstream source.
 
 ### 5.1. Fix target-label dtype for CrossEntropyLoss (`train.py`)
 
@@ -340,9 +338,9 @@ Effects:
 
 - A progress bar becomes visible during training.
 - A `last_model.pth` file is written **after a completed epoch** to that run's log folder.
-- In this shared branch, the checkpoint is saved as a **full PyTorch model object** with `torch.save(model, ...)`. Only load checkpoint files you trust. Optimizer state is **not** saved for full training resumption.
+- In the current upstream code, the checkpoint is saved as a **full PyTorch model object** with `torch.save(model, ...)`. Only load checkpoint files you trust. Optimizer state is **not** saved for full training resumption.
 
-For more frequent training log updates, pass `--log_every 50` in the command line. The parser default `--log_every 10000` may show no mid-epoch statistics on CMNIST.
+For more frequent training log updates, pass `--log_every 50` in the command line. The upstream default `--log_every 10000` may show no mid-epoch statistics on CMNIST.
 
 ---
 
@@ -457,11 +455,11 @@ Activate the environment, enter the repo, and set the model cache path:
 
 ```cmd
 conda activate D:\conda_envs\poter
-cd /d C:\path\to\waterbirds-shortcut-mitigation
+cd /d C:\path\to\POTER
 set "TORCH_HOME=D:\torch_cache"
 ```
 
-Replace the example path with your actual repository location. Or omit the `cd` command when your prompt is already inside the repo.
+Replace `C:\path\to\POTER` with your own repository location. Or omit the `cd` command when your prompt is already inside the repo.
 
 Start the smoke test:
 
@@ -639,11 +637,11 @@ For subgroup-concentrated noise, the official code supports `--noise_type subgro
 | `FileNotFoundError: ...cmnist_features.pt` | Feature extraction failed before saving its output. Complete **Step 7** first. |
 | `pretrained is deprecated` | A torchvision **warning**, not a fatal error. The upstream model constructor uses legacy `pretrained=True`. |
 | `FutureWarning: torch.load(weights_only=False)` | Warning about pickle-based deserialization. Only load **trusted local files**. Do not blindly change the flag if the stored object requires full-object loading. |
-| Training log stays at `Epoch [0]: Training:` | An unmodified upstream checkout may disable progress and log only every 10,000 batches. This shared branch sets `args.show_progress=True`; verify that you are running the shared branch, pass a smaller `--log_every` such as `50`, and check whether the process is still active. |
+| Training log stays at `Epoch [0]: Training:` | The upstream configuration disables progress and logs only every 10,000 batches. Enable `args.show_progress=True`, lower `--log_every`, and check whether the process is still active. |
 | `nll_loss_forward_no_reduce_cuda_kernel_index not implemented for 'Int'` | Class-index labels have wrong dtype. Apply **`y = batch[1].long()` in `train.py`**. This was the critical proven local fix. |
 | `torch.cuda.OutOfMemoryError` | Reduce training `--batch_size` from `16` to `8`, close other GPU-heavy applications, and inspect `nvidia-smi`. OT feature/reference sizes also affect memory. |
 | `test.csv` exists but has no rows | No completed test evaluation has been written yet, or the run failed before that point. Check `log.txt` for `Training complete.`. |
-| No `.pth` checkpoint | An unmodified upstream checkout may use `args.save_last=False`; this shared branch sets it to `True`. Verify the active `run_expt.py` and ensure that at least one epoch completed. |
+| No `.pth` checkpoint | The official code uses `args.save_last=False` by default. Change to `True` **before** running, and finish an epoch. |
 | `CUDA: False` | Verify NVIDIA driver and compatible CUDA-enabled PyTorch build inside the **active** environment. |
 
 ### General diagnostic commands
