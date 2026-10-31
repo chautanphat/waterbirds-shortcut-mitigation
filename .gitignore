@@ -218,3 +218,35 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# POTER datasets, artifacts and local environment
+# Feature caches
+features/
+
+# Logs
+logs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.venv/
+venv/
+
+# Data
+*.pt
+*.pth
+datasets/
+POTER_data/
+POTER_features/
+POTER_logs/
+*.ckpt
+.conda/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
