@@ -5,12 +5,12 @@ This document summarizes the project's established decisions and conventions. Us
 
 ---
 
-## 0. Agent Operating Rules
+## 0. Contributor Operating Rules
 
 ### Scope and authority
 
-- This guidance applies to the repository containing this file.
-- Work locally unless the user explicitly asks for a GitHub action.
+- This guidance applies to all contributors (human team members and AI assistants) working on this repository.
+- Work locally unless explicitly asked for a GitHub action.
 - Do not add machine-specific paths, personal environment details, credentials, or local-only assumptions to tracked documentation.
 - Treat the desired repository tree as a **target convention**, not authorization to create directories, move code, or refactor files before the relevant work begins.
 - Preserve existing method implementations and documentation unless the requested task explicitly includes changing them.
@@ -20,11 +20,11 @@ This document summarizes the project's established decisions and conventions. Us
 1. Inspect the relevant files and current repository state.
 2. Check the applicable sections of this document before changing structure, documentation, methods, or experiment procedures.
 3. Keep the change focused on the requested task.
-4. If the intended structure, documentation content, or workflow is unclear, ask the user before editing. Do not fill gaps with new project conventions.
+4. If the intended structure, documentation content, or workflow is unclear, ask before editing. Do not fill gaps with new project conventions.
 
 ### Documentation authority
 
-- `AGENTS.md` defines project-wide operating rules.
+- `docs/contributing.md` defines project-wide operating rules and contribution guidelines.
 - The root `README.md` is a concise entry point and overview.
 - `docs/` contains detailed shared research infrastructure.
 - Each method directory contains implementation-specific instructions and upstream preservation notes.
@@ -599,7 +599,7 @@ Do not create documentation solely to make the repository look complete. Each fi
 
 ## 9. Rules for Reviewing or Modifying the Repository
 
-When another AI Agent or contributor works on this repository, follow these constraints:
+When contributing to or modifying this repository, follow these constraints:
 
 1. Inspect the existing repository before proposing structural changes.
 2. Follow the established directory responsibilities.

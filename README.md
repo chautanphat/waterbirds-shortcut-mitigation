@@ -11,7 +11,6 @@ The following is the intended repository structure. Directories are added as the
 ```text
 waterbirds-shortcut-mitigation/
 ├── README.md                   # Short project entry point
-├── AGENTS.md                   # Project rules for contributors and agents
 ├── requirements.txt            # Shared dependencies, when stable
 ├── .github/                    # Issue/PR templates and GitHub workflows
 ├── configs/                    # YAML settings for datasets, baselines, and methods
@@ -35,6 +34,8 @@ waterbirds-shortcut-mitigation/
 Keep reusable code in the shared `src/` modules. Keep method-specific code independent under `src/methods/<method-name>/`. Store tracked experiment settings in `configs/` or `experiments/`; keep raw data, large checkpoints, caches, and local logs out of version control.
 
 ## Team workflow
+
+For full contributor operating rules, repository conventions, and the baseline integration lifecycle, refer to [`docs/contributing.md`](docs/contributing.md).
 
 - Create a focused branch for each feature, method, experiment, fix, or documentation change.
 - Keep commits small and describe what changed.
@@ -65,4 +66,4 @@ Add new methods under `src/methods/<method-name>/` and include a method-level RE
 
 Record the dataset, split, seed, model, main hyperparameters, environment, and metrics for meaningful experiments. Store tracked configurations in `configs/` or `experiments/`, and record the exact command in the method README and experiment log. Clearly distinguish exploratory results, smoke tests, and verified benchmark results.
 
-See [`docs/`](docs/) for detailed project guidance and the existing method directories for implementation-specific documentation.
+See [`docs/`](docs/) (including [`docs/contributing.md`](docs/contributing.md)) for detailed project guidance and the existing method directories for implementation-specific documentation.

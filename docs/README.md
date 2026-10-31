@@ -9,7 +9,6 @@ This is the target structure for the project. It describes where work should go 
 ```text
 waterbirds-shortcut-mitigation/
 ├── README.md                   # Short project entry point
-├── AGENTS.md                   # Project rules for contributors and agents
 ├── requirements.txt            # Shared dependencies, when stable
 ├── .github/                    # Issue/PR templates and GitHub workflows
 ├── configs/                    # YAML settings for datasets, baselines, and methods
@@ -40,6 +39,7 @@ waterbirds-shortcut-mitigation/
 
 | Document | Purpose |
 | --- | --- |
+| [`contributing.md`](contributing.md) | Contributor operating rules, repository structure, baseline lifecycle, and workflow conventions. |
 | [`research_protocol.md`](research_protocol.md) | Fair-comparison, validation, testing, and reporting rules. |
 | [`dataset.md`](dataset.md) | Waterbirds source, groups, splits, local-data expectations, and verification. |
 | [`methods.md`](methods.md) | Method inventory and the rule for documenting a baseline. |
