@@ -6,19 +6,31 @@ The repository is intended for collaborative research across multiple datasets, 
 
 ## Repository layout
 
+The following is the intended repository structure. Directories are added as the project needs them; this layout is a shared convention, not a claim that every component already exists.
+
 ```text
 .
+├── .github/                     # Issue/PR templates and GitHub workflows
+├── configs/                     # YAML configurations for datasets, baselines, and methods
+├── data/                        # Dataset instructions; raw data stays outside Git
+├── notebooks/                   # Exploration, debugging, and result visualization
 ├── src/
+│   ├── datasets/                # Shared Waterbirds loaders and transforms
+│   ├── models/                  # Shared backbones and classifiers
+│   ├── evaluation/              # Shared accuracy and group-wise metrics
+│   ├── utils/                   # Seeding, logging, checkpointing, and utilities
 │   └── methods/
 │       └── <method-name>/
-├── docs/
+│           └── ...              # Independent method implementations
+├── scripts/                     # Training, evaluation, and reproduction entry points
+├── tests/                       # Tests for datasets, metrics, and methods
+├── experiments/                 # Experiment configurations and records
+├── results/                     # CSV summaries, comparison tables, and plots
+├── docs/                        # Protocol, dataset, methods, and experiment documentation
 └── README.md
 ```
 
-- `src/methods/<method-name>/` contains a method implementation.
-- `docs/` contains detailed project and experiment guides.
-- Each method should document its own setup, dependencies, commands, and limitations.
-- Datasets, checkpoints, logs, caches, and other generated artifacts should stay out of version control.
+Keep reusable code in the shared `src/` modules. Keep method-specific code independent under `src/methods/<method-name>/`. Store tracked experiment settings in `configs/` or `experiments/`; keep raw data, large checkpoints, caches, and local logs out of version control.
 
 ## Team workflow
 
@@ -49,6 +61,6 @@ Add new methods under `src/methods/<method-name>/` and include a method-level RE
 - baseline and evaluation details; and
 - known limitations.
 
-Record the dataset, split, seed, model, main hyperparameters, environment, and metrics for meaningful experiments. Clearly distinguish exploratory results, smoke tests, and verified benchmark results.
+Record the dataset, split, seed, model, main hyperparameters, environment, and metrics for meaningful experiments. Store tracked configurations in `configs/` or `experiments/`, and record the exact command in the method README and experiment log. Clearly distinguish exploratory results, smoke tests, and verified benchmark results.
 
 See [`docs/`](docs/) for detailed project guidance and the existing method directories for implementation-specific documentation.
