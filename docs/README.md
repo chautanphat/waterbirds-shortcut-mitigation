@@ -14,7 +14,7 @@ waterbirds-shortcut-mitigation/
 ├── .github/                    # Issue/PR templates and GitHub workflows
 ├── configs/                    # YAML settings for datasets, baselines, and methods
 ├── data/                       # Download/setup instructions; no raw data in Git
-├── docs/                       # Shared protocol and research record
+├── docs/                       # Protocol, dataset, methods, and experiment documentation
 ├── notebooks/                  # Exploration, debugging, and visualisation
 ├── scripts/                    # Project-level train/evaluate/reproduce entry points
 ├── src/
@@ -24,6 +24,7 @@ waterbirds-shortcut-mitigation/
 │   ├── utils/                  # Shared seeding, logging, and checkpoint utilities
 │   └── methods/                # Independent implementations of each method
 │       └── <method-name>/
+│           └── ...             # Independent method implementations
 ├── tests/                      # Tests for shared code and methods
 ├── experiments/                # Experiment records and tracked metadata
 └── results/                    # Lightweight summaries, tables, and plots

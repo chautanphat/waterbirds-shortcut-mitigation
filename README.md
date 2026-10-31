@@ -9,25 +9,27 @@ The repository is intended for collaborative research across multiple datasets, 
 The following is the intended repository structure. Directories are added as the project needs them; this layout is a shared convention, not a claim that every component already exists.
 
 ```text
-.
-├── .github/                     # Issue/PR templates and GitHub workflows
-├── configs/                     # YAML configurations for datasets, baselines, and methods
-├── data/                        # Dataset instructions; raw data stays outside Git
-├── notebooks/                   # Exploration, debugging, and result visualization
+waterbirds-shortcut-mitigation/
+├── README.md                   # Short project entry point
+├── AGENTS.md                   # Project rules for contributors and agents
+├── requirements.txt            # Shared dependencies, when stable
+├── .github/                    # Issue/PR templates and GitHub workflows
+├── configs/                    # YAML settings for datasets, baselines, and methods
+├── data/                       # Download/setup instructions; no raw data in Git
+├── docs/                       # Protocol, dataset, methods, and experiment documentation
+├── notebooks/                  # Exploration, debugging, and visualisation
+├── scripts/                    # Project-level train/evaluate/reproduce entry points
 ├── src/
-│   ├── datasets/                # Shared Waterbirds loaders and transforms
-│   ├── models/                  # Shared backbones and classifiers
-│   ├── evaluation/              # Shared accuracy and group-wise metrics
-│   ├── utils/                   # Seeding, logging, checkpointing, and utilities
-│   └── methods/
+│   ├── datasets/               # Shared data loading and transforms
+│   ├── models/                 # Shared backbones and classifiers
+│   ├── evaluation/             # Shared metrics and evaluation utilities
+│   ├── utils/                  # Shared seeding, logging, and checkpoint utilities
+│   └── methods/                # Independent implementations of each method
 │       └── <method-name>/
-│           └── ...              # Independent method implementations
-├── scripts/                     # Training, evaluation, and reproduction entry points
-├── tests/                       # Tests for datasets, metrics, and methods
-├── experiments/                 # Experiment configurations and records
-├── results/                     # CSV summaries, comparison tables, and plots
-├── docs/                        # Protocol, dataset, methods, and experiment documentation
-└── README.md
+│           └── ...             # Independent method implementations
+├── tests/                      # Tests for shared code and methods
+├── experiments/                # Experiment records and tracked metadata
+└── results/                    # Lightweight summaries, tables, and plots
 ```
 
 Keep reusable code in the shared `src/` modules. Keep method-specific code independent under `src/methods/<method-name>/`. Store tracked experiment settings in `configs/` or `experiments/`; keep raw data, large checkpoints, caches, and local logs out of version control.
