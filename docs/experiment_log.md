@@ -1,19 +1,27 @@
 # Experiment Log
 
-Record one entry for each meaningful run. Keep entries short and link to code, configuration, or results when available.
+Record every meaningful run here. This is an index, not a replacement for configurations, method READMEs, or untracked output files.
+
+## Entry template
 
 ```markdown
-## YYYY-MM-DD — <method> / <dataset>
+## <experiment-id> — YYYY-MM-DD
 
-- Branch or commit:
-- Purpose:
-- Environment:
-- Seed:
-- Command or configuration:
-- Result:
-- Paper comparison:
-- Status: smoke test / local reproduction / verified reproduction
-- Follow-up:
+- **Method / version:**
+- **Purpose:** smoke test / original reproduction / Waterbirds adaptation / final comparison
+- **Branch or commit:**
+- **Configuration:** `configs/...` or `experiments/...`
+- **Dataset and split:**
+- **Seed:**
+- **Environment and hardware:**
+- **Command:**
+- **Output location:** local, untracked path
+- **Results:** overall accuracy; per-group accuracy; worst-group accuracy
+- **Paper comparison or expected behavior:**
+- **Status:** exploratory / smoke test / partial reproduction / verified reproduction / final
+- **Notes and follow-up:**
 ```
 
-Use the log for factual observations, not long analysis. Move reusable conclusions to the relevant project or method documentation.
+Use one entry per meaningful run or a short grouped entry for repeated seeds with the same configuration. Never present a result without its configuration, command, seed, and evaluation context.
+
+Use repository-relative paths in every entry. Link implementation changes to `src/methods/`, tracked settings to `configs/`, run metadata to `experiments/`, and lightweight summaries to `results/`; keep large outputs and checkpoints local and untracked.

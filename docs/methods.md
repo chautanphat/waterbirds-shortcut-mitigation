@@ -1,32 +1,29 @@
 # Research Methods
 
-This document is the shared index for methods investigated in the Waterbirds Background Shortcut Learning Mitigation project.
+This is the project-wide inventory of methods being investigated. It explains the comparison landscape; method directories contain implementation details.
 
-## How to update this document
+## How to add a method
 
-When starting a new baseline reproduction:
+Add a method only after the team agrees to investigate it. Then:
 
-1. Add the method under the appropriate numbered section.
-2. Copy the agreed method-entry template from the project guide or an existing completed entry.
-3. Fill in the paper, source, mechanism, implementation, experimental settings, and evaluation details.
-4. Update **Implementation Status** as the work progresses:
-   - Not started
-   - In progress
-   - Implemented
-   - Reproduced
-   - Verified
-5. Record deviations from the paper and important observations in **Notes**.
-6. Include the documentation update in the same pull request as the related implementation or experiment.
+1. Preserve the upstream implementation under `src/methods/<method-name>/`.
+2. Add a method-specific README with source, paper, license, setup, commands, and Waterbirds-specific changes.
+3. Add one entry here using the template in [`README.md`](README.md).
+4. Link a tracked configuration and experiment-log entry.
 
-Do not add a method entry until the team has agreed to investigate that method. Keep detailed code and setup instructions in the method’s directory; use this document for the shared research summary and status.
+Do not claim an original reproduction when the work is only a smoke test or an adaptation.
 
-## Planned method sections
+Each completed method entry should point to:
 
-The following methods are planned for documentation using the agreed template:
+- `src/methods/<method-name>/` for the implementation;
+- `configs/<method-name>/` for reproducible settings;
+- `experiments/<experiment-id>/` for run metadata, when present; and
+- the relevant entry in `docs/experiment_log.md`.
 
-1. ERM (Empirical Risk Minimization)
-2. GroupDRO
-3. JTT
-4. Other Methods
+## Planned methods
 
-No method details have been filled in yet. Each section should be added when the corresponding reproduction work begins.
+The initial comparison is expected to include ERM, GroupDRO, JTT, and other agreed baselines. No method entry is populated until its investigation begins.
+
+## Method entries
+
+Add approved methods below this heading using the shared template.

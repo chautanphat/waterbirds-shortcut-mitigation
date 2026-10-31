@@ -1,42 +1,47 @@
-# Datasets
+# Waterbirds Dataset
 
-For each dataset used in a reproduction, record:
+## Shared task definition
 
-- official source or download link;
-- dataset version or commit, when available;
-- train, validation, and test split;
-- target and spurious/group attributes;
+Waterbirds is the shared benchmark for project comparisons.
+
+- **Target:** bird category — waterbird or landbird.
+- **Spurious attribute:** background — water or land.
+- **Evaluation groups:** every target/background combination.
+
+| Target | Background |
+| --- | --- |
+| Waterbird | Water |
+| Waterbird | Land |
+| Landbird | Land |
+| Landbird | Water |
+
+Overall accuracy is not sufficient: report per-group accuracy and worst-group accuracy on the held-out test split.
+
+## Source and local setup
+
+When a baseline is introduced, record the official dataset source, version or release, access requirements, and any supplied metadata/split files in that method README and experiment configuration.
+
+Raw data must remain outside Git. Use the project `data/` area only for instructions and lightweight metadata that the project is allowed to track. Do not commit images, feature caches, checkpoints, credentials, or generated datasets.
+
+## Documentation and configuration locations
+
+- Keep project-wide data instructions in `data/README.md` when that directory is created.
+- Keep the shared Waterbirds definition and verification rules in this file.
+- Store dataset-specific reproducible settings in `configs/`.
+- Keep raw data and generated features in local, untracked locations documented by the relevant configuration.
+
+## Required dataset record
+
+For each dataset preparation or variant, record:
+
+- source and version;
+- local path convention;
+- official train, validation, and test split used;
+- target and background/group mapping;
 - preprocessing and augmentation;
-- local storage location outside the repository; and
-- any licensing or access requirements.
+- verification command or checks; and
+- deviations from the official release.
 
-Do not commit raw datasets, private data, credentials, or generated caches. Add dataset-specific preparation details here or link to the relevant method documentation.
+## Verification before training
 
-## Dataset-entry template
-
-Copy this template when a dataset is first used in the project:
-
-```markdown
-## <Dataset name>
-
-- **Official source:**
-- **Version / release:**
-- **License or access requirements:**
-- **Local storage:** outside this repository
-
-### Task and attributes
-
-- Target label:
-- Spurious or group attributes:
-- Split source:
-
-### Preparation
-
-- Preprocessing:
-- Augmentation:
-- Generated caches or features:
-
-### Notes
-
-Important data-quality, split, or access observations.
-```
+Before a meaningful run, confirm that the loader can find the expected files, the split counts are plausible, each evaluation group is present, and the target/background mapping matches the configuration. Record the check in the experiment log.

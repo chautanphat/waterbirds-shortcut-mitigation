@@ -1,23 +1,48 @@
 # Research Protocol
 
-## Current phase
+## Scope
 
-Reproduce baseline methods from selected papers before developing or comparing new mitigation methods.
+The current phase is to preserve, understand, and reproduce selected baseline methods before adapting or comparing them on Waterbirds.
 
-## Reproduction workflow
+For every baseline, follow: **Preserve → Understand → Reproduce → Adapt → Refactor**. Do not refactor or standardize an upstream method before its behavior is understood.
 
-1. Record the paper, code source, dataset, and target result.
-2. Create a focused GitHub branch for the reproduction work.
-3. Save a tracked configuration in `configs/` or `experiments/`; document the exact command in the method README.
-4. Document environment, data preparation, command, seed, and hardware.
-5. Run a small smoke test before a full experiment.
-6. Compare results with the paper and explain meaningful differences.
-7. Open a pull request containing the code, documentation, configuration, and experiment-log entry.
+## Baseline artifact map
 
-## Evidence levels
+Use these locations for a baseline as the repository grows:
 
-- **Smoke test:** confirms that the pipeline runs.
-- **Local reproduction:** completes the intended experiment with documented settings.
-- **Verified reproduction:** results are compared against the paper and differences are explained.
+| Artifact | Location |
+| --- | --- |
+| Preserved implementation and method README | `src/methods/<method-name>/` |
+| Reproducible settings | `configs/<method-name>/` |
+| Run metadata and experiment record | `experiments/<experiment-id>/` and `docs/experiment_log.md` |
+| Lightweight comparison tables and plots | `results/` |
+| Shared method status | `docs/methods.md` |
 
-Do not describe a smoke test as a reproduced benchmark.
+These paths are the target convention; do not create empty directories until a baseline needs them.
+
+## Fair comparison
+
+- Use the same Waterbirds version, official splits, target definition, group definition, and held-out test set whenever possible.
+- Preserve method-specific validation, early-stopping, and model-selection procedures when they are necessary for faithful reproduction.
+- Never use the test set for training, hyperparameter selection, or checkpoint selection.
+- Document every meaningful deviation from the paper or upstream implementation.
+
+## Evaluation and reporting
+
+Report, at minimum:
+
+- overall test accuracy;
+- accuracy for every target/background group;
+- worst-group accuracy; and
+- the number of examples in each evaluated group.
+
+Each reported result must link to its method version, configuration, command, seed, environment, output location, and experiment-log entry.
+
+## Reproduction status
+
+- **Smoke test:** the pipeline runs on the intended data path.
+- **Partial reproduction:** only part of the original experiment is reproduced.
+- **Verified reproduction:** the relevant original result is compared with the paper and differences are explained.
+- **Waterbirds adaptation:** the documented method has been adapted and evaluated under this protocol.
+
+Successful execution alone is not a verified reproduction.
