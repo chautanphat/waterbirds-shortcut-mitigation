@@ -6,16 +6,17 @@ This is the project-wide inventory of methods being investigated. It explains th
 
 Add a method only after the team agrees to investigate it. Then:
 
-1. Preserve the upstream implementation under `src/methods/<method-name>/`.
-2. Add a method-specific README with source, paper, license, setup, commands, and Waterbirds-specific changes.
-3. Add one entry here using the template in [`README.md`](README.md).
-4. Link a tracked configuration and experiment-log entry.
+1. Decide whether the work is an external reproduction or a project-owned implementation.
+2. Preserve an official external implementation under `baselines/<method-name>/`; put a project-owned, reimplemented, or integrated method under `src/methods/<method-name>/`.
+3. Add a method-specific README with source, paper, license, setup, commands, and Waterbirds-specific changes.
+4. Add one entry here using the template in [`README.md`](README.md).
+5. Link a tracked configuration and experiment-log entry.
 
 Do not claim an original reproduction when the work is only a smoke test or an adaptation.
 
 Each completed method entry should point to:
 
-- `src/methods/<method-name>/` for the implementation;
+- `baselines/<method-name>/` for an external implementation, or `src/methods/<method-name>/` for a project-owned implementation;
 - `configs/<method-name>/` for reproducible settings;
 - `experiments/<experiment-id>/` for run metadata, when present; and
 - the relevant entry in `docs/experiment_log.md`.

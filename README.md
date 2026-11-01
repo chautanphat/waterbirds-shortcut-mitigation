@@ -13,6 +13,8 @@ waterbirds-shortcut-mitigation/
 ├── README.md                   # Short project entry point
 ├── requirements.txt            # Shared dependencies, when stable
 ├── .github/                    # Issue/PR templates and GitHub workflows
+├── baselines/                  # Preserved external implementations
+│   └── <method-name>/
 ├── configs/                    # YAML settings for datasets, baselines, and methods
 ├── data/                       # Download/setup instructions; no raw data in Git
 ├── docs/                       # Protocol, dataset, methods, and experiment documentation
@@ -23,7 +25,7 @@ waterbirds-shortcut-mitigation/
 │   ├── models/                 # Shared backbones and classifiers
 │   ├── evaluation/             # Shared metrics and evaluation utilities
 │   ├── utils/                  # Shared seeding, logging, and checkpoint utilities
-│   └── methods/                # Independent implementations of each method
+│   └── methods/                # Project-owned or integrated method implementations
 │       └── <method-name>/
 │           └── ...             # Independent method implementations
 ├── tests/                      # Tests for shared code and methods
@@ -31,7 +33,7 @@ waterbirds-shortcut-mitigation/
 └── results/                    # Lightweight summaries, tables, and plots
 ```
 
-Keep reusable code in the shared `src/` modules. Keep method-specific code independent under `src/methods/<method-name>/`. Store tracked experiment settings in `configs/` or `experiments/`; keep raw data, large checkpoints, caches, and local logs out of version control.
+Use `baselines/<method-name>/` for an official external implementation that is being preserved and reproduced. Use `src/methods/<method-name>/` for a method implemented by this project, reimplemented from a paper, or integrated into the project's common framework. Store tracked experiment settings in `configs/` or `experiments/`; keep raw data, large checkpoints, caches, and local logs out of version control.
 
 ## Team workflow
 
@@ -55,7 +57,9 @@ docs/<description>
 
 ## Adding a method
 
-Add new methods under `src/methods/<method-name>/` and include a method-level README with:
+For an official external implementation, add it under `baselines/<method-name>/` and preserve its source, README, dependencies, configurations, license notices, and original execution flow. Avoid unnecessary source changes.
+
+For a project-owned or integrated implementation, add it under `src/methods/<method-name>/` and include a method-level README with:
 
 - summary of the method (source, mechanism, architectures, pipeline,...);
 - setup and dependencies;

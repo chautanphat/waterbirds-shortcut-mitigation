@@ -11,6 +11,8 @@ waterbirds-shortcut-mitigation/
 ├── README.md                   # Short project entry point
 ├── requirements.txt            # Shared dependencies, when stable
 ├── .github/                    # Issue/PR templates and GitHub workflows
+├── baselines/                  # Preserved external implementations
+│   └── <method-name>/
 ├── configs/                    # YAML settings for datasets, baselines, and methods
 ├── data/                       # Download/setup instructions; no raw data in Git
 ├── docs/                       # Protocol, dataset, methods, and experiment documentation
@@ -21,7 +23,7 @@ waterbirds-shortcut-mitigation/
 │   ├── models/                 # Shared backbones and classifiers
 │   ├── evaluation/             # Shared metrics and evaluation utilities
 │   ├── utils/                  # Shared seeding, logging, and checkpoint utilities
-│   └── methods/                # Independent implementations of each method
+│   └── methods/                # Project-owned or integrated implementations
 │       └── <method-name>/
 │           └── ...             # Independent method implementations
 ├── tests/                      # Tests for shared code and methods
@@ -31,7 +33,8 @@ waterbirds-shortcut-mitigation/
 
 ### Placement rules
 
-- Keep an imported or reproduced baseline inside `src/methods/<method-name>/` until its behavior is understood.
+- Keep an imported or reproduced official implementation inside `baselines/<method-name>/` until its behavior is understood.
+- Put a project-owned, reimplemented, or integrated method inside `src/methods/<method-name>/`.
 - Put code in shared `src/` modules only after more than one method genuinely uses it without changing behavior.
 - Put reproducible settings in `configs/` and experiment metadata in `experiments/`.
 - Keep raw data, checkpoints, caches, and large local outputs out of Git.
@@ -47,8 +50,8 @@ waterbirds-shortcut-mitigation/
 
 ## Baseline contribution checklist
 
-1. Preserve the upstream implementation under `src/methods/<method-name>/`.
-2. Record its source, paper, license, and original behavior in that method's README.
+1. Decide whether the implementation belongs in `baselines/` or `src/methods/`.
+2. Record its source, paper, license, and intended role in a method README.
 3. Use a tracked configuration in `configs/` or `experiments/`.
 4. Run a smoke test before claiming a reproduction.
 5. Add the method summary and experiment-log entry in the same pull request.
@@ -65,7 +68,7 @@ When the team starts a baseline, copy this template into [`methods.md`](methods.
 - **Paper:**
 - **Source:**
 - **Year:**
-- **Implementation location:** `src/methods/<method-name>/`
+- **Implementation location:** `baselines/<method-name>/` or `src/methods/<method-name>/`
 
 ### Mechanism
 Briefly explain the method's central idea.

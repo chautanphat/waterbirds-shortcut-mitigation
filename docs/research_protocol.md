@@ -4,7 +4,7 @@
 
 The current phase is to preserve, understand, and reproduce selected baseline methods before adapting or comparing them on Waterbirds.
 
-For every baseline, follow: **Preserve → Understand → Reproduce → Adapt → Refactor**. Do not refactor or standardize an upstream method before its behavior is understood.
+For every baseline, follow: **Preserve → Understand → Reproduce → Adapt → Refactor**. Do not refactor or standardize an upstream method before its behavior is understood. An official implementation stays in `baselines/`; an adaptation or project-owned implementation belongs in `src/methods/`.
 
 ## Baseline artifact map
 
@@ -12,7 +12,8 @@ Use these locations for a baseline as the repository grows:
 
 | Artifact | Location |
 | --- | --- |
-| Preserved implementation and method README | `src/methods/<method-name>/` |
+| Official external implementation and preserved README | `baselines/<method-name>/` |
+| Project-owned, reimplemented, or integrated method | `src/methods/<method-name>/` |
 | Reproducible settings | `configs/<method-name>/` |
 | Run metadata and experiment record | `experiments/<experiment-id>/` and `docs/experiment_log.md` |
 | Lightweight comparison tables and plots | `results/` |

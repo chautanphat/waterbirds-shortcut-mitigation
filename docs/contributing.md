@@ -76,6 +76,11 @@ waterbirds-shortcut-mitigation/
 │   ├── groupdro/
 │   └── ...
 │
+├── baselines/
+│   ├── dpe/
+│   ├── groupdro/
+│   └── ...
+│
 ├── data/
 │   └── README.md
 │
@@ -120,6 +125,7 @@ Examples:
 - `README.md`: short project introduction and navigation.
 - `requirements.txt`: project-level dependencies, where appropriate.
 - `.gitignore`: shared ignore rules.
+- `baselines/`: preserved external implementations.
 - `configs/`: experiment configurations.
 - `docs/`: detailed documentation.
 - `src/`: implementation.
@@ -128,9 +134,18 @@ Examples:
 
 Do not place baseline implementation files directly in the root directory.
 
-### 3.2. Method-specific implementation
+### 3.2. External baselines and project methods
 
-Each method belongs under:
+The repository distinguishes preserved external implementations from project-owned code:
+
+- `baselines/<method-name>/`: official implementations obtained from other researchers and used for faithful reproduction.
+- `src/methods/<method-name>/`: methods implemented by this project, reimplemented from a paper, or integrated into the common framework.
+
+Do not unnecessarily modify code under `baselines/`. Preserve its README, dependencies, configurations, license notices, and original execution flow. Put adaptations or standardized implementations in `src/methods/` instead.
+
+### 3.3. Method-specific implementation
+
+Each project-owned method belongs under:
 
 ```text
 src/methods/<method_name>/
@@ -154,7 +169,7 @@ Keep method-specific components inside their own directory unless there is a cle
 
 Do not require every method to have identical filenames or internal organization.
 
-### 3.3. Shared infrastructure
+### 3.4. Shared infrastructure
 
 The following directories are intended for components genuinely reused by multiple methods:
 
@@ -170,7 +185,7 @@ A component should be moved into shared infrastructure only if:
 
 Do not refactor a method simply to make its code look consistent with another method.
 
-### 3.4. Scripts and configurations
+### 3.5. Scripts and configurations
 
 Project-level scripts should provide convenient entry points for common operations.
 
@@ -191,7 +206,7 @@ Configuration files should be stored in `configs/`, preferably using YAML.
 
 Keep experiment settings in configuration files rather than scattering important values throughout scripts.
 
-### 3.5. Data and generated outputs
+### 3.6. Data and generated outputs
 
 Do not commit large raw datasets, checkpoints, caches, or other generated artifacts to Git unless there is a specific reason.
 
@@ -227,7 +242,7 @@ When introducing a baseline:
 3. Preserve associated scripts, documentation, configurations, dependency files, and license notices.
 4. Preserve the original README or equivalent usage instructions.
 5. Record the original repository URL and, where possible, the upstream commit or release.
-6. Place the implementation under `src/methods/<method_name>/`.
+6. Place the preserved external implementation under `baselines/<method_name>/`.
 
 Do not:
 - Dump baseline files into the repository root.
@@ -282,7 +297,7 @@ Do not claim verified reproduction based only on successful execution.
 
 ### Stage 4: Adapt the method to Waterbirds
 
-After understanding the original implementation, adapt it to the Waterbirds task.
+After understanding the original implementation, adapt it to the Waterbirds task. Keep the preserved source under `baselines/`; put the project adaptation under `src/methods/` when it becomes project-owned or integrated.
 
 Potential adaptations include:
 - Dataset loading.
@@ -469,7 +484,7 @@ Suggested workflow:
 Keep pull requests focused. Avoid mixing unrelated documentation, implementation, and experiment changes.
 
 When reviewing a baseline contribution, check:
-- Whether the original implementation is preserved.
+- Whether an official implementation is preserved under `baselines/` and project-owned code is under `src/methods/` where appropriate.
 - Whether its source and license are documented.
 - Whether generated data or checkpoints were accidentally added.
 - Whether Waterbirds adaptations are identified.
@@ -546,7 +561,7 @@ This file should help readers understand the method landscape without duplicatin
 
 ### 8.5. Method-specific README
 
-Each method directory should have its own README explaining how to use that implementation.
+Each baseline or project-method directory should have its own README explaining how to use that implementation.
 
 Include:
 - Date imported.
