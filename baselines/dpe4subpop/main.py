@@ -534,6 +534,9 @@ def get_pre_extracted_features(
 
 
 def main(args):
+    if args.ckpt_dir is not None:
+        os.makedirs(args.ckpt_dir, exist_ok=True)
+
     if not args.no_wandb:
         # Log in to your W&B account
         wandb.login()
