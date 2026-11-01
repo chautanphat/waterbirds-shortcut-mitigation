@@ -18,21 +18,49 @@ import pandas as pd
 from tqdm import tqdm
 
 
-WATERBIRDS_URL = "https://nlp.stanford.edu/data/dro/waterbird_complete95_forest2water2.tar.gz"
+# Stanford CS downloads mirror (primary, active) and legacy nlp mirror (fallback)
+WATERBIRDS_URLS = [
+    "https://downloads.cs.stanford.edu/nlp/data/dro/waterbird_complete95_forest2water2.tar.gz",
+    "https://nlp.stanford.edu/data/dro/waterbird_complete95_forest2water2.tar.gz",
+]
 ARCHIVE_NAME = "waterbird_complete95_forest2water2.tar.gz"
 
 
-class DownloadProgressBar(tqdm):
-    def update_to(self, b=1, bsize=1, tsize=None):
-        if tsize is not None:
-            self.total = tsize
-        self.update(b * bsize - self.n)
+def download_file(urls, output_path):
+    if isinstance(urls, str):
+        urls = [urls]
 
+    success = False
+    for url in urls:
+        print(f"[*] Downloading {url} -> {output_path}...")
+        try:
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)"}
+            )
+            with urllib.request.urlopen(req, timeout=30) as resp, open(output_path, "wb") as out_file:
+                total_size = int(resp.headers.get("content-length", 0))
+                with tqdm(total=total_size, unit="B", unit_scale=True, desc=os.path.basename(output_path)) as pbar:
+                    while True:
+                        chunk = resp.read(1024 * 1024)  # 1 MB chunks
+                        if not chunk:
+                            break
+                        out_file.write(chunk)
+                        pbar.update(len(chunk))
+            success = True
+            print(f"[+] Download complete: {output_path}")
+            break
+        except Exception as e:
+            print(f"[!] Warning: Download from {url} failed: {e}")
+            if os.path.exists(output_path):
+                try:
+                    os.remove(output_path)
+                except OSError:
+                    pass
+            continue
 
-def download_file(url, output_path):
-    print(f"[*] Downloading {url} -> {output_path}...")
-    with DownloadProgressBar(unit='B', unit_scale=True, miniters=1, desc=os.path.basename(output_path)) as t:
-        urllib.request.urlretrieve(url, filename=output_path, reporthook=t.update_to)
+    if not success:
+        raise RuntimeError(f"Failed to download Waterbirds dataset from all available sources: {urls}")
 
 
 def extract_archive(archive_path, extract_dir):
@@ -109,7 +137,7 @@ def main():
     # 1. Download
     if not os.path.exists(archive_path) or not args.skip_download:
         if not os.path.exists(archive_path):
-            download_file(WATERBIRDS_URL, archive_path)
+            download_file(WATERBIRDS_URLS, archive_path)
         else:
             print(f"[*] Archive already exists at {archive_path}.")
     else:
