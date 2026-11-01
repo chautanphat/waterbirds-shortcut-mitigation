@@ -35,3 +35,4 @@ training:
 checkpoint:
   pretrained_path: checkpoints/waterbirds_erm/ckpt_last.pt
   ckpt_dir: checkpoints/waterbirds_dpe
+

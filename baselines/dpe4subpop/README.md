@@ -14,13 +14,12 @@
 
 1. [Overview & Motivation](#1-overview--motivation)
 2. [How DPE Works](#2-how-dpe-works)
-3. [Verified Scope & Quickstart](#3-verified-scope--quickstart)
-4. [Environment Setup](#4-environment-setup)
-5. [Step-by-Step Waterbirds Reproduction](#5-step-by-step-waterbirds-reproduction)
-6. [Expected Benchmark Results](#6-expected-benchmark-results)
-7. [Repository Structure](#7-repository-structure)
-8. [Limitations & Practical Tips](#8-limitations--practical-tips)
-9. [References](#9-references)
+3. [Environment Setup](#3-environment-setup)
+4. [Step-by-Step Waterbirds Reproduction](#4-step-by-step-waterbirds-reproduction)
+5. [Expected Benchmark Results](#5-expected-benchmark-results)
+6. [Repository Structure](#6-repository-structure)
+7. [Limitations & Practical Tips](#7-limitations--practical-tips)
+8. [References](#8-references)
 
 ---
 
@@ -77,48 +76,7 @@ Softmax Prob P_1   Softmax Prob P_2   Softmax Prob P_N
 
 ---
 
-## 3. Verified Scope & Quickstart
-
-We have verified that the core DPE pipeline runs locally on Windows and Linux without cloud GPU dependencies.
-
-### One-Command Quickstart Demo (< 10 seconds)
-Run the self-contained reproduction demo:
-```bash
-python baselines/dpe4subpop/reproduce_demo.py
-```
-
-**Expected output:**
-```text
-============================================================
-  Diverse Prototypical Ensembles (DPE) - Quickstart Demo
-============================================================
-[*] Running on device: CPU (or CUDA)
-[*] Generating synthetic subpopulation benchmark data...
-[*] Initializing DPE model...
-[*] Fitting Diverse Prototypical Ensemble (4 stages)...
-[Stage 1]: wga=85.4, acc=91.2
-[Stage 2]: wga=91.1, acc=92.2
-[Stage 3]: wga=89.3, acc=92.0
-[Stage 4]: wga=90.6, acc=92.2
-[*] Evaluating on Test Set...
-============================================================
-Overall Accuracy:       92.25%
-Balanced Accuracy:      92.24%
-Worst-Group Accuracy:   90.62%
-============================================================
-[+] DPE pipeline successfully reproduced and verified!
-```
-
-### Automated Unit Test
-Run the automated smoke test from the repository root:
-```bash
-python tests/test_dpe_smoke.py
-```
-Expected: `Ran 2 tests in ~2.7s. OK`
-
----
-
-## 4. Environment Setup
+## 3. Environment Setup
 
 ### Dependencies
 Install the required dependencies:
@@ -136,7 +94,7 @@ Key packages:
 
 ---
 
-## 5. Step-by-Step Waterbirds Reproduction
+## 4. Step-by-Step Waterbirds Reproduction
 
 Waterbirds reproduction follows a **2-stage pipeline**:
 
@@ -223,7 +181,7 @@ python baselines/dpe4subpop/main.py \
 
 ---
 
-## 6. Expected Benchmark Results
+## 5. Expected Benchmark Results
 
 Reported results from the ICML 2025 paper:
 
@@ -240,7 +198,7 @@ Reported results from the ICML 2025 paper:
 
 ---
 
-## 7. Repository Structure
+## 6. Repository Structure
 
 ```text
 baselines/dpe4subpop/
@@ -248,7 +206,6 @@ baselines/dpe4subpop/
 ├── LICENSE                 # Upstream MIT License
 ├── requirements.txt        # Dependencies
 ├── main.py                 # Upstream CLI training entry point
-├── reproduce_demo.py       # Self-contained verification script (<10s)
 ├── docs/
 │   ├── README.upstream.md  # Original upstream README
 │   └── index.html          # Upstream ICML project page
@@ -263,7 +220,7 @@ baselines/dpe4subpop/
 
 ---
 
-## 8. Limitations & Practical Tips
+## 7. Limitations & Practical Tips
 
 1. **Feature Extraction Efficiency:** Because Stage 1+ trains only on pre-extracted feature vectors, running multiple ensemble members is extremely fast (seconds per epoch). Always ensure feature normalization (`norm_emb=yes`) is enabled.
 2. **Hyperparameter Tuning:**
@@ -273,7 +230,7 @@ baselines/dpe4subpop/
 
 ---
 
-## 9. References
+## 8. References
 
 ```bibtex
 @inproceedings{to2025diverse,
@@ -283,3 +240,4 @@ baselines/dpe4subpop/
   year={2025}
 }
 ```
+

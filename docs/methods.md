@@ -59,7 +59,7 @@ DPE addresses subpopulation shifts and shortcut learning without requiring subgr
 - **Worst-group accuracy:** 94.1% ± 0.2% (unannotated), 94.1% ± 0.4% (annotated val).
 
 ### Status
-- **Original reproduction:** Smoke test verified locally on CPU/Windows via `baselines/dpe4subpop/reproduce_demo.py` and `tests/test_dpe_smoke.py`. Full Waterbirds benchmark ready for execution.
+- **Original reproduction:** Pending execution on full Waterbirds dataset.
 - **Waterbirds adaptation:** Preserved upstream implementation in `baselines/dpe4subpop/`.
 
 ### Notes

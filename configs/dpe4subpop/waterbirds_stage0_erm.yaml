@@ -27,3 +27,4 @@ training:
 output:
   force_saving_feats: true
   ckpt_dir: checkpoints/waterbirds_erm
+
