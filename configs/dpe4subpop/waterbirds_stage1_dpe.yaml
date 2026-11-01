@@ -1,0 +1,37 @@
+# Waterbirds Stage-1+ Diverse Prototypical Ensemble (DPE) Training
+method: dpe
+stage: 1
+
+dataset:
+  dataset_name: Waterbirds
+  data_dir: data/waterbirds
+  batch_size: 256
+  batch_size_eval: 512
+  workers: 4
+  train_attr: 'no'            # 'no' for attribute-agnostic benchmark; 'yes' for group-annotated val
+  subsample_type: group       # 'group' if train_attr=yes, 'class' if train_attr=no
+  norm_emb: 'yes'
+  shuffle_in_training: true
+  no_class_balanced_training: true
+
+model:
+  model_name: resnet50
+  train_mode: freeze
+  loss_name: isomax
+  emb_dim: 2048
+
+training:
+  num_stages: 16
+  epochs: 20
+  lr: 0.001
+  momentum: 0.9
+  optim: sgd
+  entropic_scale: 30.0
+  cov_reg: 500000.0
+  wd_weight: 10.0
+  ensemble_criterion: wga_val
+  seed: 0
+
+checkpoint:
+  pretrained_path: checkpoints/waterbirds_erm/ckpt_last.pt
+  ckpt_dir: checkpoints/waterbirds_dpe

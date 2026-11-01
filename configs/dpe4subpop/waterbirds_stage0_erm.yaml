@@ -1,0 +1,29 @@
+# Waterbirds Stage-0 Backbone Training & Feature Extraction
+method: erm
+stage: 0
+
+dataset:
+  dataset_name: Waterbirds
+  data_dir: data/waterbirds
+  batch_size: 128
+  batch_size_eval: 512
+  workers: 4
+
+model:
+  model_name: resnet50
+  pretrained_imgnet: true
+  train_mode: full
+  loss_name: ce
+
+training:
+  epochs: 100
+  lr: 0.001
+  momentum: 0.9
+  optim: sgd
+  optim_weight_decay: 0.0001
+  scheduler: none
+  seed: 0
+
+output:
+  force_saving_feats: true
+  ckpt_dir: checkpoints/waterbirds_erm

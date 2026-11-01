@@ -51,6 +51,8 @@ Thumbs.db
 # Local datasets and generated data
 /datasets/
 /data/
+*.npy
+*.npz
 
 # Model weights and checkpoints
 *.pt
