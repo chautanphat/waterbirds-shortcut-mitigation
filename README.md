@@ -37,7 +37,7 @@ Use `baselines/<method-name>/` for an official external implementation that is b
 
 ## Team workflow
 
-For full contributor operating rules, repository conventions, and the baseline integration lifecycle, refer to [`docs/contributing.md`](docs/contributing.md).
+For full contributor operating rules, repository conventions, and the baseline integration lifecycle, refer to [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 - Create a focused branch for each feature, method, experiment, fix, or documentation change.
 - Keep commits small and describe what changed.
@@ -70,4 +70,4 @@ For a project-owned or integrated implementation, add it under `src/methods/<met
 
 Record the dataset, split, seed, model, main hyperparameters, environment, and metrics for meaningful experiments. Store tracked configurations in `configs/` or `experiments/`, and record the exact command in the method README and experiment log. Clearly distinguish exploratory results, smoke tests, and verified benchmark results.
 
-See [`docs/`](docs/) (including [`docs/contributing.md`](docs/contributing.md)) for detailed project guidance and the existing method directories for implementation-specific documentation.
+See [`docs/`](docs/) and [`CONTRIBUTING.md`](CONTRIBUTING.md) for detailed project guidance and the existing method directories for implementation-specific documentation.

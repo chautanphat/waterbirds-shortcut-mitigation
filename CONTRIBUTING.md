@@ -24,7 +24,7 @@ This document summarizes the project's established decisions and conventions. Us
 
 ### Documentation authority
 
-- `docs/contributing.md` defines project-wide operating rules and contribution guidelines.
+- `CONTRIBUTING.md` defines project-wide operating rules and contribution guidelines.
 - The root `README.md` is a concise entry point and overview.
 - `docs/` contains detailed shared research infrastructure.
 - Each method directory contains implementation-specific instructions and upstream preservation notes.
