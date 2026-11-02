@@ -1,0 +1,21 @@
+diff --git a/methods/ours/augment_data.py b/methods/ours/augment_data.py
+index 0b148d8..36481c8 100644
+--- a/methods/ours/augment_data.py
++++ b/methods/ours/augment_data.py
+@@ -156,8 +156,14 @@ def generate_waterbirds(data_path, separator, seed):
+             image = Image.open(image_path).convert("RGB")
+             images.append(image)
+ 
+-        # Separate image into FG+BG
+-        masks_tight, masks_loose, images_inp = separator.separate(images, resize=False)
++        # Separate image into FG+BG in chunks of augment_batch_size (OOM fix)
++        masks_tight, masks_loose, images_inp = [], [], []
++        step = separator.config.augment_batch_size
++        for s in range(0, len(images), step):
++            mt, ml, ii = separator.separate(images[s : s + step], resize=False)
++            masks_tight += mt
++            masks_loose += ml
++            images_inp += ii
+ 
+         # Save separated images
+         for i in range(len(images)):
