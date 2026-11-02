@@ -1,6 +1,7 @@
 # Waterbirds Stage-0 Backbone Training & Feature Extraction
 method: erm
 stage: 0
+no_augmentation: true  # Standard SubpopBench protocol (no photometric distortion)
 
 dataset:
   dataset_name: Waterbirds
@@ -26,5 +27,5 @@ training:
 
 output:
   force_saving_feats: true
-  ckpt_dir: checkpoints/waterbirds_erm
+  ckpt_dir: checkpoints/waterbirds_stage0_standard_erm
 
