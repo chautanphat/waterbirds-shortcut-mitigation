@@ -1,4 +1,4 @@
-run_id,start_time,end_time,run_label,mode,dataset,seed,epochs,batch_size,hardware,results_dir,val_wga,val_avg_acc,status,notes
-1,264s,481s,probe_batch128,probe,CUB,1,2,128,NVIDIA Tesla T4 (Kaggle),poter-results/probe_batch128,48.9,64.2,success,"VRAM check: confirmed batch 128 fits within 16GB VRAM (peak 10.84 GB)"
-2,538s,33216s,POTER_CUB_seed1_kaggle,train,CUB,1,300,128,NVIDIA Tesla T4 (Kaggle),poter-results/CUB/Clean/POTER_CUB_seed1_kaggle,90.10,91.60,success,"Completed full 300 epochs. Best validation WGA=90.10% at Epoch 258. Saved best_validation.pt and last_training.pt"
-3,33249s,33253s,summarize_all_seeds,summarize,CUB,"1,2,3",300,128,NVIDIA Tesla T4 (Kaggle),poter-results,-,-,failed,"Script default requires seeds 1, 2, 3; exited with status 2 because seeds 2 and 3 are pending. Does not impact Seed 1 results"
+run_id,start_time,end_time,run_label,mode,dataset,seed,epochs,batch_size,hardware,results_dir,val_wga,val_avg_acc,test_wga,test_avg_acc,status,notes
+1,264s,481s,probe_batch128,probe,CUB,1,2,128,NVIDIA Tesla T4 (Kaggle),poter-results/probe_batch128,48.9,64.2,not_reported,not_reported,success,"VRAM check: confirmed batch 128 fits within 16GB VRAM (peak 10.84 GB)"
+2,538s,33216s,POTER_CUB_seed1_kaggle,train,CUB,1,300,128,NVIDIA Tesla T4 (Kaggle),poter-results/CUB/Clean/POTER_CUB_seed1_kaggle,90.10,91.60,not_reported,not_reported,success,"Completed full 300 epochs. Best validation WGA=90.10% at Epoch 258. Saved best_validation.pt and last_training.pt"
+3,33249s,33253s,summarize_all_seeds,summarize,CUB,"1,2,3",300,128,NVIDIA Tesla T4 (Kaggle),poter-results,-,-,-,-,failed,"Script default requires seeds 1, 2, 3; exited with status 2 because seeds 2 and 3 are pending. Does not impact Seed 1 results"
