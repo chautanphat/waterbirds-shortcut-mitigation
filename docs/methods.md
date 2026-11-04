@@ -75,47 +75,25 @@ DPE addresses subpopulation shifts and shortcut learning without requiring subgr
 ## Optimal Transport Reweighting (POTER)
 
 ### Overview
-- **Full name:** Optimal Transport Reweighting for Robust Learning under Spurious Correlations and Label Noise
 - **Paper:** [arXiv:2610.01028](https://arxiv.org/abs/2610.01028) (NeurIPS 2026)
-- **Source:** https://github.com/Sung-Ho-Jo/POTER
-- **Year:** 2026
-- **Implementation location:** `baselines/poter/`
+- **Upstream source:** https://github.com/Sung-Ho-Jo/POTER
+- **Implementation:** `baselines/poter/`
 
-### Mechanism
-POTER mitigates spurious correlations and label noise by computing non-parametric importance weights via class-conditioned Optimal Transport (OT). It compares training representations against a small, clean validation reference set. Class-conditional Kantorovich dual potentials are calculated between training features and reference features, then mapped into per-sample sampling weights through power scaling and clipping. Training samples that align well with counter-spurious reference distributions receive higher weights, which are supplied to PyTorch's `WeightedRandomSampler` during full-network fine-tuning.
+POTER constructs class-conditioned optimal-transport weights from a limited validation reference set with group annotations, then supplies those weights to `WeightedRandomSampler` while fine-tuning an ImageNet-pretrained ResNet-50. It does not require training-set group labels, but it does use validation-set group annotations to construct the reference distribution.
 
-### Implementation
-- **Backbone:** ResNet-50 (ImageNet-pretrained, full fine-tuning with SGD).
-- **Loss function:** Standard Cross-Entropy loss with `WeightedRandomSampler` sample reweighting.
-- **Training procedure:**
-  1. Offline feature extraction: extract 2,048-dim penultimate ResNet-50 embeddings for train and reference splits.
-  2. OT potential computation: solve class-conditional OT Kantorovich dual problems with entropy regularization.
-  3. Sample weight calculation: transform potentials via power scaling (`f_power=0.1`) and clipping (`clip_cap=20.0`).
-  4. Classifier training: fine-tune ResNet-50 for 300 epochs with batch size 128 using `WeightedRandomSampler`.
-- **Special requirements:** Offline `.pt` feature cache, GPU with $> 10.8$ GB VRAM for batch size 128.
+### Waterbirds settings
+- Official train/validation/test splits.
+- Reference groups: `0:0, 1:466, 2:133, 3:0`.
+- ResNet-50, SGD, batch size 128, learning rate `1e-5`, weight decay `1.0`, 300 epochs and standard augmentation.
+- Checkpoint selection: maximum validation WGA, with the earliest epoch as tie-breaker.
+- Paper target: held-out test WGA `90.9 ± 0.3%` over three seeds.
 
-### Experimental Settings
-- **Dataset and split:** Waterbirds (`waterbird_complete95_forest2water2`), official train/val/test splits.
-- **Configuration:** [`configs/poter/waterbirds_standard.yaml`](../configs/poter/waterbirds_standard.yaml).
-- **Batch size / learning rate / epochs / optimizer:** BS=128, LR=$1 \times 10^{-5}$, WD=1.0, Epochs=300, SGD with momentum=0.9, standard data augmentation.
-- **Reference set composition:** `0:0, 1:466, 2:133, 3:0` (599 counter-spurious validation samples).
-- **Random seeds:** 1, 2, 3.
+### Current evidence
+Seed 1 has a tracked 300-epoch train/validation trajectory. Its unique validation-WGA maximum is 90.10% at epoch 258; validation average accuracy is 91.60%, and validation group accuracies are [92.50%, 90.10%, 92.50%, 92.50%].
 
-### Evaluation
-- **Paper reported targets:** Test Worst-Group Accuracy (WGA) $90.9\% \pm 0.3\%$, Average Accuracy $\approx 92.5\%$.
-- **Reproduced results (Seed 1):**
-  - Validation WGA: **90.10%** at Best Checkpoint (Epoch 258).
-  - Validation Average Accuracy: **91.60%**.
-  - Per-group validation accuracies: [92.50%, 90.10%, 92.50%, 92.50%].
-  - Minority group gain: Group 1 (landbird on water) accuracy increased from 29.6% at Epoch 0 to 90.10% at Best Epoch (+60.5%).
-  - Full trajectory recorded in [`results/poter/report.md`](../results/poter/report.md) and [`docs/experiment_log.md`](experiment_log.md).
+These are validation results, not held-out test results. The PR does not contain the generated `test.csv`, raw `val.csv`, `log.txt`, or `best_validation.pt`, so seed-1 test WGA, test accuracy, per-group test accuracy and group counts cannot yet be verified.
 
 ### Status
-- **Original reproduction:** Verified reproduction on Waterbirds (Seed 1 completed 300 epochs; matches paper target within 0.8% single-seed variance; see `exp-poter-waterbirds-standard-seed1-001`).
-- **Waterbirds adaptation:** Preserved upstream implementation in `baselines/poter/` with end-to-end notebook in `notebooks/poter_waterbirds_kaggle.ipynb`.
-
-### Notes
-- Operates via data sampling reweighting (`WeightedRandomSampler`) rather than direct per-sample loss multiplication.
-- Model selection is governed strictly by validation Worst-Group Accuracy (WGA); test set evaluation occurs on the selected validation-optimal checkpoint.
-- Requires $> 10.8$ GB VRAM for official batch size 128 (runs on Kaggle Tesla T4 16 GB, out-of-memory on 6 GB laptop GPUs).
-
+- **Original reproduction:** Partial reproduction. Training and validation-based model selection for seed 1 are documented; held-out test evaluation is pending.
+- **Required for verified reproduction:** Recover the original seed-1 `test.csv` (preferred) or evaluate `best_validation.pt` once on the official test split, then complete seeds 2 and 3 and report the three-seed test mean ± sample standard deviation.
+- **Detailed audit:** [`results/poter/report.md`](../results/poter/report.md).
