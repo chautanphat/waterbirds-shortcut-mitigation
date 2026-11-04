@@ -74,24 +74,20 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 
 ## exp-poter-waterbirds-standard-seed1-001 — 2026-11-04
 
-- **Method / version:** Potentials from Optimal Transport for Empirical Reweighting (POTER) / NeurIPS 2026
-- **Purpose:** Original reproduction on Waterbirds (Standard Clean Track, 300 epochs)
+- **Method / version:** POTER / NeurIPS 2026
+- **Purpose:** Seed-1 Waterbirds benchmark run and validation-based checkpoint selection
 - **Branch or commit:** `phat/poter-windows-cmnist`
 - **Configuration:** `configs/poter/waterbirds_standard.yaml`
-- **Dataset and split:** Waterbirds (`waterbird_complete95_forest2water2`), official train/val/test splits (train=4,795, val=1,199, test=5,794)
+- **Dataset and split:** Waterbirds official train/validation/test splits (4,795 / 1,199 / 5,794)
 - **Seed:** 1
-- **Environment and hardware:** Kaggle Linux container, 1x NVIDIA Tesla T4 GPU (15.0 GiB VRAM), PyTorch 2.11.0+cu130, CUDA 13.0
-- **Command:** End-to-end execution of `notebooks/poter_waterbirds_kaggle.ipynb` (`scripts/kaggle_waterbirds.py --data-dir /kaggle/working/poter-data --cache /kaggle/working/poter-features/waterbirds_standard.pt --run-dir /kaggle/working/poter-results/CUB/Clean/POTER_CUB_seed1_kaggle --seed 1 --epochs 300 --batch-size 128 --max-hours 9.5`)
-- **Output location:** `poter-results/CUB/Clean/POTER_CUB_seed1_kaggle/` (untracked), metrics in `results/poter/seed1_full_metrics.csv`
+- **Environment and hardware:** Kaggle Linux container, 1× NVIDIA Tesla T4, PyTorch 2.11.0+cu130, CUDA 13.0
+- **Command:** `scripts/kaggle_waterbirds.py --data-dir /kaggle/working/poter-data --cache /kaggle/working/poter-features/waterbirds_standard.pt --run-dir /kaggle/working/poter-results/CUB/Clean/POTER_CUB_seed1_kaggle --seed 1 --epochs 300 --batch-size 128 --max-hours 9.5`
+- **Output location:** `poter-results/CUB/Clean/POTER_CUB_seed1_kaggle/` (untracked); train/validation aggregate in `results/poter/seed1_full_metrics.csv`
 - **Results:**
-  - **Selected Best Checkpoint:** Epoch 258 (zero-based), selected strictly by validation WGA
-  - **Validation WGA:** **90.10%** (vs. paper Table 1: $90.9 \pm 0.3\%$)
-  - **Validation Average Accuracy:** **91.60%** (vs. paper: $\approx 92.5\%$)
-  - **Validation Per-group Accuracies:** Group 0 (Landbird on Land): 92.50%; Group 1 (Landbird on Water, minority): 90.10%; Group 2 (Waterbird on Land, minority): 92.50%; Group 3 (Waterbird on Water): 92.50%
-  - **Terminal Epoch 299:** Train Loss: 0.176; Train Avg Acc: 98.9%; Val Avg Acc: 90.5%; Val WGA: 88.00%
-- **Paper comparison or expected behavior:** Matches published paper target ($90.9 \pm 0.3\%$ WGA) within $0.8\%$ single-seed variance. Confirms that class-conditioned Optimal Transport potential reweighting successfully neutralizes spurious background correlation (+60.5% gain on minority Group 1 from initial epoch).
-- **Status:** verified reproduction
-- **Notes and follow-up:** Complete 300-epoch run verified. Next steps: run seeds 2 and 3 using the resumable checkpoint pipeline to produce the full 3-seed mean $\pm$ std summary table.
-
-
-
+  - Selected epoch: 258 (zero-based), selected only by validation WGA.
+  - Validation WGA: 90.10%; validation average accuracy: 91.60%.
+  - Validation group accuracies: [92.50%, 90.10%, 92.50%, 92.50%].
+  - Held-out test WGA, overall accuracy, adjusted average, group accuracies and counts: **not present in tracked artifacts**.
+- **Paper comparison or expected behavior:** The paper reports held-out test WGA 90.9 ± 0.3% over three seeds. The seed-1 validation result is not directly comparable and no reproduction verdict is drawn from the 0.8-point numerical difference.
+- **Status:** partial reproduction
+- **Notes and follow-up:** Recover `log.txt`, `val.csv`, and `test.csv` from the Kaggle backup and run the summarizer with `--seeds 1`. If `test.csv` is unavailable, evaluate `best_validation.pt` once on the official test split. Then run seeds 2 and 3 for the paper-level aggregate.
