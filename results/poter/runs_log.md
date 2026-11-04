@@ -42,7 +42,7 @@ Mirrors `runs_log.csv`. Records every run attempt, execution parameters, resourc
       - Group 1 (Landbird on Water, minority): 90.10%
       - Group 2 (Waterbird on Land, minority): 92.50%
       - Group 3 (Waterbird on Water): 92.50%
-- **Verdict:** Success. Matches the paper's reported benchmark ($90.9 \pm 0.3\%$ WGA) within 0.8% on a single seed.
+- **Verdict:** Training completed and validation-based selection is documented. Held-out test metrics are not present in the tracked artifacts, so benchmark reproduction remains unverified.
 
 ### Run 3: `summarize_all_seeds` — Status: Script Invocation Error
 - **Purpose:** Automated summarization across seeds 1, 2, and 3.
