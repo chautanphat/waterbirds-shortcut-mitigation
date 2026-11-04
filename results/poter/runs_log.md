@@ -26,7 +26,7 @@ Mirrors `runs_log.csv`. Records every run attempt, execution parameters, resourc
 - **Verdict:** Success. Confirmed that batch size 128 executes safely on a 16 GB GPU.
 
 ### Run 2: `POTER_CUB_seed1_kaggle` — Status: Success
-- **Purpose:** Full 300-epoch benchmark reproduction for Seed 1 on Waterbirds Clean.
+- **Purpose:** Full 300-epoch seed-1 training run on Waterbirds Clean.
 - **Parameters:** `dataset=CUB`, `seed=1`, `epochs=300`, `batch_size=128`, `lr=1e-5`, `weight_decay=1.0`, `f_power=0.1`, `clip_cap=20`, `reg_scale=0.03`.
 - **Duration:** 32,678.6 seconds (9.08 hours), average 108.6 seconds/epoch.
 - **Peak VRAM:** 10,881 MiB (~10.63 GiB).
@@ -48,5 +48,5 @@ Mirrors `runs_log.csv`. Records every run attempt, execution parameters, resourc
 - **Purpose:** Automated summarization across seeds 1, 2, and 3.
 - **Command:** `python scripts/summarize_waterbirds.py /kaggle/working/poter-results`
 - **Output:** `summarize_waterbirds.py: error: No completed 300-epoch run for seeds [2, 3] in /kaggle/working/poter-results/CUB/Clean`
-- **Analysis:** By default, the summarizer expects runs for all three seeds `[1, 2, 3]`. Because only Seed 1 had been trained, the script exited with status code 2. This error occurred post-training and post-checkpoint-backup, so no experimental artifacts were affected.
+- **Analysis:** By default, the summarizer expects runs for all three seeds `[1, 2, 3]`. Because only Seed 1 had been trained, the script exited with status code 2. This does not invalidate training, but the repository still needs the original seed-1 `test.csv` (plus `val.csv` and `log.txt`) or an evaluation of `best_validation.pt` before reporting test performance.
 - **Remedy:** Specify `--seeds 1` when summarizing Seed 1 individually.
