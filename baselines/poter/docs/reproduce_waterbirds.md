@@ -113,3 +113,16 @@ The script reports:
 - Test Worst-Group Accuracy (Test WGA)
 - Test Adjusted Average Accuracy: weighted average using training group proportions `[3498, 184, 56, 1057]` following the standard Waterbirds protocol.
 - Mean $\pm$ sample standard deviation across evaluated seeds.
+
+
+---
+
+## 6. Required Result Artifacts
+
+For every completed seed, retain the complete run directory containing `log.txt`, `val.csv`, `test.csv`, `config.json`, `best_validation.pt`, and `last_training.pt`. Run the single-seed summary before archiving:
+
+```bash
+python scripts/summarize_waterbirds.py results/poter/logs --seeds 1
+```
+
+Do not compare validation WGA with a published test WGA. A seed is eligible for benchmark reporting only after the validation-selected epoch has held-out test overall accuracy, per-group accuracies and counts, and test WGA. The paper-level reproduction additionally requires the three-seed test mean and sample standard deviation.
