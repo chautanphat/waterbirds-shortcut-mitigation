@@ -1,163 +1,88 @@
-# Reproduction Report: POTER on Waterbirds Benchmark (Seed 1)
+# POTER on Waterbirds: Seed 1 Artifact Audit
 
 - **Method:** Potentials from Optimal Transport for Empirical Reweighting (POTER)
-- **Paper:** *Optimal Transport Reweighting for Robust Learning under Spurious Correlations and Label Noise* (NeurIPS 2026)
-- **Upstream Repository:** [Sung-Ho-Jo/POTER](https://github.com/Sung-Ho-Jo/POTER)
-- **Benchmark Track:** Standard Waterbirds Clean (ResNet-50, batch size 128, 300 epochs)
-- **Data Source:** [seed1_full_metrics.csv](seed1_full_metrics.csv) extracted directly from Kaggle execution log
+- **Paper target:** held-out **test WGA** (90.9 \pm 0.3\%), reported over three seeds
+- **Run:** seed 1, ResNet-50, batch size 128, 300 epochs on one NVIDIA Tesla T4
+- **Current status:** **partial reproduction; held-out test result not yet verified**
+- **Tracked metric source:** [seed1_full_metrics.csv](seed1_full_metrics.csv)
 
----
+## What the tracked artifacts establish
 
-## 1. Executive Summary & Verdict
+The tracked metric table contains exactly 300 rows for epochs 0–299. Recomputing the selection criterion from its four validation-group columns gives a unique maximum validation WGA at epoch 258:
 
-The 300-epoch benchmark training for **Seed 1** completed successfully on a Kaggle NVIDIA Tesla T4 GPU container. All training epochs, periodic evaluations, model selection criteria, and checkpoint archives executed in full compliance with the paper's official protocol.
+| Quantity | Verified value | Evidence |
+| --- | ---: | --- |
+| Selected epoch | 258 (zero-based) | Maximum of `min(val_g0_acc, ..., val_g3_acc)` |
+| Validation WGA | 90.10% | Minimum validation-group accuracy at epoch 258 |
+| Validation average accuracy | 91.60% | `val_avg_acc`; also consistent with the validation group counts |
+| Validation group accuracies | [92.50%, 90.10%, 92.50%, 92.50%] | Epoch-258 row |
+| Training budget represented | 300 epochs | Epochs 0–299 are present |
 
-```mermaid
-flowchart LR
-    A["Dataset & Extraction<br/>11,788 samples, 599 ref"] --> B["Probe Run (BS=128)<br/>2 Epochs, 10.8 GB VRAM"]
-    B --> C["Train Seed 1: 300 Epochs<br/>Duration: 9h 05m"]
-    C --> D["Committed Checkpoint<br/>poter-results-backup.zip"]
-    D --> E["Post-Training Summarizer<br/>Requires seeds 2, 3"]
-    
-    style C fill:#2e7d32,stroke:#1b5e20,color:#fff
-    style D fill:#2e7d32,stroke:#1b5e20,color:#fff
-    style E fill:#f57f17,stroke:#e65100,color:#fff
-```
+The run log records that training finished on a Tesla T4 and that `best_validation.pt` and `last_training.pt` were produced in the untracked Kaggle output. Those files and the raw `log.txt` are not present in this PR, so checkpoint existence and the terminal `Training complete.` line are not independently verifiable from the repository.
 
-### Reproduction Verdict
-- **Worst-Group Accuracy (WGA):** **Reproduces closely** within single-seed stochastic variation. The paper reports $90.9 \pm 0.3\%$ (mean $\pm$ std over 3 seeds). Seed 1 achieved **$90.10\%$** on validation WGA at its optimal checkpoint (Epoch 258), exhibiting a gap of only **$0.8\%$** from the published 3-seed mean.
-- **Overall Average Accuracy:** **Reproduces closely** ($91.60\%$ vs. published $\approx 92.5\%$).
-- **Minority Group Mitigation:** Both spurious minority groups achieved $\ge 90.10\%$ accuracy, confirming that Optimal Transport potential reweighting effectively neutralizes background shortcut learning without subgroup labels during inference.
+## What is not established
 
----
+The paper number and the tracked seed-1 number are not the same quantity:
 
-## 2. Experimental Configuration
+| Paper | This PR currently contains |
+| --- | --- |
+| Held-out **test** WGA | **Validation** WGA |
+| Mean and standard deviation over 3 seeds | One seed |
+| Test overall/adjusted average and test group accuracies | No test metrics |
 
-The run adhered strictly to the official parameters defined in [`configs/poter/waterbirds_standard.yaml`](../../configs/poter/waterbirds_standard.yaml):
+Therefore, the 90.10% validation WGA must not be described as reproducing the paper's 90.9% test WGA. The 0.8 percentage-point difference is descriptive only; it is not evidence of agreement within stochastic variation. Likewise, the tracked 91.60% is validation average accuracy and cannot be compared directly with a published test average.
 
-| Parameter | Configuration | Details |
-| :--- | :--- | :--- |
-| **Dataset** | CUB (Waterbirds) | 11,788 total images (Train: 4,795, Val: 1,199, Test: 5,794) |
-| **Model Backbone** | ResNet-50 | Pretrained on ImageNet; full network fine-tuning |
-| **Batch Size** | **128** | Canonical benchmark setting (> 10.8 GB VRAM required) |
-| **Optimizer** | SGD | Learning rate $1 \times 10^{-5}$, momentum $0.9$, weight decay $1.0$ |
-| **Augmentation** | Standard | Random crop, Random horizontal flip |
-| **OT Reference Set** | `0:0, 1:466, 2:133, 3:0` | 599 counter-spurious validation samples |
-| **POTER Hyperparameters** | `f_power=0.1, clip_cap=20, reg_scale=0.03` | Official paper configuration |
-| **Sampling Mechanism** | `WeightedRandomSampler` | OT importance weights parameterize sampling probabilities |
-| **Target Epochs** | **300** | Epochs 0 through 299 |
+The validation trajectory does show that the selected model performs similarly across the four validation groups. It does not by itself establish held-out test performance or a verified benchmark reproduction.
 
----
+## Checkpoint selection
 
-## 3. Training Dynamics & Convergence
+Selection is implemented correctly in [summarize_waterbirds.py](../../baselines/poter/scripts/summarize_waterbirds.py):
 
-The model was monitored across all 300 epochs. Training dynamics exhibited three clear phases:
+1. Read validation and test rows for all 300 epochs.
+2. Select the earliest epoch attaining the maximum validation WGA.
+3. Read test metrics from that exact epoch.
+4. Never use a test metric to select the epoch.
 
-```mermaid
-graph TD
-    subgraph Phase1["Phase 1: Warmup & Initial Adaptation (Epochs 0 - 50)"]
-        P1A["Epoch 0: Val WGA = 29.6%"] --> P1B["Epoch 50: Val WGA = 80.7%"]
-        P1C["Validation loss drops from 0.729 to 0.361"]
-    end
-    subgraph Phase2["Phase 2: Shortcut Mitigation (Epochs 51 - 200)"]
-        P2A["Epoch 100: Val WGA = 83.9%"] --> P2B["Epoch 200: Val WGA = 89.1%"]
-        P2C["OT weights heavily penalize background spurious reliance"]
-    end
-    subgraph Phase3["Phase 3: Asymptotic Convergence & Peak (Epochs 201 - 300)"]
-        P3A["Epoch 258: Optimal Val WGA = 90.10%"]
-        P3B["Epoch 299: Stabilized at 88.00%"]
-    end
-```
+For the tracked validation table, step 2 selects epoch 258. The runner also evaluates and logs the test split once per epoch, following the upstream implementation, but those test rows were not committed.
 
-### Convergence Milestones (from `seed1_full_metrics.csv`)
+## Artifact sufficiency for seed 1
 
-| Epoch | Train Loss | Train Avg Acc | Train WGA | Val Loss | Val Avg Acc | **Val WGA** | Notes |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **0** | 0.701 | 50.8% | 19.2% | 0.729 | 39.7% | **29.60%** | ImageNet initialization; heavy background bias |
-| **25** | 0.285 | 92.4% | 89.5% | 0.402 | 82.5% | **76.70%** | Minority groups begin improving |
-| **50** | 0.224 | 96.1% | 93.7% | 0.361 | 85.2% | **80.70%** | Crosses 80% WGA milestone |
-| **100** | 0.162 | 98.2% | 96.6% | 0.315 | 87.2% | **83.90%** | Stable steady-state optimization |
-| **150** | 0.165 | 98.6% | 98.2% | 0.314 | 88.1% | **85.00%** | Minority representations refined |
-| **200** | 0.163 | 98.7% | 98.2% | 0.298 | 90.5% | **89.10%** | Approaches 90% boundary |
-| **250** | 0.161 | 98.9% | 98.2% | 0.301 | 90.2% | **88.80%** | Near global optimum |
-| **258** | **0.163** | **98.5%** | **98.0%** | **0.292** | **91.6%** | **90.10%** | **BEST CHECKPOINT (Global Validation Peak)** |
-| **299** | 0.176 | 98.9% | 98.5% | 0.323 | 90.5% | **88.00%** | Terminal epoch reached (`Training complete.`) |
+The artifacts currently in the PR are **not sufficient** to calculate seed-1 test WGA or test accuracy. In particular, [seed1_full_metrics.csv](seed1_full_metrics.csv) has no test columns, and [runs_log.csv](runs_log.csv) contains only validation results.
 
----
-
-## 4. Per-Group Breakdown at Best Checkpoint (Epoch 258)
-
-Groups follow the canonical definition $\text{group} = 2 \times y + a$:
+No retraining is needed if the original Kaggle output still exists. Recover this directory from `poter-results-backup.zip`:
 
 ```text
-                             Land Background (a=0)          Water Background (a=1)
-Landbird (y=0)            [ Group 0: 92.50% ]             [ Group 1: 90.10% ] (Minority)
-Waterbird (y=1)           [ Group 2: 92.50% ]             [ Group 3: 92.50% ]
-                             (Minority)
+CUB/Clean/POTER_CUB_seed1_kaggle/
+├── log.txt
+├── val.csv
+├── test.csv
+├── config.json
+├── best_validation.pt
+└── last_training.pt
 ```
 
-### Detailed Validation Group Metrics
+The minimum raw inputs for the existing summarizer are `log.txt`, `val.csv`, and `test.csv` in that directory layout. Then run:
 
-| Group | Species / Background | Subpopulation Role | Validation Samples ($n$) | Epoch 0 Acc | Epoch 258 Acc (Best) | Absolute Improvement |
-| :---: | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Group 0** | Landbird on Land | Majority | 467 | 31.7% | **92.50%** | +60.8% |
-| **Group 1** | Landbird on Water | **Minority (Spurious)** | 466 | 29.6% | **90.10%** | **+60.5%** |
-| **Group 2** | Waterbird on Land | **Minority (Spurious)** | 133 | 71.4% | **92.50%** | +21.1% |
-| **Group 3** | Waterbird on Water | Majority | 133 | 71.4% | **92.50%** | +21.1% |
-
-**Scientific observation:** In conventional ERM, the presence of a water background causes severe misclassification of landbirds in Group 1. POTER successfully elevates Group 1 performance from **$29.6\%$ to $90.10\%$**, equalizing accuracy across all four subpopulations.
-
----
-
-## 5. Benchmark Comparison with Published Literature
-
-| Metric | Published Target (NeurIPS 2026, Table 1) | Reproduced Result (Seed 1) | Conformance Status |
-| :--- | :---: | :---: | :--- |
-| **Worst-Group Accuracy** | **$90.9 \pm 0.3\%$** | **$90.10\%$** | **Reproduced** (within $0.8\%$ of 3-seed mean) |
-| **Average Accuracy** | $\approx 92.5\%$ | **$91.60\%$** | **Reproduced** |
-| **Epoch Selection Rule** | Best Validation WGA | Best Validation WGA (Epoch 258) | Exact protocol match |
-| **Epoch Budget** | 300 epochs | 300 epochs completed | Exact match |
-| **Batch Size** | 128 | 128 | Exact match |
-
----
-
-## 6. Hardware & Computational Profile
-
-| Resource | Measurement |
-| :--- | :--- |
-| **Hardware** | NVIDIA Tesla T4 (Kaggle Cloud Accelerator) |
-| **Total VRAM Allocated** | **10,881 MiB (~10.63 GiB)** peak |
-| **Training Duration** | **32,678.6 seconds (~9.08 hours)** |
-| **Throughput** | **108.6 seconds / epoch** (average) |
-| **Data Download & Cache Extraction** | 164.5 seconds (~2.7 minutes) |
-
----
-
-## 7. Post-Mortem: Cell 11 Summarizer Behavior
-
-Following completion of all 300 training epochs, Cell 11 invoked:
 ```bash
-python scripts/summarize_waterbirds.py /kaggle/working/poter-results
-```
-which exited with status code 2:
-```text
-summarize_waterbirds.py: error: No completed 300-epoch run for seeds [2, 3] in /kaggle/working/poter-results/CUB/Clean
+python baselines/poter/scripts/summarize_waterbirds.py /path/to/poter-results --seeds 1
 ```
 
-### Root Cause & Impact
-- By default, `summarize_waterbirds.py` expects completed runs for all three seeds `[1, 2, 3]`.
-- Because the notebook executed sequentially through Seed 1 only, the script raised an expected missing-seed exception.
-- **Impact on experimental validity:** Zero. Training was already finalized (`Training complete.`), model weights (`best_validation.pt`) were persisted, and the backup zip (`poter-results-backup.zip`) was generated prior to Cell 11.
-- **Resolution:** To summarize Seed 1 alone, specify `--seeds 1`:
-  ```bash
-  python baselines/poter/scripts/summarize_waterbirds.py /kaggle/working/poter-results --seeds 1
-  ```
+The revised summarizer writes `summary_Clean.csv` and reports:
 
----
+- selected epoch and validation WGA;
+- held-out test overall accuracy;
+- held-out test WGA;
+- held-out test adjusted average accuracy;
+- all four test-group accuracies and group counts.
 
-## 8. Artifacts & Tracked Files
+If `test.csv` was lost but `best_validation.pt` remains, evaluate that checkpoint once on the official Waterbirds test split. This is evaluation only, not retraining. The checkpoint records epoch 258 and the model state needed for this step. If only `last_training.pt` (epoch 299) remains, it cannot reconstruct the epoch-258 model; recover `best_validation.pt` or the original `test.csv`.
 
-- **Complete Metric Trajectory (300 epochs):** [`seed1_full_metrics.csv`](seed1_full_metrics.csv)
-- **Execution Run Log:** [`runs_log.csv`](runs_log.csv), [`runs_log.md`](runs_log.md)
-- **Self-contained Kaggle Notebook:** [`notebooks/poter_waterbirds_kaggle.ipynb`](../../notebooks/poter_waterbirds_kaggle.ipynb)
-- **Tracked Configuration:** [`configs/poter/waterbirds_standard.yaml`](../../configs/poter/waterbirds_standard.yaml)
+## Benchmark verdict
+
+- **Training execution:** reported complete for seed 1; the 300-row tracked metric trajectory is internally consistent.
+- **Validation-based checkpoint selection:** verified from the tracked table; epoch 258 is correct.
+- **Held-out seed-1 evaluation:** pending recovery of `test.csv` or evaluation of `best_validation.pt`.
+- **Three-seed paper comparison:** pending seeds 2 and 3 plus the same held-out evaluation and aggregation.
+- **Repository status:** **partial reproduction**, not verified reproduction.
+
+This classification follows [the project research protocol](../../docs/research_protocol.md), which requires overall test accuracy, every test-group accuracy and count, and WGA before a verified-reproduction claim.
