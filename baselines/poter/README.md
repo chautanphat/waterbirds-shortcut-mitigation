@@ -18,7 +18,11 @@ cd waterbirds-shortcut-mitigation
 
 This README documents how to **set up, debug, and run POTER locally on Windows**, including the small source-code changes needed in our local test. The goal is to help another developer reproduce the working environment **without needing a cloud GPU**.
 
-**Verified scope:** the local CMNIST pipeline completed **one training epoch** and printed `Training complete.` on the configuration below. This is a **successful smoke test**, not a reproduction of the paper's 300-epoch benchmark or its reported accuracy.
+**Verified scope:** 
+- The local CMNIST pipeline completed **one training epoch** as a local Windows smoke test.
+- Full 300-epoch **Waterbirds benchmark reproduction** (ResNet-50, batch size 128, Tesla T4): see the [Waterbirds Reproduction Guide](docs/reproduce_waterbirds.md) and the comprehensive [Waterbirds Reproduction Report](../../results/poter/report.md) (Best Val WGA: **90.10%** at Epoch 258).
+- Self-contained Kaggle notebook: [`notebooks/poter_waterbirds_kaggle.ipynb`](../../notebooks/poter_waterbirds_kaggle.ipynb).
+- Tracked experiment configuration: [`configs/poter/waterbirds_standard.yaml`](../../configs/poter/waterbirds_standard.yaml).
 
 ---
 
