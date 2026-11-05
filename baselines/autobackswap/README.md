@@ -13,7 +13,7 @@ Preserved copy of the official implementation of **AutoBackSwap**, plus notes on
 | Reproduction status | **Partial reproduction** on Waterbirds (ResNet50). Spawrious and Spurious Vehicles were not run. |
 | Results | [`results/autobackswap/summary.md`](../../results/autobackswap/summary.md) |
 | Config | [`configs/autobackswap/`](../../configs/autobackswap/) |
-| Experiment log | entries `autobackswap-*` and `erm-*` in [`docs/experiment_log.md`](../../docs/experiment_log.md) |
+| Experiment log | entries `exp-autobackswap-*` and `exp-erm-*` in [`docs/experiment_log.md`](../../docs/experiment_log.md) |
 
 ## What the method does
 Waterbirds backgrounds (land or water) are spuriously correlated with the bird type. AutoBackSwap breaks that correlation by building new training images:

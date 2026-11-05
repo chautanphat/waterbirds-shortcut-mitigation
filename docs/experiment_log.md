@@ -74,7 +74,7 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 
 
 
-## autobackswap-wom-resnet50 — 2026-10-31 to 2026-11-01
+## exp-autobackswap-waterbirds-wom-003 — 2026-10-31 to 2026-11-01
 
 - **Method / version:** AutoBackSwap, `baselines/autobackswap/` (upstream commit `b060532c2632039ffc2918828780d2b696763af6`), plus `baselines/autobackswap/patches/augment_waterbirds_chunk.patch`
 - **Purpose:** partial reproduction
@@ -90,7 +90,7 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 - **Status:** partial reproduction
 - **Notes and follow-up:** cause of the overall-accuracy gap not isolated. Seed 0 first attempts failed or were interrupted (out of memory, session shutdown); they are in `results/autobackswap/runs_log.md`.
 
-## autobackswap-wm-resnet50-seed0 — 2026-10-31
+## exp-autobackswap-waterbirds-wm-004 — 2026-10-31
 
 - **Method / version:** AutoBackSwap, same as above
 - **Purpose:** partial reproduction
@@ -99,14 +99,14 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 - **Dataset and split:** Waterbirds, official split
 - **Seed:** 0
 - **Environment and hardware:** Kaggle, Tesla T4, fp32
-- **Command:** classifier step only (`--mode=ours --waterbirds_use_minority=true`), reusing the detector and generated images of `autobackswap-wom-resnet50` seed 0
+- **Command:** classifier step only (`--mode=ours --waterbirds_use_minority=true`), reusing the detector and generated images of `exp-autobackswap-waterbirds-wom-003` seed 0
 - **Output location:** local, untracked
 - **Results:** worst-group acc 92.368, overall acc 95.444
 - **Paper comparison or expected behavior:** paper 93.0 ± 0.9 / 95.0 ± 0.5, both within 2σ (single seed)
 - **Status:** partial reproduction
 - **Notes and follow-up:** one seed only; reuse of generated data was inferred from code reading, not verified by regenerating.
 
-## erm-wom-resnet50 — 2026-10-31 to 2026-11-01
+## exp-erm-waterbirds-wom-005 — 2026-10-31 to 2026-11-01
 
 - **Method / version:** ERM from the AutoBackSwap codebase (`--mode=erm`)
 - **Purpose:** baseline for the AutoBackSwap comparison
@@ -122,7 +122,7 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 - **Status:** partial reproduction
 - **Notes and follow-up:** 3 seeds against the paper's 5.
 
-## erm-wm-resnet50 — 2026-10-31 to 2026-11-01
+## exp-erm-waterbirds-wm-006 — 2026-10-31 to 2026-11-01
 
 - **Method / version:** ERM from the AutoBackSwap codebase
 - **Purpose:** baseline for the AutoBackSwap comparison
