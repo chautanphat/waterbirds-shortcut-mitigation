@@ -1,0 +1,7 @@
+{
+    "bulldog": ["mountain", "jungle"],
+    "dachshund": ["beach", "dirt"],
+    "labrador": ["dirt", "beach"],
+    "corgi": ["jungle", "snow"],
+    "generic": "desert"
+}

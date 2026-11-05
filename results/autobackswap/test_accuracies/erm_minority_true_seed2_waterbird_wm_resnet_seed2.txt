@@ -1,0 +1,9 @@
+Landbird on Land: 99.512 %
+Waterbird on Land: 91.885 %
+Landbird on Water: 76.947 %
+Waterbird on Water: 93.925 %
+------------------------------
+Majority Accuracy: 98.274 %
+Minority Accuracy: 88.574 %
+Overall Accuracy: 93.424 %
+Worst Group Accuracy: 76.947 %

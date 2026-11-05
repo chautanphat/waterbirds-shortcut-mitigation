@@ -1,0 +1,6 @@
+{
+  "bulldog": [["beach", "snow"], ["desert", "mountain"]],
+  "dachshund": [["beach", "snow"], ["desert", "mountain"]],
+  "labrador": [["mountain", "desert"], ["beach", "snow"]],
+  "corgi": [["mountain", "desert"], ["beach", "snow"]]
+}

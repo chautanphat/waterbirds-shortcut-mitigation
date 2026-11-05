@@ -1,0 +1,43 @@
+# Settings used for the AutoBackSwap runs on Waterbirds (ResNet50).
+# This file records the settings; the runs themselves were started with the command-line flags
+# in baselines/autobackswap/README.md. Defaults come from baselines/autobackswap/methods/ours/config_wb.yaml.
+method: autobackswap
+status: partial reproduction
+
+dataset:
+  name: waterbirds
+  split: official
+  detector_dataset: waterbirds_from_segmentation
+  detector_n_samples: 200
+  use_minority: [false, true]   # true = seed 0 only, classifier retrained on the without-minority generated data
+
+model:
+  architecture: resnet50
+  pretrained: true
+  image_size: 224
+
+training:
+  seeds: [0, 1, 2]              # with minority: [0]
+  batch_size: 32
+  epochs: 50
+  learning_rate: 0.001
+  weight_decay: 0.001
+  momentum: 0.9
+  label_smoothing: 0.1
+  weighted_loss: true
+  early_stopping: val_acc
+  cuda_optimizations: false     # fp32, differs from the upstream default (bf16 + torch.compile)
+
+autobackswap:
+  infilling: gan
+  detector_batch_size: 32
+  detector_epochs: 200
+  detector_learning_rate: 1.0
+  augment_batch_size: 16        # applied through patches/augment_waterbirds_chunk.patch
+  fg_transform_scale: [0.5, 1.5]
+  fg_transform_rotation: [-30, 30]
+  fg_transform_translation: [-32, 32]
+
+evaluation:
+  metrics: [overall_accuracy, group_accuracy, worst_group_accuracy]
+  model_selection: best validation accuracy; test split scored once after training

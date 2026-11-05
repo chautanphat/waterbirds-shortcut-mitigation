@@ -1,0 +1,58 @@
+{
+  # General settings
+  "run_label": "ours",
+  "results_dir": "./results",
+  "device": "cuda:0",
+  "model_class": "resnet",           # "resnet", "vit"
+  "cuda_optimizations": true,
+  "random_seed": 0,
+  # Training hyperparameters
+  "early_stopping": "val_acc",
+  "batch_size": 64,
+  "num_epochs": 10,
+  "learning_rate": 0.003,
+  "weight_decay": 0.001,
+  "momentum": 0.9,
+  "target_smoothing": 0.1,  # important parameter
+  "use_weight": true,  # loss function weight
+  # Data settings
+  "dataset_type": "spawrious/o2o_easy",
+  "image_size": 224,
+  "mean": [0.485, 0.456, 0.406],
+  "std": [0.229, 0.224, 0.225],
+  "waterbirds_use_minority": false,  # Waterbirds specific option to include samples from minority groups
+  "spawrious_m2m_include_generic": false,  # Spawrious specific option to include samples from a generic background in the m2m-training splits
+
+  # Other settings
+  "heavy_augmentations": false,
+
+  # Method specific settings
+  "infilling": "gan",
+  # Disabled image scaling and rotation due to blur. #############################################
+  "fg_transform_scale": null,      # FG transformation scale-factor range
+  "fg_transform_rotation": null,      # FG transformation rotation-angle range (degrees clockwise)
+  ################################################################################################
+  "fg_transform_translation": [-64, 64],  # FG transformation translation range (x, y in pixels)
+  "use_gt_segmentations": false,
+
+  # Detector configuration
+  "detector_dataset": "spawrious_from_segmentation",
+  "detector_max_mask_offset": 4,
+  "detector_batch_size": 32,
+  "detector_num_epochs": 300,
+  "detector_optim_type": "sgd",
+  "detector_learning_rate": 0.3,
+  "detector_weight_decay": 0.00001,
+  "detector_momentum": 0.9,
+  "detector_data_split": [0.80, 0.2, 0.0],  # train,valid,test
+  "detector_target_smoothing": 0.1,
+  "detector_patch_resolution": 16,
+  "detector_early_stopping": "val_acc",
+
+  # FG/BF separation settings
+  "augment_batch_size": 16,
+  "augment_tight_threshold": 0.5,   # tight FG mask threshold (min bg leakage)
+  "augment_loose_threshold": 0.9,   # loose FG mask threshold (full object coverage)
+  "augment_aot_gan_path": "./AOT-GAN-for-Inpainting",
+  "augment_generator_ckpt": "./AOT-GAN-for-Inpainting/G0000000.pt",
+}
