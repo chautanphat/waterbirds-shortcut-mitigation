@@ -98,7 +98,7 @@ Key packages:
 
 Waterbirds reproduction follows a **2-stage pipeline**:
 
-### Step 5.1: Dataset Structure
+### Step 4.1: Dataset Structure
 Ensure the Waterbirds dataset follows the standard SubpopBench directory format:
 ```text
 data/waterbirds/
@@ -106,13 +106,39 @@ data/waterbirds/
 └── [image directories]
 ```
 
-### Step 5.2: Stage-0 Backbone Training & Feature Pre-extraction
-Train an ImageNet-pretrained ResNet-50 via standard ERM, then extract feature representations:
+### Step 4.2: Stage-0 Backbone Training & Feature Pre-extraction
+Train an ImageNet-pretrained ResNet-50 via ERM for 100 epochs, then extract feature representations (`feats_val.npy` and `feats_test.npy`).
+
+There are two evaluation tracks:
+
+#### Track A: Standard ERM Track (Canonical SubpopBench Benchmark)
+Pass `--no_augmentation` to enforce deterministic evaluation preprocessing (`Resize(256) -> CenterCrop(224)`) without random photometric distortions:
 ```bash
 python baselines/dpe4subpop/main.py \
   --dataset_name Waterbirds \
   --data_dir data/waterbirds \
-  --ckpt_dir checkpoints/waterbirds_erm \
+  --ckpt_dir checkpoints/waterbirds_stage0_standard_erm \
+  --model_name resnet50 \
+  --pretrained_imgnet \
+  --train_mode full \
+  --loss_name ce \
+  --epochs 100 \
+  --lr 0.001 \
+  --batch_size 128 \
+  --no_augmentation \
+  --force_saving_feats \
+  --no_wandb \
+  --seed 0
+```
+*Expected Stage 0 WGA: ~62%–69%.*
+
+#### Track B: Enhanced $\text{ERM}^*$ Track (Author's Data-Augmented Setup)
+Omit `--no_augmentation` to enable `torchvision.transforms.v2.RandomPhotometricDistort(p=0.5)` during Stage 0 training:
+```bash
+python baselines/dpe4subpop/main.py \
+  --dataset_name Waterbirds \
+  --data_dir data/waterbirds \
+  --ckpt_dir checkpoints/waterbirds_stage0_erm \
   --model_name resnet50 \
   --pretrained_imgnet \
   --train_mode full \
@@ -124,9 +150,9 @@ python baselines/dpe4subpop/main.py \
   --no_wandb \
   --seed 0
 ```
-This generates `feats_val.npy` and `feats_test.npy` in `checkpoints/waterbirds_erm/`.
+*Expected Stage 0 WGA: ~77%–78%.*
 
-### Step 5.3: Stage-1+ Diverse Prototypical Ensemble Training
+### Step 4.3: Stage-1+ Diverse Prototypical Ensemble Training
 Train the 16-stage prototype ensemble on pre-extracted embeddings (runs in ~2 minutes):
 
 **Attribute-Agnostic Setting (No Group Labels Used):**
@@ -134,7 +160,7 @@ Train the 16-stage prototype ensemble on pre-extracted embeddings (runs in ~2 mi
 python baselines/dpe4subpop/main.py \
   --dataset_name Waterbirds \
   --data_dir data/waterbirds \
-  --pretrained_path checkpoints/waterbirds_erm/ckpt_last.pt \
+  --pretrained_path checkpoints/waterbirds_stage0_standard_erm/ckpt_last.pt \
   --ckpt_dir checkpoints/waterbirds_dpe \
   --loss_name isomax \
   --stage 1 \
@@ -159,7 +185,7 @@ python baselines/dpe4subpop/main.py \
 python baselines/dpe4subpop/main.py \
   --dataset_name Waterbirds \
   --data_dir data/waterbirds \
-  --pretrained_path checkpoints/waterbirds_erm/ckpt_last.pt \
+  --pretrained_path checkpoints/waterbirds_stage0_standard_erm/ckpt_last.pt \
   --ckpt_dir checkpoints/waterbirds_dpe \
   --loss_name isomax \
   --stage 1 \
@@ -181,20 +207,20 @@ python baselines/dpe4subpop/main.py \
 
 ---
 
-## 5. Expected Benchmark Results
+## 5. Expected & Reproduced Benchmark Results
 
-Reported results from the ICML 2025 paper:
+### Benchmark Comparison (Waterbirds)
 
-| Method | Group Info (Train / Val) | Waterbirds Worst-Group Acc | Waterbirds Overall Acc |
-| :--- | :---: | :---: | :---: |
-| **Standard ERM** | None / None | 69.1% ± 1.8% | 97.2% ± 0.2% |
-| **ERM\*** (Enhanced Backbone) | None / None | 77.9% ± 3.0% | 96.9% ± 0.3% |
-| **GroupDRO** | Train & Val | 89.9% ± 0.9% | 93.5% ± 0.3% |
-| **DFR** | Val only | 92.9% ± 0.4% | 94.0% ± 0.3% |
-| **DPE (Ours, Unannotated)** | **None / None** | **94.1% ± 0.2%** | **96.8% ± 0.2%** |
-| **DPE (Ours, Annotated Val)** | None / Val | **94.1% ± 0.4%** | **96.8% ± 0.2%** |
+| Method / Track | Group Info (Train / Val) | Paper Worst-Group Acc | Paper Overall Acc | Reproduced WGA (Seed 0) | Reproduced Overall Acc |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Standard ERM** (`--no_augmentation`) | None / None | 69.1% ± 4.7% | 84.1% ± 1.7% | **62.5%** | 88.6% |
+| **Standard ERM + DPE (Ours)** | None / Val | 91.0% ± 0.5% | 92.5% ± 0.2% | **89.0%** | 91.4% |
+| **Enhanced $\text{ERM}^*$** (with Photometric Distort) | None / None | 77.9% ± 3.0% | 92.1% ± 0.2% | **77.1%** | 93.6% |
+| **Enhanced $\text{ERM}^*$ + DPE** | None / Val | 94.1% ± 0.2% | 96.0% ± 0.1% | **92.7%** | 93.3% |
+| **GroupDRO** (reference) | Train & Val | 89.9% ± 0.9% | 93.5% ± 0.3% | — | — |
+| **DFR** (reference) | Val only | 92.9% ± 0.4% | 94.0% ± 0.3% | — | — |
 
-*Note: DPE outperforms or matches group-supervised methods while requiring zero subgroup metadata during training.*
+*Note: All runs, ablation studies (Covariance Regularization vs. Random Subsets Only vs. Single Fixed Subset), and logs are indexed in [`docs/experiment_log.md`](../../docs/experiment_log.md).*
 
 ---
 

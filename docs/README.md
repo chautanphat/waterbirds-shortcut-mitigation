@@ -38,11 +38,11 @@ waterbirds-shortcut-mitigation/
 - Put code in shared `src/` modules only after more than one method genuinely uses it without changing behavior.
 - Put reproducible settings in `configs/` and experiment metadata in `experiments/`.
 - Keep raw data, checkpoints, caches, and large local outputs out of Git.
-- Put project-wide rules in `docs/`; put method-specific setup and commands beside the method.
+- Put project-wide rules in `CONTRIBUTING.md` and `docs/`; put method-specific setup and commands beside the method.
 
 | Document | Purpose |
 | --- | --- |
-| [`contributing.md`](contributing.md) | Contributor operating rules, repository structure, baseline lifecycle, and workflow conventions. |
+| [`CONTRIBUTING.md`](../CONTRIBUTING.md) | Contributor operating rules, repository structure, baseline lifecycle, and workflow conventions. |
 | [`research_protocol.md`](research_protocol.md) | Fair-comparison, validation, testing, and reporting rules. |
 | [`dataset.md`](dataset.md) | Waterbirds source, groups, splits, local-data expectations, and verification. |
 | [`methods.md`](methods.md) | Method inventory and the rule for documenting a baseline. |

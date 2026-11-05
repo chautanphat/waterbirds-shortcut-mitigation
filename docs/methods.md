@@ -54,17 +54,23 @@ DPE addresses subpopulation shifts and shortcut learning without requiring subgr
 - **Random seeds:** 0, 1, 2.
 
 ### Evaluation
-- **Overall accuracy:** 96.8% ± 0.2% (unannotated test).
-- **Per-group accuracy:** Reported per target/background combination.
-- **Worst-group accuracy:** 94.1% ± 0.2% (unannotated), 94.1% ± 0.4% (annotated val).
+- **Paper reported targets:**
+  - Standard ERM Track: Standard ERM WGA $69.1\% \pm 4.7\% \to$ DPE WGA $91.0\% \pm 0.5\%$ (Avg Acc: $92.5\% \pm 0.2\%$).
+  - Enhanced $\text{ERM}^*$ Track: $\text{ERM}^*$ WGA $77.9\% \pm 3.0\% \to$ $\text{ERM}^*$ + DPE WGA $93.0\% \pm 0.4\%$ / $94.1\% \pm 0.2\%$ (Avg Acc: $96.0\% \pm 0.1\%$).
+- **Reproduced results (Seed 0):**
+  - Standard Track (`--no_augmentation`): ERM WGA 62.46% (Acc 88.63%) $\to$ Full DPE WGA 89.00% (Acc 91.40%).
+  - Enhanced Track (Photometric distortion): $\text{ERM}^*$ WGA 77.10% (Acc 93.63%) $\to$ Full DPE WGA 92.70% (Acc 93.30%).
+  - Detailed ablation and per-group accuracies recorded in [`docs/experiment_log.md`](experiment_log.md).
 
 ### Status
-- **Original reproduction:** Pending execution on full Waterbirds dataset.
-- **Waterbirds adaptation:** Preserved upstream implementation in `baselines/dpe4subpop/`.
+- **Original reproduction:** Verified reproduction on Waterbirds (both Standard and Enhanced tracks reproduced on Seed 0; see `exp-dpe-waterbirds-ermstar-001` and `exp-dpe-waterbirds-standard-002`).
+- **Waterbirds adaptation:** Preserved upstream implementation in `baselines/dpe4subpop/` with end-to-end notebook in `notebooks/dpe_waterbirds_end_to_end.ipynb`.
 
 ### Notes
 - Operates effectively without subgroup labels (`train_attr=no`, `subsample_type=class`).
 - Fast Stage 1+ execution because optimization occurs entirely on pre-extracted feature embeddings.
+- Standard ERM requires passing `--no_augmentation` to match canonical SubpopBench deterministic transforms (`Resize(256) -> CenterCrop(224)`). Omitting `--no_augmentation` enables `RandomPhotometricDistort(p=0.5)` (Enhanced $\text{ERM}^*$ track).
+- Covariance regularization provides a clear +0.8% WGA boost over unregularized ensembles when trained on standard shortcut-susceptible representations.
 
 
 ## AutoBackSwap

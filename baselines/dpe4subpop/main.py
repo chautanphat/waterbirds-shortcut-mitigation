@@ -640,6 +640,15 @@ def main(args):
             ensemble_bw=ensemble_bw,
             worst_metric=worst_metric, cov_reg=args.cov_reg)
 
+        if stage == 0 and args.force_saving_feats:
+            print('Extracting and saving features for val and test splits...')
+            args.pretrained_path = f"{args.ckpt_dir}/ckpt_last.pt"
+            for set_name in ['val', 'test']:
+                get_pre_extracted_features(
+                    args, datasets[set_name], set_name,
+                    force_saving=True)
+                print(f"{set_name.upper()} features are extracted and saved.")
+
         if args.train_mode == 'freeze':  # Fix the current backbone
             pretrained_path = None
 
