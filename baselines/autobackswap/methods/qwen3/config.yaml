@@ -1,0 +1,22 @@
+{
+  # General settings
+  "run_label": "qwen3",
+  "results_dir": "./results",
+  "device": "cuda:0",
+  "model_class": "qwen3",
+  "cuda_optimizations": true,
+  "random_seed": 0,
+  # inference hyperparameters (doesn't matter, sam3 uses single instance pass only)
+  "batch_size": 8,
+  # Data settings
+  "dataset_type": "waterbird", # "waterbird", "spawrious224/o2o_hard"
+  "image_size": 224,
+  "mean": [0.485, 0.456, 0.406],
+  "std": [0.229, 0.224, 0.225],
+  "waterbirds_use_minority": true,  # Waterbirds specific option to include samples from minority groups
+  "spawrious_m2m_include_generic": false,
+  # Other settings
+  "heavy_augmentations": false,     # heavy data augmentation
+  # ignore background in the pretext
+  "ignore_background": true
+}

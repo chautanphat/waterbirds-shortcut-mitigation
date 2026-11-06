@@ -1,0 +1,29 @@
+{
+  # General settings
+  "run_label": "chang",
+  "results_dir": "./results",
+  "device": "cuda:0",
+  "model_class": "resnet",           # "resnet", "vit"
+  "cuda_optimizations": true,
+  "random_seed": 0,
+  # Training hyperparameters
+  "early_stopping": "val_acc",
+  "batch_size": 16,
+  "num_epochs": 30,
+  "learning_rate": 0.003,
+  "weight_decay": 0.005,
+  "momentum": 0.9,
+  "target_smoothing": 0.1,
+  "use_weight": true,  # loss function weight
+  # Data settings
+  "dataset_type": "waterbird",
+  "image_size": 224,
+  "mean": [0.5, 0.5, 0.5],  # normalization to [-1, 1]
+  "std": [0.5, 0.5, 0.5],
+  "waterbirds_use_minority": true,  # Waterbirds specific option to include samples from minority groups
+  "spawrious_m2m_include_generic": false,  # Spawrious specific option to include samples from a generic background in the m2m-training splits
+  
+  # Method specific settings
+  "cf_aot_gan_path": "./AOT-GAN-for-Inpainting",
+  "cf_generator_ckpt": "./AOT-GAN-for-Inpainting/G0000000.pt",
+}

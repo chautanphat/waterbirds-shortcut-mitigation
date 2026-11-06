@@ -1,0 +1,6 @@
+{
+  "bulldog": [["desert", "mountain"], ["dirt", "jungle"]],
+  "dachshund": [["mountain", "desert"], ["dirt", "jungle"]],
+  "labrador": [["dirt", "jungle"], ["desert", "mountain"]],
+  "corgi": [["jungle", "dirt"], ["desert", "mountain"]]
+}

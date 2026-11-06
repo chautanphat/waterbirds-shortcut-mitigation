@@ -1,0 +1,27 @@
+{
+  # General settings
+  "run_label": "chang",
+  "results_dir": "./results",
+  "device": "cuda:0",
+  "model_class": "resnet",           # "resnet", "vit"
+  "cuda_optimizations": true,
+  "random_seed": 0,
+  # Training hyperparameters
+  "early_stopping": "val_acc",
+  "batch_size": 64,
+  "num_epochs": 30,
+  "learning_rate": 0.001,
+  "weight_decay": 0.003,
+  "momentum": 0.9,
+  "target_smoothing": 0.1,
+  "use_weight": true,  # loss function weight
+  # Data settings
+  "dataset_type": "spurious_vehicles_m2m",
+  "image_size": 224,
+  "mean": [0.5, 0.5, 0.5],  # normalization to [-1, 1]
+  "std": [0.5, 0.5, 0.5],
+  
+  # Method specific settings
+  "cf_aot_gan_path": "./AOT-GAN-for-Inpainting",
+  "cf_generator_ckpt": "./AOT-GAN-for-Inpainting/G0000000.pt",
+}
