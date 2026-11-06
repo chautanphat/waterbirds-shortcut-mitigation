@@ -122,15 +122,16 @@ We noticed three more things:
 \subsubsection{Ablation Study (DPE)}
 In the standard setting, the full DPE gets 89.00\% WGA. Using random subsets without the covariance term gives 88.20\%, and using one fixed subset gives 88.80\%. So the full method is better by 0.2--0.8 points, which is a small gap from a single seed. In the enhanced setting all three variants give 92.70--92.80\%, so the differences are negligible.
 
-\subsubsection{Our Observations and Ideas for DPE}
-We have not yet looked at DPE's failure cases. What follows comes from reading the paper. We have not tested any of these ideas yet and plan to do so next week.
+\subsubsection{Observations and Hypotheses on DPE}
+We have not yet audited per-image failure cases for DPE. The observations below come from studying the method, and the hypotheses are open questions that we have not tested yet; we plan to evaluate them next week.
 
-Each of the 15 heads has two prototypes, one for each class, and computes its probabilities from those two only. The final prediction is the simple average of the 15 heads. This made us ask three questions:
-\begin{enumerate}
-    \item \textbf{Shuffling pairs.} What happens if we mix the prototypes between heads, so that one head's landbird prototype is paired with another head's waterbird prototype? Could this add diversity and improve the result?
-    \item \textbf{Reweighting heads.} All 15 heads currently count equally. If some of them learned the background and are noisy, would giving them lower weights improve accuracy?
-    \item \textbf{More prototypes.} Instead of computing probabilities from just 2 prototypes per head, can we combine more of them in a better way?
-\end{enumerate}
+\paragraph{Observation.} Each of the 15 DPE heads is a binary prototype classifier that holds exactly two prototypes, one per class. For an input feature, a head computes class probabilities from the distances to its own two prototypes only, and the final prediction is the uniform average of the 15 head probabilities. This design has three consequences: (i)~prototypes are only compared within their original pair, (ii)~every head contributes equally regardless of what it has learned, and (iii)~each head's decision uses only 2 of the 30 available prototypes.
+
+\paragraph{H1: Shuffling prototype pairs across heads.} If the landbird prototype of one head is paired with the waterbird prototype of another head, does the resulting set of pairs introduce additional diversity into the ensemble and thereby improve WGA? Because the heads are trained on different balanced subsets, re-pairing yields new decision boundaries without additional training. We will compare random and exhaustive re-pairings on the trained heads, selecting the configuration by validation WGA.
+
+\paragraph{H2: Reweighting the heads.} Uniform $1/15$ averaging assumes all heads are equally reliable. If some heads have learned background features and are therefore noisy, can reweighting the heads improve accuracy? We will estimate per-head weights on the validation set (e.g., from per-head worst-group accuracy) and check whether heads that receive low weights are those with low accuracy on the background-conflicting groups $G_2$ and $G_3$.
+
+\paragraph{H3: Computing probabilities from more than two prototypes.} Instead of computing each probability from a single pair of prototypes and then averaging, can class probabilities be obtained jointly from more prototypes, for example by a softmax over the distances to all 30 prototypes with per-class aggregation? We will compare this against the original uniform averaging on the same trained heads.
 
 \section{Conclusion}
 DPE and AutoBackSwap gave results close to their papers, and POTER still needs its test evaluation. Looking at AutoBackSwap's mistakes, we found that three species may be mislabeled in the dataset, and that they explain about 80\% of its $G_4$ errors. Next week we will finish POTER's test evaluation, look at DPE's failure cases, and try the three ideas above.
