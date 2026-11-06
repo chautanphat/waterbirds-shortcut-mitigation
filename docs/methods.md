@@ -72,6 +72,31 @@ DPE addresses subpopulation shifts and shortcut learning without requiring subgr
 - Standard ERM requires passing `--no_augmentation` to match canonical SubpopBench deterministic transforms (`Resize(256) -> CenterCrop(224)`). Omitting `--no_augmentation` enables `RandomPhotometricDistort(p=0.5)` (Enhanced $\text{ERM}^*$ track).
 - Covariance regularization provides a clear +0.8% WGA boost over unregularized ensembles when trained on standard shortcut-susceptible representations.
 
+## Optimal Transport Reweighting (POTER)
+
+### Overview
+- **Paper:** [arXiv:2610.01028](https://arxiv.org/abs/2610.01028) (NeurIPS 2026)
+- **Upstream source:** https://github.com/Sung-Ho-Jo/POTER
+- **Implementation:** `baselines/poter/`
+
+POTER constructs class-conditioned optimal-transport weights from a limited validation reference set with group annotations, then supplies those weights to `WeightedRandomSampler` while fine-tuning an ImageNet-pretrained ResNet-50. It does not require training-set group labels, but it does use validation-set group annotations to construct the reference distribution.
+
+### Waterbirds settings
+- Official train/validation/test splits.
+- Reference groups: `0:0, 1:466, 2:133, 3:0`.
+- ResNet-50, SGD, batch size 128, learning rate `1e-5`, weight decay `1.0`, 300 epochs and standard augmentation.
+- Checkpoint selection: maximum validation WGA, with the earliest epoch as tie-breaker.
+- Paper target: held-out test WGA `90.9 ± 0.3%` over three seeds.
+
+### Current evidence
+Seed 1 has a tracked 300-epoch train/validation trajectory. Its unique validation-WGA maximum is 90.10% at epoch 258; validation average accuracy is 91.60%, and validation group accuracies are [92.50%, 90.10%, 92.50%, 92.50%].
+
+These are validation results, not held-out test results. The PR does not contain the generated `test.csv`, raw `val.csv`, `log.txt`, or `best_validation.pt`, so seed-1 test WGA, test accuracy, per-group test accuracy and group counts cannot yet be verified.
+
+### Status
+- **Original reproduction:** Partial reproduction. Training and validation-based model selection for seed 1 are documented; held-out test evaluation is pending.
+- **Required for verified reproduction:** Recover the original seed-1 `test.csv` (preferred) or evaluate `best_validation.pt` once on the official test split, then complete seeds 2 and 3 and report the three-seed test mean ± sample standard deviation.
+- **Detailed audit:** [`results/poter/report.md`](../results/poter/report.md).
 
 ## AutoBackSwap
 

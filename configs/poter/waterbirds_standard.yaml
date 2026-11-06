@@ -1,0 +1,45 @@
+# POTER Standard Waterbirds Benchmark Configuration
+method: poter
+stage: 1
+
+dataset:
+  dataset_name: CUB
+  data_dir: data/cub
+  metadata_path: cub/data/waterbird_complete95_forest2water2/metadata.csv
+  split: official
+  n_classes: 2
+  n_groups: 4
+  group_definition: "group = 2 * y + place"
+
+ot:
+  ref_per_group:
+    0: 0
+    1: 466
+    2: 133
+    3: 0
+  ref_seed: 0
+  f_power: 0.1
+  clip_cap: 20.0
+  reg_scale: 0.03
+  cache_path: features/waterbirds_standard.pt
+
+model:
+  architecture: resnet50
+  pretrained: true
+  pretrained_source: imagenet
+
+training:
+  seed: 1
+  epochs: 300
+  batch_size: 128
+  lr: 1.0e-5
+  momentum: 0.9
+  weight_decay: 1.0
+  optimizer: sgd
+  augment_data: true
+  sampling_strategy: weighted_random_sampler
+
+evaluation:
+  metric: worst_group_accuracy
+  selection_criterion: validation_worst_group_accuracy
+  group_weights: [3498, 184, 56, 1057]

@@ -72,7 +72,25 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 - **Notes and follow-up:** Confirms the primary paper claims across both Standard and Enhanced tracks. Next steps: multi-seed runs (seeds 1 & 2) and unannotated subsampling evaluation (`train_attr=no`, `subsample_type=class`).
 
 
+## exp-poter-waterbirds-standard-seed1-001 — 2026-11-04
 
+- **Method / version:** POTER / NeurIPS 2026
+- **Purpose:** Seed-1 Waterbirds benchmark run and validation-based checkpoint selection
+- **Branch or commit:** `phat/poter-windows-cmnist`
+- **Configuration:** `configs/poter/waterbirds_standard.yaml`
+- **Dataset and split:** Waterbirds official train/validation/test splits (4,795 / 1,199 / 5,794)
+- **Seed:** 1
+- **Environment and hardware:** Kaggle Linux container, 1× NVIDIA Tesla T4, PyTorch 2.11.0+cu130, CUDA 13.0
+- **Command:** `scripts/kaggle_waterbirds.py --data-dir /kaggle/working/poter-data --cache /kaggle/working/poter-features/waterbirds_standard.pt --run-dir /kaggle/working/poter-results/CUB/Clean/POTER_CUB_seed1_kaggle --seed 1 --epochs 300 --batch-size 128 --max-hours 9.5`
+- **Output location:** `poter-results/CUB/Clean/POTER_CUB_seed1_kaggle/` (untracked); train/validation aggregate in `results/poter/seed1_full_metrics.csv`
+- **Results:**
+  - Selected epoch: 258 (zero-based), selected only by validation WGA.
+  - Validation WGA: 90.10%; validation average accuracy: 91.60%.
+  - Validation group accuracies: [92.50%, 90.10%, 92.50%, 92.50%].
+  - Held-out test WGA, overall accuracy, adjusted average, group accuracies and counts: **not present in tracked artifacts**.
+- **Paper comparison or expected behavior:** The paper reports held-out test WGA 90.9 ± 0.3% over three seeds. The seed-1 validation result is not directly comparable and no reproduction verdict is drawn from the 0.8-point numerical difference.
+- **Status:** partial reproduction
+- **Notes and follow-up:** Recover `log.txt`, `val.csv`, and `test.csv` from the Kaggle backup and run the summarizer with `--seeds 1`. If `test.csv` is unavailable, evaluate `best_validation.pt` once on the official test split. Then run seeds 2 and 3 for the paper-level aggregate.
 
 ## exp-autobackswap-waterbirds-wom-003 — 2026-10-31 to 2026-11-01
 
