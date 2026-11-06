@@ -1,0 +1,20 @@
+{
+  # General settings
+  "run_label": "clip",
+  "results_dir": "./results",
+  "device": "cuda:0",
+  "model_class": "clip",
+  "cuda_optimizations": true,
+  "random_seed": 0,
+  # inference hyperparameters (doesn't matter, sam3 uses single instance pass only)
+  "batch_size": 512,
+  # Data settings
+  "dataset_type": "waterbird", # "waterbird", "spawrious224/o2o_hard"
+  "image_size": 224,
+  "mean": [0.48145466, 0.4578275, 0.40821073], # needed for OpenCLIP preprocessing
+  "std": [0.26862954, 0.26130258, 0.27577711],
+  "waterbirds_use_minority": true,  # Waterbirds specific option to include samples from minority groups
+  "spawrious_m2m_include_generic": false,
+  # Other settings
+  "heavy_augmentations": false,     # heavy data augmentation
+}

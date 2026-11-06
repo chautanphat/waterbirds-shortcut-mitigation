@@ -1,0 +1,28 @@
+{
+  # General settings
+  "run_label": "group_dro",
+  "results_dir": "./results",
+  "device": "cuda:0",
+  "model_class": "resnet",          # "resnet", "vit"
+  "cuda_optimizations": true,
+  "random_seed": 0,
+  # Training hyperparameters
+  "early_stopping": "val_acc",
+  "batch_size": 64,
+  "num_epochs": 50,
+  "learning_rate": 0.001,
+  "weight_decay": 0.0001,
+  "momentum": 0.9,
+  "target_smoothing": 0.1,
+  # Data settings
+  "dataset_type": "spawrious224/o2o_easy",
+  "image_size": 224,
+  "mean": [0.485, 0.456, 0.406],
+  "std": [0.229, 0.224, 0.225],
+  "waterbirds_use_minority": true,  # Waterbirds specific option to include samples from minority groups
+  "spawrious_m2m_include_generic": false,  # Spawrious specific option to include samples from a generic background in the m2m-training splits
+  # Other settings
+  "heavy_augmentations": false,     # heavy data augmentation
+  # Group DRO specific options
+  "alpha": 0.01,  # Group DRO alpha parameter for updating group weights
+}

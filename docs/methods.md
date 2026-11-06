@@ -72,3 +72,46 @@ DPE addresses subpopulation shifts and shortcut learning without requiring subgr
 - Standard ERM requires passing `--no_augmentation` to match canonical SubpopBench deterministic transforms (`Resize(256) -> CenterCrop(224)`). Omitting `--no_augmentation` enables `RandomPhotometricDistort(p=0.5)` (Enhanced $\text{ERM}^*$ track).
 - Covariance regularization provides a clear +0.8% WGA boost over unregularized ensembles when trained on standard shortcut-susceptible representations.
 
+
+## AutoBackSwap
+
+### Overview
+- **Full name:** Automated Background Swapping for Robustness against Spurious Backgrounds
+- **Paper:** [arXiv:2606.32018](https://arxiv.org/abs/2606.32018)
+- **Source:** https://github.com/cesro7/spur-corr (commit `b060532c2632039ffc2918828780d2b696763af6`)
+- **Year:** 2026
+- **Implementation location:** `baselines/autobackswap/`
+
+### Mechanism
+Builds new training images that break the background shortcut: a small detector finds the foreground, AOT-GAN inpaints the removed foreground to get clean backgrounds, and different foregrounds are pasted on them. The classifier is then trained on the original plus generated images. It does not need a single minority-group image in the training data.
+
+### Implementation
+- Backbone: ResNet50 (ImageNet weights) classifier; EfficientNet-B0 detector.
+- Loss function: weighted cross-entropy with label smoothing 0.1.
+- Training procedure: three steps (`--mode=ours_detector`, `ours_generate`, `ours`), then the same trainer as ERM on the augmented data.
+- Special requirements: AOT-GAN submodule and its `G0000000.pt` weights, foreground segmentation masks, torch 2.11.0 / Python 3.12.
+
+### Experimental Settings
+- Dataset and split: Waterbirds, official split, test 5794 images.
+- Configuration: `configs/autobackswap/waterbirds_autobackswap_resnet50.yaml`, `configs/autobackswap/waterbirds_erm_resnet50.yaml`.
+- Batch size / learning rate / epochs / optimizer: 32 / 0.001 (ERM 0.003) / 50 / SGD momentum 0.9.
+- Random seeds: 0, 1, 2 (AutoBackSwap with minority: 0 only).
+
+### Evaluation
+Mean over seeds (paper: mean ± std over 5 seeds). Per-run and per-group numbers, with group sizes, are in `results/autobackswap/summary.md`.
+
+| Setting | Worst-group acc (ours / paper) | Overall acc (ours / paper) |
+|---|---|---|
+| AutoBackSwap, without minority (3 seeds) | 92.33 / 92.2 ± 0.4 | 94.49 / 95.1 ± 0.3 |
+| AutoBackSwap, with minority (1 seed) | 92.37 / 93.0 ± 0.9 | 95.44 / 95.0 ± 0.5 |
+| ERM, without minority (3 seeds) | 33.38 / 33.4 ± 4.4 | 68.68 / 68.4 ± 1.9 |
+| ERM, with minority (3 seeds) | 78.45 / 74.9 ± 3.3 | 93.67 / 93.6 ± 0.4 |
+
+### Status
+- Original reproduction: **partial reproduction.** Worst-group accuracy is within 2σ of the paper in all four settings. Overall accuracy of AutoBackSwap without minority is 2.04σ below the paper (all three seeds below the paper mean); the cause was not isolated. Spawrious and Spurious Vehicles were not run.
+- Waterbirds adaptation: none needed (Waterbirds is a native dataset of the method). Only a memory patch for small GPUs, kept separate in `baselines/autobackswap/patches/`.
+
+### Notes
+- fp32 instead of the default bf16 + `torch.compile`; chunked generation to fit a 15 GB GPU; WILDS copy of the data. All deviations are listed in `baselines/autobackswap/README.md`.
+- The upstream `test_accuracies.txt` swaps the labels of the two middle groups. Worst group is Landbird on Water without minority (ERM and AutoBackSwap) and Waterbird on Land for ERM with minority.
+- The upstream repository has no licence file at the pinned commit.

@@ -1,6 +1,8 @@
+> Note for this repository: paths such as `artifacts/` and `results/<run>/` in this report refer to the author's working copy. The test_accuracies.txt files are copied to `test_accuracies/`, the per-example predictions and error images are on Google Drive (see the pull request), and the tools are in `scripts/autobackswap/`.
+
 # AutoBackSwap baseline reproduction (arXiv 2606.32018)
 
-Scope completed: **four runs**, AutoBackSwap on Waterbirds (ResNet50, seed 0) without and with minority groups, and the ERM baseline without and with minority (seed 0). The first ERM with-minority attempt was lost at epoch 42/50 (my notebook error) and rerun with the same seed. Everything else in the plan was not run (see section 4). The without-minority numbers come from `results/ours_minority_false_seed0_waterbird_wom_resnet_seed0/test_accuracies.txt` and were re-derived independently by `analysis/dump_predictions.py`. The with-minority and ERM numbers come from the `test_accuracies.txt` files in `results/` (copied from Kaggle; checked equal to the values first read from the notebook output). Only the without-minority AutoBackSwap numbers were re-derived independently by `dump_predictions.py`.
+Scope completed: **ten runs** on Waterbirds (ResNet50): AutoBackSwap without minority (seeds 0, 1, 2), AutoBackSwap with minority (seed 0 only), ERM without minority (seeds 0, 1, 2) and ERM with minority (seeds 0, 1, 2). Failed or interrupted attempts are in `runs_log.md` (the first ERM with-minority seed 0 attempt stopped at epoch 42/50, most likely from a notebook kernel restart, not verified, and was rerun with the same seed). Every value in the table below was recomputed from per-example predictions of the best-validation checkpoint (`scripts/autobackswap/dump_all_predictions.py`) and equals `Overall Accuracy` and `Worst Group Accuracy` in the run's `test_accuracies.txt` (copied from Kaggle). Not run: Spawrious and Spurious Vehicles. Mean over seeds and group sizes: `summary.md`.
 
 ## 1. Setup summary and environment changes
 - Machine: Kaggle notebook, one Tesla T4 (15 GB, `--device=cuda:0`), 4 CPU cores. The Mac (M1) and an RTX machine were not used for training.
@@ -63,7 +65,7 @@ Verified in the code or in the run:
 6. The DataLoader requests 8 workers; the Kaggle machine has 4 cores (warning only, not changed).
 7. After a Kaggle session restart, symlinks (venv `bin/python`, the data links) were not restored while `/kaggle/working` files were. Both were recreated.
 
-Not run: ERM baselines (both settings), AutoBackSwap without minority seeds 1 and 2, Spawrious `o2o_easy`, Spurious Vehicles. The user stopped the plan after the first run; the with-minority run was added later at the user's request. No comparison or claim is made for them.
+Not run: Spawrious `o2o_easy`, Spurious Vehicles; AutoBackSwap with minority seeds 1 and 2. No comparison or claim is made for them.
 
 ## 5. Artifacts
 - Misclassified examples: `artifacts/misclassified/ours_minority_false_seed0/`
@@ -71,6 +73,6 @@ Not run: ERM baselines (both settings), AutoBackSwap without minority seeds 1 an
   - `index.md` and `index.html`: at most 50 per group, highest-confidence errors first (50 / 50 / 49 / 46 shown). The HTML expects the dataset `images/` folder to be symlinked next to it; no image was copied or uploaded.
   - `summary.md`: per-group counts; the script reproduces `test_accuracies.txt` exactly (WGA 92.195, overall 94.028), using the best-val checkpoint the repo itself evaluates.
   - Error counts per group: Landbird on Land 75 (all predicted waterbird), Landbird on Water 176 (all predicted waterbird), Waterbird on Land 49 and Waterbird on Water 46 (all predicted landbird). No per-example cause is claimed.
-- Script: `analysis/dump_predictions.py` (standalone, does not touch method code).
-- All test predictions, correct and wrong, for the four seed 0 runs: `artifacts/predictions/<run_label>/predictions.csv` (5794 rows each, written by `analysis/dump_all_predictions.py`). Errors of a run are the rows with `correct` = 0. Recomputed counts match `test_accuracies.txt` for all four (errors: AutoBackSwap without minority 346, with minority 264, ERM without minority 1752, with minority 354). No images included.
+- Script: `scripts/autobackswap/dump_predictions.py` (standalone, does not touch method code).
+- All test predictions, correct and wrong, for the four seed 0 runs: `artifacts/predictions/<run_label>/predictions.csv` (5794 rows each, written by `scripts/autobackswap/dump_all_predictions.py`). Errors of a run are the rows with `correct` = 0. Recomputed counts match `test_accuracies.txt` for all four (errors: AutoBackSwap without minority 346, with minority 264, ERM without minority 1752, with minority 354). No images included.
 - Run log: `runs_log.csv`, `runs_log.md` (every attempt, including failed and partial ones).

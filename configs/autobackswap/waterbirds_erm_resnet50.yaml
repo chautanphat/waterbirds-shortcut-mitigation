@@ -1,0 +1,30 @@
+# Settings used for the ERM baseline runs that accompany AutoBackSwap (same codebase, --mode=erm).
+# Defaults come from baselines/autobackswap/methods/erm/config_wb.yaml.
+method: erm (autobackswap codebase)
+status: partial reproduction
+
+dataset:
+  name: waterbirds
+  split: official
+  use_minority: [false, true]
+
+model:
+  architecture: resnet50
+  pretrained: true
+  image_size: 224
+
+training:
+  seeds: [0, 1, 2]
+  batch_size: 32
+  epochs: 50
+  learning_rate: 0.003
+  weight_decay: 0.005
+  momentum: 0.9
+  label_smoothing: 0.1
+  weighted_loss: true
+  early_stopping: val_acc
+  cuda_optimizations: false
+
+evaluation:
+  metrics: [overall_accuracy, group_accuracy, worst_group_accuracy]
+  model_selection: best validation accuracy; test split scored once after training

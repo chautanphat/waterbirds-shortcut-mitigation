@@ -1,0 +1,37 @@
+{
+  # General settings
+  "run_label": "afr",
+  "results_dir": "./results",
+  "device": "cuda:0",
+  "model_class": "resnet",          # "resnet", "vit"
+  "cuda_optimizations": true,
+  "random_seed": 0,
+  # Training hyperparameters
+  "early_stopping": "none",
+  "batch_size": 128,
+  "num_epochs": 100,
+  "learning_rate": 0.0001,
+  "weight_decay": 0.0,
+  "momentum": 0.9,
+  "target_smoothing": 0.0,
+  "use_weight": true,  # loss function weight
+  # Data settings
+  "dataset_type": "spawrious224/o2o_easy",
+  "image_size": 224,
+  "mean": [0.485, 0.456, 0.406],
+  "std": [0.229, 0.224, 0.225],
+  "waterbirds_use_minority": true,  # Waterbirds specific option to include samples from minority groups
+  "spawrious_m2m_include_generic": false,  # Spawrious specific option to include samples from a generic background in the m2m-training splits
+  # Other settings
+  "heavy_augmentations": false,     # heavy data augmentation
+
+  # AFR 2nd stage options
+  "afr_split": [0.8, 0.2],  # [ERM, RW] data split
+  "afr_gamma_linspace": [20.0, 30.0, 21],
+  "afr_lambda_linspace": [0.0, 0.25, 11], 
+  "afr_learning_rates": [0.001],
+  "afr_weight_decay": 0.0,
+  "afr_momentum": 0.0,
+  "afr_num_epochs": 500,
+  "afr_max_norm": 1.0,
+}

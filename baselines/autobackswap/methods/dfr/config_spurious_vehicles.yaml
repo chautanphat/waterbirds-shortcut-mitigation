@@ -1,0 +1,29 @@
+{
+  # General settings
+  "run_label": "dfr",
+  "results_dir": "./results",
+  "device": "cuda:0",
+  "model_class": "resnet",          # "resnet", "vit"
+  "cuda_optimizations": true,
+  "random_seed": 0,
+  # Training hyperparameters
+  "early_stopping": "val_acc",
+  "batch_size": 64,
+  "num_epochs": 50,
+  "learning_rate": 0.003,
+  "weight_decay": 0.0003,
+  "momentum": 0.9,
+  "target_smoothing": 0.1,
+  "use_weight": true,  # loss function weight
+  # Data settings
+  "dataset_type": "spurious_vehicles",
+  "image_size": 224,
+  "mean": [0.485, 0.456, 0.406],
+  "std": [0.229, 0.224, 0.225],
+  # Other settings
+  "heavy_augmentations": false,     # heavy data augmentation
+
+  # DFR specific options
+  "dfr_tune_runs": 20,  # Number of tuning runs
+  "dfr_train_runs": 20,  # Number of retrains
+}
