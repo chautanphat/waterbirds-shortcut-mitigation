@@ -166,12 +166,14 @@ We have not yet audited per-image failure cases for DPE. The observations below 
 \label{fig:dpe-h2}
 \end{figure}
 
-\paragraph{H3: Computing probabilities from more than two prototypes.} Instead of computing each probability from a single pair of prototypes and then averaging, can class probabilities be obtained jointly from more prototypes, for example by a softmax over the distances to all 30 prototypes with per-class aggregation? We will compare this against the original uniform averaging on the same trained heads.
+\paragraph{H3: Multiple prototypes per class within each head.} Can each of the 15 heads make a better prediction by using several prototypes per class instead of one? Multiple prototypes may represent different appearances within a class. We will first reuse the existing 30 trained prototypes: head $i$ receives a class-balanced subset $S_i$, computes a softmax over negative-distance scores within that subset, and sums the prototype probabilities by class to obtain $p_i(L\mid x)$ and $p_i(W\mid x)$. Different heads retain different subsets. We will first average these 15 probability vectors uniformly, then evaluate the H2 weighting rule as a separate combination. Learning additional prototypes within each head would require retraining and is a possible later extension.
+
+The original DPE is the two-prototype case, $S_i=\{L_i,W_i\}$. Global pooling is another special case: if every head uses all 30 prototypes with identical scoring and aggregation, every head produces the same probabilities, so uniform averaging or normalized H2 weighting returns the same global prediction. We will compare the original pairs, distinct larger subsets, and global pooling, selecting subset size, membership, and any score calibration using validation data only. Figure~\ref{fig:dpe-h3} illustrates these cases. All remain untested.
 
 \begin{figure}[H]
 \centering
 \input{figures/dpe_h3_joint.tex}
-\caption{H3: change where probabilities are normalized. Original DPE normalizes scores within each two-prototype head, then averages the resulting class probabilities. The proposed example applies one softmax over scores from all 30 prototypes, then sums probability mass by class. Here $s_{i,c}$ is a negative-distance score for input feature $z$ and prototype $c$ of head $i$; cross-head score scaling would need validation. Three pairs stand for all 15 heads. This changes the inference rule; any WGA benefit remains untested.}
+\caption{H3: give each head more prototypes while retaining the ensemble. The middle panel shows two prototypes per class in three illustrative heads; all 15 heads still output two class probabilities before averaging or H2 weighting. Circles are landbird prototypes, squares are waterbird prototypes, and subscripts identify their source heads in the existing pool. Each softmax is computed within the receiving head's subset, then probability mass is summed by class. The bottom panel shows global pooling as the special case of identical full-pool heads. No accuracy gain is assumed.}
 \label{fig:dpe-h3}
 \end{figure}
 
