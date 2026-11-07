@@ -148,13 +148,137 @@ Repeat for seeds 1 and 2 using matching input artifacts. The configuration expan
 
 Use [waterbirds_enhanced.yaml](../../../configs/dpe_head_reweighting/waterbirds_enhanced.yaml) for the enhanced track. The terminal commands reject existing experiment outputs rather than overwrite them. Use fresh output paths for a new experiment. Changed configuration, features, heads, partitions or implementation files invalidate a saved selection.
 
-## Method details and checks
+## Detailed mechanism
 
-Each head's score is its WGA on B. Candidate weights are proportional to `score ** gamma`, blended with equal weights using `alpha`. A larger `alpha` gives the score-based weights more influence; a larger `gamma` favors the strongest heads more sharply.
+### 1. Turn each image into a fixed feature vector
 
-The fixed grid contains equal weighting plus `alpha ∈ {0.25, 0.5, 0.75, 1}` crossed with `gamma ∈ {1, 2, 4}`: 13 candidates total. Selection uses C WGA, then C overall accuracy, then smaller `alpha`, then smaller `gamma`, with numerical tolerance `1e-12`. All-zero scores fall back to equal weights. The final prediction averages head probabilities, with class-index argmax for ties.
+A Stage-0 ResNet-50 backbone produces a raw feature vector $f(x)\in\mathbb{R}^{2048}$. The backbone stays frozen throughout this experiment. For each image separately, standardize its 2048 coordinates and then normalize the vector to unit length:
 
-Training uses 15 IsoMax+ heads, 20 epochs, batch size 256 and the notebook's loss and covariance schedule. Inference applies row standardization (`ddof=0`) followed by IsoMax+ L2 normalization. The runner exports heads and handles a final batch of one. Feature-only initialization consumes random numbers differently from the original notebook, so training does not reproduce its historical heads exactly.
+$$
+u(x)=\frac{f(x)-\operatorname{mean}(f(x))}{\operatorname{std}(f(x))},
+\qquad
+z(x)=\frac{u(x)}{\lVert u(x)\rVert_2}.
+$$
+
+The standard deviation uses `ddof=0`. Zero-variance rows are rejected; L2 normalization uses PyTorch's numerical safeguard for small norms. This sequence is applied once to raw features. Validation and test use the same preprocessing.
+
+### 2. Give each head its own class prototypes
+
+Each head $h$ learns two 2048-dimensional vectors: a landbird prototype $v_{h,0}$ and a waterbird prototype $v_{h,1}$. It also learns one distance scale $d_h$. The IsoMax+ class logit is the negative Euclidean distance to the normalized class prototype, multiplied by the absolute scale:
+
+$$
+\ell_{h,c}(x)=-|d_h|\left\lVert z(x)-\frac{v_{h,c}}{\lVert v_{h,c}\rVert_2}\right\rVert_2,
+\qquad c\in\{0,1\}.
+$$
+
+A closer prototype gives a larger logit. Applying softmax across the two classes gives the head's inference probabilities:
+
+$$
+p_h(c\mid x)=\frac{\exp(\ell_{h,c}(x))}{\sum_{k=0}^{1}\exp(\ell_{h,k}(x))}.
+$$
+
+Inference temperature is 1. The training entropic scale of 30, described below, is **not** multiplied into these inference logits.
+
+### 3. Train diverse heads using A
+
+Train the heads sequentially. For every new head, independently sample the same number of examples from each of A's four groups, using the smallest group size. Keep this sampled set fixed for that head's 20 epochs. Previously selected heads remain frozen.
+
+The training loss contains three terms:
+
+$$
+\mathcal{L}_h=\mathcal{L}_{\mathrm{classification}}
++\mathcal{L}_{\mathrm{prototype}}
++\lambda_h R_{\mathrm{diversity}}.
+$$
+
+The classification term is the mean negative log probability of the correct class, using the training-only entropic scale:
+
+$$
+\mathcal{L}_{\mathrm{classification}}
+=-\frac{1}{M}\sum_{i=1}^{M}\log\left[\operatorname{softmax}(30\ell_h(x_i))\right]_{y_i}.
+$$
+
+The prototype penalty limits the size of the unnormalized prototype vectors:
+
+$$
+\mathcal{L}_{\mathrm{prototype}}=\frac{10}{2}\sum_{c=0}^{1}\lVert v_{h,c}\rVert_2^2.
+$$
+
+The diversity term compares the current prototypes with previous heads' prototypes for the same class. With $D=2048$ and heads numbered from 1, the implemented expression is:
+
+$$
+R_{\mathrm{diversity}}
+=\left|\frac{1}{2}\sum_{c=0}^{1}\frac{1}{h}\sum_{j=1}^{h-1}
+\frac{v_{h,c}^{\mathsf T}v_{j,c}}{D-1}\right|,
+\qquad
+\lambda_h=\frac{500000}{1+0.05\max(0,h-2)}.
+$$
+
+This preserves the reference notebook's regularizer, including its order of summing and taking the absolute value. It uses raw prototype dot products; it does not center the vectors or average absolute pairwise similarities. For the first head there are no previous prototypes, so the diversity term is absent. Different balanced samples and this regularizer aim to produce heads with different decision rules.
+
+Optimize only the new head using SGD with learning rate `0.001`, momentum `0.9`, and batch size `256`. Drop incomplete training batches; reject a subset too small for one full batch. After each epoch, measure WGA on all of A and save the best head parameters. Equal WGA keeps the later epoch. A therefore serves both head fitting and epoch selection; B and C remain separate from this process.
+
+### 4. Measure each frozen head's reliability on B
+
+Waterbirds has four groups, defined by bird class $y$ and background $a$:
+
+| Group | Bird | Background |
+| --- | --- | --- |
+| `00` (G1) | Landbird | Land |
+| `01` (G2) | Landbird | Water |
+| `10` (G3) | Waterbird | Land |
+| `11` (G4) | Waterbird | Water |
+
+For every head, predict the class with the largest probability and calculate accuracy separately for each B group. Its reliability score is its worst-group accuracy:
+
+$$
+s_h=\min_{g\in\{00,01,10,11\}}\operatorname{accuracy}(h,B_g).
+$$
+
+Scores are fractions between 0 and 1. This favors heads that perform reasonably across all groups rather than heads that succeed mainly on common backgrounds. Every group must be present; a missing group is an error.
+
+### 5. Convert reliability scores into candidate weights
+
+For $H=15$ heads, calculate a score-based distribution $q_h$ and blend it with equal weights:
+
+$$
+q_h=\frac{s_h^\gamma}{\sum_{j=1}^{H}s_j^\gamma},
+\qquad
+w_h=\frac{1-\alpha}{H}+\alpha q_h.
+$$
+
+`alpha` controls how far the weights move away from equal weighting. At `alpha = 0`, every head receives `1/15`; at `alpha = 1`, weights depend entirely on the scores. `gamma` controls how strongly higher scores dominate. Weights are nonnegative and sum to one. If all scores are zero, use equal weights and record the fallback.
+
+For a small **two-head illustration**, suppose scores are `[0.25, 0.75]`. With `gamma = 2`, the score-based weights are `[0.1, 0.9]`. With `alpha = 0.5`, blending those with equal weights `[0.5, 0.5]` gives final weights `[0.3, 0.7]`.
+
+### 6. Select the aggregation rule on C
+
+Weights are calculated using B alone. Evaluate these fixed candidates on C:
+
+- Equal weighting: `alpha = 0`, recorded with `gamma = 1`.
+- Weighted averaging: `alpha ∈ {0.25, 0.5, 0.75, 1}` crossed with `gamma ∈ {1, 2, 4}`.
+
+These are 13 configurations. Select the highest C WGA, breaking ties by higher C overall accuracy, then smaller `alpha`, then smaller `gamma`. Numerical ties use tolerance `1e-12`. Save the chosen weights and input identities before test evaluation. Do not retrain heads on A+B+C or refit weights on B+C afterward.
+
+### 7. Compare weighted and equal averaging on test
+
+For each test image, combine the same frozen heads' probabilities:
+
+$$
+p_{\mathrm{weighted}}(c\mid x)=\sum_{h=1}^{H}w_h p_h(c\mid x),
+\qquad
+p_{\mathrm{uniform}}(c\mid x)=\frac{1}{H}\sum_{h=1}^{H}p_h(c\mid x).
+$$
+
+Take the class with the largest combined probability; exact ties choose class 0. This averages probabilities, rather than logits or class votes. Backbone, head parameters, features and example order are identical for both predictions; only the aggregation weights differ.
+
+Report overall accuracy, per-group accuracy, WGA and paired changes for each seed. The effective head count, $1/\sum_h w_h^2$, shows how concentrated the weights are: 15 for equal weighting, approaching 1 when one head dominates.
+
+The diagnostic plots compare weights with $\min(\operatorname{acc}_{01},\operatorname{acc}_{10})$, accuracy on the two background-conflicting groups. An association on B is partly expected because B also determines the weights; C and test provide separate descriptive checks. Low weights alone do not establish that a head learned background features. Weighting can also hurt if individually weaker heads supply useful complementary predictions, which is why equal averaging remains a selection candidate.
+
+The implementation is split between [ensemble.py](ensemble.py) (head predictions), [train_heads.py](train_heads.py) (A-only training), [reweighting.py](reweighting.py) (B scores and C selection), and [experiment.py](experiment.py) (data roles, saved records and evaluation).
+
+## Validation and source
 
 Run the focused checks with:
 
