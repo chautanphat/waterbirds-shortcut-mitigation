@@ -16,7 +16,7 @@ from torch import nn
 from torch.utils.data import RandomSampler, WeightedRandomSampler
 
 from src.datasets.loaders import evaluation_loader, training_loader
-from src.datasets.waterbirds import Waterbirds
+from src.datasets.waterbirds import Waterbirds, waterbirds_training_transform
 from src.evaluation.classification import group_metrics
 from src.evaluation.features import extract_features, save_features
 from src.methods.erm.config import ERMConfig, load_config
@@ -113,6 +113,24 @@ class SharedERMTests(unittest.TestCase):
             path.write_text("training:\n  weight_deacy: 0.1\n")
             with self.assertRaisesRegex(ValueError, "Unknown training fields"):
                 load_config(path)
+
+    def test_enhanced_training_augmentation_and_deterministic_evaluation(self):
+        config = load_config(ROOT / "configs/erm/waterbirds_enhanced.yaml")
+        self.assertTrue(config.dataset.augmentation)
+        self.assertEqual(config.training, ERMConfig().training)
+        from torchvision.transforms import v2
+        transform = waterbirds_training_transform()
+        self.assertIsInstance(transform.transforms[0], v2.RandomResizedCrop)
+        self.assertIsInstance(transform.transforms[1], v2.RandomPhotometricDistort)
+        self.assertIsInstance(transform.transforms[2], v2.RandomHorizontalFlip)
+        with tempfile.TemporaryDirectory() as temp:
+            make_fixture(Path(temp))
+            train = Waterbirds(temp, "train", transform=transform)
+            val = Waterbirds(temp, "val")
+            self.assertEqual(tuple(train[0][1].shape), (3, 224, 224))
+            self.assertEqual(train[0][1].dtype, torch.float32)
+            self.assertTrue(torch.isfinite(train[0][1]).all())
+            self.assertTrue(torch.equal(val[0][1], val[0][1]))
 
     def test_dataset_formats_groups_and_row_order(self):
         for original in (False, True):

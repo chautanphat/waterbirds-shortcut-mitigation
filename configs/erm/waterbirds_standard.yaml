@@ -7,6 +7,7 @@ dataset:
   batch_size: 128
   batch_size_eval: 256
   workers: 4
+  augmentation: false
 model:
   weights: IMAGENET1K_V2
   freeze_bn: false

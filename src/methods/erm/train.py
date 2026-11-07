@@ -12,7 +12,7 @@ import torchvision
 import yaml
 
 from src.datasets.loaders import evaluation_loader, training_loader
-from src.datasets.waterbirds import Waterbirds
+from src.datasets.waterbirds import Waterbirds, waterbirds_training_transform
 from src.evaluation.classification import evaluate
 from src.models.resnet import ResNetClassifier
 from src.utils.reproducibility import file_sha256, seed_everything
@@ -57,7 +57,8 @@ def run_training(config):
     out = Path(config.output_dir)
     if out.exists() and any(out.iterdir()):
         raise FileExistsError(f"Output directory is not empty: {out}. Use a new run directory.")
-    train_data = Waterbirds(d.data_dir, "train")
+    train_data = Waterbirds(d.data_dir, "train", transform=(
+        waterbirds_training_transform() if d.augmentation else None))
     val_data = Waterbirds(d.data_dir, "val")
     if set(val_data.g) != {0, 1, 2, 3}:
         raise ValueError("Validation requires all four groups for checkpoint selection")

@@ -6,16 +6,45 @@ import subprocess
 import sys
 from pathlib import Path
 
-import numpy as np
 import pytest
 
 nbformat = pytest.importorskip('nbformat')
 nbclient = pytest.importorskip('nbclient')
 pytest.importorskip('ipykernel')
 
-from src.methods.dpe_head_reweighting.experiment import digest
-
 ROOT = Path(__file__).resolve().parents[3]
+
+# Run the actual shared optimization loop, data ordering, checkpoint persistence,
+# feature extraction and all H2 stages. Only image decoding/ResNet are replaced
+# with a tiny synthetic model and inputs, so no downloads or GPU are needed.
+SYNTHETIC_BACKBONE = '''
+import torch
+from torch import nn
+import src.datasets.waterbirds as waterbirds
+import src.methods.erm.train as erm_training
+import src.methods.dpe_head_reweighting.stage0 as stage0_module
+
+class TinyClassifier(nn.Sequential):
+    def __init__(self, *args):
+        super().__init__(nn.AdaptiveAvgPool2d(1), nn.Flatten(1), nn.Linear(3, 2))
+    def extract_features(self, inputs):
+        base = self[1](self[0](inputs))
+        return base.repeat(1, 683)[:, :2048]
+
+def synthetic_image(self, index):
+    y, a = int(self.y[index]), int(self.a[index])
+    image = torch.tensor([0.2 + y, 0.3 + a, 0.01 + (index % 13) / 20.]).reshape(3, 1, 1)
+    return index, image, y, a
+
+def load_tiny(path, *, device='cpu'):
+    model = TinyClassifier()
+    model.load_state_dict(torch.load(path, map_location='cpu', weights_only=True), strict=True)
+    return model.to(device)
+
+waterbirds.Waterbirds.__getitem__ = synthetic_image
+erm_training.ResNetClassifier = TinyClassifier
+stage0_module.load_resnet_checkpoint = load_tiny
+'''
 
 
 @pytest.mark.parametrize('track', ['standard', 'enhanced'])
@@ -23,8 +52,8 @@ def test_notebook_full_run_and_resume(tmp_path, monkeypatch, track):
     repo = tmp_path / 'repo'
     subprocess.run(['git', 'clone', '--quiet', '--no-hardlinks', str(ROOT), str(repo)], check=True)
     # Audit working-tree edits too, before they are committed.
-    shutil.copytree(ROOT / 'src/methods/dpe_head_reweighting',
-                    repo / 'src/methods/dpe_head_reweighting', dirs_exist_ok=True)
+    for folder in ('src', 'scripts', 'configs'):
+        shutil.copytree(ROOT / folder, repo / folder, dirs_exist_ok=True)
     kernels = tmp_path / 'jupyter/kernels/h2-audit'
     kernels.mkdir(parents=True)
     (kernels / 'kernel.json').write_text(json.dumps(dict(
@@ -32,51 +61,54 @@ def test_notebook_full_run_and_resume(tmp_path, monkeypatch, track):
         display_name='H2 audit', language='python',
         env=dict(OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', PYTHONPATH=''))))
     monkeypatch.setenv('JUPYTER_PATH', str(tmp_path / 'jupyter'))
-    data = repo / 'data/dpe_head_reweighting' / track / 'seed0'
+    data = repo / 'data/waterbirds'
     data.mkdir(parents=True)
+    # Existence checks remain real; decoding is replaced by synthetic_image.
+    (data / 'image.jpg').write_bytes(b'SYNTHETIC FIXTURE ONLY')
     rows = []
-    # Official group sizes exercise the smallest balanced A batch as well.
     for split, counts in enumerate(([3498, 184, 56, 1057], [467, 466, 133, 133], [2255, 2255, 642, 642])):
         for group, count in zip(('00', '01', '10', '11'), counts):
             for i in range(count):
-                rows.append(dict(img_filename=f'{split}/{group}/{i}.jpg',
-                                 y=int(group[0]), place=int(group[1]), split=split))
+                filename = f'{split}_{group}_{i}.jpg'
+                (data / filename).symlink_to('image.jpg')
+                rows.append(dict(img_filename=filename, y=int(group[0]), place=int(group[1]), split=split))
     with (data / 'metadata.csv').open('w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
-    (data / 'ckpt_last.pt').write_bytes(b'SYNTHETIC FIXTURE ONLY')
-    rng = np.random.RandomState(9)
-    for split, name in ((1, 'val'), (2, 'test')):
-        ids = [r['img_filename'] for r in rows if r['split'] == split]
-        np.savez(data / f'{name}_raw.npz', ids=np.array(ids),
-                 features=rng.normal(size=(len(ids), 2048)).astype('float32'))
-    provenance = dict(track=track, seed=0, checkpoint_sha256=digest(data / 'ckpt_last.pt'),
-                      val_features_sha256=digest(data / 'val_raw.npz'), model='resnet50',
-                      pretrained_weights='synthetic', transforms='synthetic',
-                      extraction_order='metadata_split_order', feature_format='raw',
-                      checkpoint_selection='final_epoch_no_validation_selection', source_commit='synthetic')
-    (data / 'provenance.json').write_text(json.dumps(provenance))
     run = repo / 'outputs/dpe_head_reweighting_runs' / f'h2-{track}-seed0'
+    backbone = repo / f'checkpoints/waterbirds_stage0_{track}_erm/seed0'
+    bundle = repo / f'outputs/dpe_features/{track}/seed0'
     frozen = None
     for phase in ('full', 'resume'):
         notebook = nbformat.read(ROOT / 'notebooks/dpe_head_reweighting.ipynb', as_version=4)
+        notebook.cells.insert(2, nbformat.v4.new_code_cell(SYNTHETIC_BACKBONE))
         for cell in notebook.cells:
             if cell.cell_type == 'code':
                 cell.source = cell.source.replace('TRACK = "standard"', f'TRACK = "{track}"')
+                cell.source = cell.source.replace('WORKERS = 2', 'WORKERS = 0')
         nbformat.validate(notebook)
         executed = nbclient.NotebookClient(
-            notebook, timeout=180, kernel_name='h2-audit',
+            notebook, timeout=240, kernel_name='h2-audit',
             resources={'metadata': {'path': str(repo / 'notebooks')}}).execute()
         assert not any(output.output_type == 'error' for cell in executed.cells
                        if cell.cell_type == 'code' for output in cell.outputs)
         assert run.with_suffix('.zip').is_file()
         assert (run / 'notebook_environment.json').is_file()
+        assert (run / 'stage0_records/handoff.json').is_file()
         assert (run / 'experiment/predictions/test.npz').is_file()
         assert not (repo / 'outputs/dpe_head_reweighting').exists()
+        summary = json.loads((backbone / 'summary.json').read_text())
+        assert summary['updates'] == 3700  # 100 epochs, 37 complete batches each.
+        assert summary['selected_checkpoint'] == 'ckpt_last.pt'
+        provenance = json.loads((bundle / 'provenance.json').read_text())
+        assert provenance['track'] == track
+        assert 'val/test: Resize' in provenance['transforms']
+        assert ('RandomResizedCrop' in provenance['transforms']) == (track == 'enhanced')
         selection = (run / 'experiment/selection.json').read_bytes()
         result = (run / 'results/metrics.json').read_bytes()
+        identities = [p.read_bytes() for p in (backbone / 'ckpt_last.pt', bundle / 'handoff.json')]
         if phase == 'full':
-            frozen = (selection, result)
+            frozen = (selection, result, identities)
         else:
-            assert frozen == (selection, result)
+            assert frozen == (selection, result, identities)
