@@ -1,11 +1,32 @@
 % This report follows the original Springer LNCS project template.
 \documentclass[runningheads]{llncs}
 %
-\usepackage[utf8,nocaptions]{vietnam}
+% Preserve Vietnamese support where installed; this English report also builds
+% on TeX installations without the optional vietnam package.
+\IfFileExists{vietnam.sty}{\usepackage[utf8,nocaptions]{vietnam}}{\usepackage[utf8]{inputenc}}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{url}
+\usepackage{tikz}
+\usepackage{float}
+\usetikzlibrary{arrows.meta}
+% Shared visual language for the three DPE hypothesis diagrams.
+\definecolor{dpeland}{HTML}{A65320}
+\definecolor{dpewater}{HTML}{216B9B}
+\definecolor{dpeink}{HTML}{263747}
+\tikzset{
+  dpe diagram/.style={font=\sffamily\scriptsize, text=dpeink,
+    >=Stealth, line width=0.55pt},
+  dpe land/.style={circle, draw=dpeland, fill=dpeland!12,
+    text=dpeland, minimum size=5.5mm, inner sep=1pt},
+  dpe water/.style={rectangle, draw=dpewater, fill=dpewater!12,
+    text=dpewater, minimum size=5.5mm, inner sep=1pt},
+  dpe box/.style={draw=dpeink!45, rounded corners=2pt,
+    fill=dpeink!3, align=center, inner sep=4pt},
+  dpe arrow/.style={->, draw=dpeink!75},
+  dpe heading/.style={font=\sffamily\scriptsize\bfseries}
+}
 %
 \begin{document}
 %
@@ -129,9 +150,30 @@ We have not yet audited per-image failure cases for DPE. The observations below 
 
 \paragraph{H1: Shuffling prototype pairs across heads.} If the landbird prototype of one head is paired with the waterbird prototype of another head, does the resulting set of pairs introduce additional diversity into the ensemble and thereby improve WGA? Because the heads are trained on different balanced subsets, re-pairing yields new decision boundaries without additional training. We will compare random and exhaustive re-pairings on the trained heads, selecting the configuration by validation WGA.
 
+\begin{figure}[H]
+\centering
+\input{figures/dpe_h1_pairs.tex}
+\caption{H1: change which prototypes compete. Original DPE compares $L_i$ only with $W_i$. An example re-pairing compares $L_i$ with $W_{\pi(i)}$; each new pair still produces a two-class probability, and the ensemble still averages the pair probabilities. Circles denote landbird prototypes and squares waterbird prototypes; subscripts identify the source head. Only three of 15 pairs are shown. The prototypes stay fixed; whether the new comparisons improve WGA is untested.}
+\label{fig:dpe-h1}
+\end{figure}
+
 \paragraph{H2: Reweighting the heads.} Uniform $1/15$ averaging assumes all heads are equally reliable. If some heads have learned background features and are therefore noisy, can reweighting the heads improve accuracy? We will estimate per-head weights on the validation set (e.g., from per-head worst-group accuracy) and check whether heads that receive low weights are those with low accuracy on the background-conflicting groups $G_2$ and $G_3$.
 
+\begin{figure}[H]
+\centering
+\input{figures/dpe_h2_weights.tex}
+\caption{H2: change how much each head contributes. The same head probabilities $p_i(c\mid x)$ enter either a uniform average or a weighted sum. Arrow widths on the right illustrate unequal contributions, not measured reliability. Nonnegative weights that sum to one would be chosen using validation data, including performance on background-conflicting groups $G_2$ and $G_3$, then fixed for test evaluation. No head has yet been identified as background-dependent.}
+\label{fig:dpe-h2}
+\end{figure}
+
 \paragraph{H3: Computing probabilities from more than two prototypes.} Instead of computing each probability from a single pair of prototypes and then averaging, can class probabilities be obtained jointly from more prototypes, for example by a softmax over the distances to all 30 prototypes with per-class aggregation? We will compare this against the original uniform averaging on the same trained heads.
+
+\begin{figure}[H]
+\centering
+\input{figures/dpe_h3_joint.tex}
+\caption{H3: change where probabilities are normalized. Original DPE normalizes scores within each two-prototype head, then averages the resulting class probabilities. The proposed example applies one softmax over scores from all 30 prototypes, then sums probability mass by class. Here $s_{i,c}$ is a negative-distance score for input feature $z$ and prototype $c$ of head $i$; cross-head score scaling would need validation. Three pairs stand for all 15 heads. This changes the inference rule; any WGA benefit remains untested.}
+\label{fig:dpe-h3}
+\end{figure}
 
 \section{Conclusion}
 DPE and AutoBackSwap gave results close to their papers, and POTER still needs its test evaluation. Looking at AutoBackSwap's mistakes, we found that three species may be mislabeled in the dataset, and that they explain about 80\% of its $G_4$ errors. Next week we will finish POTER's test evaluation, look at DPE's failure cases, and try the three ideas above.

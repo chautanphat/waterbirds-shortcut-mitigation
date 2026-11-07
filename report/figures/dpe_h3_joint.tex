@@ -1,0 +1,34 @@
+\begin{tikzpicture}[dpe diagram]
+\path[use as bounding box] (-0.3,-6.6) rectangle (11.7,0.45);
+\node[dpe heading] at (5.7,0.1) {Same input feature $z$ and same 30 trained prototypes};
+\node[dpe heading,anchor=west] at (0,-0.55) {Observed: normalize within each pair, then average};
+\foreach \i/\y in {1/-1.2,2/-2,3/-2.8} {
+  \node[dpe land] (l\i) at (0.7,\y) {$L_{\i}$};
+  \node[dpe water] (w\i) at (1.5,\y) {$W_{\i}$};
+  \node[dpe box,minimum width=3.6cm] (s\i) at (4.25,\y)
+    {2-way softmax $\to$ $p_{\i}(L),p_{\i}(W)$};
+  \draw[dpe arrow] (1.95,\y) -- (s\i.west);
+}
+\node[dpe box,minimum height=1cm] (avg) at (8.15,-2) {Average the 15\\probability vectors};
+\foreach \i in {1,2,3} {\draw[dpe arrow] (s\i.east) -- (avg.west);}
+\node at (1.1,-3.35) {$\vdots$ 15 pairs};
+\node[align=center] at (10.8,-2) {$p(L)$\\$p(W)$};
+\draw[dpe arrow] (avg.east) -- (10.2,-2);
+\draw[draw=dpeink!25] (0,-3.7) -- (11.4,-3.7);
+\node[dpe heading,anchor=west] at (0,-4.15) {H3: normalize over all prototypes, then sum by class};
+\foreach \i/\x in {1/0.4,2/1.15,3/1.9} {
+  \node[dpe land] at (\x,-4.85) {$L_{\i}$};
+  \node[dpe water] at (\x,-5.6) {$W_{\i}$};
+}
+\node at (2.55,-5.2) {$\cdots$};
+\node[dpe box,minimum height=1.05cm] (joint) at (4.4,-5.2)
+  {One 30-way softmax\\$q_{i,c}=\frac{\exp(s_{i,c})}{\sum_{j,k}\exp(s_{j,k})}$};
+\draw[dpe arrow] (2.8,-5.2) -- (joint.west);
+\node[dpe box,minimum height=1.05cm] (sum) at (8.1,-5.2)
+  {Sum landbird mass: $\sum_i q_{i,L}$\\Sum waterbird mass: $\sum_i q_{i,W}$};
+\draw[dpe arrow] (joint.east) -- (sum.west);
+\node[align=center] at (10.8,-5.2) {$p(L)$\\$p(W)$};
+\draw[dpe arrow] (sum.east) -- (10.2,-5.2);
+\node[align=center] at (5.7,-6.25)
+  {Normalize first within pairs vs. normalize once across all prototypes.\\Both produce two class probabilities; neither diagram claims an accuracy gain.};
+\end{tikzpicture}

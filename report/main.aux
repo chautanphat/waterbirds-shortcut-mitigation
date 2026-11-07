@@ -32,11 +32,17 @@
 \@writefile{toc}{\contentsline {subsubsection}{Observations and Hypotheses on DPE}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Observation.}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{H1: Shuffling prototype pairs across heads.}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{H2: Reweighting the heads.}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces H1: change which prototypes compete. Original DPE compares $L_i$ only with $W_i$. An example re-pairing compares $L_i$ with $W_{\pi (i)}$; each new pair still produces a two-class probability, and the ensemble still averages the pair probabilities. Circles denote landbird prototypes and squares waterbird prototypes; subscripts identify the source head. Only three of 15 pairs are shown. The prototypes stay fixed; whether the new comparisons improve WGA is untested.}}{5}{}\protected@file@percent }
+\newlabel{fig:dpe-h1}{{1}{5}{}{figure.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{H2: Reweighting the heads.}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces H2: change how much each head contributes. The same head probabilities $p_i(c\mid x)$ enter either a uniform average or a weighted sum. Arrow widths on the right illustrate unequal contributions, not measured reliability. Nonnegative weights that sum to one would be chosen using validation data, including performance on background-conflicting groups $G_2$ and $G_3$, then fixed for test evaluation. No head has yet been identified as background-dependent.}}{5}{}\protected@file@percent }
+\newlabel{fig:dpe-h2}{{2}{5}{}{figure.2}{}}
 \bibcite{dpe}{1}
 \bibcite{poter}{2}
+\@writefile{toc}{\contentsline {paragraph}{H3: Computing probabilities from more than two prototypes.}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces H3: change where probabilities are normalized. Original DPE normalizes scores within each two-prototype head, then averages the resulting class probabilities. The proposed example applies one softmax over scores from all 30 prototypes, then sums probability mass by class. Here $s_{i,c}$ is a negative-distance score for input feature $z$ and prototype $c$ of head $i$; cross-head score scaling would need validation. Three pairs stand for all 15 heads. This changes the inference rule; any WGA benefit remains untested.}}{6}{}\protected@file@percent }
+\newlabel{fig:dpe-h3}{{3}{6}{}{figure.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{6}{}\protected@file@percent }
 \bibcite{autobackswap}{3}
 \bibcite{waterbirds}{4}
-\@writefile{toc}{\contentsline {paragraph}{H3: Computing probabilities from more than two prototypes.}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{5}{}\protected@file@percent }
-\gdef \@abspage@last{5}
+\gdef \@abspage@last{7}
