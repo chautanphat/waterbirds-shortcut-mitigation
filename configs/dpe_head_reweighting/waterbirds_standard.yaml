@@ -4,7 +4,7 @@ track: standard
 seed: 0
 device: cpu
 dim: 2048
-metadata: data/waterbirds/metadata.csv
+metadata: outputs/dpe_features/{track}/seed{seed}/metadata.csv
 val_features: outputs/dpe_features/{track}/seed{seed}/val_raw.npz
 test_features: outputs/dpe_features/{track}/seed{seed}/test_raw.npz
 backbone: checkpoints/waterbirds_stage0_{track}_erm/seed{seed}/ckpt_last.pt

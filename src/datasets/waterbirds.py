@@ -25,6 +25,21 @@ def waterbirds_transform():
     ])
 
 
+def waterbirds_training_transform():
+    """DPE enhanced ERM augmentation; evaluation remains deterministic."""
+    from torchvision.transforms import v2
+    import torch
+
+    return v2.Compose([
+        v2.RandomResizedCrop(size=(224, 224)),
+        v2.RandomPhotometricDistort(p=0.5),
+        v2.RandomHorizontalFlip(p=0.5),
+        v2.ToImage(),
+        v2.ToDtype(torch.float32, scale=True),
+        v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+
+
 class Waterbirds(Dataset):
     """Return (split-local index, image, target, background).
 

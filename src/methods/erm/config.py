@@ -12,6 +12,7 @@ class DatasetConfig:
     batch_size: int = 128
     batch_size_eval: int = 256
     workers: int = 4
+    augmentation: bool = False
 
 
 @dataclass
@@ -49,6 +50,8 @@ class ERMConfig:
                 raise ValueError(f"{name} must be a positive integer")
         if type(d.workers) is not int or d.workers < 0:
             raise ValueError("workers must be a nonnegative integer")
+        if type(d.augmentation) is not bool:
+            raise ValueError("augmentation must be a boolean")
         if (t.steps is None) == (t.epochs is None):
             raise ValueError("Set exactly one of training.steps or training.epochs")
         for name, value in (("steps", t.steps), ("epochs", t.epochs)):

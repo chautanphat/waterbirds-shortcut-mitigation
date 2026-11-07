@@ -22,6 +22,8 @@ Defaults in [`configs/erm/waterbirds_standard.yaml`](../../../configs/erm/waterb
 | Default checkpoint | Last epoch (`ckpt_last.pt`), matching DPE's stage-1 handoff |
 | Additional checkpoint | Best validation WGA each epoch (`ckpt_best_wga.pt`); latest wins ties |
 
+An [enhanced configuration](../../../configs/erm/waterbirds_enhanced.yaml) provides ERM*: it sets `dataset.augmentation: true` for training-only random resized crops, photometric distortion (probability 0.5) and horizontal flips (probability 0.5), matching DPE. Evaluation and feature extraction retain deterministic preprocessing. The standard default remains `augmentation: false`.
+
 The notebook does not load `configs/dpe4subpop/waterbirds_stage0_erm.yaml`: it passes CLI arguments directly. In particular, it uses evaluation batch size 256 and omits `--optim_weight_decay`, so the effective weight decay is 0. The shared defaults follow this executed workflow.
 
 Sources and citations:
@@ -108,6 +110,8 @@ python baselines/dpe4subpop/main.py \
 ```
 
 The shared default handoff uses `ckpt_last.pt`, as in the DPE notebook. `ckpt_best_wga.pt` is an additional option for experiments that explicitly use validation selection; export its features to a separate directory to avoid mixing caches. Training only evaluates validation, with held-out test evaluation in a separate script. The original DPE loop also evaluates test each epoch; this reporting is not needed for the last-checkpoint handoff. Record which checkpoint and feature source each downstream run uses.
+
+The [DPE head-reweighting notebook](../../../notebooks/dpe_head_reweighting.ipynb) reuses this trainer end to end. Its [Stage-0 adapter](../dpe_head_reweighting/stage0.py) can train or reuse a completed matching shared run, then generate ordered feature NPZ files and provenance for H2 automatically. The adapter requires the declared 100-epoch recipe and final checkpoint; shortened smoke runs and best-validation checkpoints are excluded from that handoff.
 
 ## Validation and limitations
 
