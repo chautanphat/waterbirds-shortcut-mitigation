@@ -5,6 +5,8 @@ import hashlib
 import json
 import platform
 import subprocess
+import os
+import tempfile
 from pathlib import Path
 import numpy as np
 import torch
@@ -55,7 +57,14 @@ def read_json(path):
 def write_json(path, obj):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(obj, indent=2, sort_keys=True, allow_nan=False) + '\n')
+    payload = json.dumps(obj, indent=2, sort_keys=True, allow_nan=False) + '\n'
+    fd, temporary = tempfile.mkstemp(prefix=f'.{path.name}.', dir=path.parent)
+    try:
+        with os.fdopen(fd, 'w') as f:
+            f.write(payload)
+        os.replace(temporary, path)
+    finally:
+        Path(temporary).unlink(missing_ok=True)
 
 
 def config(path, seed=None):
@@ -169,6 +178,53 @@ def prepare(c):
     return dict(status='prepared', counts={k: len(v) for k, v in m['parts'].items()})
 
 
+def preflight(c, require_test=True):
+    """Check readiness before a long run; no models are trained or scored."""
+    required = ['metadata', 'backbone', 'val_features', 'provenance']
+    if require_test:
+        required.append('test_features')
+    missing = [f'{key}: {c[key]}' for key in required if not Path(c[key]).is_file()]
+    if missing:
+        raise ValueError('Missing required input files:\n' + '\n'.join(missing) +
+                         '\nSupply matching Stage-0 artifacts before running this experiment.')
+    try:
+        torch.empty(1, device=c['device'])
+    except (RuntimeError, ValueError, AssertionError) as error:
+        raise ValueError(f'Configured device {c["device"]!r} is unavailable; select a supported device.') from error
+    for directory in (Path(c['experiment_dir']), Path(c['ensemble_path']).parent, Path(c['results_dir'])):
+        directory.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryFile(dir=directory):
+            pass
+    rows = metadata(c['metadata'])
+    if [sum(r['split'] == i for r in rows) for i in range(3)] != [4795, 1199, 5794]:
+        raise ValueError('Expected official Waterbirds split counts 4795/1199/5794')
+    val = [r for r in rows if r['split'] == 1]
+    feature_file(c['val_features'], val, c['dim'])
+    parts = partition(val)
+    counts = [sum(r['group'] == g for r in parts['A']) for g in GROUPS]
+    if min(counts) * 4 < c['training']['batch_size']:
+        raise ValueError('Balanced A produces zero optimizer batches with drop_last=True')
+    p = read_json(c['provenance'])
+    check_keys(p, PROVENANCE)
+    if (p['track'] != c['track'] or p['seed'] != c['seed'] or
+        p['checkpoint_sha256'] != digest(c['backbone']) or
+        p['val_features_sha256'] != digest(c['val_features'])):
+        raise ValueError('Stage-0 provenance mismatch')
+    if (p['model'] != 'resnet50' or p['feature_format'] != 'raw' or
+        p['checkpoint_selection'] != 'final_epoch_no_validation_selection' or
+        p['extraction_order'] != 'metadata_split_order' or
+        any(not v.strip() for v in p.values() if isinstance(v, str))):
+        raise ValueError('Audit Stage-0 selection, feature format and extraction provenance')
+    if require_test:
+        # Validate IDs/features only; test labels never enter training/selection.
+        if {r['group'] for r in rows if r['split'] == 2} != set(GROUPS):
+            raise ValueError('All four groups are required in the test metadata')
+        test_ids = [dict(id=r['id']) for r in rows if r['split'] == 2]
+        feature_file(c['test_features'], test_ids, c['dim'])
+    return dict(status='ready', device=c['device'], test_features_checked=require_test,
+                counts={k: len(v) for k, v in parts.items()})
+
+
 def context(c):
     m = read_json(Path(c['experiment_dir']) / 'manifest.json')
     if m['config_hash'] != object_hash(c) or m['val_features_hash'] != digest(c['val_features']) or m['backbone_hash'] != digest(c['backbone']) or m['provenance'] != read_json(c['provenance']):
@@ -194,11 +250,17 @@ def lock(c):
 
 
 def cache(c, role, p, rows, a):
-    path = Path('outputs/dpe_head_reweighting') / c['track'] / f'seed{c["seed"]}' / f'{role}.npz'
+    path = Path(c['experiment_dir']) / 'predictions' / f'{role}.npz'
     path.parent.mkdir(parents=True, exist_ok=True)
-    np.savez_compressed(path, probabilities=p, ids=np.array([r['id'] for r in rows]),
-                        labels=np.array([r['y'] for r in rows]), groups=np.array([r['group'] for r in rows]),
-                        role=role, ensemble_hash=digest(c['ensemble_path']), preprocessing=a['preprocessing'])
+    fd, temporary = tempfile.mkstemp(prefix=f'.{path.name}.', dir=path.parent)
+    try:
+        with os.fdopen(fd, 'wb') as f:
+            np.savez_compressed(f, probabilities=p, ids=np.array([r['id'] for r in rows]),
+                                labels=np.array([r['y'] for r in rows]), groups=np.array([r['group'] for r in rows]),
+                                role=role, ensemble_hash=digest(c['ensemble_path']), preprocessing=a['preprocessing'])
+        os.replace(temporary, path)
+    finally:
+        Path(temporary).unlink(missing_ok=True)
 
 
 def train_action(c):
@@ -206,7 +268,7 @@ def train_action(c):
     if Path(c['ensemble_path']).exists():
         raise ValueError('Ensemble exists; use a fresh experiment directory/path')
     xa, ya, ga = subset(m, x, 'A')
-    a = train(xa, ya, ga, c['training'], c['seed'], dict(manifest=digest(Path(c['experiment_dir']) / 'manifest.json')), c['device'])
+    a = train(xa, ya, ga, c['training'], c['seed'], dict(manifest=digest(Path(c['experiment_dir']) / 'manifest.json')), c['device'], progress=True)
     ensemble.save(c['ensemble_path'], a)
     loaded = ensemble.load(c['ensemble_path'], c['dim'], c['training']['heads'])
     np.testing.assert_allclose(ensemble.predict(a, xa[:3]), ensemble.predict(loaded, xa[:3]), atol=1e-6, rtol=1e-5)
@@ -277,6 +339,8 @@ def evaluate_action(c):
         raise ValueError('Dataset metadata changed')
     rows = [r for r in metadata(c['metadata']) if r['split'] == 2]
     a = get_ensemble(c)
+    if record['head_ids'] != a['head_ids'] or record['selected'] not in record['candidates']:
+        raise ValueError('Inconsistent selection record or head order')
     p = ensemble.predict(a, feature_file(c['test_features'], rows, c['dim']), device=c['device'])
     cache(c, 'test', p, rows, a)
     y, g = np.array([r['y'] for r in rows]), np.array([r['group'] for r in rows])
@@ -313,14 +377,15 @@ def summarize(config_path):
             values = [r[method][name] for r in records]
             summary['metrics'][f'{method}_{name}'] = dict(mean=float(np.mean(values)),
                                                          sample_std=float(np.std(values, ddof=1)), values=values)
-    path = Path('results/dpe_head_reweighting') / summary['track'] / 'summary.json'
+    # Respect configured report locations, including notebook/exported layouts.
+    path = Path(config(config_path, 0)['results_dir']).parent / 'summary.json'
     write_json(path, summary)
     return summary
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['prepare', 'train-heads', 'fit-select', 'evaluate', 'summarize'])
+    parser.add_argument('action', choices=['check', 'prepare', 'train-heads', 'fit-select', 'evaluate', 'summarize'])
     parser.add_argument('--config', required=True)
     parser.add_argument('--seed', type=int, choices=[0, 1, 2])
     args = parser.parse_args()
@@ -328,5 +393,5 @@ def main():
         print(json.dumps(summarize(args.config), indent=2))
         return
     c = config(args.config, args.seed)
-    actions = {'prepare': prepare, 'train-heads': train_action, 'fit-select': select_action, 'evaluate': evaluate_action}
+    actions = {'check': preflight, 'prepare': prepare, 'train-heads': train_action, 'fit-select': select_action, 'evaluate': evaluate_action}
     print(json.dumps(actions[args.action](c), indent=2))

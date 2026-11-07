@@ -42,7 +42,7 @@ def weights(scores, alpha, gamma):
 
 def combine(p, w):
     p, w = probabilities(p), np.asarray(w, dtype=np.float64)
-    if p.ndim != 3 or w.shape != (len(p),) or not np.isfinite(w).all() or (w < 0).any() or not np.isclose(w.sum(), 1, atol=1e-12):
+    if p.ndim != 3 or w.shape != (len(p),) or not np.isfinite(w).all() or (w < 0).any() or not np.isclose(w.sum(), 1, atol=1e-12, rtol=0):
         raise ValueError('Invalid ensemble weights')
     return np.einsum('h,hnc->nc', w, p)
 

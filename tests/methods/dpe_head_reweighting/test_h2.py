@@ -86,7 +86,7 @@ def test_weights_metrics_and_selection():
     for invalid in ([float('nan')], [-.2], [1.1], []):
         with pytest.raises(ValueError):
             weights(invalid, .5, 1)
-    for invalid in ([1., 1.], [-.1, 1.1], [float('nan'), 0]):
+    for invalid in ([1., 1.], [-.1, 1.1], [float('nan'), 0], [.5, .500001]):
         with pytest.raises(ValueError):
             combine(p, invalid)
     with pytest.raises(ValueError):
@@ -113,6 +113,9 @@ def test_partition_isolation_and_feature_ids(tmp_path):
     for bad_x in (np.ones((2, 8)), np.full((2, 8), np.nan)):
         with pytest.raises(ValueError):
             e.standardize(bad_x)
+    assert torch.isfinite(e.standardize(x.astype(np.float16))).all()
+    with pytest.raises(ValueError, match='overflow'):
+        e.standardize(np.tile(np.array([1e38, -1e38], dtype=np.float32), (2, 1)))
     with pytest.raises(ValueError, match='zero optimizer'):
         train(*grouped(1), small_settings(), 0, {'fixture': 'synthetic'})
 
@@ -135,13 +138,14 @@ def test_official_metadata_and_track_summary(tmp_path, monkeypatch):
         records.append(dict(track='standard', seed=seed, metadata_hash='same', lock={'seed': seed},
                             uniform=dict(overall=.9, wga=.7), selected=dict(overall=.9, wga=.7 + seed * .01),
                             delta_pp=dict(overall=0, wga=seed)))
-    monkeypatch.setattr(ex, 'config', lambda path, seed: dict(track='standard', seed=seed, results_dir=str(seed)))
+    monkeypatch.setattr(ex, 'config', lambda path, seed: dict(track='standard', seed=seed, results_dir=str(tmp_path / str(seed))))
     monkeypatch.setattr(ex, 'read_json', lambda path: records[int(path.parent.name)])
     monkeypatch.setattr(ex, 'lock', lambda c: {'seed': c['seed']})
     saved = []
-    monkeypatch.setattr(ex, 'write_json', lambda path, value: saved.append(value))
+    monkeypatch.setattr(ex, 'write_json', lambda path, value: saved.append((path, value)))
     summary = ex.summarize('unused')
     assert summary['metrics']['delta_pp_wga'] == dict(mean=1., sample_std=1., values=[0, 1, 2])
+    assert saved[0][0] == tmp_path / 'summary.json'
     records[2]['track'] = 'enhanced'
     with pytest.raises(ValueError, match='mismatched'):
         ex.summarize('unused')
@@ -173,17 +177,20 @@ def test_synthetic_lifecycle_without_test_files_during_selection(tmp_path, monke
                       pretrained_weights='synthetic', transforms='synthetic', extraction_order='metadata_split_order',
                       feature_format='raw', checkpoint_selection='final_epoch_no_validation_selection', source_commit='synthetic')
     ex.write_json(c['provenance'], provenance)
+    assert ex.preflight(c, require_test=False)['status'] == 'ready'
+    with pytest.raises(ValueError, match='Missing required input files'):
+        ex.preflight(c)
     assert ex.prepare(c)['status'] == 'prepared'
     # Spy verifies both fitting and epoch selection see exactly A.
     original_train = ex.train
-    def spy(x, y, g, *args):
+    def spy(x, y, g, *args, **kwargs):
         manifest = ex.read_json(Path(c['experiment_dir']) / 'manifest.json')
         with np.load(c['val_features']) as f:
             lookup = {key: i for i, key in enumerate(f['ids'])}
             expected = f['features'][[lookup[r['id']] for r in manifest['parts']['A']]]
         np.testing.assert_array_equal(x, expected)
         np.testing.assert_array_equal(y, [r['y'] for r in manifest['parts']['A']])
-        return original_train(x, y, g, *args)
+        return original_train(x, y, g, *args, **kwargs)
     monkeypatch.setattr(ex, 'train', spy)
     ex.train_action(c)
     # Selection works with no metadata or test features available.
@@ -196,6 +203,7 @@ def test_synthetic_lifecycle_without_test_files_during_selection(tmp_path, monke
     test = [r for r in rows if r['split'] == 2]
     with open(c['test_features'], 'wb') as f:
         np.savez(f, ids=[r['filename'] for r in test], features=rng.normal(size=(5794, 8)).astype('float32'))
+    assert ex.preflight(c)['test_features_checked']
     # Output caches must stay local to the test.
     monkeypatch.setattr(ex, 'cache', lambda *args: None)
     result = ex.evaluate_action(c)
@@ -222,3 +230,44 @@ def test_synthetic_lifecycle_without_test_files_during_selection(tmp_path, monke
     ex.write_json(path, m)
     with pytest.raises(ValueError, match='selection inputs changed'):
         ex.evaluate_action(c)
+
+
+def test_atomic_writes_preserve_existing_artifacts(tmp_path, monkeypatch):
+    path = tmp_path / 'ensemble.pt'
+    a = train(*grouped(), small_settings(), 0, {'fixture': 'synthetic'})
+    e.save(path, a)
+    original = path.read_bytes()
+    def interrupted_save(value, target):
+        Path(target).write_bytes(b'partial write')
+        raise OSError('Simulated interruption')
+    monkeypatch.setattr(torch, 'save', interrupted_save)
+    with pytest.raises(OSError, match='interruption'):
+        e.save(path, a)
+    assert path.read_bytes() == original
+    assert sorted(p.name for p in tmp_path.iterdir()) == ['ensemble.pt']
+    record = tmp_path / 'selection.json'
+    ex.write_json(record, {'old': 1})
+    with pytest.raises(ValueError):
+        ex.write_json(record, {'new': float('nan')})
+    assert ex.read_json(record) == {'old': 1}
+
+
+def test_training_extreme_logits_remains_finite():
+    settings = dict(small_settings(), entropic_scale=1e6, heads=1, epochs=1, lr=1e-6)
+    a = train(*grouped(), settings, 0, {'fixture': 'underflow-regression'})
+    assert torch.isfinite(a['prototypes']).all()
+    assert torch.isfinite(a['distance_scales']).all()
+
+
+def test_preflight_reports_missing_inputs_and_invalid_device(tmp_path):
+    c = ex.config(ROOT / 'configs/dpe_head_reweighting/waterbirds_standard.yaml')
+    for key in ('metadata', 'backbone', 'val_features', 'test_features', 'provenance'):
+        c[key] = str(tmp_path / key)
+    with pytest.raises(ValueError) as error:
+        ex.preflight(c)
+    assert all(key in str(error.value) for key in ('metadata', 'backbone', 'val_features', 'test_features', 'provenance'))
+    for key in ('metadata', 'backbone', 'val_features', 'test_features', 'provenance'):
+        Path(c[key]).touch()
+    c['device'] = 'not-a-device'
+    with pytest.raises(ValueError, match='unavailable'):
+        ex.preflight(c)

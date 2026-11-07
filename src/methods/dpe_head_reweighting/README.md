@@ -74,6 +74,8 @@ The classification term is the mean negative log probability of the correct clas
 =-\frac{1}{M}\sum_{i=1}^{M}\log\left[\mathrm{softmax}(30\ell_h(x_i))\right]_{y_i}.
 ```
 
+The implementation evaluates this objective with `log_softmax`, avoiding numerical underflow from taking the logarithm of a rounded-to-zero softmax probability. This changes numerical evaluation of the reference expression, not its mathematical objective.
+
 The prototype penalty limits the size of the unnormalized prototype vectors:
 
 ```math
@@ -159,7 +161,7 @@ The implementation is split between [ensemble.py](ensemble.py) (head predictions
 
 ### Metadata and features
 
-The required artifacts are `metadata.csv`, `ckpt_last.pt`, `val_raw.npz`, `test_raw.npz` and `provenance.json`, all associated with the same track and Stage-0 seed. The checkpoint is hashed for provenance; the feature-only runner does not load it for inference. Test features are required only for final evaluation.
+The required artifacts are `metadata.csv`, `ckpt_last.pt`, `val_raw.npz`, `test_raw.npz` and `provenance.json`, all associated with the same track and Stage-0 seed. The checkpoint is hashed for provenance; the feature-only runner does not load it for inference. Training and selection do not consume test features. The notebook's full-run readiness check validates the test-feature file before training to detect input errors early; test predictions are computed only during final evaluation.
 
 Metadata must contain `img_filename` (or `filename`), `y`, `place` (or `a`), and `split`. Split values are `0` for train, `1` for validation and `2` for test, with counts 4,795 / 1,199 / 5,794. Filenames must be unique.
 
@@ -226,7 +228,7 @@ python -m venv --system-site-packages .venv
 
 [dpe_head_reweighting.ipynb](../../../notebooks/dpe_head_reweighting.ipynb) provides a general Jupyter interface to the experiment. Its configuration specifies the repository location, input directory, output directory, track and seed. Repository discovery searches the current directory and its parents; `REPO_PATH` supports an explicit location. The notebook uses the selected checkout without changing its Git revision. Network access is needed only if dependencies must be installed.
 
-The execution order is preparation, head training, weight fitting and selection, followed by held-out evaluation. Completed stages are reused only after input validation. A final cell creates a portable ZIP archive containing the run records, trained heads, metrics and diagnostics. Input checkpoints and raw feature files are excluded from the archive.
+The notebook first checks the required files, feature shapes and IDs, provenance, device availability and writable output paths. The execution order is preparation, head training, weight fitting and selection, followed by held-out evaluation. Completed stages are reused only after input validation. A final cell creates a portable ZIP archive containing the run records, trained heads, metrics and diagnostics. Input checkpoints and raw feature files are excluded from the archive.
 
 ### Command-line interface
 
@@ -234,6 +236,7 @@ The [standard configuration](../../../configs/dpe_head_reweighting/waterbirds_st
 
 ```bash
 CONFIG=configs/dpe_head_reweighting/waterbirds_standard.yaml
+.venv/bin/python scripts/dpe_head_reweighting.py check --config "$CONFIG" --seed 0
 .venv/bin/python scripts/dpe_head_reweighting.py prepare --config "$CONFIG" --seed 0
 .venv/bin/python scripts/dpe_head_reweighting.py train-heads --config "$CONFIG" --seed 0
 .venv/bin/python scripts/dpe_head_reweighting.py fit-select --config "$CONFIG" --seed 0
@@ -246,7 +249,7 @@ After completing seeds 0, 1 and 2 with matching artifacts:
 .venv/bin/python scripts/dpe_head_reweighting.py summarize --config "$CONFIG"
 ```
 
-The CLI rejects existing stage outputs rather than overwriting them. Independent experiments require distinct output paths. Changes to configuration, features, heads, partitions or implementation files invalidate saved selection records.
+The `check` action validates readiness for a complete run, including the test-feature file, without fitting or scoring models. It reports missing inputs before training. Stage 0 remains an external prerequisite. The CLI rejects existing stage outputs rather than overwriting them. Independent experiments require distinct output paths. Changes to configuration, features, heads, partitions or implementation files invalidate saved selection records. JSON records, ensemble checkpoints and prediction caches are written atomically so an interrupted write does not replace a complete artifact. An interrupted head-training stage restarts from its beginning; completed stages can be reused by the notebook.
 
 ## Output specification
 
@@ -262,7 +265,7 @@ The CLI rejects existing stage outputs rather than overwriting them. Independent
 
 `delta_pp` denotes selected-minus-uniform differences in percentage points. A positive WGA difference indicates an improvement over the matched control. Selection of uniform averaging is retained as a valid experimental outcome.
 
-The default CLI configuration places records in `experiments/exp-dpe-h2-waterbirds-<track>-seed<seed>/`, heads in `checkpoints/dpe_head_reweighting/`, prediction caches in `outputs/dpe_head_reweighting/`, and reports in `results/dpe_head_reweighting/<track>/seed<seed>/`. Notebook runs use the configured output directory, with prediction caches also written under the repository's `outputs/dpe_head_reweighting/` directory.
+The default CLI configuration places records in `experiments/exp-dpe-h2-waterbirds-<track>-seed<seed>/`, heads in `checkpoints/dpe_head_reweighting/`, and reports in `results/dpe_head_reweighting/<track>/seed<seed>/`. Prediction caches reside in the experiment directory's `predictions/` subdirectory, isolating independent runs with the same track and seed. Notebook runs place these artifacts under the configured output directory.
 
 ## Validation and provenance
 
@@ -270,6 +273,13 @@ The default CLI configuration places records in `experiments/exp-dpe-h2-waterbir
 .venv/bin/python -m pytest tests/methods/dpe_head_reweighting -q
 ```
 
-The checks cover reference inference, head serialization, weight calculations, partition isolation, changed-input rejection and a complete synthetic CPU lifecycle. Synthetic results establish software behavior only. Real Waterbirds performance and GPU parity remain unverified.
+The checks cover reference inference, atomic artifact writes, numerical stability, weight calculations, partition isolation, changed-input rejection and input-readiness failures. Full notebook integration checks are enabled when the optional Jupyter test dependencies are installed:
+
+```bash
+.venv/bin/pip install nbclient ipykernel
+.venv/bin/python -m pytest tests/methods/dpe_head_reweighting -q
+```
+
+The notebook checks execute both standard and enhanced tracks in separate Jupyter kernels, with 15 heads, 20 epochs, 2048-dimensional synthetic features and official split/group counts. They verify final evaluation, archive creation and reuse of completed stages. Without the optional dependencies, these two integration checks are skipped. Synthetic results establish software behavior only; the fixture checkpoints are placeholders, not trained backbones. Real Waterbirds performance and GPU parity remain unverified.
 
 Feature-only initialization consumes random numbers differently from the original reproduction notebook; the implementation does not reproduce its historical head parameters exactly. The original baseline and reproduction notebook are preserved. Source attribution, adaptation history and license notices are recorded in [ORIGINAL_SOURCE.md](ORIGINAL_SOURCE.md) and [LICENSE](LICENSE).

@@ -1,5 +1,7 @@
 """Frozen notebook-compatible IsoMax+ heads; raw features are standardized once."""
 from pathlib import Path
+import os
+import tempfile
 import numpy as np
 import torch
 from torch import nn
@@ -24,10 +26,16 @@ def standardize(raw):
     raw = np.asarray(raw)
     if raw.ndim != 2 or not len(raw) or raw.shape[1] < 2 or raw.dtype.kind != 'f' or not np.isfinite(raw).all():
         raise ValueError('Invalid raw features')
-    sd = raw.std(axis=1, keepdims=True)
-    if (sd == 0).any():
-        raise ValueError('Zero-variance feature row')
-    return torch.from_numpy(np.asarray((raw - raw.mean(axis=1, keepdims=True)) / sd, dtype=np.float32))
+    if raw.dtype.itemsize < 4:
+        raw = raw.astype(np.float32)
+    with np.errstate(over='ignore', invalid='ignore', divide='ignore'):
+        sd = raw.std(axis=1, keepdims=True)
+        if (sd == 0).any():
+            raise ValueError('Zero-variance feature row')
+        normalized = np.asarray((raw - raw.mean(axis=1, keepdims=True)) / sd, dtype=np.float32)
+    if not np.isfinite(sd).all() or not np.isfinite(normalized).all():
+        raise ValueError('Feature standardization overflow; supply finite, unscaled backbone features')
+    return torch.from_numpy(normalized)
 
 
 def validate(a, dim=None, count=None):
@@ -35,9 +43,11 @@ def validate(a, dim=None, count=None):
                   'selected_epochs', 'classes', 'groups', 'preprocessing', 'provenance'}:
         raise ValueError('Unexpected ensemble fields')
     p, s, t = a['prototypes'], a['distance_scales'], a['temperatures']
+    if any(not isinstance(x, torch.Tensor) or not x.is_floating_point() for x in (p, s, t)):
+        raise ValueError('Head parameters must be floating-point tensors')
     if a['version'] != 1 or a['classes'] != [0, 1] or a['groups'] != ['00', '01', '10', '11'] or a['preprocessing'] != PREPROCESSING:
         raise ValueError('Incompatible ensemble contract')
-    if p.ndim != 3 or p.shape[1] != 2 or p.shape[0] < 1 or (dim is not None and p.shape[2] != dim) or (count is not None and len(p) != count):
+    if p.ndim != 3 or p.shape[1] != 2 or p.shape[0] < 1 or p.shape[2] < 2 or (dim is not None and p.shape[2] != dim) or (count is not None and len(p) != count):
         raise ValueError('Invalid prototype shape')
     h = len(p)
     if s.shape != (h,) or t.shape != (h,) or len(a['head_ids']) != h or len(set(a['head_ids'])) != h or len(a['selected_epochs']) != h:
@@ -51,7 +61,14 @@ def save(path, a):
     validate(a)
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     a = {k: v.detach().cpu() if isinstance(v, torch.Tensor) else v for k, v in a.items()}
-    torch.save(a, path)
+    path = Path(path)
+    fd, temporary = tempfile.mkstemp(prefix=f'.{path.name}.', dir=path.parent)
+    os.close(fd)
+    try:
+        torch.save(a, temporary)
+        os.replace(temporary, path)
+    finally:
+        Path(temporary).unlink(missing_ok=True)
 
 
 def load(path, dim=None, count=None):
@@ -71,5 +88,7 @@ def predict(a, raw, batch_size=256, device='cpu', logits=False):
             head.distance_scale.copy_(s.reshape(1).to(device))
             batches = [head(b.to(device)).cpu() for b in x.split(batch_size)]
             z = torch.cat(batches)
+            if not torch.isfinite(z).all():
+                raise ValueError('Nonfinite head logits; verify exported parameters and feature values')
             result.append(z if logits else z.softmax(-1))
     return torch.stack(result).numpy()

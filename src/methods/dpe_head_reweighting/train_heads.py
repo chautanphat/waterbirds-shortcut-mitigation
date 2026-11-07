@@ -3,11 +3,12 @@ import random
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, TensorDataset
+from torch.nn import functional as F
 from .ensemble import Head, PREPROCESSING, standardize
 from .reweighting import GROUPS, metrics
 
 
-def train(raw_a, y_a, groups_a, settings, seed, provenance, device='cpu'):
+def train(raw_a, y_a, groups_a, settings, seed, provenance, device='cpu', progress=False):
     """Only A is accepted: both fitting and epoch selection reuse A by design."""
     random.seed(seed)
     np.random.seed(seed)
@@ -27,6 +28,8 @@ def train(raw_a, y_a, groups_a, settings, seed, provenance, device='cpu'):
         raise ValueError('Balanced A produces zero optimizer batches with drop_last=True')
     prototypes, scales, epochs = [], [], []
     for stage in range(1, settings['heads'] + 1):
+        if progress:
+            print(f'Head {stage}/{settings["heads"]}: training on {4*n} balanced A examples', flush=True)
         idx = np.stack([np.random.permutation(pools[i])[:n] for i in order], axis=1).ravel()
         loader = DataLoader(TensorDataset(x[idx], torch.tensor(y[idx], dtype=torch.long)),
                             batch_size=settings['batch_size'], shuffle=True, drop_last=True)
@@ -39,9 +42,9 @@ def train(raw_a, y_a, groups_a, settings, seed, provenance, device='cpu'):
             for feats, labels in loader:
                 opt.zero_grad()
                 logits = head(feats.to(device))
-                # Preserve reference's separate softmax/log, including its scale.
-                probs = (settings['entropic_scale'] * logits).softmax(1)
-                loss = -probs[torch.arange(len(labels), device=device), labels.to(device)].log().mean()
+                # Same entropic objective as log(softmax), without softmax underflow.
+                log_probs = F.log_softmax(settings['entropic_scale'] * logits, dim=1)
+                loss = -log_probs[torch.arange(len(labels), device=device), labels.to(device)].mean()
                 p = head.prototypes[:, None]
                 loss = loss + torch.einsum('ijk,ilk->ijl', p, p).squeeze().mean() * settings['wd_weight']
                 if prototypes and cov_reg > 0:
@@ -61,6 +64,8 @@ def train(raw_a, y_a, groups_a, settings, seed, provenance, device='cpu'):
         prototypes.append(best[0])
         scales.append(best[1].squeeze())
         epochs.append(best[2])
+        if progress:
+            print(f'Head {stage}: selected epoch {best[2]}, A WGA {best_wga:.4f}', flush=True)
     return dict(version=1, prototypes=torch.stack(prototypes), distance_scales=torch.stack(scales),
                 temperatures=torch.ones(len(scales)), head_ids=[f'head-{i:02d}' for i in range(len(scales))],
                 selected_epochs=epochs, classes=[0, 1], groups=list(GROUPS),
