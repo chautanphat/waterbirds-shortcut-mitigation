@@ -47,6 +47,7 @@ waterbirds-shortcut-mitigation/
 | [`dataset.md`](dataset.md) | Waterbirds source, groups, splits, local-data expectations, and verification. |
 | [`methods.md`](methods.md) | Method inventory and the rule for documenting a baseline. |
 | [`experiment_log.md`](experiment_log.md) | Traceable index of meaningful runs. |
+| [`dpe_h2_implementation_plan.md`](dpe_h2_implementation_plan.md) | Proposed implementation and evaluation plan for validation-based DPE head reweighting. |
 
 ## Baseline contribution checklist
 
