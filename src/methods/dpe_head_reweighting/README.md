@@ -84,7 +84,7 @@ are outside this CLI; no automatic conversion guesses their provenance.
 
 ## Execute
 
-For Kaggle, upload [the simple runner notebook](../../../notebooks/dpe_head_reweighting_kaggle.ipynb),
+For Kaggle, upload [the simple runner notebook](../../../notebooks/dpe_head_reweighting.ipynb),
 enable Internet, attach your Stage-0 artifacts as a Kaggle Dataset, and edit its
 input-path cell. It uses the tested runner at commit `10b25e2`, runs the stages
 below, resumes verified artifacts, and bundles outputs for download. It requires
