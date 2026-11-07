@@ -1,0 +1,23 @@
+# Raw features only; see the method README for the artifact contract.
+version: 1
+track: standard
+seed: 0
+device: cpu
+dim: 2048
+metadata: data/waterbirds/metadata.csv
+val_features: outputs/dpe_features/{track}/seed{seed}/val_raw.npz
+test_features: outputs/dpe_features/{track}/seed{seed}/test_raw.npz
+backbone: checkpoints/waterbirds_stage0_{track}_erm/seed{seed}/ckpt_last.pt
+provenance: outputs/dpe_features/{track}/seed{seed}/provenance.json
+experiment_dir: experiments/exp-dpe-h2-waterbirds-{track}-seed{seed}
+ensemble_path: checkpoints/dpe_head_reweighting/{track}/seed{seed}/ensemble.pt
+results_dir: results/dpe_head_reweighting/{track}/seed{seed}
+training:
+  heads: 15
+  epochs: 20
+  batch_size: 256
+  lr: 0.001
+  momentum: 0.9
+  entropic_scale: 30.0
+  cov_reg: 500000.0
+  wd_weight: 10.0

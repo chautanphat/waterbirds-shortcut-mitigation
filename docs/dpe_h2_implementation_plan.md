@@ -1,6 +1,6 @@
 # DPE H2 implementation plan
 
-**Status:** Proposed experiment; implementation and experiment runs are pending.  
+**Status:** Implemented runner with synthetic CPU validation; real Waterbirds runs are pending.
 **Scope:** Test H2, “Reweighting the heads,” from [the research report](../report/main.tex).  
 **Maintenance:** Keep this plan current with the H2 implementation; record executions in `docs/experiment_log.md`.
 
@@ -123,9 +123,9 @@ Prediction caches should contain `probabilities[H, N, 2]`, stable original examp
 5. **Complete the seed matrix.** Run standard seeds 1 and 2 and enhanced seeds 0, 1, and 2 with the same predeclared rules. Each seed should have a matching Stage-0 seed and separately trained heads; if one backbone is reused across seeds, label results as head-seed variability instead of independent full-pipeline seeds. Report standard and enhanced tracks separately.
 6. **Evaluate and document.** Evaluate the matched uniform control and selected aggregation on the same held-out test predictions for each seed, then produce diagnostics and update the relevant documentation. If uniform wins selection, retain it and report that outcome.
 
-### Proposed commands
+### Implemented commands
 
-These are interfaces to implement; they do not exist yet. Run from the repository root. Each action uses the same resolved configuration and accepts a seed override recorded in metadata.
+These interfaces are implemented in the [method runner](../src/methods/dpe_head_reweighting/README.md). Run from the repository root. Each action uses the same resolved configuration and accepts a seed override recorded in metadata. See the method README for the required raw-feature NPZ, Stage-0 provenance and strict configuration contracts.
 
 ```bash
 python scripts/dpe_head_reweighting.py prepare --config configs/dpe_head_reweighting/waterbirds_standard.yaml --seed 0
@@ -161,4 +161,4 @@ When runs exist, add the adaptation entry to `docs/methods.md`, execution record
 
 Feature-only scoring and head reweighting can run on CPU; existing notebook estimates place Stage-1 training at roughly 1–2 minutes on a T4, which must be measured again for this runner. Missing Stage-0 artifacts dominate cost: the notebook estimates roughly 1.8–2 hours per standard backbone run. Inventory artifacts before scheduling up to six track/seed combinations; enhanced runtime depends on its recorded training recipe.
 
-The implementation is ready for review when it reproduces uniform inference, enforces the declared data roles, exports reloadable heads and weights, passes the focused checks, and provides one complete standard seed-0 experiment record. Scientific reporting remains preliminary until the planned seed matrix is complete. This planning change does not start training or claim H2 improves accuracy.
+The full experiment is ready for review when it reproduces uniform inference, enforces the declared data roles, exports reloadable heads and weights, passes the focused checks, and provides one complete standard seed-0 experiment record. The runner now has focused tests and a complete synthetic CPU lifecycle; the real seed-0 record and planned seed matrix remain pending external artifacts. No Waterbirds training has been launched or H2 improvement claimed.
