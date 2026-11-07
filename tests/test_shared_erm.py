@@ -179,6 +179,9 @@ class SharedERMTests(unittest.TestCase):
             self.assertEqual(len(evaluation_loader(data, 3)), 2)
 
     def test_metrics_include_group_counts_and_missing_groups(self):
+        for predictions, targets, attributes in (([0.5], [0], [0]), ([0], [0.5], [0]), ([0], [0], [0.5])):
+            with self.assertRaisesRegex(ValueError, "binary"):
+                group_metrics(predictions, targets, attributes)
         metrics = group_metrics([0, 1, 1, 0, 1], [0, 0, 1, 1, 1], [0, 1, 0, 1, 1])
         self.assertAlmostEqual(metrics["accuracy"], 0.6)
         self.assertEqual(metrics["worst_group_accuracy"], 0)

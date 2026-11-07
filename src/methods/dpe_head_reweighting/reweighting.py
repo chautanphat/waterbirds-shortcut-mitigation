@@ -56,10 +56,15 @@ def fit_select(p_b, y_b, g_b, p_c, y_c, g_c):
     scores = [m['wga'] for m in b]
     grid = [(0, 1)] + [(a, g) for a in (.25, .5, .75, 1) for g in (1, 2, 4)]
     candidates, best = [], None
+    uniform = combine(p_c, np.ones(len(p_c)) / len(p_c))
     for alpha, gamma in grid:
         w, fallback = weights(scores, alpha, gamma)
-        m = metrics(combine(p_c, w), y_c, g_c)
-        row = dict(alpha=alpha, gamma=gamma, weights=w.tolist(), fallback=fallback, metrics=m)
+        prediction = combine(p_c, w)
+        m = metrics(prediction, y_c, g_c)
+        row = dict(alpha=alpha, gamma=gamma, weights=w.tolist(), fallback=fallback, metrics=m,
+                   c_prediction_changes=int(np.sum(prediction.argmax(-1) != uniform.argmax(-1))),
+                   c_probability_max_abs_delta=float(np.max(np.abs(prediction - uniform))),
+                   effective_heads=float(1 / np.square(w).sum()))
         candidates.append(row)
         # Grid order supplies the smaller-alpha/smaller-gamma tie breakers.
         if best is None or m['wga'] > best['metrics']['wga'] + 1e-12 or (

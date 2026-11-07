@@ -108,7 +108,18 @@ def test_notebook_full_run_and_resume(tmp_path, monkeypatch, track):
         selection = (run / 'experiment/selection.json').read_bytes()
         result = (run / 'results/metrics.json').read_bytes()
         identities = [p.read_bytes() for p in (backbone / 'ckpt_last.pt', bundle / 'handoff.json')]
+        audit = subprocess.run([sys.executable, str(repo / 'scripts/audit_dpe_head_reweighting.py'),
+                                '--run-dir', str(run)], capture_output=True, text=True, check=True)
+        assert json.loads(audit.stdout)['status'] == 'passed'
         if phase == 'full':
             frozen = (selection, result, identities)
         else:
             assert frozen == (selection, result, identities)
+    # A stale final report cannot be reused even if all model/input locks match.
+    metrics_path = run / 'results/metrics.json'
+    stale = json.loads(metrics_path.read_text())
+    stale['selection_hash'] = 'changed'
+    metrics_path.write_text(json.dumps(stale))
+    with pytest.raises(nbclient.exceptions.CellExecutionError, match='Existing test result inputs changed'):
+        nbclient.NotebookClient(notebook, timeout=240, kernel_name='h2-audit',
+            resources={'metadata': {'path': str(repo / 'notebooks')}}).execute()

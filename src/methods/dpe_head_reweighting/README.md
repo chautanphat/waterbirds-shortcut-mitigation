@@ -296,6 +296,27 @@ The default CLI configuration places records in `experiments/exp-dpe-h2-waterbir
 
 ## Validation and provenance
 
+The [implementation audit](AUDIT.md) records findings, fixes and verification
+limits. To independently recompute the grid decision and test metrics from an
+extracted notebook results archive, including archives from the earlier runner:
+
+```bash
+python scripts/audit_dpe_head_reweighting.py --run-dir path/to/extracted/run
+```
+
+The checker uses saved per-head predictions and does not import production
+aggregation, selection or metric functions. It reads the bundle without changing
+it. Raw-image inference requires the separately retained dataset and backbone.
+The notebook displays all candidate C scores, probability differences and changed
+predictions. The selection stage also exports `candidate_comparison.csv` beside
+`selection.json`. Equal weights are reported explicitly when selected.
+
+Final reports include a `selection_hash` binding them to the frozen decision.
+Before evaluation, the saved decision is checked against the B/C prediction
+caches. Modified selection records and stale final reports are rejected. Keep
+older completed runs intact for the independent checker; implementation changes
+require a fresh H2 run directory for normal execution.
+
 ```bash
 python -m pytest tests/methods/dpe_head_reweighting -q
 ```

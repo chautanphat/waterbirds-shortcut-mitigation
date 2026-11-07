@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 
 def group_metrics(predictions, targets, attributes):
-    predictions, targets, attributes = [torch.as_tensor(x).cpu().long()
+    predictions, targets, attributes = [torch.as_tensor(x).cpu()
                                         for x in (predictions, targets, attributes)]
     if predictions.ndim != 1 or targets.shape != predictions.shape or attributes.shape != targets.shape:
         raise ValueError("Predictions, targets and attributes must be matching 1-D arrays")
@@ -13,6 +13,7 @@ def group_metrics(predictions, targets, attributes):
         raise ValueError("Cannot evaluate an empty split")
     if any(not torch.all((x == 0) | (x == 1)) for x in (predictions, targets, attributes)):
         raise ValueError("Waterbirds targets, attributes and predictions must be binary")
+    predictions, targets, attributes = [x.long() for x in (predictions, targets, attributes)]
     correct = predictions == targets
     groups = 2 * targets + attributes
     per_group = {}
