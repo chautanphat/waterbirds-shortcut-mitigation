@@ -29,6 +29,16 @@ The initial comparison is expected to include ERM, GroupDRO, JTT, and other agre
 
 Add approved methods below this heading using the shared template.
 
+## Shared empirical risk minimization (ERM)
+
+- **Implementation:** [`src/methods/erm/`](../src/methods/erm/README.md), project-owned extraction of DPE's standard stage-0 training recipe; shared data/model/evaluation utilities are available to future methods.
+- **Source:** [DPE](https://github.com/minhto2802/dpe4subpop) (MIT); deterministic Waterbirds preprocessing inherited from [SubpopBench](https://github.com/YyzHarry/SubpopBench) (MIT). See the [source record](../src/methods/erm/ORIGINAL_SOURCE.md).
+- **Mechanism:** Full-backbone ResNet-50 fine-tuning with mean cross entropy and class-balanced replacement sampling. Training group labels are unused.
+- **Settings:** [`configs/erm/waterbirds_standard.yaml`](../configs/erm/waterbirds_standard.yaml): ImageNet V2 weights, updated BatchNorm statistics, 100 epochs, batch size 128, SGD LR 0.001, momentum 0.9, weight decay 0.0001, no scheduler or augmentation. These follow DPE's tracked YAML, rather than SubpopBench's default hyperparameters.
+- **Evaluation:** Validation WGA selects `ckpt_best_wga.pt`; `ckpt_last.pt` supports DPE's last-epoch handoff. Held-out test evaluation is a separate command. Reports include overall/per-group accuracy, WGA and counts.
+- **Status:** CPU regression and synthetic image smoke tests only; no shared-implementation benchmark accuracy is claimed. See `exp-shared-erm-smoke-001` in the [experiment log](experiment_log.md).
+- **Reuse:** Project-level train/evaluate/export scripts operate independently of all preserved baselines. Checkpoints and raw ordered feature caches can be consumed by DPE; historical DPE runs remain unchanged.
+
 ## Diverse Prototypical Ensembles (DPE)
 
 ### Overview

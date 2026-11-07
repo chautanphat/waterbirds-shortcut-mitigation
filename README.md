@@ -35,6 +35,10 @@ waterbirds-shortcut-mitigation/
 
 Use `baselines/<method-name>/` for an official external implementation that is being preserved and reproduced. Use `src/methods/<method-name>/` for a method implemented by this project, reimplemented from a paper, or integrated into the project's common framework. Store tracked experiment settings in `configs/` or `experiments/`; keep raw data, large checkpoints, caches, and local logs out of version control.
 
+## Shared ERM
+
+Use `python scripts/train_erm.py` for the repository-wide, DPE-aligned standard ERM baseline. Its reusable dataset, backbone, evaluation, and feature-export modules live in `src/`; settings are in [`configs/erm/waterbirds_standard.yaml`](configs/erm/waterbirds_standard.yaml). See the [shared ERM guide](src/methods/erm/README.md) for setup, evaluation, and DPE handoff commands.
+
 ## Team workflow
 
 For full contributor operating rules, repository conventions, and the baseline integration lifecycle, refer to [`CONTRIBUTING.md`](CONTRIBUTING.md).

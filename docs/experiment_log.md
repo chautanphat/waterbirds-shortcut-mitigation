@@ -28,6 +28,21 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 
 ---
 
+## exp-shared-erm-smoke-001 — 2026-11-07
+
+- **Method / version:** Project-owned shared ERM, `src/methods/erm/`; branch `feature/shared-erm`.
+- **Purpose:** CPU smoke test and compatibility validation, not a benchmark reproduction.
+- **Configuration:** `configs/erm/waterbirds_standard.yaml`, with smoke overrides: random initialization (`model.weights: null`), one epoch, train/eval batch sizes 2/3, workers 0, CPU. SGD settings, class-balanced sampling, preprocessing and updated BatchNorm retained.
+- **Dataset and split:** Generated 12-image RGB fixture, four examples per split and one per target/background group; no official Waterbirds data used. A separate training integration test omits test data entirely.
+- **Seed:** 0.
+- **Environment and hardware:** CPU; Python 3.12.14, PyTorch 2.6.0+cpu, torchvision 0.21.0+cpu; one compute thread.
+- **Command:** `python scripts/train_erm.py --config <temporary-smoke-config.yaml>`; then `python scripts/evaluate_erm.py --checkpoint <run>/ckpt_best_wga.pt --data-dir <fixture> --device cpu --workers 0 --batch-size 3 --output <run>/test.json`; `python scripts/extract_erm_features.py --checkpoint <run>/ckpt_last.pt --data-dir <fixture> --device cpu --workers 0 --batch-size 3 --splits train val test`. The temporary config is generated from `ERMConfig` with the overrides above. `python -m unittest discover -s tests -v` regenerates fixtures and exercises the training/export contracts without downloads.
+- **Output location:** Temporary, untracked fixture and run artifacts; no weights/features committed.
+- **Results:** Two optimizer updates with the actual ResNet-50 completed. Validation on synthetic images: overall accuracy 50%, group accuracies [100%, 100%, 0%, 0%] with one image each, WGA 0%; these values carry no benchmark meaning. Ten CPU regression tests passed. Direct comparison against the preserved DPE modules confirmed identical preprocessing tensors, split ordering, labels and sampling weights, plus strict checkpoint loading with identical logits and features.
+- **Paper comparison or expected behavior:** No accuracy comparison with papers is appropriate for this fixture. The default configuration matches DPE's tracked standard stage-0 recipe, including weight decay `1e-4`; DPE's flag-omitted CLI weight decay is `0`.
+- **Status:** smoke test.
+- **Notes and follow-up:** Run official Waterbirds training on GPU for benchmark results and multi-seed validation. The test set is never loaded during shared training or checkpoint selection. Historical baseline results are unchanged.
+
 ## exp-dpe-waterbirds-ermstar-001 — 2026-11-02
 
 - **Method / version:** Diverse Prototypical Ensembles (DPE) / commit `68b8114`

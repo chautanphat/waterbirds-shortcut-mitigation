@@ -1,0 +1,23 @@
+# Shared DPE-aligned standard (no-augmentation) stage-0 ERM.
+# Matches configs/dpe4subpop/waterbirds_stage0_erm.yaml; see method README
+# for sampling, BatchNorm and ImageNet-weight details implicit in DPE's code.
+profile: dpe_standard_erm
+dataset:
+  data_dir: data/waterbirds  # contains metadata_waterbirds.csv and archive folder
+  batch_size: 128
+  batch_size_eval: 512
+  workers: 4
+model:
+  weights: IMAGENET1K_V2
+  freeze_bn: false
+training:
+  epochs: 100
+  steps: null
+  lr: 0.001
+  momentum: 0.9
+  weight_decay: 0.0001  # matches tracked DPE YAML; upstream CLI default is 0
+  sampling: class_balanced
+  eval_every: 300  # only used when steps replaces epochs
+  seed: 0
+  device: cuda
+output_dir: checkpoints/waterbirds_erm
