@@ -21,7 +21,7 @@ def main():
     parser.add_argument("--output-dir", type=Path, help="Defaults to checkpoint directory (DPE cache lookup)")
     parser.add_argument("--splits", nargs="+", choices=["train", "val", "test"], default=["val", "test"])
     parser.add_argument("--device", default="cuda")
-    parser.add_argument("--batch-size", type=int, default=512)
+    parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args()
     model = load_resnet_checkpoint(args.checkpoint, device=args.device)

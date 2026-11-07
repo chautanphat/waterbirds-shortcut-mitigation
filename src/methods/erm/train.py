@@ -42,7 +42,7 @@ def _cpu_state_dict(model):
 
 
 def run_training(config):
-    """Train and select by validation WGA; never load the test split here.
+    """Train DPE-style ERM and track validation WGA without loading test data.
 
     Plain state dictionaries retain the original DPE checkpoint layout.
     Separate training_state.pt stores optimizer/RNG state for downstream tooling.
@@ -82,7 +82,8 @@ def run_training(config):
                 "torchvision": torchvision.__version__, "device": str(device),
                 "metadata_sha256": file_sha256(train_data.metadata_path),
                 "split_counts": {"train": len(train_data), "val": len(val_data)},
-                "selection": "validation worst-group accuracy; ties choose the latest checkpoint"}
+                "selection": "last checkpoint, matching the DPE stage-0 handoff",
+                "best_checkpoint_selection": "validation worst-group accuracy; ties choose the latest checkpoint"}
     (out / "run.json").write_text(json.dumps(metadata, indent=2) + "\n")
     best_score, best_position = -1.0, None
     updates = 0
@@ -121,6 +122,7 @@ def run_training(config):
             updates += chunk_size
             validate_and_save({"step": updates}, train_metrics)
     summary = {"updates": updates, "best_val_wga": best_score, "best_position": best_position,
-               "selected_checkpoint": "ckpt_best_wga.pt", "last_checkpoint": "ckpt_last.pt"}
+               "selected_checkpoint": "ckpt_last.pt", "last_checkpoint": "ckpt_last.pt",
+               "best_checkpoint": "ckpt_best_wga.pt"}
     (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     return summary

@@ -21,7 +21,7 @@ def main():
     parser.add_argument("--data-dir", required=True)
     parser.add_argument("--split", choices=["val", "test"], default="test")
     parser.add_argument("--device", default="cuda")
-    parser.add_argument("--batch-size", type=int, default=512)
+    parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--output", type=Path, help="Optional JSON report (must not already exist)")
     args = parser.parse_args()

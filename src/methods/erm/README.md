@@ -1,10 +1,10 @@
 # Shared standard ERM
 
-Repository-wide, project-owned Waterbirds ERM, using the **DPE standard stage-0 recipe**. Training, evaluation, and feature export run without importing or installing any preserved baseline. This is the shared starting point for future methods that need a fine-tuned backbone.
+Repository-wide Waterbirds ERM extracted from the **existing DPE stage-0 workflow**. Training, evaluation, and feature export run without importing or installing any preserved baseline. This is the shared starting point for future methods that need a fine-tuned backbone.
 
 ## Recipe and source
 
-The source of truth for the defaults is [`configs/erm/waterbirds_standard.yaml`](../../../configs/erm/waterbirds_standard.yaml), aligned with [`configs/dpe4subpop/waterbirds_stage0_erm.yaml`](../../../configs/dpe4subpop/waterbirds_stage0_erm.yaml) and the implementation in `baselines/dpe4subpop/utils/`:
+Defaults in [`configs/erm/waterbirds_standard.yaml`](../../../configs/erm/waterbirds_standard.yaml) match the stage-0 command in [`notebooks/dpe_waterbirds_end_to_end.ipynb`](../../../notebooks/dpe_waterbirds_end_to_end.ipynb), including effective defaults from `baselines/dpe4subpop/main.py` and behavior from its `utils/` modules:
 
 | Setting | Shared default |
 | --- | --- |
@@ -12,18 +12,24 @@ The source of truth for the defaults is [`configs/erm/waterbirds_standard.yaml`]
 | Trainable parameters | Entire backbone and biased linear 2048→2 head |
 | BatchNorm | Update running statistics during training, as in DPE |
 | Loss | Mean cross entropy; no group weighting or prototype regularization |
-| Optimizer | SGD, LR 0.001, momentum 0.9, weight decay 0.0001 |
+| Optimizer | SGD, LR 0.001, momentum 0.9, weight decay 0 |
 | Schedule / duration | Constant LR, 100 epochs |
 | Training batches | 128; inverse-class-frequency sampling with replacement; drop final incomplete batch |
-| Evaluation batches | 512; no sampling/shuffling; retain every example |
+| Evaluation batches | 256; no sampling/shuffling; retain every example |
 | Preprocessing, all splits | Square `Resize((256,256))`, `CenterCrop(224)`, RGB tensor, ImageNet normalization |
 | Augmentation | None (DPE's standard `--no_augmentation` track) |
 | Seed / workers | 0 / 4 |
-| Checkpoint selection | Validation worst-group accuracy each epoch; latest wins ties |
+| Default checkpoint | Last epoch (`ckpt_last.pt`), matching DPE's stage-1 handoff |
+| Additional checkpoint | Best validation WGA each epoch (`ckpt_best_wga.pt`); latest wins ties |
 
-**Weight-decay discrepancy:** DPE's tracked YAML sets `optim_weight_decay: 0.0001`, but `main.py` defaults to `0` when the flag is omitted. This implementation follows the tracked YAML. Reproducing an older command that omitted weight decay requires an explicit config copy with `weight_decay: 0`; such a run differs from this shared default.
+The notebook does not load `configs/dpe4subpop/waterbirds_stage0_erm.yaml`: it passes CLI arguments directly. In particular, it uses evaluation batch size 256 and omits `--optim_weight_decay`, so the effective weight decay is 0. The shared defaults follow this executed workflow.
 
-This recipe inherits SubpopBench preprocessing, but **does not claim to use SubpopBench's default hyperparameters**. SubpopBench uses batch size 108, 5,001 updates, uniform replacement sampling, ImageNet V1 weights, and frozen BatchNorm statistics. DPE differs on those points. Full upstream attribution and references are in [ORIGINAL_SOURCE.md](ORIGINAL_SOURCE.md).
+Sources and citations:
+
+- [Diverse Prototypical Ensembles Improve Robustness to Subpopulation Shift](https://arxiv.org/abs/2505.23027), ICML 2025; [official code](https://github.com/minhto2802/dpe4subpop), preserved under `baselines/dpe4subpop/` from upstream commit `68b811461e238d44cced6ae6c8ce75b66cad5449`. MIT License, copyright 2025 Minh To. Shared model layout, sampling and training behavior follow this implementation and the project notebook above.
+- [SubpopBench](https://github.com/YyzHarry/SubpopBench), MIT License, copyright 2023 Yuzhe Yang. The deterministic Waterbirds preprocessing is inherited through DPE. This shared default targets the existing DPE workflow rather than SubpopBench's standalone default run.
+
+Applicable notices are retained in [LICENSE](LICENSE). The preserved baseline keeps its upstream README at `baselines/dpe4subpop/docs/README.upstream.md`.
 
 ## Setup and data
 
@@ -48,14 +54,14 @@ python scripts/train_erm.py --print-config
 python scripts/train_erm.py --config configs/erm/waterbirds_standard.yaml \
   --data-dir data/waterbirds --output-dir checkpoints/waterbirds_erm_seed0 --seed 0
 
-# Evaluate the validation-selected checkpoint once on the held-out test set.
+# Evaluate the last-epoch checkpoint used by DPE on the held-out test set.
 python scripts/evaluate_erm.py \
-  --checkpoint checkpoints/waterbirds_erm_seed0/ckpt_best_wga.pt \
+  --checkpoint checkpoints/waterbirds_erm_seed0/ckpt_last.pt \
   --data-dir data/waterbirds --output checkpoints/waterbirds_erm_seed0/test.json
 
-# Export features from the same selected checkpoint for later methods.
+# Export features from the same checkpoint for later methods.
 python scripts/extract_erm_features.py \
-  --checkpoint checkpoints/waterbirds_erm_seed0/ckpt_best_wga.pt \
+  --checkpoint checkpoints/waterbirds_erm_seed0/ckpt_last.pt \
   --data-dir data/waterbirds --splits train val test
 ```
 
@@ -75,7 +81,7 @@ from src.evaluation.classification import evaluate
 from src.evaluation.features import extract_features
 from src.methods.erm.train import train_epoch
 
-model = load_resnet_checkpoint("checkpoints/waterbirds_erm_seed0/ckpt_best_wga.pt", device="cuda")
+model = load_resnet_checkpoint("checkpoints/waterbirds_erm_seed0/ckpt_last.pt", device="cuda")
 data = Waterbirds("data/waterbirds", "val")
 loader = evaluation_loader(data)
 features = extract_features(model, loader, device="cuda")
@@ -88,26 +94,20 @@ Run Python from the repository root (or add the root to `PYTHONPATH`). Dataset b
 
 Checkpoints are plain state dictionaries with the same sequential backbone/head keys (`0.*`, `2.*`) as DPE's CE stage-0 model; load them strictly. Feature export writes `feats_<split>.npy` in split-local CSV order and **does not normalize** embeddings. DPE performs its own per-example normalization on load. `.npz` sidecars record indices, labels, attributes and filenames; `.json` sidecars record checkpoint/metadata SHA-256 hashes and preprocessing. Existing feature caches are rejected to prevent mixing checkpoints. Use a distinct export directory for each checkpoint when comparing last versus best.
 
-To use the original DPE last-epoch handoff after exporting a best-checkpoint cache, keep the last checkpoint and its matching cache together in a separate directory:
+The export command above places the last checkpoint and matching caches in the same directory, ready for DPE:
 
 ```bash
-mkdir -p checkpoints/waterbirds_erm_seed0_last_features
-cp checkpoints/waterbirds_erm_seed0/ckpt_last.pt checkpoints/waterbirds_erm_seed0_last_features/
-python scripts/extract_erm_features.py \
-  --checkpoint checkpoints/waterbirds_erm_seed0_last_features/ckpt_last.pt \
-  --data-dir data/waterbirds
-
 # Example annotated DPE stage-1+ run; DPE's --data_dir takes the parent directory.
 python baselines/dpe4subpop/main.py \
   --dataset_name Waterbirds --data_dir data \
   --stage 1 --num_stages 16 --train_mode freeze --loss_name isomax \
   --epochs 20 --batch_size 256 --lr 0.001 --train_attr yes --subsample_type group \
   --cov_reg 5.e5 --entropic_scale 30 --ensemble_criterion wga_val \
-  --pretrained_path checkpoints/waterbirds_erm_seed0_last_features/ckpt_last.pt \
+  --pretrained_path checkpoints/waterbirds_erm_seed0/ckpt_last.pt \
   --ckpt_dir checkpoints/waterbirds_dpe --no_wandb
 ```
 
-The existing DPE notebook and configs remain historical reproduction entry points. Their upstream flow is preserved. Reusing a shared backbone is a new experiment; record the checkpoint choice and feature source explicitly. The shared trainer selects only on validation, whereas the original DPE loop also evaluates test each epoch and can overwrite some best-checkpoint files using test metrics. No old results are relabeled as shared-ERM results.
+The shared default handoff uses `ckpt_last.pt`, as in the DPE notebook. `ckpt_best_wga.pt` is an additional option for experiments that explicitly use validation selection; export its features to a separate directory to avoid mixing caches. Training only evaluates validation, with held-out test evaluation in a separate script. The original DPE loop also evaluates test each epoch; this reporting is not needed for the last-checkpoint handoff. Record which checkpoint and feature source each downstream run uses.
 
 ## Validation and limitations
 

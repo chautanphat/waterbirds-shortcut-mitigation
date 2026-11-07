@@ -23,6 +23,6 @@ def training_loader(dataset, batch_size, workers=0, sampling="uniform", *, steps
                       num_workers=workers, drop_last=True)
 
 
-def evaluation_loader(dataset, batch_size=512, workers=0):
+def evaluation_loader(dataset, batch_size=256, workers=0):
     return DataLoader(dataset, batch_size=batch_size, num_workers=workers,
                       shuffle=False, drop_last=False)

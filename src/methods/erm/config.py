@@ -10,7 +10,7 @@ import yaml
 class DatasetConfig:
     data_dir: str = "data/waterbirds"
     batch_size: int = 128
-    batch_size_eval: int = 512
+    batch_size_eval: int = 256
     workers: int = 4
 
 
@@ -26,7 +26,7 @@ class TrainingConfig:
     epochs: int | None = 100
     lr: float = 0.001
     momentum: float = 0.9
-    weight_decay: float = 0.0001
+    weight_decay: float = 0.0
     sampling: str = "class_balanced"
     eval_every: int = 300  # used only for step-based runs; epoch runs validate each epoch
     seed: int = 0

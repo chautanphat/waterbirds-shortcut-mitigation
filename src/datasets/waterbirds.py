@@ -1,7 +1,7 @@
 """Waterbirds metadata and deterministic SubpopBench preprocessing.
 
 Preprocessing follows YyzHarry/SubpopBench (MIT, Yuzhe Yang 2023).
-See src/methods/erm/ORIGINAL_SOURCE.md and LICENSE for attribution.
+See src/methods/erm/README.md and LICENSE for attribution.
 """
 
 from pathlib import Path

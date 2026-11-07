@@ -1,6 +1,8 @@
 """CPU regression tests for the shared ERM contracts (no downloads required)."""
 
+import ast
 import json
+import shlex
 import tempfile
 import unittest
 from pathlib import Path
@@ -12,7 +14,6 @@ from PIL import Image
 import torch
 from torch import nn
 from torch.utils.data import RandomSampler, WeightedRandomSampler
-import yaml
 
 from src.datasets.loaders import evaluation_loader, training_loader
 from src.datasets.waterbirds import Waterbirds
@@ -58,15 +59,46 @@ class SharedERMTests(unittest.TestCase):
     def setUpClass(cls):
         torch.set_num_threads(1)
 
-    def test_config_matches_dpe_tracked_recipe(self):
+    def test_config_matches_effective_dpe_notebook_recipe(self):
         config = load_config(ROOT / "configs/erm/waterbirds_standard.yaml")
-        dpe = yaml.safe_load((ROOT / "configs/dpe4subpop/waterbirds_stage0_erm.yaml").read_text())
+        # Compare to the actual notebook command plus DPE parser defaults,
+        # rather than a YAML file that the notebook never loads.
+        tree = ast.parse((ROOT / "baselines/dpe4subpop/main.py").read_text())
+        parser_function = next(node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == "get_args")
+        effective = {}
+        for node in ast.walk(parser_function):
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == "add_argument":
+                for keyword in node.keywords:
+                    if keyword.arg == "default":
+                        flags = [ast.literal_eval(arg) for arg in node.args]
+                        flag = next(flag for flag in flags if flag.startswith("--"))
+                        effective[flag] = ast.literal_eval(keyword.value)
+        notebook = json.loads((ROOT / "notebooks/dpe_waterbirds_end_to_end.ipynb").read_text())
+        source = next("".join(cell.get("source", [])) for cell in notebook["cells"]
+                      if "!python baselines/dpe4subpop/main.py" in "".join(cell.get("source", [])))
+        command = source[source.index("!python baselines/dpe4subpop/main.py") + 1:]
+        tokens = shlex.split(command.replace("\\\n", " "))
+        index = 2
+        while index < len(tokens):
+            flag = tokens[index]
+            if index + 1 < len(tokens) and not tokens[index + 1].startswith("--"):
+                effective[flag] = tokens[index + 1]
+                index += 2
+            else:
+                effective[flag] = True
+                index += 1
         self.assertEqual(config.as_dict(), ERMConfig().as_dict())
         for key in ("epochs", "lr", "momentum", "seed"):
-            self.assertEqual(getattr(config.training, key), dpe["training"][key])
-        self.assertEqual(config.training.weight_decay, dpe["training"]["optim_weight_decay"])
-        self.assertEqual(config.dataset.batch_size, dpe["dataset"]["batch_size"])
-        self.assertEqual(config.dataset.batch_size_eval, dpe["dataset"]["batch_size_eval"])
+            self.assertEqual(getattr(config.training, key), float(effective[f"--{key}"]))
+        self.assertEqual(config.training.weight_decay, float(effective["--optim_weight_decay"]))
+        for key in ("batch_size", "batch_size_eval", "workers"):
+            self.assertEqual(getattr(config.dataset, key), int(effective[f"--{key}"]))
+        self.assertTrue(effective["--no_augmentation"])
+        self.assertTrue(effective["--pretrained_imgnet"])
+        self.assertEqual(effective["--optim"], "sgd")
+        self.assertEqual(effective["--scheduler"], "none")
+        self.assertEqual(effective["--train_mode"], "full")
+        self.assertEqual(effective["--loss_name"], "ce")
         self.assertEqual(config.model.weights, "IMAGENET1K_V2")
         self.assertFalse(config.model.freeze_bn)
         self.assertEqual(config.training.sampling, "class_balanced")
@@ -202,13 +234,15 @@ class SharedERMTests(unittest.TestCase):
                 summary = run_training(config)
             self.assertEqual(summary["updates"], 2)
             self.assertEqual(summary["best_position"], {"epoch": 1})
+            self.assertEqual(summary["selected_checkpoint"], "ckpt_last.pt")
+            self.assertEqual(summary["best_checkpoint"], "ckpt_best_wga.pt")
             out = Path(config.output_dir)
             best = torch.load(out / "ckpt_best_wga.pt", weights_only=True)
             last = torch.load(out / "ckpt_last.pt", weights_only=True)
             torch.testing.assert_close(best["2.weight"], seen[0])
             torch.testing.assert_close(last["2.weight"], seen[1])
             state = torch.load(out / "training_state.pt", weights_only=True)
-            self.assertEqual(state["optimizer"]["param_groups"][0]["weight_decay"], 1e-4)
+            self.assertEqual(state["optimizer"]["param_groups"][0]["weight_decay"], 0.0)
             self.assertEqual(json.loads((out / "run.json").read_text())["split_counts"], {"train": 4, "val": 4})
             with self.assertRaises(FileExistsError):
                 run_training(config)

@@ -156,7 +156,6 @@ For example:
 ```text
 src/methods/poter/
 ├── README.md
-├── ORIGINAL_SOURCE.md
 ├── train.py
 ├── models.py
 ├── loss.py
@@ -581,7 +580,7 @@ Include:
 - Known deviations.
 - License and notices.
 
-Preserve the upstream README when it is part of the original implementation. Add project-specific documentation without misrepresenting the original instructions.
+When cloning an external baseline for testing or reproduction, preserve its upstream README. Add project-specific documentation without misrepresenting the original instructions. For project-owned or shared code, cite the paper, source repository, and relevant version directly in the method README. A separate `ORIGINAL_SOURCE.md` is optional; create one only when a substantial source history needs its own document, and avoid duplicating information already in the README. Retain applicable license notices.
 
 
 ### 8.6. `docs/experiment_log.md`
