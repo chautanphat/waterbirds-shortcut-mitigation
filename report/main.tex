@@ -1,11 +1,32 @@
 % This report follows the original Springer LNCS project template.
 \documentclass[runningheads]{llncs}
 %
-\usepackage[utf8,nocaptions]{vietnam}
+% Preserve Vietnamese support where installed; this English report also builds
+% on TeX installations without the optional vietnam package.
+\IfFileExists{vietnam.sty}{\usepackage[utf8,nocaptions]{vietnam}}{\usepackage[utf8]{inputenc}}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{url}
+\usepackage{tikz}
+\usepackage{float}
+\usetikzlibrary{arrows.meta}
+% Shared visual language for the three DPE hypothesis diagrams.
+\definecolor{dpeland}{HTML}{A65320}
+\definecolor{dpewater}{HTML}{216B9B}
+\definecolor{dpeink}{HTML}{263747}
+\tikzset{
+  dpe diagram/.style={font=\sffamily\scriptsize, text=dpeink,
+    >=Stealth, line width=0.55pt},
+  dpe land/.style={circle, draw=dpeland, fill=dpeland!12,
+    text=dpeland, minimum size=5.5mm, inner sep=1pt},
+  dpe water/.style={rectangle, draw=dpewater, fill=dpewater!12,
+    text=dpewater, minimum size=5.5mm, inner sep=1pt},
+  dpe box/.style={draw=dpeink!45, rounded corners=2pt,
+    fill=dpeink!3, align=center, inner sep=4pt},
+  dpe arrow/.style={->, draw=dpeink!75},
+  dpe heading/.style={font=\sffamily\scriptsize\bfseries}
+}
 %
 \begin{document}
 %
@@ -129,9 +150,32 @@ We have not yet audited per-image failure cases for DPE. The observations below 
 
 \paragraph{H1: Shuffling prototype pairs across heads.} If the landbird prototype of one head is paired with the waterbird prototype of another head, does the resulting set of pairs introduce additional diversity into the ensemble and thereby improve WGA? Because the heads are trained on different balanced subsets, re-pairing yields new decision boundaries without additional training. We will compare random and exhaustive re-pairings on the trained heads, selecting the configuration by validation WGA.
 
+\begin{figure}[H]
+\centering
+\input{figures/dpe_h1_pairs.tex}
+\caption{H1: change which prototypes compete. Original DPE compares $L_i$ only with $W_i$. An example re-pairing compares $L_i$ with $W_{\pi(i)}$; each new pair still produces a two-class probability, and the ensemble still averages the pair probabilities. Circles denote landbird prototypes and squares waterbird prototypes; subscripts identify the source head. Only three of 15 pairs are shown. The prototypes stay fixed; whether the new comparisons improve WGA is untested.}
+\label{fig:dpe-h1}
+\end{figure}
+
 \paragraph{H2: Reweighting the heads.} Uniform $1/15$ averaging assumes all heads are equally reliable. If some heads have learned background features and are therefore noisy, can reweighting the heads improve accuracy? We will estimate per-head weights on the validation set (e.g., from per-head worst-group accuracy) and check whether heads that receive low weights are those with low accuracy on the background-conflicting groups $G_2$ and $G_3$.
 
-\paragraph{H3: Computing probabilities from more than two prototypes.} Instead of computing each probability from a single pair of prototypes and then averaging, can class probabilities be obtained jointly from more prototypes, for example by a softmax over the distances to all 30 prototypes with per-class aggregation? We will compare this against the original uniform averaging on the same trained heads.
+\begin{figure}[H]
+\centering
+\input{figures/dpe_h2_weights.tex}
+\caption{H2: change how much each head contributes. The same head probabilities $p_i(c\mid x)$ enter either a uniform average or a weighted sum. Arrow widths on the right illustrate unequal contributions, not measured reliability. Nonnegative weights that sum to one would be chosen using validation data, including performance on background-conflicting groups $G_2$ and $G_3$, then fixed for test evaluation. No head has yet been identified as background-dependent.}
+\label{fig:dpe-h2}
+\end{figure}
+
+\paragraph{H3: Multiple prototypes per class within each head.} Can each of the 15 heads make a better prediction by using several prototypes per class instead of one? Multiple prototypes may represent different appearances within a class. We will first reuse the existing 30 trained prototypes: head $i$ receives a class-balanced subset $S_i$, computes a softmax over negative-distance scores within that subset, and sums the prototype probabilities by class to obtain $p_i(L\mid x)$ and $p_i(W\mid x)$. Different heads retain different subsets. We will first average these 15 probability vectors uniformly, then evaluate the H2 weighting rule as a separate combination. Learning additional prototypes within each head would require retraining and is a possible later extension.
+
+The original DPE is the two-prototype case, $S_i=\{L_i,W_i\}$. Global pooling is another special case: if every head uses all 30 prototypes with identical scoring and aggregation, every head produces the same probabilities, so uniform averaging or normalized H2 weighting returns the same global prediction. We will compare the original pairs, distinct larger subsets, and global pooling, selecting subset size, membership, and any score calibration using validation data only. Figure~\ref{fig:dpe-h3} illustrates these cases. All remain untested.
+
+\begin{figure}[H]
+\centering
+\input{figures/dpe_h3_joint.tex}
+\caption{H3: give each head more prototypes while retaining the ensemble. The middle panel shows two prototypes per class in three illustrative heads; all 15 heads still output two class probabilities before averaging or H2 weighting. Circles are landbird prototypes, squares are waterbird prototypes, and subscripts identify their source heads in the existing pool. Each softmax is computed within the receiving head's subset, then probability mass is summed by class. The bottom panel shows global pooling as the special case of identical full-pool heads. No accuracy gain is assumed.}
+\label{fig:dpe-h3}
+\end{figure}
 
 \section{Conclusion}
 DPE and AutoBackSwap gave results close to their papers, and POTER still needs its test evaluation. Looking at AutoBackSwap's mistakes, we found that three species may be mislabeled in the dataset, and that they explain about 80\% of its $G_4$ errors. Next week we will finish POTER's test evaluation, look at DPE's failure cases, and try the three ideas above.
