@@ -587,6 +587,8 @@ When cloning an external baseline for testing or reproduction, preserve its upst
 
 Maintain a concise experiment index.
 
+Synthetic smoke tests and routine implementation checks do not belong in the experiment log and do not require experiment entries or recorded metrics.
+
 For each experiment, record:
 - Experiment identifier.
 - Method.
