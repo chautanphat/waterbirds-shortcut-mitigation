@@ -28,6 +28,24 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 
 ---
 
+## exp-dpe-h2-rules-waterbirds-standard-seed0-001 — 2026-11-08
+
+The date is the documentation date; execution date and elapsed time are not recorded in the supplied suite metadata.
+
+- **Method / version:** H2 multi-rule cached-prediction comparison: uniform, original power, softmax reliability, top-k and regularized joint weights.
+- **Purpose:** Exploratory Waterbirds adaptation; compare C-selected weighting procedures using the original seed-0 H2 heads and cached predictions, without retraining.
+- **Branch or commit:** `experiment/dpe-multiple-weighting-rules`; executed source `3ee1c6e7a9cfad351d69e75c92ad0d9c85d4c424`.
+- **Configuration:** [Recorded grid](../experiments/exp-dpe-h2-rules-waterbirds-standard-seed0-001/config.yaml), [runtime/archive identities and review scope](../experiments/exp-dpe-h2-rules-waterbirds-standard-seed0-001/run.json). Twenty candidates, including uniform and 12 original power controls; each family has a uniform fallback.
+- **Dataset and split:** Official Waterbirds 4,795/1,199/5,794; inherited A/B/C=720/241/238, split seed 0. B fits weights; C selects family and overall winners before test evaluation.
+- **Seed:** 0 only, standard track; source ensemble/manifest/selection identities match `exp-dpe-h2-waterbirds-standard-seed0-001`.
+- **Environment and hardware:** Linux, Python 3.13.16, NumPy 2.1.3, SciPy 1.16.3, torch 2.11.0+cu130 and recorded CUDA 13.0. Weight fitting uses the SciPy CPU solver; physical hardware and hosting service are not logged.
+- **Command:** `notebooks/dpe_weighting_rules.ipynb`; saved Python API interface `rule_suite.select` followed by `rule_suite.evaluate`. No shell training command is claimed.
+- **Output location:** Suite `h2-standard-seed0-rules-6452ea10e0` and its supplied ZIP, retained outside Git; [tracked results](../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seed0-001/report.md).
+- **Results:** Overall C selection chooses top-k10, improving C WGA from 89.2473% to 90.3226% by correcting one image. Uniform test accuracy/WGA=91.2323/89.7561%; top-k10=91.1978/89.6231%, paired differences=-0.0345/-0.1330 percentage points. Top-k10 test group accuracies=92.5055/89.6231/91.5888/91.7445%, counts=2,255/2,255/642/642. Of 56 changed test predictions, 27 errors are fixed and 29 introduced. Power, softmax and joint families select uniform; their selected results equal the control.
+- **Paper comparison or expected behavior:** A matched within-run aggregation comparison, not a paper reproduction. No selected weighting procedure improves test WGA in this seed.
+- **Status:** exploratory; completed single-seed comparison with aggregate-record consistency review, not an independent prediction-cache audit.
+- **Notes and follow-up:** Selection/result hashes, recorded code identities, nonjoint weight formulas, candidate selection and metric/count arithmetic agree. The supplied suite ZIP excludes prediction caches and heads, so sample-level metrics and joint optimization cannot be independently rerun from it. Preserve the C-selected top-k10 outcome; complete seeds 1/2 with the frozen grid and report paired differences. See [full interpretation and verification limits](../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seed0-001/report.md).
+
 ## exp-dpe-h2-waterbirds-standard-seed0-001 — 2026-11-08
 
 The date is the documentation date; the supplied execution log contains elapsed times only.
