@@ -98,6 +98,77 @@ python scripts/audit_dpe_head_reweighting.py --run-dir path/to/extracted/h2-stan
 
 The historical implementation and notebook are at commit `5ebb112`. A replay uses the recorded notebook settings and the portable configuration copies linked above; normal execution under newer implementation hashes requires a fresh run directory. Those copies describe a replay and must not be presented as the exact original kernel command or as new execution evidence.
 
+## Additional summary diagnostics — 2026-11-08
+
+These are new calculations from the tracked summaries, not another training run.
+The current checkout has no original ZIP or sample-level B/C/test prediction
+caches, so the earlier archive audit was reviewed but not rerun here. Calculations
+use per-head B/C WGA in [selection.json](selection.json), taking Spearman
+correlation with average ranks for tied scores. Candidate weight concentration
+and probability changes come from [candidate_comparison.csv](candidate_comparison.csv).
+The B/C per-head tables, candidate weights and metrics, and selected/uniform
+agreement were cross-checked against the retained records. No one-off diagnostic
+script or duplicate generated summary is required to run the experiments.
+
+| Diagnostic | Finding | Implication |
+| --- | --- | --- |
+| B-to-C per-head WGA Spearman rank correlation, tied ranks averaged | -0.0276 across 15 heads | B's reliability ordering does not transfer to C in this run. This is descriptive; shared heads/data do not support an independent-sample significance claim. |
+| Highest B-scoring head, `head-14` | B WGA 88.8889%; C WGA 76.9231% | Making the B-derived weights more concentrated can amplify a score that fails to generalize. |
+| Strongest tested weights, alpha=1 / gamma=4 | 4.7224–9.7923%; effective heads 14.3720 | The grid still averages almost all heads. It is a mild perturbation of uniform, rather than a broad test of possible weights. |
+| Largest C probability change under that candidate | 0.002875 in probability units; 0 changed classifications | Changed weights do reach the aggregate probabilities, but none cross a decision boundary. |
+| B worst-group identities, counting ties | 12 heads include `10`; 2 include `01`; 2 include `11`; none include `00` | Scores are dominated by the 27-example waterbird/land group. Counts total 16 because `head-14` ties on `10` and `11`. |
+
+One correct prediction changes a 27-example B group accuracy by 3.7037 percentage
+points; on either 26-example waterbird C group the step is 3.8462 points. For
+scale only, an accuracy of 0.8 on 27 independent examples has plug-in binomial
+standard error 7.70 points, while the observed standard deviation of the 15 B
+WGA scores is 4.28 points. This is not a confidence interval for minimum-group
+accuracy or proof that all head differences are noise. It motivates checking
+score stability before sharpening the weights.
+
+The CSV's `minority_accuracy` is the minimum of groups `01` and `10`, whereas the
+weighting score is the minimum of **all four** groups. For example, `head-06` has
+B minority accuracy 81.4815% but B WGA 77.7778%, determined by group `11`.
+Diagnostics must use `selection.json`'s WGA, rather than substituting that CSV
+column. All selected weights are equal, so a correlation between selected
+weight and minority accuracy is undefined; this run cannot support the proposed
+low-weight/background-reliance association. Minority-group failure alone also
+does not establish which visual features a head uses.
+
+Code inspection found explicit head-axis weighted aggregation and the declared
+uniform-first tie breaking; the targeted existing H2/audit regression tests
+passed (13 tests). These synthetic tests check behavior such as nonuniform
+winners and stale-result rejection; they do not independently reproduce this
+run's image inference or accuracy.
+
 ## Follow-up work, not yet measured
 
-Complete seeds 1 and 2 with the original protocol before reporting a mean or sample standard deviation. Separate exploratory experiments may compare softmax weighting and constrained regularized linear stacking against uniform and the existing power rule. Fit on B, select on C, and freeze settings before test evaluation. Since seed-0 test results have already been inspected, revised experiments must be identified explicitly rather than folded into the original result. No new weighting method or improvement is reported in this record.
+1. **Complete the original comparison:** run standard-track seeds 1 and 2 with
+   the existing partition, score-power grid and matched uniform control. The
+   current partition seed is fixed at 0 independently of the training seed, so
+   these runs measure training-seed variation, not partition uncertainty. Report
+   paired WGA/overall differences and how often selection is nonuniform. Keep
+   the original seed-0 result intact.
+2. **Check the reliability signal cheaply:** with retained B/C probabilities,
+   bootstrap examples within each B group and recompute head scores, rankings
+   and weights. Inspect per-group B-to-C performance, C probability margins and
+   leave-one-head-out changes. Do not use test predictions to choose heads or
+   tune the rule. Bootstrap rank stability and error-overlap analysis cannot be
+   recovered from the current aggregate tables alone.
+3. **Next H2 method experiment: regularized joint weights.** On the same frozen
+   heads, fit nonnegative weights summing to one by minimizing the maximum
+   B-group mean negative log likelihood of the *combined probabilities*, plus
+   `lambda * sum((w - 1/15)**2)`. Unlike independent WGA scores, this objective
+   accounts for how heads' predictions combine. Predeclare a small lambda grid,
+   retain exact uniform and the original power rule as controls, and select
+   using C WGA then C overall accuracy, preferring uniform on a complete tie.
+   Record effective head count, changed C predictions and score/weight
+   stability. This is a proposal, not an implemented or measured improvement.
+
+Reusing the saved backbone/features/heads makes the second and third steps
+feature-only work; training the backbone again is unnecessary merely to test
+another aggregation rule. Repeated use of C can overfit method design, so limit
+the candidate family in advance and assess partition sensitivity in separately
+labeled experiments. Since seed-0 test results have already been inspected,
+these follow-ups are exploratory; lock settings before any subsequent test
+evaluation and report all planned seeds, including failures to improve.

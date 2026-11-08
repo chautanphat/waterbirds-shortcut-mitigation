@@ -51,6 +51,8 @@ Add approved methods below this heading using the shared template.
 
 Freeze one ERM representation and 15 A-trained prototype heads. Estimate each head's WGA on B, construct score-power weights with uniform shrinkage, select aggregation on C and compare with the same heads under uniform averaging on test. This experiment uses group-annotated validation data.
 
+A separate [multi-rule notebook](../notebooks/dpe_weighting_rules.ipynb) reuses a completed run's prediction caches to compare softmax reliability, top-k averaging and regularized joint weights alongside uniform and the original power control. The [declared grid](../configs/dpe_head_reweighting/weighting_rules.yaml) is fitted on B and selected on C; each family includes a uniform fallback. See the [protocol and reuse instructions](../src/methods/dpe_head_reweighting/README.md#multiple-weighting-rules-without-retraining). These additional rules are implemented with synthetic regression coverage; no real Waterbirds measurements for them are recorded yet.
+
 ### Implementation
 
 - **Backbone:** Shared ImageNet-pretrained ResNet-50; final-epoch standard ERM checkpoint.
@@ -76,7 +78,7 @@ Uniform and selected test accuracy are both 91.2323%, with WGA 89.7561%. Group a
 
 ### Notes
 
-The audit cannot rerun image-to-feature inference from the supplied bundle because raw images, backbone and raw features are excluded. Alternative weighting rules and multi-seed conclusions remain future work. Identical selected/uniform metrics are an observed selection outcome, not evidence of a general advantage or disadvantage of weighting.
+The audit cannot rerun image-to-feature inference from the supplied bundle because raw images, backbone and raw features are excluded. [Summary diagnostics](../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md#additional-summary-diagnostics--2026-11-08) find unstable B-to-C WGA rankings (Spearman -0.0276) and mild weight concentration (minimum effective heads 14.3720). The recommended follow-up is to complete seeds 1/2, check reliability-score stability, and separately compare regularized joint weights on the same frozen heads. Real-data evaluation of the additional rules and multi-seed conclusions remain future work. Identical selected/uniform metrics are an observed selection outcome, not evidence of a general advantage or disadvantage of weighting.
 
 ## Diverse Prototypical Ensembles (DPE)
 
