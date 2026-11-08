@@ -28,6 +28,25 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 
 ---
 
+## exp-dpe-h2-waterbirds-standard-seed0-001 — 2026-11-08
+
+The date is the documentation date; the supplied execution log contains elapsed times only.
+
+- **Method / version:** [DPE head reweighting](../src/methods/dpe_head_reweighting/README.md), H2 project-owned adaptation.
+- **Purpose:** Exploratory Waterbirds adaptation; compare validation-derived power weights with the matched A-trained uniform ensemble.
+- **Branch or commit:** `experiment/dpe-head-reweighting`; executed source `5ebb1128fe84200938e73c1fe85e317ecb39f09d`, recorded clean.
+- **Configuration:** [H2 settings](../experiments/exp-dpe-h2-waterbirds-standard-seed0-001/config.yaml), [backbone settings](../experiments/exp-dpe-h2-waterbirds-standard-seed0-001/stage0_config.yaml); [run metadata/source hashes](../experiments/exp-dpe-h2-waterbirds-standard-seed0-001/run.json).
+- **Dataset and split:** Official Waterbirds train/val/test 4,795/1,199/5,794. Validation A/B/C=720/241/238, group-stratified with split seed 0; group annotations used for head fitting and selection.
+- **Seed:** 0 only; standard ERM without augmentation.
+- **Environment and hardware:** Tesla T4, Python 3.13.16, torch 2.11.0+cu130, torchvision 0.26.0+cu130, NumPy 2.1.3, CUDA 13.0; hosted on Kaggle.
+- **Command:** Execute `notebooks/dpe_head_reweighting.ipynb` at the recorded commit with `TRACK="standard"`, `SEED=0`, `WORKERS=2`, `RUN_NAME="h2-standard-seed0"`. The archived command field is a kernel launcher, not a shell training command.
+- **Output location:** Original `outputs/dpe_head_reweighting_runs/h2-standard-seed0/` and its ZIP, untracked; [tracked lightweight results](../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md).
+- **Results:** Uniform and selected test overall accuracy 91.2323%; group accuracies 00/01/10/11=92.7273/89.7561/91.1215/91.2773%, counts=2,255/2,255/642/642; WGA 89.7561%. Paired WGA and overall differences=0.0000 percentage points. C selected uniform `(alpha=0, gamma=1)`; all 13 candidates predict the same C labels. Final backbone validation accuracy/WGA=86.4887/60.1504%; no ERM-only test result is established.
+- **Paper comparison or expected behavior:** The annotated paper reference is 91.0 ± 0.4% WGA, but H2 reserves B/C and trains heads using A; its single-seed score is not a like-for-like paper reproduction.
+- **Status:** exploratory; completed single-seed adaptation, independently audited saved predictions and records.
+- **Notes and follow-up:** No weighting improvement demonstrated. [Full candidate comparison and audit evidence](../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md) reproduce the saved decision. Raw-image feature extraction could not be independently checked because images/backbone/raw features are excluded from the supplied archive. Complete the original multi-seed protocol; alternative weighting rules remain proposed, unmeasured work.
+
+
 ## exp-dpe-waterbirds-ermstar-001 — 2026-11-02
 
 **Audit note:** This is a historical, group-annotated head-training run with a 100-epoch augmented backbone, not the upstream 400-epoch ERM* recipe. Original ERM test evaluation used standardized features with a head trained on raw features; its recorded ERM metrics require re-evaluation. DPE used its intended standardized features. The paper's corresponding annotated DPE reference is 94.1 ± 0.4 WGA; 94.1 ± 0.2 is the unannotated reference. No historical measurements have been replaced by corrected-run claims.
