@@ -1,11 +1,15 @@
 """Full-backbone cross-entropy ERM; group annotations are evaluation-only."""
 
 import json
+import os
 import platform
+import random
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
+import numpy as np
 import torch
 import torch.nn.functional as F
 import torchvision
@@ -38,15 +42,53 @@ def train_epoch(model, loader, optimizer, device):
 
 
 def _cpu_state_dict(model):
-    return {name: value.detach().cpu() for name, value in model.state_dict().items()}
+    return {name: value.detach().cpu().clone() for name, value in model.state_dict().items()}
 
 
-def run_training(config):
+def _atomic_save(value, path):
+    fd, temporary = tempfile.mkstemp(dir=path.parent, prefix=f'.{path.name}-')
+    os.close(fd)
+    try:
+        torch.save(value, temporary)
+        os.replace(temporary, path)
+    finally:
+        Path(temporary).unlink(missing_ok=True)
+
+
+def _atomic_text(text, path):
+    fd, temporary = tempfile.mkstemp(dir=path.parent, prefix=f'.{path.name}-')
+    try:
+        with os.fdopen(fd, 'w') as handle:
+            handle.write(text)
+        os.replace(temporary, path)
+    finally:
+        Path(temporary).unlink(missing_ok=True)
+
+
+def _recipe(value):
+    value = json.loads(json.dumps(value))
+    value.pop('output_dir')
+    value['dataset'].pop('data_dir')
+    value['dataset'].pop('workers')
+    value['training'].pop('device')
+    return value
+
+
+def _training_sources():
+    root = Path(__file__).resolve().parents[2]
+    paths = [Path(__file__), root / 'datasets/waterbirds.py', root / 'datasets/loaders.py',
+             root / 'models/resnet.py', root / 'utils/reproducibility.py',
+             root / 'evaluation/classification.py', Path(__file__).with_name('config.py')]
+    return {str(p.relative_to(root)): file_sha256(p) for p in paths}
+
+
+def run_training(config, *, resume=False):
     """Train DPE-style ERM and track validation WGA without loading test data.
 
     Plain state dictionaries retain the original DPE checkpoint layout.
     Separate training_state.pt stores optimizer/RNG state for downstream tooling.
-    Existing output artifacts are rejected to avoid accidental run mixing.
+    Existing output artifacts are rejected unless epoch-boundary resume is
+    explicitly enabled. Resume restores optimizer, model, RNG and metric history.
     """
     config.validate()
     d, m, t = config.dataset, config.model, config.training
@@ -55,8 +97,16 @@ def run_training(config):
     if device.type == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA is unavailable; use --device cpu for a CPU smoke test")
     out = Path(config.output_dir)
+    saved = None
     if out.exists() and any(out.iterdir()):
-        raise FileExistsError(f"Output directory is not empty: {out}. Use a new run directory.")
+        if not resume:
+            raise FileExistsError(f"Output directory is not empty: {out}. Use a new run directory.")
+        if t.epochs is None or not (out / 'training_state.pt').is_file():
+            raise ValueError('Epoch resume requires a saved training_state.pt checkpoint')
+        saved = torch.load(out / 'training_state.pt', map_location='cpu', weights_only=True)
+        if (saved.get('version') != 2 or _recipe(saved['config']) != _recipe(config.as_dict()) or
+                saved['implementation'] != _training_sources()):
+            raise ValueError('Resume checkpoint recipe or training implementation differs')
     train_data = Waterbirds(d.data_dir, "train", transform=(
         waterbirds_training_transform() if d.augmentation else None))
     val_data = Waterbirds(d.data_dir, "val")
@@ -64,11 +114,12 @@ def run_training(config):
         raise ValueError("Validation requires all four groups for checkpoint selection")
     loader = training_loader(train_data, d.batch_size, d.workers, t.sampling, steps=t.steps)
     val_loader = evaluation_loader(val_data, d.batch_size_eval, d.workers)
-    model = ResNetClassifier(m.weights, m.freeze_bn).to(device)
+    model = ResNetClassifier(None if saved else m.weights, m.freeze_bn).to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=t.lr, momentum=t.momentum,
                                 weight_decay=t.weight_decay)
     out.mkdir(parents=True, exist_ok=True)
-    (out / "config.yaml").write_text(yaml.safe_dump(config.as_dict(), sort_keys=False))
+    if saved is None:
+        (out / "config.yaml").write_text(yaml.safe_dump(config.as_dict(), sort_keys=False))
     try:
         commit = subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=Path(__file__).resolve().parents[3], text=True,
@@ -85,31 +136,77 @@ def run_training(config):
                 "split_counts": {"train": len(train_data), "val": len(val_data)},
                 "selection": "last checkpoint, matching the DPE stage-0 handoff",
                 "best_checkpoint_selection": "validation worst-group accuracy; ties choose the latest checkpoint"}
-    (out / "run.json").write_text(json.dumps(metadata, indent=2) + "\n")
     best_score, best_position = -1.0, None
     updates = 0
+    start_epoch, history, best_state = 0, [], None
+    if saved is not None:
+        original = json.loads((out / 'run.json').read_text())
+        if (original['config'] != saved['config'] or
+                original['metadata_sha256'] != metadata['metadata_sha256'] or
+                saved['metadata_sha256'] != metadata['metadata_sha256'] or
+                saved['config'] != yaml.safe_load((out / 'config.yaml').read_text())):
+            raise ValueError('Resume data or saved configuration changed')
+        metadata = original
+        metadata.setdefault('resumes', []).append(dict(device=str(device), workers=d.workers,
+                                                       start_epoch=saved['position']['epoch'],
+                                                       torch=str(torch.__version__)))
+        model.load_state_dict(saved['model'], strict=True)
+        optimizer.load_state_dict(saved['optimizer'])
+        updates, start_epoch = saved['updates'], saved['position']['epoch']
+        if not 0 <= start_epoch <= t.epochs or updates != start_epoch * len(loader):
+            raise ValueError('Invalid epoch/update resume position')
+        history = saved['history']
+        if len(history) != start_epoch or (history and history[-1]['updates'] != updates):
+            raise ValueError('Resume metric history is incomplete')
+        best_score, best_position, best_state = saved['best_wga'], saved['best_position'], saved['best_model']
+        (out / 'metrics.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in history))
+        _atomic_save(saved['model'], out / 'ckpt_last.pt')
+        if best_state is not None:
+            _atomic_save(best_state, out / 'ckpt_best_wga.pt')
+        random.setstate(saved['python_rng_state'])
+        nr = saved['numpy_rng_state']
+        np.random.set_state((nr[0], np.array(nr[1], dtype=np.uint32), nr[2], nr[3], nr[4]))
+        torch.set_rng_state(saved['torch_rng_state'])
+        if device.type == 'cuda' and saved['cuda_rng_state']:
+            for index, state in enumerate(saved['cuda_rng_state'][:torch.cuda.device_count()]):
+                torch.cuda.set_rng_state(state, index)
+        print(f'Resuming after epoch {start_epoch}; target {t.epochs}', flush=True)
+    _atomic_text(json.dumps(metadata, indent=2) + "\n", out / 'run.json')
+
+    def save_training_state(position, state):
+        nr = np.random.get_state()
+        _atomic_save({"version": 2, "model": state, "optimizer": optimizer.state_dict(), "updates": updates,
+                    "position": position, "best_wga": best_score,
+                    "best_position": best_position, "best_model": best_state, "history": history,
+                    "python_rng_state": random.getstate(),
+                    "numpy_rng_state": (nr[0], nr[1].tolist(), nr[2], nr[3], nr[4]),
+                    "torch_rng_state": torch.get_rng_state(),
+                    "cuda_rng_state": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else [],
+                    "metadata_sha256": metadata['metadata_sha256'], "implementation": _training_sources(),
+                    "config": metadata['config']}, out / "training_state.pt")
 
     def validate_and_save(position, train_metrics):
-        nonlocal best_score, best_position
+        nonlocal best_score, best_position, best_state
         metrics = evaluate(model, val_loader, device)
         record = {**position, "updates": updates, "train": train_metrics, "val": metrics}
+        history.append(record)
         with (out / "metrics.jsonl").open("a") as handle:
             handle.write(json.dumps(record) + "\n")
         state = _cpu_state_dict(model)
         score = metrics["worst_group_accuracy"]
         if score >= best_score:
             best_score, best_position = score, position
-            torch.save(state, out / "ckpt_best_wga.pt")
-        torch.save(state, out / "ckpt_last.pt")
-        torch.save({"model": state, "optimizer": optimizer.state_dict(), "updates": updates,
-                    "position": position, "best_wga": best_score,
-                    "torch_rng_state": torch.get_rng_state(),
-                    "cuda_rng_state": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else [],
-                    "config": config.as_dict()}, out / "training_state.pt")
+            best_state = state
+            _atomic_save(state, out / "ckpt_best_wga.pt")
+        _atomic_save(state, out / "ckpt_last.pt")
+        save_training_state(position, state)
         print(json.dumps(record), flush=True)
 
     if t.epochs is not None:
-        for epoch in range(t.epochs):
+        if saved is None:
+            # A disconnect during the first epoch can restart from epoch zero.
+            save_training_state({'epoch': 0}, _cpu_state_dict(model))
+        for epoch in range(start_epoch, t.epochs):
             train_metrics = train_epoch(model, loader, optimizer, device)
             updates += len(loader)
             validate_and_save({"epoch": epoch + 1}, train_metrics)
@@ -125,5 +222,5 @@ def run_training(config):
     summary = {"updates": updates, "best_val_wga": best_score, "best_position": best_position,
                "selected_checkpoint": "ckpt_last.pt", "last_checkpoint": "ckpt_last.pt",
                "best_checkpoint": "ckpt_best_wga.pt"}
-    (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    _atomic_text(json.dumps(summary, indent=2) + "\n", out / 'summary.json')
     return summary

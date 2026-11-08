@@ -4,7 +4,7 @@
 
 This project-owned adaptation of Diverse Prototypical Ensembles (DPE) evaluates whether validation-derived head weights improve worst-group accuracy (WGA) on Waterbirds relative to uniform probability averaging. WGA is the minimum accuracy over the four bird/background groups. Both aggregation conditions use the same frozen ResNet-50 representation and the same 15 trained prototype heads.
 
-The end-to-end workflow reuses the shared ERM trainer and feature extractor, then performs sequential head training, reliability estimation, aggregation selection, artifact validation and held-out evaluation. A completed exploratory standard-track seed-0 run is documented in the [run report](../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md). The additional multi-rule suite below is implemented and tested with synthetic inputs; its real Waterbirds performance, GPU parity and any improvement remain unverified.
+The end-to-end workflow reuses the shared ERM trainer and feature extractor, then performs sequential head training, reliability estimation, aggregation selection, artifact validation and held-out evaluation. A completed exploratory standard-track seed-0 power-rule run is documented in the [original run report](../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md). The subsequent [multi-rule seed-0 report](../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seed0-001/report.md) records a C-selected top-k10 test WGA of 89.6231% versus 89.7561% for uniform; no selected new procedure improves test WGA in that run. Multi-seed conclusions and GPU parity remain unverified.
 
 ## Experimental protocol
 
@@ -244,7 +244,7 @@ outputs/dpe_head_reweighting_runs/h2-<track>-seed<seed>/
 
 The feature bundle references the checkpoint at its original location. `handoff.json` binds its files to checkpoint, metadata, shared-run records and extraction-source hashes. It is published only after both feature splits are complete; changed inputs are rejected on reuse. The final notebook ZIP includes H2 outputs and compact Stage-0 records. Retain the backbone and feature directories separately, since large inputs are excluded from that ZIP.
 
-Network access is required for missing dependencies, initial dataset preparation and initial ImageNet weights. Existing datasets may be read-only. A completed matching backbone, feature bundle or H2 stage is reused after checks. The shared trainer does not resume partial backbone training: preserve an interrupted run and choose a fresh `BACKBONE_DIR`. An interrupted feature extraction can be retried; an interrupted head-training stage restarts from its beginning.
+Network access is required for missing dependencies, initial dataset preparation and initial ImageNet weights. Existing datasets may be read-only. A completed matching backbone, feature bundle or H2 stage is reused after checks. The original notebook retains fresh-run behavior for partial backbones. The automated study below enables opt-in epoch-boundary resume for new checkpoints; completed backbones are reusable by either workflow. An interrupted feature extraction can be retried; an interrupted head-training stage restarts from its beginning.
 
 ### Command-line interface
 
@@ -278,46 +278,95 @@ python scripts/dpe_head_reweighting.py summarize --config "$CONFIG"
 
 The `check` action validates readiness for a complete run, including the test-feature file, without fitting or scoring models. It reports missing inputs before training. The Stage-0 entry point or notebook generates the required inputs before these H2 commands. The CLI rejects existing stage outputs rather than overwriting them. Independent experiments require distinct output paths. Changes to configuration, features, heads, partitions or implementation files invalidate saved selection records. JSON records, ensemble checkpoints and prediction caches are written atomically so an interrupted write does not replace a complete artifact. An interrupted head-training stage restarts from its beginning; completed stages can be reused by the notebook.
 
-## Multiple weighting rules without retraining
+## One end-to-end weighting study
 
-Use [dpe_weighting_rules.ipynb](../../../notebooks/dpe_weighting_rules.ipynb) to
-compare all implemented aggregation rules in one notebook. It reads an existing
-H2 run's cached per-head probabilities, fits every rule on B and selects on C.
-It does not retrain ResNet or prototype heads, extract raw features or perform
-another image-inference pass. CPU execution is sufficient.
+Use [dpe_weighting_rules.ipynb](../../../notebooks/dpe_weighting_rules.ipynb) as the
+single entry point. **No original H2 ZIP is required.** The default
+[study configuration](../../../configs/dpe_head_reweighting/study.yaml) runs
+standard-track seeds 0, 1 and 2 with the unchanged weighting grid.
 
-First obtain the original end-to-end notebook's H2 results ZIP. Summary-only
-reports do not contain the per-image probabilities needed for this comparison.
-The hosted workflow normally needs no code edits:
+1. **Kaggle:** import the notebook, select a GPU runtime, enable Internet and
+   choose Run All. An attached original H2 ZIP or Waterbirds dataset is optional.
+2. **Colab:** open the notebook, select a GPU runtime and choose Run all.
+   No archive-upload prompt or manual handoff between notebooks is required.
 
-1. **Kaggle:** import the multi-rule notebook, attach the H2 ZIP as an input
-   dataset, enable Internet and choose Run All. CPU is sufficient.
-2. **Colab:** open the multi-rule notebook and choose Run all. Upload the H2 ZIP
-   when prompted, unless it is already in the session. A results download starts
-   at the end; a file link is also displayed.
+The notebook clones `experiment/dpe-multiple-weighting-rules` when no compatible
+checkout exists, installs missing dependencies, discovers or downloads official
+Waterbirds once, trains a separate 100-epoch ERM backbone and 15 heads for each
+missing seed, compares all weighting rules and creates one combined results ZIP.
+Existing checkouts are used as supplied without changing their Git revision.
+GPU time is still required for new backbone training; CPU is supported but slow.
+The orchestrator is [study.py](study.py), using the shared ERM/Stage-0/H2 modules.
+The numerical prototype and weighting recipes remain unchanged.
 
-When no compatible checkout exists, the notebook clones
-`experiment/dpe-multiple-weighting-rules` from the project repository. It installs
-missing dependencies, finds one complete ZIP/extracted run, extracts ZIPs into
-writable session storage, validates inputs and infers track and seed. It accepts
-a run at ZIP root or inside an enclosing directory. Original files are read only;
-ZIP extraction rejects path escapes, symbolic links and duplicate members.
-Existing checkouts are used as supplied without switching their Git revision.
+Completed source bundles found among attached inputs skip backbone and head
+training for the matching track/seed. For example, attaching the original seed-0
+H2 ZIP lets the default study reuse seed 0 and train seeds 1/2 automatically.
+`SOURCE=None` discovers attached bundles; an explicit ZIP/directory or list is
+also accepted. ZIPs may contain an enclosing directory. Inputs are read only;
+extraction checks path escapes, symbolic links and duplicate members. Several
+different bundles for the same seed require an explicit choice rather than an
+arbitrary selection. A summary-only suite ZIP cannot replace a prediction bundle.
 
-`SOURCE=None` discovers attached inputs automatically. If several different runs
-are present, set `SOURCE` to the desired ZIP or directory in the first cell.
-Duplicate ZIP/extracted copies of the same manifest count as one run. Optional
-`REPO_PATH`, `WORK_DIR` and `SEARCH_PATHS` support existing/offline checkouts and
-custom inputs. Internet is needed for a fresh clone or missing packages.
+Defaults normally need no edits. Optional settings in the first cell are:
 
-The default `SUITE_NAME=None` derives a name from track, seed and input/code/grid/
-numerical-library identities. Identical reruns reuse verified output; changed
-identities get a fresh directory. A manual name remains available. Results are
-saved to `WORK_DIR/results/<suite-name>/`, outside the original run, and exported
-to a ZIP with a download link. Kaggle and Colab use their writable working
-directories by default; local execution uses a session folder under repository
-`outputs/`. Keep the source H2 ZIP separately. Standard and enhanced source
-bundles are both accepted; report them separately.
+| Setting | Purpose |
+| --- | --- |
+| `MODE="auto"` | Reuse original H2 bundles where available and train missing seeds |
+| `MODE="cached"` | ZIP-only comparison; infer available seeds when `SEEDS=None` |
+| `SEEDS=None` | Default [0,1,2]; set [1,2] to omit seed 0 |
+| `TRACK=None` | Default standard; enhanced is also supported |
+| `DATA_DIR=None` | Discover an attached dataset or download it once |
+| `WORK_DIR=None` | Writable session storage; optionally choose persistent storage |
+| `REPO_PATH`, `SEARCH_PATHS`, `DEVICE`, `WORKERS` | Local/offline paths and execution overrides |
+
+Within each seed, B fits weights and C freezes every family/overall decision
+**before new test predictions are generated**. Test IDs/labels/groups must agree
+across seeds. No family is chosen using test scores. Historical seed-0 reuse is
+still exploratory because that test split has already been inspected.
+
+### Interruption and checkpoint reuse
+
+New backbone runs save atomic version-2 training states at initialization and
+completed epoch boundaries, including model, optimizer, best model, metric
+history, Python/NumPy/Torch/CUDA RNG states, metadata and training-code identities.
+The study resumes with the same scientific recipe. An interruption inside an
+epoch replays that epoch, not its partially completed minibatches. CPU tests
+verify exact resumed/uninterrupted checkpoint agreement; cross-hardware GPU
+bitwise equivalence is not claimed. Completed compatible legacy backbones and
+H2 prediction ZIPs remain reusable; incomplete legacy states lacking the new RNG
+and history fields cannot be resumed. Existing non-resume entry points still
+reject nonempty incomplete runs by default.
+
+Feature extraction is published atomically. Interrupted head training restarts
+its short feature-only stage. Changed extraction or H2 code gets separate
+feature/head directories; completed, matching stages are reused after checks.
+Keep WORK_DIR persistent to survive deletion of a hosted VM. Colab users can
+point it at an already mounted Drive directory; Kaggle users must retain saved
+outputs/checkpoints. A runtime restart with the same files can resume, but the
+compact ZIP does not include large backbone/resume checkpoints or raw features.
+
+### Study outputs
+
+Results are saved under `WORK_DIR/studies/<study-id>/` and zipped alongside it.
+Progress and the ZIP update after **each completed seed**, so an interrupted
+multi-seed study can still provide partial results:
+
+- `plan.json` and `progress.json`: fixed settings, source/code identities and completed seeds.
+- `per_seed.csv`: each family/overall C-selected candidate, test metrics and paired changes.
+- `summary.json` and `report.md`: means and sample SDs, including paired deltas.
+  A one-seed SD is pending; the study is marked incomplete until all planned seeds finish.
+- `comparisons/seedN/`: all C candidates, exact weights, solver diagnostics,
+  selected test metrics, group counts and changed errors.
+- `source_archives/h2-<track>-seedN.zip`: original prediction bundles and trained
+  heads, automatically retained for reuse without another notebook handoff.
+
+The final cell provides a download link and starts a Colab download. It can also
+be run separately to retrieve the latest partial ZIP after interrupting the
+study. Dataset images, large backbones/training states and raw features remain
+outside the compact download in WORK_DIR. Per-seed comparison outputs also
+remain available under `WORK_DIR/results/`. No new benchmark result is claimed
+by this orchestration change; record actual executions in the experiment log.
 
 The [fixed rule configuration](../../../configs/dpe_head_reweighting/weighting_rules.yaml)
 declares seven additional candidates and the solver settings:
@@ -395,10 +444,12 @@ per-group test accuracies/counts, paired deltas and fixed/new error IDs. The
 notebook exports a ZIP of this new comparison without duplicating the source
 predictions or heads; retain the original H2 ZIP separately for replay.
 
-No new Waterbirds run is claimed by this implementation. Add a dated experiment
-entry and lightweight result summary after executing it on real run artifacts,
-following the existing experiment-log template. Synthetic regression results
-must not be reported as Waterbirds accuracy.
+The first completed standard seed-0 suite is documented in the
+[multi-rule run report](../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seed0-001/report.md).
+Its uploaded aggregate records were checked for consistency, not independently
+recomputed from prediction caches. Add a dated experiment entry and lightweight
+result summary for subsequent real runs, following the existing experiment-log
+template. Synthetic regression results must not be reported as Waterbirds accuracy.
 
 ## Output specification
 
@@ -445,7 +496,7 @@ python -m pip install -r src/methods/dpe_head_reweighting/requirements-weighting
 python -m pytest tests/methods/dpe_head_reweighting -q
 ```
 
-The checks cover reference inference, atomic artifact writes, numerical stability, weight calculations, partition isolation, changed-input rejection and input-readiness failures. The new multi-rule checks include a known complementary-head optimum, original power-grid parity, failed-solver rejection, B-only fitting, uniform fallback, frozen-source checks and notebook execution/reuse with autosaving after every cell. Hosted setup tests exercise fresh local clones, read-only attached ZIPs, nested extraction, automatic naming and simulated Colab upload/download. These tests do not run inside the live Kaggle or Colab service. Full notebook integration checks are enabled when the optional Jupyter test dependencies are installed:
+The checks cover reference inference, atomic artifact writes, numerical stability, weight calculations, partition isolation, changed-input rejection and input-readiness failures. Multi-rule checks include a known complementary-head optimum, original power-grid parity, failed-solver rejection, B-only fitting, uniform fallback, frozen-source checks and notebook execution/reuse with autosaving after every cell. Hosted setup tests exercise fresh local clones, read-only attached ZIPs, nested extraction and simulated Colab downloads. Study tests cover a complete two-seed notebook with no H2 ZIP, real 100-epoch optimization loops using tiny synthetic models, completed-stage reuse, mixed cached/new seeds, automatic dataset preparation, test-set consistency, freeze-before-test ordering and paired mean/sample-SD calculations. Resume tests check interruption before epoch 1 and after epoch 2 against uninterrupted CPU checkpoints. These tests do not run inside the live Kaggle or Colab service and do not establish ResNet-50 benchmark accuracy. Full notebook integration checks are enabled when the optional Jupyter test dependencies are installed:
 
 ```bash
 python -m pip install nbclient ipykernel

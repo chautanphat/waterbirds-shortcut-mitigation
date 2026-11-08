@@ -51,7 +51,7 @@ Add approved methods below this heading using the shared template.
 
 Freeze one ERM representation and 15 A-trained prototype heads. Estimate each head's WGA on B, construct score-power weights with uniform shrinkage, select aggregation on C and compare with the same heads under uniform averaging on test. This experiment uses group-annotated validation data.
 
-A separate [multi-rule notebook](../notebooks/dpe_weighting_rules.ipynb) reuses a completed run's prediction caches to compare softmax reliability, top-k averaging and regularized joint weights alongside uniform and the original power control. Kaggle/Colab setup clones the experiment branch when needed, discovers/extracts the original H2 ZIP, infers track/seed and exports a results ZIP; no head/backbone retraining is required. The [declared grid](../configs/dpe_head_reweighting/weighting_rules.yaml) is fitted on B and selected on C; each family includes a uniform fallback. See the [protocol and hosted-run instructions](../src/methods/dpe_head_reweighting/README.md#multiple-weighting-rules-without-retraining). These additional rules are implemented with synthetic regression coverage; no real Waterbirds measurements for them are recorded yet.
+The [multi-rule notebook](../notebooks/dpe_weighting_rules.ipynb) now runs the full study from Waterbirds setup through per-seed backbones, heads, weighting comparisons and a combined ZIP. Its [default study plan](../configs/dpe_head_reweighting/study.yaml) covers seeds 0/1/2; matching attached original H2 bundles are reused, while missing seeds train automatically. New backbones support epoch-boundary resume, with completed stages reused after validation. A cached-only mode remains available. The [unchanged weighting grid](../configs/dpe_head_reweighting/weighting_rules.yaml) fits on B and selects on C before new test inference; each family includes uniform. See the [protocol and hosted-run instructions](../src/methods/dpe_head_reweighting/README.md#one-end-to-end-weighting-study). The new orchestration has synthetic integration coverage; the completed standard seed-0 comparison below remains the available real-data evidence, and multi-seed conclusions are pending.
 
 ### Implementation
 
@@ -71,6 +71,8 @@ A separate [multi-rule notebook](../notebooks/dpe_weighting_rules.ipynb) reuses 
 
 Uniform and selected test accuracy are both 91.2323%, with WGA 89.7561%. Group accuracies/counts and full candidate results are in the [run report](../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md). All 13 candidates predict identical C labels; selection retains uniform weights, yielding zero paired improvement.
 
+The subsequent [20-candidate suite](../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seed0-001/report.md) selects top-k10 overall after a one-image C improvement. Test accuracy/WGA are 91.1978/89.6231%, with paired changes of -0.0345/-0.1330 percentage points. It fixes 27 test errors and introduces 29. Power, softmax and joint families select uniform; no selected weighting procedure improves test WGA in this seed. This suite is a separately recorded exploratory result, reviewed for aggregate consistency; the uploaded suite archive does not contain prediction caches for independent re-inference.
+
 ### Status
 
 - **Original reproduction:** Not claimed; H2 changes validation allocation and head-training data budget.
@@ -78,7 +80,7 @@ Uniform and selected test accuracy are both 91.2323%, with WGA 89.7561%. Group a
 
 ### Notes
 
-The audit cannot rerun image-to-feature inference from the supplied bundle because raw images, backbone and raw features are excluded. [Summary diagnostics](../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md#additional-summary-diagnostics--2026-11-08) find unstable B-to-C WGA rankings (Spearman -0.0276) and mild weight concentration (minimum effective heads 14.3720). The recommended follow-up is to complete seeds 1/2, check reliability-score stability, and separately compare regularized joint weights on the same frozen heads. Real-data evaluation of the additional rules and multi-seed conclusions remain future work. Identical selected/uniform metrics are an observed selection outcome, not evidence of a general advantage or disadvantage of weighting.
+The audit cannot rerun image-to-feature inference from the supplied bundle because raw images, backbone and raw features are excluded. [Summary diagnostics](../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md#additional-summary-diagnostics--2026-11-08) find unstable B-to-C WGA rankings (Spearman -0.0276) and mild concentration under the original power grid (minimum effective heads 14.3720). The additional rules have now been measured for seed 0; complete seeds 1/2 with the fixed rule grid before drawing multi-seed conclusions. A separately labeled study can assess score/partition stability. Uniform fallback and top-k selection outcomes are observations, not evidence of a general advantage or disadvantage of weighting.
 
 ## Diverse Prototypical Ensembles (DPE)
 

@@ -310,30 +310,32 @@ def select_action(c):
     return result['selected']
 
 
-def diagnostics(c, result, p_test, y, g):
-    import matplotlib
-    matplotlib.use('Agg')
-    import matplotlib.pyplot as plt
+def diagnostics(c, result, p_test, y, g, *, plots=True):
     w = result['selected']['weights']
     rows = []
-    fig, axes = plt.subplots(1, 3, figsize=(12, 3), sharey=True)
-    for ax, role, scores in zip(axes, ('B', 'C', 'test'),
+    for role, scores in zip(('B', 'C', 'test'),
                                 (result['per_head_B'], result['per_head_C'], [metrics(p, y, g) for p in p_test])):
         minority = [min(m['groups']['01'], m['groups']['10']) for m in scores]
-        ax.scatter(w, minority)
-        ax.set(xlabel='Head weight', title=role)
         for i, m in enumerate(scores):
             rows.append(dict(head=result['head_ids'][i], role=role, weight=w[i], minority_accuracy=minority[i], **{f'acc_{k}': v for k, v in m['groups'].items()}))
-    axes[0].set_ylabel('Minority-group accuracy')
     out = Path(c['results_dir'])
     out.mkdir(parents=True, exist_ok=True)
-    fig.tight_layout()
-    fig.savefig(out / 'head_diagnostics.png', dpi=160)
-    plt.close(fig)
     with (out / 'per_head.csv').open('w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
+    if plots:
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        fig, axes = plt.subplots(1, 3, figsize=(12, 3), sharey=True)
+        for ax, role in zip(axes, ('B','C','test')):
+            ax.scatter(w, [r['minority_accuracy'] for r in rows if r['role'] == role])
+            ax.set(xlabel='Head weight', title=role)
+        axes[0].set_ylabel('Minority-group accuracy')
+        fig.tight_layout()
+        fig.savefig(out / 'head_diagnostics.png', dpi=160)
+        plt.close(fig)
 
 
 def validated_selection(c):
@@ -359,7 +361,7 @@ def validated_selection(c):
     return record
 
 
-def evaluate_action(c):
+def evaluate_action(c, *, plots=True):
     record = validated_selection(c)
     out = Path(c['results_dir']) / 'metrics.json'
     if out.exists():
@@ -388,7 +390,7 @@ def evaluate_action(c):
                   effective_heads=float(1 / np.square(w).sum()), alpha=record['selected']['alpha'],
                   gamma=record['selected']['gamma'], weights=w, lock=record['lock'],
                   test_features_hash=digest(c['test_features']), metadata_hash=m['metadata_hash'], runtime=runtime())
-    diagnostics(c, record, p, y, g)
+    diagnostics(c, record, p, y, g, plots=plots)
     write_json(out, result)
     return result
 

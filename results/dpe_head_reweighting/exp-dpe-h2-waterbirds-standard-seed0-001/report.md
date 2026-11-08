@@ -141,6 +141,65 @@ passed (13 tests). These synthetic tests check behavior such as nonuniform
 winners and stale-result rejection; they do not independently reproduce this
 run's image inference or accuracy.
 
+## Head-level statistical verification — 2026-11-08
+
+This analysis concerns the 15 A-trained heads in this seed-0 H2 source run. It
+uses the original DPE probability-averaging rule; it is not an additional
+measurement of the paper's heads or the historical full-validation reproduction.
+The preserved reference implementation averages each head's two-class softmax
+probabilities before class argmax (`baselines/dpe4subpop/notebooks/src/utils.py`,
+`evaluate_ensemble`). Groups are evaluation strata, not four predicted classes.
+
+The 15 test rows in [per_head.csv](per_head.csv) have distinct group-accuracy
+vectors. Multiplying each accuracy by its group count recovers integer correct
+counts within numerical precision. The following statistics were recalculated
+from those rows. SD is the sample standard deviation across heads, descriptive
+only: these heads share data and are not independent experimental seeds.
+
+| Test group | Count | Head mean accuracy ± SD | Head accuracy range | Uniform ensemble |
+| --- | ---: | ---: | ---: | ---: |
+| 00: landbird / land | 2,255 | 89.24% ± 3.06 pp | 83.50–93.35% | 92.73% |
+| 01: landbird / water | 2,255 | 86.76% ± 4.17 pp | 79.51–92.24% | 89.76% |
+| 10: waterbird / land | 642 | 88.73% ± 2.59 pp | 82.71–92.37% | 91.12% |
+| 11: waterbird / water | 642 | 88.22% ± 3.05 pp | 82.40–93.46% | 91.28% |
+
+Individual-head WGA ranges from 79.5122% to 88.2927%, with mean 84.7046% and
+SD 2.9453 percentage points. The highest observed single-head test WGA is head
+00's 88.2927%; uniform ensemble WGA is 89.7561%, 1.4634 points higher.
+The highest observed single-head overall test accuracy is head 06's
+5,243/5,794=90.4902%; the ensemble gets 5,286/5,794=91.2323%, 0.7421 points
+higher. These are retrospective descriptive comparisons, not test-based head
+selection recommendations.
+
+| Predictor | Correct 00 | Correct 01 | Correct 10 | Correct 11 |
+| --- | ---: | ---: | ---: | ---: |
+| Head 00 | 2,049 | 1,991 | 593 | 589 |
+| Head 03 | 2,007 | 1,793 | 579 | 600 |
+| Uniform ensemble | 2,091 | 2,024 | 585 | 586 |
+
+These count differences alone prove prediction differences. In group 01, head
+03 and the ensemble must disagree on at least `abs(2024-1793)=231` examples.
+Summing absolute correct-count differences over disjoint groups gives a lower
+bound on total head-versus-ensemble disagreement: at least 86 examples for head
+00 and 335 for head 03. Every head has a positive such bound (67–452 across the
+15 heads). These are lower bounds, not exact per-head disagreement counts;
+opposing errors can cancel in aggregate accuracies.
+
+The earlier [artifact audit](artifact_checks.json) records 15 unique test
+probability arrays and 2,216/5,794=38.2465% test images with at least one head
+disagreeing with another. Across the 105 head pairs, mean label disagreement
+is 11.4910%; the range corresponds to 341–1,025 images per pair
+(5.8854–17.6907%). These recorded rates are arithmetically consistent with the
+sample sizes and an integer total of 69,908 pair-image disagreements. They
+measure head-to-head disagreement, not disagreement with the ensemble.
+
+The recorded waterbird-probability range across all test head/image combinations
+is 0.404443–0.646538. This establishes varying probabilities globally, together
+with the distinct recorded probability arrays; it does not provide mean
+probability by head and group. The original caches are not present in the
+current review inputs, so exact head-versus-ensemble disagreement matrices,
+groupwise mean probabilities and probability correlations were not recomputed.
+
 ## Follow-up work, not yet measured
 
 1. **Complete the original comparison:** run standard-track seeds 1 and 2 with

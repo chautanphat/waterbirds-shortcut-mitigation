@@ -1,0 +1,17 @@
+# Recorded rule grid from the supplied results archive.
+joint_lambdas:
+- 1.0
+- 0.1
+- 0.01
+softmax_betas:
+- 10.0
+- 30.0
+solver:
+  feasibility_tolerance: 1.0e-07
+  ftol: 1.0e-10
+  maxiter: 1000
+  probability_floor: 1.0e-12
+top_k:
+- 10
+- 5
+version: 1

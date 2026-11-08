@@ -66,8 +66,8 @@ def completed_backbone(c):
     out = Path(c.output_dir)
     required = [out / name for name in ("ckpt_last.pt", "config.yaml", "run.json", "summary.json")]
     if any(not p.is_file() for p in required):
-        raise ValueError(f"Incomplete shared ERM run: {out}. The shared trainer does not resume "
-                         "partial runs; preserve it and choose a fresh BACKBONE_DIR.")
+        raise ValueError(f"Incomplete shared ERM run: {out}. The automated study can resume new "
+                         "version-2 epoch checkpoints; otherwise preserve it and choose a fresh BACKBONE_DIR.")
     saved = load_config(out / "config.yaml")
     # Operational paths, workers and device may differ when reusing a completed run.
     actual, expected = saved.as_dict(), c.as_dict()
@@ -91,13 +91,16 @@ def completed_backbone(c):
     return run
 
 
-def train_or_reuse(c):
+def train_or_reuse(c, *, resume=False):
     """Use the shared trainer unchanged; reuse only completed, matching runs."""
     _validate_recipe(c)
     path, _ = validate_dataset(c.dataset.data_dir)
     torch.empty(1, device=c.training.device)
     out = Path(c.output_dir)
     if out.exists() and any(out.iterdir()):
+        if resume and not (out / 'summary.json').is_file():
+            print(f'Resuming shared ERM: {out}', flush=True)
+            run_training(c, resume=True)
         run = completed_backbone(c)
         if run["metadata_sha256"] != digest(path):
             raise ValueError("Backbone training metadata changed")
