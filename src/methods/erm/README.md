@@ -127,3 +127,57 @@ python -m unittest discover -s tests -v
 ```
 
 CPU tests cover configuration parity, metadata formats, class-balanced sampling, BatchNorm behavior, strict DPE checkpoint layout, feature ordering/singleton batches, held-out-test isolation, validation selection and exact update counts. This validates the implementation contracts, not published accuracy. A full Waterbirds GPU run and multi-seed benchmark comparison are still required. Dataset-specific logic currently supports Waterbirds and ResNet-50 only; no unrelated baseline is forced onto this infrastructure.
+
+## XRM ERM Waterbirds linear probe
+
+This is the XRM authors' frozen-feature ERM baseline, a distinct protocol from the repository-wide, end-to-end ERM recipe documented above. The shared official source and its local compatibility changes are in [`baselines/xrm/`](../../../baselines/xrm/); the project adapter is [`xrm.py`](xrm.py). The paper is Pezeshki et al., *Discovering Environments with XRM* (ICML 2024), pinned to `5e90815250aedea546b9e17ffd5d7e0a7c34c20f`.
+
+### Setup and data
+
+Use a separate Python 3.9 environment for the upstream dependency pins:
+
+```powershell
+py -3.9 -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r baselines/xrm/requirements.txt
+python -m pip install PyYAML
+```
+
+Download and prepare the official Waterbirds data and its cached ResNet-50 features using the preserved XRM preparation flow:
+
+```powershell
+python baselines/xrm/download.py --download --data_path .\data waterbirds
+```
+
+Keep the dataset and `features.pt` local and untracked. The runner expects XRM's parent `data` directory, containing `data/waterbirds/`.
+
+### Run and evaluate
+
+From the repository root, run one seed:
+
+```powershell
+python scripts/run_xrm_baseline.py --method erm --config configs/erm/waterbirds_xrm.yaml --data-path .\data --seed 0
+```
+
+Run the seven complete archived seeds with the selected upstream configuration:
+
+```powershell
+python scripts/run_xrm_baseline.py --method erm --config configs/erm/waterbirds_xrm.yaml --data-path .\data --num-seeds 7
+```
+
+For a two-step pipeline smoke run, add `--max-steps 2 --checkpoint-frequency 1 --workers 0 --output-root .\outputs\xrm_erm_smoke`. Evaluate its saved checkpoint and report all four groups:
+
+```powershell
+python scripts/evaluate_xrm_checkpoint.py --method erm --config configs/erm/waterbirds_xrm.yaml --data-path .\data --checkpoint .\outputs\xrm_erm_smoke\ERM\Waterbirds\group_labels_yes\ckpt_hpcomb_4_seed0_best_wga.pt
+```
+
+Refresh the archived result report from its JSON run histories with:
+
+```powershell
+python scripts/summarize_xrm_baselines.py --method erm
+```
+
+The tracked configuration records the exact selected hyperparameters and completed-seed set. Upstream selects checkpoints using validation worst-group accuracy; the test split is evaluated at each checkpoint by the original training flow. Historical logs do not contain per-group accuracy, so the summary does not infer it.
+
+

@@ -71,6 +71,13 @@ def get_hparams(args):
         'ColorMNIST_V3': [1001, 50],
         'MultiColorMNIST': [1001, 50]}[args['dataset']]
 
+    if args.get('num_steps_override') is not None:
+        hparams['num_step'] = args['num_steps_override']
+    if args.get('checkpoint_freq_override') is not None:
+        hparams['checkpoint_freq'] = args['checkpoint_freq_override']
+    if args.get('num_workers_override') is not None:
+        hparams['num_workers'] = args['num_workers_override']
+
     hparams['num_m'] = 2
     hparams['num_y'] = {
         'Waterbirds': 2,
@@ -100,5 +107,6 @@ def get_hparams(args):
     ext = f'hpcomb_{args["hparams_comb"]}_seed{args["seed"]}'
     hparams['ckpt_file'] = os.path.join(hparams['out_dir'], f'ckpt_{ext}.pt')
     hparams['results_file'] = os.path.join(hparams['out_dir'], f'results_{ext}.json')
+    hparams['best_ckpt_file'] = os.path.join(hparams['out_dir'], f'ckpt_{ext}_best_wga.pt')
 
     return hparams

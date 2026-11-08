@@ -1,0 +1,11 @@
+method,seed,status,last_step,expected_steps,selected_step,va_wga,te_avg_acc,te_wga,log
+ERM,0,complete,5000,5001,2700,0.646616518497467,0.8318950533866882,0.672897219657898,results/archive/xrm_waterbirds_initial/erm/results_hpcomb_4_seed0.json
+ERM,1,complete,5000,5001,3850,0.646616518497467,0.8369002342224121,0.6760124564170837,results/archive/xrm_waterbirds_initial/erm/results_hpcomb_4_seed1.json
+ERM,2,complete,5000,5001,4200,0.6315789222717285,0.8425958156585693,0.6573208570480347,results/archive/xrm_waterbirds_initial/erm/results_hpcomb_4_seed2.json
+ERM,3,complete,5000,5001,5000,0.646616518497467,0.8415602445602417,0.6651090383529663,results/archive/xrm_waterbirds_initial/erm/results_hpcomb_4_seed3.json
+ERM,4,complete,5000,5001,4550,0.646616518497467,0.8377631902694702,0.6713395714759827,results/archive/xrm_waterbirds_initial/erm/results_hpcomb_4_seed4.json
+ERM,5,complete,5000,5001,3700,0.6390977501869202,0.8370728492736816,0.672897219657898,results/archive/xrm_waterbirds_initial/erm/results_hpcomb_4_seed5.json
+ERM,6,complete,5000,5001,1900,0.6315789222717285,0.8372454047203064,0.6557632684707642,results/archive/xrm_waterbirds_initial/erm/results_hpcomb_4_seed6.json
+ERM,7,incomplete,0,5001,,,,,results/archive/xrm_waterbirds_initial/erm/results_hpcomb_4_seed7.json
+ERM,8,missing,,5001,,,,,results/archive/xrm_waterbirds_initial/erm/results_hpcomb_4_seed8.json
+ERM,9,missing,,5001,,,,,results/archive/xrm_waterbirds_initial/erm/results_hpcomb_4_seed9.json

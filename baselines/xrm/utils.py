@@ -58,11 +58,18 @@ def get_star_value_from_file_name(pattern, file_name):
 
 def load_checkpoint(hparams, algorithm):
     if os.path.exists(hparams['ckpt_file']):
-        ckpt = torch.load(hparams['ckpt_file'])
+        try:
+            ckpt = torch.load(hparams['ckpt_file'], map_location=hparams['device'], weights_only=False)
+        except TypeError:
+            ckpt = torch.load(hparams['ckpt_file'], map_location=hparams['device'])
         algorithm.net.load_state_dict(ckpt['net_state_dict'])
         algorithm.optim.load_state_dict(ckpt['optim_state_dict'])
         if 'lr_scheduler' in ckpt.keys():
             algorithm.optim.lr_scheduler.load_state_dict(ckpt['lr_scheduler'])
+        if hasattr(algorithm, 'q') and 'groupdro_q' in ckpt:
+            algorithm.q.copy_(ckpt['groupdro_q'].to(algorithm.q.device))
+        if 'rng_torch' in ckpt:
+            torch.set_rng_state(ckpt['rng_torch'].cpu())
         if 'XRM' in str(algorithm):
             algorithm.y_tr_dynamic = ckpt['y_tr_dynamic']
             # assigns should be the same if seed is set correctly
@@ -75,7 +82,10 @@ def load_checkpoint(hparams, algorithm):
 def save_checkpoint(hparams, algorithm, step):
     to_save = {'net_state_dict': algorithm.net.state_dict(),
                'optim_state_dict': algorithm.optim.state_dict(),
-               'last_step': step}
+               'last_step': step,
+               'rng_torch': torch.get_rng_state()}
+    if hasattr(algorithm, 'q'):
+        to_save['groupdro_q'] = algorithm.q.detach().cpu()
     if algorithm.optim.lr_scheduler is not None:
         to_save['lr_scheduler'] = algorithm.optim.lr_scheduler.state_dict()
     if 'XRM' in str(algorithm):
@@ -115,6 +125,7 @@ def report_stats(hparams, algorithm, loaders, step):
         else:
             stats_strs.append(f"{key}: {val}")
     print(', '.join(stats_strs))
+    return stats
 
 
 def get_metrics(hparams, ys, y_hats, ms):

@@ -70,18 +70,18 @@ class GroupDRO(ERM):
     def __init__(self, hparams, net, optim):
         super(GroupDRO, self).__init__(hparams, net, optim)
         self.eta = hparams['eta']
-        self.q = torch.ones(hparams['num_y'] * hparams['num_m'])
+        self.q = torch.ones(hparams['num_y'] * hparams['num_m'], device=self.device)
 
     def get_loss(self, y_hat, y, m=None):
-        grp_losses = torch.zeros(len(self.q))
+        grp_losses = torch.zeros(len(self.q), device=y_hat.device)
         g = (self.hparams['num_m'] * y + m).view(-1)
         losses = cross_entropy(y_hat, y.view(-1).long(), reduction='none')
         for i in g.unique().int():
             grp_losses[i] = losses[g == i].mean()
-            self.q[i] *= (self.eta * grp_losses[i]).exp().item()
+            self.q[i] *= (self.eta * grp_losses[i]).exp().detach()
 
         self.q /= self.q.sum()
-        return (self.q * grp_losses).sum()
+        return (self.q.detach() * grp_losses).sum()
 
 
 class XRM(ERM):

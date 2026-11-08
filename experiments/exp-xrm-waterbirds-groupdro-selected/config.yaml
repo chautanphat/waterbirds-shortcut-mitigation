@@ -1,0 +1,36 @@
+method: groupdro
+name: XRM Waterbirds GroupDRO linear probe
+source:
+  repository: https://github.com/facebookresearch/XRM
+  commit: 5e90815250aedea546b9e17ffd5d7e0a7c34c20f
+  paper: https://proceedings.mlr.press/v235/pezeshki24a.html
+  year: 2024
+  license: CC-BY-NC
+upstream:
+  algorithm: GroupDRO
+  phase: 2
+  dataset: Waterbirds
+  group_labels: "yes"
+  hparams_comb: 8
+  seed: 0
+  pretrained_features: true
+  optimizer: SGD
+  learning_rate: 0.0005582886587978195
+  batch_size: 122
+  weight_decay: 0.00040511994089680443
+  groupdro_eta: 0.01152686967872314
+  adam: false
+  steps: 5001
+  checkpoint_frequency: 50
+  workers: 4
+  device: cpu
+selection:
+  metric: va_wga
+  checkpoint: last occurrence of maximum validation WGA
+  requested_seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  completed_seeds: [0, 1, 2, 3, 4, 5]
+  excluded_incomplete_seeds: [6]
+dataset:
+  data_path: data
+  local_dataset_directory: data/waterbirds
+  train_validation_test: [4795, 1199, 5794]

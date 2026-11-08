@@ -1,0 +1,37 @@
+method: erm
+name: XRM Waterbirds ERM linear probe
+source:
+  repository: https://github.com/facebookresearch/XRM
+  commit: 5e90815250aedea546b9e17ffd5d7e0a7c34c20f
+  paper: https://proceedings.mlr.press/v235/pezeshki24a.html
+  year: 2024
+  license: CC-BY-NC
+upstream:
+  algorithm: ERM
+  phase: 2
+  dataset: Waterbirds
+  group_labels: "yes"
+  hparams_comb: 4
+  seed: 0
+  pretrained_features: true
+  pretrained_weights: torchvision ResNet-50 ImageNet1K V1
+  optimizer: SGD
+  learning_rate: 0.0008591315698733483
+  batch_size: 68
+  weight_decay: 0.0008280433617942743
+  adam: false
+  steps: 5001
+  checkpoint_frequency: 50
+  workers: 4
+  device: cpu
+selection:
+  metric: va_wga
+  checkpoint: last occurrence of maximum validation WGA
+  requested_seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  completed_seeds: [0, 1, 2, 3, 4, 5, 6]
+  excluded_incomplete_seeds: [7]
+dataset:
+  data_path: data
+  local_dataset_directory: data/waterbirds
+  train_validation_test: [4795, 1199, 5794]
+

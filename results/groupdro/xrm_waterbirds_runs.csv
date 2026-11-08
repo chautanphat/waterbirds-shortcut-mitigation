@@ -1,0 +1,11 @@
+method,seed,status,last_step,expected_steps,selected_step,va_wga,te_avg_acc,te_wga,log
+GroupDRO,0,complete,5000,5001,500,0.8571428656578064,0.9097341895103455,0.8660436272621155,results/archive/xrm_waterbirds_initial/groupdro/results_hpcomb_8_seed0.json
+GroupDRO,1,complete,5000,5001,800,0.8497853875160217,0.9021401405334473,0.8644859790802002,results/archive/xrm_waterbirds_initial/groupdro/results_hpcomb_8_seed1.json
+GroupDRO,2,complete,5000,5001,600,0.8571428656578064,0.9049016237258911,0.8691588640213013,results/archive/xrm_waterbirds_initial/groupdro/results_hpcomb_8_seed2.json
+GroupDRO,3,complete,5000,5001,700,0.8571428656578064,0.9019675254821777,0.8705099821090698,results/archive/xrm_waterbirds_initial/groupdro/results_hpcomb_8_seed3.json
+GroupDRO,4,complete,5000,5001,800,0.8571428656578064,0.9047290086746216,0.8629283308982849,results/archive/xrm_waterbirds_initial/groupdro/results_hpcomb_8_seed4.json
+GroupDRO,5,complete,5000,5001,850,0.8571428656578064,0.9031757116317749,0.8691588640213013,results/archive/xrm_waterbirds_initial/groupdro/results_hpcomb_8_seed5.json
+GroupDRO,6,incomplete,3150,5001,,,,,results/archive/xrm_waterbirds_initial/groupdro/results_hpcomb_8_seed6.json
+GroupDRO,7,missing,,5001,,,,,results/archive/xrm_waterbirds_initial/groupdro/results_hpcomb_8_seed7.json
+GroupDRO,8,missing,,5001,,,,,results/archive/xrm_waterbirds_initial/groupdro/results_hpcomb_8_seed8.json
+GroupDRO,9,missing,,5001,,,,,results/archive/xrm_waterbirds_initial/groupdro/results_hpcomb_8_seed9.json

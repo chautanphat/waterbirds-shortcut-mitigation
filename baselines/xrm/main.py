@@ -7,10 +7,11 @@
 
 import os
 import argparse
+import shutil
 import torch
 from hparams_registry import get_hparams
 from utils import load_checkpoint, save_checkpoint, set_all_seeds, is_degenerate
-from utils import report_stats, Iter, prepare_out_dir, find_best_hparams_comb
+from utils import report_stats, Iter, prepare_out_dir, find_best_hparams_comb, read_results_file
 from datasets import get_loaders
 from algorithms import get_algorithm, XRM
 from networks import get_network, get_optim, TwinNets
@@ -72,14 +73,20 @@ def phase_2(args):
     algorithm = get_algorithm(hparams, net, optim)
     step_st = load_checkpoint(hparams, algorithm) if args['resume'] else 0
 
+    previous = read_results_file(hparams['results_file']) if args['resume'] else {}
+    best_va_wga = max(previous.get('va_wga', [float('-inf')]))
     print('Training starts..')
     tr_loader_iterator = Iter(loaders['tr'])
     for step in range(step_st, hparams['num_step']):
         batch = tr_loader_iterator.next()
         algorithm.update(batch)
         if step % hparams['checkpoint_freq'] == 0:
-            report_stats(hparams, algorithm, loaders, step)
+            stats = report_stats(hparams, algorithm, loaders, step)
             save_checkpoint(hparams, algorithm, step)
+            va_wga = stats.get('va_wga', float('-inf'))
+            if va_wga >= best_va_wga:
+                best_va_wga = va_wga
+                shutil.copy2(hparams['ckpt_file'], hparams['best_ckpt_file'])
 
 
 if __name__ == "__main__":
@@ -112,6 +119,9 @@ if __name__ == "__main__":
     parser.add_argument('--quick_run', action='store_true',
                         help='Run with a single hparam combination to debug')
     parser.add_argument('--adam', action='store_true')
+    parser.add_argument('--num_steps_override', type=int, default=None)
+    parser.add_argument('--checkpoint_freq_override', type=int, default=None)
+    parser.add_argument('--num_workers_override', type=int, default=None)
 
     args = parser.parse_args()
 
@@ -177,7 +187,10 @@ if __name__ == "__main__":
                                    'out_dir': out_dir,
                                    'quick_run': args.quick_run,
                                    'adam': args.adam,
-                                   'resume': args.resume}]
+                                   'resume': args.resume,
+                                   'num_steps_override': args.num_steps_override,
+                                   'checkpoint_freq_override': args.checkpoint_freq_override,
+                                   'num_workers_override': args.num_workers_override}]
 
     run_phase = {1: phase_1, 2: phase_2}[args.phase]
     print(f'About to launch {len(args_list)} jobs..')
