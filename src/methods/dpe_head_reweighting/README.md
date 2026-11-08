@@ -4,7 +4,7 @@
 
 This project-owned adaptation of Diverse Prototypical Ensembles (DPE) evaluates whether validation-derived head weights improve worst-group accuracy (WGA) on Waterbirds relative to uniform probability averaging. WGA is the minimum accuracy over the four bird/background groups. Both aggregation conditions use the same frozen ResNet-50 representation and the same 15 trained prototype heads.
 
-The end-to-end workflow reuses the shared ERM trainer and feature extractor, then performs sequential head training, reliability estimation, aggregation selection, artifact validation and held-out evaluation. Synthetic CPU checks have passed. Real Waterbirds experiments, GPU parity and any performance improvement remain unverified.
+The end-to-end workflow reuses the shared ERM trainer and feature extractor, then performs sequential head training, reliability estimation, aggregation selection, artifact validation and held-out evaluation. A completed exploratory standard-track seed-0 run is documented in the [run report](../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md). The additional multi-rule suite below is implemented and tested with synthetic inputs; its real Waterbirds performance, GPU parity and any improvement remain unverified.
 
 ## Experimental protocol
 
@@ -278,6 +278,128 @@ python scripts/dpe_head_reweighting.py summarize --config "$CONFIG"
 
 The `check` action validates readiness for a complete run, including the test-feature file, without fitting or scoring models. It reports missing inputs before training. The Stage-0 entry point or notebook generates the required inputs before these H2 commands. The CLI rejects existing stage outputs rather than overwriting them. Independent experiments require distinct output paths. Changes to configuration, features, heads, partitions or implementation files invalidate saved selection records. JSON records, ensemble checkpoints and prediction caches are written atomically so an interrupted write does not replace a complete artifact. An interrupted head-training stage restarts from its beginning; completed stages can be reused by the notebook.
 
+## Multiple weighting rules without retraining
+
+Use [dpe_weighting_rules.ipynb](../../../notebooks/dpe_weighting_rules.ipynb) to
+compare all implemented aggregation rules in one notebook. It reads an existing
+H2 run's cached per-head probabilities, fits every rule on B and selects on C.
+It does not retrain ResNet or prototype heads, extract raw features or perform
+another image-inference pass. CPU execution is sufficient.
+
+First obtain the original end-to-end notebook's H2 results ZIP. Summary-only
+reports do not contain the per-image probabilities needed for this comparison.
+The hosted workflow normally needs no code edits:
+
+1. **Kaggle:** import the multi-rule notebook, attach the H2 ZIP as an input
+   dataset, enable Internet and choose Run All. CPU is sufficient.
+2. **Colab:** open the multi-rule notebook and choose Run all. Upload the H2 ZIP
+   when prompted, unless it is already in the session. A results download starts
+   at the end; a file link is also displayed.
+
+When no compatible checkout exists, the notebook clones
+`experiment/dpe-multiple-weighting-rules` from the project repository. It installs
+missing dependencies, finds one complete ZIP/extracted run, extracts ZIPs into
+writable session storage, validates inputs and infers track and seed. It accepts
+a run at ZIP root or inside an enclosing directory. Original files are read only;
+ZIP extraction rejects path escapes, symbolic links and duplicate members.
+Existing checkouts are used as supplied without switching their Git revision.
+
+`SOURCE=None` discovers attached inputs automatically. If several different runs
+are present, set `SOURCE` to the desired ZIP or directory in the first cell.
+Duplicate ZIP/extracted copies of the same manifest count as one run. Optional
+`REPO_PATH`, `WORK_DIR` and `SEARCH_PATHS` support existing/offline checkouts and
+custom inputs. Internet is needed for a fresh clone or missing packages.
+
+The default `SUITE_NAME=None` derives a name from track, seed and input/code/grid/
+numerical-library identities. Identical reruns reuse verified output; changed
+identities get a fresh directory. A manual name remains available. Results are
+saved to `WORK_DIR/results/<suite-name>/`, outside the original run, and exported
+to a ZIP with a download link. Kaggle and Colab use their writable working
+directories by default; local execution uses a session folder under repository
+`outputs/`. Keep the source H2 ZIP separately. Standard and enhanced source
+bundles are both accepted; report them separately.
+
+The [fixed rule configuration](../../../configs/dpe_head_reweighting/weighting_rules.yaml)
+declares seven additional candidates and the solver settings:
+
+| Family | Weight fit on B | Candidate settings |
+| --- | --- | --- |
+| Uniform | Exactly `1/15` per head | Included globally and as every family's fallback |
+| Original power control | Existing score powers and uniform shrinkage | Original 12 nonuniform configurations, unchanged |
+| Softmax reliability | `exp(beta * (s_h - max(s)))`, normalized | beta 10 and 30; WGA scores are fractions |
+| Top-k averaging | Equal weights on the k highest B-WGA heads | k 10 and 5; tied scores use original head order |
+| Regularized joint weights | Fit the combined probabilities with a worst-group log-loss objective | lambda 1, 0.1 and 0.01 |
+
+There are 20 distinct candidate records including uniform. Joint fitting solves
+the following convex problem on B, using an epigraph variable and SciPy SLSQP:
+
+```math
+\min_{w\geq0,\ \sum_h w_h=1}
+\max_g\frac{1}{|B_g|}\sum_{i\in B_g}
+-\log\left(\sum_h w_h p_h(y_i\mid x_i)\right)
++\lambda\sum_h(w_h-1/15)^2.
+```
+
+The solver starts at uniform. Correct-class head probabilities are floored at
+`1e-12` for the fitting objective to avoid undefined logarithms; reported
+inference probabilities remain unchanged. The YAML declares `maxiter=1000`,
+`ftol=1e-10` and feasibility tolerance `1e-7`. Nonconvergence, infeasible or
+nonfinite weights, and an objective worse than the uniform start are errors;
+the suite does not silently omit a failed candidate. Solver success, iteration
+count, objective and B-group log losses are saved with each joint candidate.
+Only the weights are optimized; there is no fitted intercept, feature-dependent
+gate, probability calibration or change to the heads.
+
+All candidates are evaluated on C. Each family selects one configuration with
+an exact uniform fallback, and the suite also selects an overall configuration
+on C. Selection maximizes C WGA and then C overall accuracy using tolerance
+`1e-12`. Uniform wins a complete tie; otherwise configuration declaration order
+breaks ties. This retains the original power rule's smaller-alpha/smaller-gamma
+ordering and prefers stronger joint regularization when its C metrics tie.
+Weights are not refitted on B+C.
+
+Every family winner and the overall winner are persisted **before** opening the
+test cache. Test evaluation scores only those frozen choices and uniform; it
+does not sweep all hyperparameters on test. Selecting a family or reporting only
+its best seed after looking at test WGA would be test-driven selection. Keep
+seed-0 follow-ups exploratory because that test split has already been inspected.
+Lock the protocol before evaluating later seeds, and report failures to improve.
+
+The suite checks unique/disjoint A/B/C IDs, cache row alignment, class/group
+consistency, preprocessing and ensemble identities. It recomputes the original
+power decision from B/C before reusing old bundles. If original test metrics are
+present, their uniform metrics must agree with the test cache. New output binds
+the resolved rule configuration, implementation/notebook hashes, SciPy/NumPy versions,
+source hashes, selection hash and test-cache hash. The notebook identity hashes
+code cells only: autosaved outputs, execution counts and editor metadata do not
+invalidate a run. Code edits do invalidate it. Re-running verifies the
+frozen choices and returns identical completed results; changed inputs require
+a new output directory. An interrupted candidate CSV export is regenerated from
+the frozen selection on rerun. Notebook setup checks the required archive files
+before fitting and reports missing files together. These checks establish consistency of saved predictions,
+not independent verification of the original images or feature extraction.
+
+Additional dependencies and the equivalent CLI are:
+
+```bash
+python -m pip install -r src/methods/dpe_head_reweighting/requirements-weighting.txt
+python scripts/dpe_weighting_rules.py select --source-run outputs/dpe_head_reweighting_runs/h2-standard-seed0 --output-dir outputs/dpe_weighting_rule_runs/standard-seed0-v1
+python scripts/dpe_weighting_rules.py evaluate --source-run outputs/dpe_head_reweighting_runs/h2-standard-seed0 --output-dir outputs/dpe_weighting_rule_runs/standard-seed0-v1
+```
+
+Use `--config` to specify a separately declared YAML grid. Output includes
+`selection.json`, `candidate_comparison.csv`, `metrics.json`, `run.json` and
+`report.md`. They contain exact weights, all C candidate metrics, per-family
+winners, overall winner, effective head counts, probability/prediction changes,
+per-group test accuracies/counts, paired deltas and fixed/new error IDs. The
+notebook exports a ZIP of this new comparison without duplicating the source
+predictions or heads; retain the original H2 ZIP separately for replay.
+
+No new Waterbirds run is claimed by this implementation. Add a dated experiment
+entry and lightweight result summary after executing it on real run artifacts,
+following the existing experiment-log template. Synthetic regression results
+must not be reported as Waterbirds accuracy.
+
 ## Output specification
 
 | Artifact | Contents |
@@ -296,11 +418,34 @@ The default CLI configuration places records in `experiments/exp-dpe-h2-waterbir
 
 ## Validation and provenance
 
+The [implementation audit](AUDIT.md) records findings, fixes and verification
+limits. To independently recompute the original power-grid decision and test
+metrics from an extracted end-to-end H2 archive, including earlier-runner archives
+(this checker does not accept the new multi-rule comparison ZIP):
+
 ```bash
+python scripts/audit_dpe_head_reweighting.py --run-dir path/to/extracted/run
+```
+
+The checker uses saved per-head predictions and does not import production
+aggregation, selection or metric functions. It reads the bundle without changing
+it. Raw-image inference requires the separately retained dataset and backbone.
+The notebook displays all candidate C scores, probability differences and changed
+predictions. The selection stage also exports `candidate_comparison.csv` beside
+`selection.json`. Equal weights are reported explicitly when selected.
+
+Final reports include a `selection_hash` binding them to the frozen decision.
+Before evaluation, the saved decision is checked against the B/C prediction
+caches. Modified selection records and stale final reports are rejected. Keep
+older completed runs intact for the independent checker; implementation changes
+require a fresh H2 run directory for normal execution.
+
+```bash
+python -m pip install -r src/methods/dpe_head_reweighting/requirements-weighting.txt
 python -m pytest tests/methods/dpe_head_reweighting -q
 ```
 
-The checks cover reference inference, atomic artifact writes, numerical stability, weight calculations, partition isolation, changed-input rejection and input-readiness failures. Full notebook integration checks are enabled when the optional Jupyter test dependencies are installed:
+The checks cover reference inference, atomic artifact writes, numerical stability, weight calculations, partition isolation, changed-input rejection and input-readiness failures. The new multi-rule checks include a known complementary-head optimum, original power-grid parity, failed-solver rejection, B-only fitting, uniform fallback, frozen-source checks and notebook execution/reuse with autosaving after every cell. Hosted setup tests exercise fresh local clones, read-only attached ZIPs, nested extraction, automatic naming and simulated Colab upload/download. These tests do not run inside the live Kaggle or Colab service. Full notebook integration checks are enabled when the optional Jupyter test dependencies are installed:
 
 ```bash
 python -m pip install nbclient ipykernel
@@ -309,4 +454,31 @@ python -m pytest tests/methods/dpe_head_reweighting -q
 
 The notebook checks execute both standard and enhanced tracks in separate Jupyter kernels, with 15 heads, 20 epochs, 2048-dimensional synthetic features and official split/group counts. They verify final evaluation, archive creation and reuse of completed stages. Without the optional dependencies, these two integration checks are skipped. The notebook tests run the shared 100-epoch optimization loop with a small synthetic classifier in place of ResNet-50, then use the real feature handoff and H2 stages. They also verify completed-backbone and feature-bundle reuse. Synthetic results establish software behavior only; the fixture models are not Waterbirds ResNet-50 backbones. Real Waterbirds performance and GPU parity remain unverified.
 
-Feature-only initialization consumes random numbers differently from the original reproduction notebook; the implementation does not reproduce its historical head parameters exactly. The original baseline and reproduction notebook are preserved. Source attribution, adaptation history and license notices are recorded in [ORIGINAL_SOURCE.md](ORIGINAL_SOURCE.md) and [LICENSE](LICENSE).
+Feature-only initialization consumes random numbers differently from the original reproduction notebook; the implementation does not reproduce its historical head parameters exactly. The original baseline and reproduction notebook are preserved.
+
+## Source and attribution
+
+This project-owned H2 adaptation was introduced on 2026-11-07. Its reference is
+To et al., *Diverse Prototypical Ensembles Improve Robustness to Subpopulation
+Shift* (ICML 2025), [paper](https://arxiv.org/abs/2505.23027),
+[upstream repository](https://github.com/minhto2802/dpe4subpop), preserved commit
+`68b811461e238d44cced6ae6c8ce75b66cad5449` (copyright 2025 Minh To, MIT).
+The behavioral reference is `notebooks/dpe_waterbirds_end_to_end.ipynb`, cells
+11, 13 and 14 at project commit `fc6c267`.
+
+`train_heads.py` adapts its group-balanced feature-only training, covariance and
+prototype penalties, entropic loss and last-on-tie epoch selection.
+`ensemble.py` follows the IsoMax+ Euclidean-distance implementation preserved in
+`baselines/dpe4subpop/utils/isomaxplus.py`, originally David Macêdo (2022),
+Apache 2.0 ([source](https://github.com/dlmacedo/entropic-out-of-distribution-detection)).
+The dataset subsampling reference is Yuzhe Yang (2023), MIT
+([SubpopBench](https://github.com/YyzHarry/SubpopBench)). Applicable MIT and
+third-party license texts remain in [LICENSE](LICENSE).
+
+Weight fitting, split manifests, experiment locks and diagnostic reporting are
+project-owned H2 additions. The multi-rule extension added on 2026-11-08 provides
+softmax reliability, top-k averaging and constrained regularized worst-group
+log-loss weighting in `weighting_rules.py`, with cached-run orchestration in
+`rule_suite.py`. These experiment rules and their results are not attributed to
+the DPE paper. The original power rule, preserved baseline sources and completed
+result records remain intact.

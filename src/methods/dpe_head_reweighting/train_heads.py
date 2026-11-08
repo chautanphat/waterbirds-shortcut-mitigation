@@ -1,4 +1,4 @@
-"""Feature-only Stage 1 adapted from notebook cells 13/14 (see ORIGINAL_SOURCE)."""
+"""Feature-only Stage 1 adapted from notebook cells 13/14 (see method README)."""
 import random
 import numpy as np
 import torch

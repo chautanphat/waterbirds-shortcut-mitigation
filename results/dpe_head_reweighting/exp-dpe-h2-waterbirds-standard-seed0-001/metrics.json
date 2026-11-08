@@ -1,0 +1,101 @@
+{
+  "alpha": 0,
+  "delta_pp": {
+    "overall": 0.0,
+    "wga": 0.0
+  },
+  "effective_heads": 15.0,
+  "fixed_ids": [],
+  "gamma": 1,
+  "group_delta_pp": {
+    "00": 0.0,
+    "01": 0.0,
+    "10": 0.0,
+    "11": 0.0
+  },
+  "lock": {
+    "config": "64a63860b61a101741156b2430c427776c279858c62de3f6afb547b3de3d079f",
+    "ensemble": "111268e36b43cfa9112f0def79242e93ccae05de80b4fe6dabde465518f351be",
+    "implementation": {
+      "scripts/dpe_head_reweighting.py": "d67779a35d9abdfd79d54bc18e0011b1d2ef7a1fd30081d3f743ae438bd531df",
+      "src/methods/dpe_head_reweighting/ensemble.py": "ecc109502eacefb1b42d3f9ef006fd8dd03b5da675092e529910baacb5aa6186",
+      "src/methods/dpe_head_reweighting/experiment.py": "45306ec4b71b3aad7dc329597de1132df4b6b1d836ada13343bc03a9a4ecc53a",
+      "src/methods/dpe_head_reweighting/reweighting.py": "6abb09fbb3640c656ab557e0dc1fc1fbb37517f32c33f1873ab5371ca745d6c9",
+      "src/methods/dpe_head_reweighting/stage0.py": "2192c4e50de8fed708175b79820283d970e44b2306b91708da7e74ca00daa1e8",
+      "src/methods/dpe_head_reweighting/train_heads.py": "71f48f2de933e2e8d15c6579186624c88db79697baeacf6817896a3759b35bca"
+    },
+    "manifest": "ac10340593fd09b926895273bdbfa2905cc114dc49b5acb1b34d0e694ca78f08",
+    "val_features": "542c61513bcc9e73c36d42df678859f170767145e0f9de670777f5ee566bbe5c"
+  },
+  "metadata_hash": "a826edcd1f193fe72cd775cd61739ae78675cc48f73b76ad600db4d85b41a323",
+  "new_error_ids": [],
+  "runtime": {
+    "commit": "5ebb1128fe84200938e73c1fe85e317ecb39f09d",
+    "cuda": "13.0",
+    "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "implementation": {
+      "scripts/dpe_head_reweighting.py": "d67779a35d9abdfd79d54bc18e0011b1d2ef7a1fd30081d3f743ae438bd531df",
+      "src/methods/dpe_head_reweighting/ensemble.py": "ecc109502eacefb1b42d3f9ef006fd8dd03b5da675092e529910baacb5aa6186",
+      "src/methods/dpe_head_reweighting/experiment.py": "45306ec4b71b3aad7dc329597de1132df4b6b1d836ada13343bc03a9a4ecc53a",
+      "src/methods/dpe_head_reweighting/reweighting.py": "6abb09fbb3640c656ab557e0dc1fc1fbb37517f32c33f1873ab5371ca745d6c9",
+      "src/methods/dpe_head_reweighting/stage0.py": "2192c4e50de8fed708175b79820283d970e44b2306b91708da7e74ca00daa1e8",
+      "src/methods/dpe_head_reweighting/train_heads.py": "71f48f2de933e2e8d15c6579186624c88db79697baeacf6817896a3759b35bca"
+    },
+    "numpy": "2.1.3",
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130"
+  },
+  "seed": 0,
+  "selected": {
+    "counts": {
+      "00": 2255,
+      "01": 2255,
+      "10": 642,
+      "11": 642
+    },
+    "groups": {
+      "00": 0.9272727272727272,
+      "01": 0.8975609756097561,
+      "10": 0.9112149532710281,
+      "11": 0.9127725856697819
+    },
+    "overall": 0.9123230928546773,
+    "wga": 0.8975609756097561
+  },
+  "test_features_hash": "85be6fb7657fb940777a958110668436c9fa49bea61bac36195ffbdb08564b3d",
+  "track": "standard",
+  "uniform": {
+    "counts": {
+      "00": 2255,
+      "01": 2255,
+      "10": 642,
+      "11": 642
+    },
+    "groups": {
+      "00": 0.9272727272727272,
+      "01": 0.8975609756097561,
+      "10": 0.9112149532710281,
+      "11": 0.9127725856697819
+    },
+    "overall": 0.9123230928546773,
+    "wga": 0.8975609756097561
+  },
+  "weights": [
+    0.06666666666666667,
+    0.06666666666666667,
+    0.06666666666666667,
+    0.06666666666666667,
+    0.06666666666666667,
+    0.06666666666666667,
+    0.06666666666666667,
+    0.06666666666666667,
+    0.06666666666666667,
+    0.06666666666666667,
+    0.06666666666666667,
+    0.06666666666666667,
+    0.06666666666666667,
+    0.06666666666666667,
+    0.06666666666666667
+  ]
+}

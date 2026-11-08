@@ -75,9 +75,10 @@ class SharedERMTests(unittest.TestCase):
                         effective[flag] = ast.literal_eval(keyword.value)
         notebook = json.loads((ROOT / "notebooks/dpe_waterbirds_end_to_end.ipynb").read_text())
         source = next("".join(cell.get("source", [])) for cell in notebook["cells"]
-                      if "!python baselines/dpe4subpop/main.py" in "".join(cell.get("source", [])))
-        command = source[source.index("!python baselines/dpe4subpop/main.py") + 1:]
-        tokens = shlex.split(command.replace("\\\n", " "))
+                      if "stage0_command =" in "".join(cell.get("source", [])))
+        command = next(node.value for node in ast.parse(source).body
+                       if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "stage0_command" for t in node.targets))
+        tokens = [node.value if isinstance(node, ast.Constant) else "placeholder" for node in command.elts]
         index = 2
         while index < len(tokens):
             flag = tokens[index]
@@ -179,6 +180,9 @@ class SharedERMTests(unittest.TestCase):
             self.assertEqual(len(evaluation_loader(data, 3)), 2)
 
     def test_metrics_include_group_counts_and_missing_groups(self):
+        for predictions, targets, attributes in (([0.5], [0], [0]), ([0], [0.5], [0]), ([0], [0], [0.5])):
+            with self.assertRaisesRegex(ValueError, "binary"):
+                group_metrics(predictions, targets, attributes)
         metrics = group_metrics([0, 1, 1, 0, 1], [0, 0, 1, 1, 1], [0, 1, 0, 1, 1])
         self.assertAlmostEqual(metrics["accuracy"], 0.6)
         self.assertEqual(metrics["worst_group_accuracy"], 0)

@@ -1,0 +1,2 @@
+# Additional CPU-only dependency for constrained joint weight fitting.
+scipy>=1.11,<2

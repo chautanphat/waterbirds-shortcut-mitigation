@@ -199,6 +199,14 @@ def test_synthetic_lifecycle_without_test_files_during_selection(tmp_path, monke
     selected = ex.select_action(c)
     assert len(selected['weights']) == 3
     frozen = (Path(c['experiment_dir']) / 'selection.json').read_bytes()
+    # A saved candidate/metric edit must be rejected before test prediction.
+    selection_path = Path(c['experiment_dir']) / 'selection.json'
+    altered = ex.read_json(selection_path)
+    altered['selected']['weights'][0] += .01
+    ex.write_json(selection_path, altered)
+    with pytest.raises(ValueError, match='disagrees with B/C'):
+        ex.validated_selection(c)
+    selection_path.write_bytes(frozen)
     Path(c['metadata']).write_bytes(saved_metadata)
     test = [r for r in rows if r['split'] == 2]
     with open(c['test_features'], 'wb') as f:
@@ -207,6 +215,7 @@ def test_synthetic_lifecycle_without_test_files_during_selection(tmp_path, monke
     # Output caches must stay local to the test.
     monkeypatch.setattr(ex, 'cache', lambda *args: None)
     result = ex.evaluate_action(c)
+    assert result['selection_hash'] == ex.digest(selection_path)
     assert (Path(c['experiment_dir']) / 'selection.json').read_bytes() == frozen
     assert result['track'] == 'standard' and sum(result['uniform']['counts'].values()) == 5794
     assert (Path(c['results_dir']) / 'head_diagnostics.png').exists()

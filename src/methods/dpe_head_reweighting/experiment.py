@@ -297,6 +297,16 @@ def select_action(c):
     result = fit_select(*data)
     result.update(lock=lock(c), head_ids=a['head_ids'], runtime=runtime())
     write_json(record, result)
+    report = record.parent / 'candidate_comparison.csv'
+    fields = ['alpha', 'gamma', 'c_wga', 'c_overall', 'c_prediction_changes',
+              'c_probability_max_abs_delta', 'effective_heads']
+    with report.open('w', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=fields)
+        writer.writeheader()
+        for row in result['candidates']:
+            writer.writerow(dict(alpha=row['alpha'], gamma=row['gamma'],
+                                 c_wga=row['metrics']['wga'], c_overall=row['metrics']['overall'],
+                                 **{k: row[k] for k in fields[4:]}))
     return result['selected']
 
 
@@ -326,10 +336,31 @@ def diagnostics(c, result, p_test, y, g):
         writer.writerows(rows)
 
 
-def evaluate_action(c):
+def validated_selection(c):
+    """Recompute the frozen decision from B/C caches before accepting it."""
     record = read_json(Path(c['experiment_dir']) / 'selection.json')
     if record['lock'] != lock(c):
         raise ValueError('Frozen selection inputs changed')
+    manifest = read_json(Path(c['experiment_dir']) / 'manifest.json')
+    data = []
+    for role in ('B', 'C'):
+        rows = manifest['parts'][role]
+        with np.load(Path(c['experiment_dir']) / 'predictions' / f'{role}.npz', allow_pickle=False) as f:
+            if (str(f['role']) != role or str(f['ensemble_hash']) != record['lock']['ensemble'] or
+                    str(f['preprocessing']) != ensemble.PREPROCESSING or
+                    f['ids'].tolist() != [r['id'] for r in rows] or
+                    f['labels'].tolist() != [r['y'] for r in rows] or
+                    f['groups'].tolist() != [r['group'] for r in rows]):
+                raise ValueError('Selection prediction cache changed')
+            data.extend([f['probabilities'], f['labels'], f['groups']])
+    expected = fit_select(*data)
+    if any(object_hash(record[k]) != object_hash(expected[k]) for k in expected):
+        raise ValueError('Saved selection disagrees with B/C predictions')
+    return record
+
+
+def evaluate_action(c):
+    record = validated_selection(c)
     out = Path(c['results_dir']) / 'metrics.json'
     if out.exists():
         raise ValueError('Test result already exists; preserve the original evaluation')
@@ -349,6 +380,7 @@ def evaluate_action(c):
     u, v = metrics(uniform, y, g), metrics(weighted, y, g)
     uc, vc = uniform.argmax(-1) == y, weighted.argmax(-1) == y
     result = dict(track=c['track'], seed=c['seed'], uniform=u, selected=v,
+                  selection_hash=digest(Path(c['experiment_dir']) / 'selection.json'),
                   delta_pp={k: 100 * (v[k] - u[k]) for k in ('overall', 'wga')},
                   group_delta_pp={k: 100 * (v['groups'][k] - u['groups'][k]) for k in GROUPS},
                   fixed_ids=[r['id'] for r, b in zip(rows, ~uc & vc) if b],

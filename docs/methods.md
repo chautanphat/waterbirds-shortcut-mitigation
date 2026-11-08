@@ -36,8 +36,49 @@ Add approved methods below this heading using the shared template.
 - **Mechanism:** Full-backbone ResNet-50 fine-tuning with mean cross entropy and class-balanced replacement sampling. Training group labels are unused.
 - **Settings:** [`configs/erm/waterbirds_standard.yaml`](../configs/erm/waterbirds_standard.yaml): ImageNet V2 weights, updated BatchNorm statistics, 100 epochs, train/eval batch sizes 128/256, SGD LR 0.001, momentum 0.9, weight decay 0, no scheduler or augmentation. These match the effective stage-0 command in the existing DPE notebook, including CLI defaults.
 - **Evaluation:** `ckpt_last.pt` is the default, matching DPE's last-epoch handoff. An additional `ckpt_best_wga.pt` tracks validation WGA for experiments using validation selection. Held-out test evaluation is a separate command. Reports include overall/per-group accuracy, WGA and counts.
-- **Status:** Implementation available; benchmark training has not been run with the shared implementation.
+- **Status:** One standard seed-0 shared-training run is recorded in the [H2 experiment](../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md). Backbone validation metrics are available; that record does not establish an ERM-only test result or a multi-seed reproduction.
 - **Reuse:** Project-level train/evaluate/export scripts operate independently of all preserved baselines. Checkpoints and raw ordered feature caches can be consumed by DPE; historical DPE runs remain unchanged.
+
+## DPE head reweighting (H2)
+
+### Overview
+
+- **Full name:** Validation-derived reweighting of Diverse Prototypical Ensemble heads.
+- **Paper/source:** Project-owned adaptation of [DPE](https://arxiv.org/abs/2505.23027), ICML 2025; the weighting rule is not a paper result.
+- **Implementation location:** [src/methods/dpe_head_reweighting/](../src/methods/dpe_head_reweighting/README.md).
+
+### Mechanism
+
+Freeze one ERM representation and 15 A-trained prototype heads. Estimate each head's WGA on B, construct score-power weights with uniform shrinkage, select aggregation on C and compare with the same heads under uniform averaging on test. This experiment uses group-annotated validation data.
+
+A separate [multi-rule notebook](../notebooks/dpe_weighting_rules.ipynb) reuses a completed run's prediction caches to compare softmax reliability, top-k averaging and regularized joint weights alongside uniform and the original power control. Kaggle/Colab setup clones the experiment branch when needed, discovers/extracts the original H2 ZIP, infers track/seed and exports a results ZIP; no head/backbone retraining is required. The [declared grid](../configs/dpe_head_reweighting/weighting_rules.yaml) is fitted on B and selected on C; each family includes a uniform fallback. See the [protocol and hosted-run instructions](../src/methods/dpe_head_reweighting/README.md#multiple-weighting-rules-without-retraining). These additional rules are implemented with synthetic regression coverage; no real Waterbirds measurements for them are recorded yet.
+
+### Implementation
+
+- **Backbone:** Shared ImageNet-pretrained ResNet-50; final-epoch standard ERM checkpoint.
+- **Loss:** IsoMax+ with training entropic scale 30, prototype penalty and sequential diversity regularization; inference temperature 1.
+- **Training procedure:** Validation A/B/C roles are separated; A supplies head fitting and epoch selection. Test is held out until aggregation selection is persisted.
+- **Special requirements:** Ordered raw features, group annotations and matching input provenance.
+
+### Experimental Settings
+
+- **Dataset and split:** Official Waterbirds; validation A/B/C=720/241/238, partition seed 0.
+- **Configuration:** [Recorded H2 settings](../experiments/exp-dpe-h2-waterbirds-standard-seed0-001/config.yaml), [backbone settings](../experiments/exp-dpe-h2-waterbirds-standard-seed0-001/stage0_config.yaml).
+- **Optimization:** Backbone SGD 100 epochs, batch 128; 15 heads × 20 epochs, batch 256; learning rate 0.001 and momentum 0.9.
+- **Random seeds:** One completed standard-track run, seed 0; seeds 1 and 2 remain pending.
+
+### Evaluation
+
+Uniform and selected test accuracy are both 91.2323%, with WGA 89.7561%. Group accuracies/counts and full candidate results are in the [run report](../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md). All 13 candidates predict identical C labels; selection retains uniform weights, yielding zero paired improvement.
+
+### Status
+
+- **Original reproduction:** Not claimed; H2 changes validation allocation and head-training data budget.
+- **Waterbirds adaptation:** Completed exploratory seed-0 run; independently audited saved predictions and records. See [experiment index](experiment_log.md#exp-dpe-h2-waterbirds-standard-seed0-001--2026-11-08) and [provenance](../experiments/exp-dpe-h2-waterbirds-standard-seed0-001/run.json).
+
+### Notes
+
+The audit cannot rerun image-to-feature inference from the supplied bundle because raw images, backbone and raw features are excluded. [Summary diagnostics](../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md#additional-summary-diagnostics--2026-11-08) find unstable B-to-C WGA rankings (Spearman -0.0276) and mild weight concentration (minimum effective heads 14.3720). The recommended follow-up is to complete seeds 1/2, check reliability-score stability, and separately compare regularized joint weights on the same frozen heads. Real-data evaluation of the additional rules and multi-seed conclusions remain future work. Identical selected/uniform metrics are an observed selection outcome, not evidence of a general advantage or disadvantage of weighting.
 
 ## Diverse Prototypical Ensembles (DPE)
 
