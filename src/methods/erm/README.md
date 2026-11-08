@@ -71,7 +71,14 @@ Paths in YAML and CLI overrides resolve from the working directory. Scripts loca
 
 For a short local smoke run, set `model.weights: null`, reduce batch size/workers in a config copy, and use `--device cpu --steps 2`. This uses random initialization and is not a benchmark run. No automatic weight download occurs during checkpoint evaluation/export.
 
-Training only constructs train and validation datasets. It writes `ckpt_last.pt`, `ckpt_best_wga.pt`, `training_state.pt` (model, optimizer, update count and PyTorch RNG state), `config.yaml`, `run.json` (command, code revision/dirty state, software versions and metadata hash), `metrics.jsonl`, and `summary.json`. Resume is not implemented. All accuracies are fractions in [0,1]; reports include group counts, per-group accuracy, overall accuracy, and WGA. WGA is null if an evaluated split lacks any of the four groups.
+Training only constructs train and validation datasets. It writes `ckpt_last.pt`, `ckpt_best_wga.pt`, `training_state.pt` (model, optimizer, best model, metric history, update count and RNG states), `config.yaml`, `run.json` (command, code revision/dirty state, software versions and metadata hash), `metrics.jsonl`, and `summary.json`. Epoch-based Python/API callers can opt into `run_training(config, resume=True)`.
+New atomic version-2 states restore optimizer, model, best model, metric history
+and Python/NumPy/Torch/CUDA RNG states at completed epoch boundaries (including
+initialization before epoch 1). Recipe, metadata and training-source changes are
+rejected. Non-resume callers retain the nonempty-directory guard; step-based
+resume and incomplete legacy states are unsupported. The automated multi-seed
+DPE study enables epoch resume by default. Files must remain available across
+hosted runtime restarts; deleting the VM without persistent storage loses them. All accuracies are fractions in [0,1]; reports include group counts, per-group accuracy, overall accuracy, and WGA. WGA is null if an evaluated split lacks any of the four groups.
 
 ## Reuse from another method
 
