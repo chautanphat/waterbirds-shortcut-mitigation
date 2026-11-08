@@ -168,12 +168,15 @@ def test_invalidated_config_and_cache_and_source_protection(tmp_path):
         suite.select(source, CONFIG, tmp_path / 'other-suite')
 
 
-def test_rules_notebook_execution_and_reuse(tmp_path, monkeypatch):
+@pytest.mark.parametrize('mode', ['existing', 'kaggle_zip_clone', 'colab_upload_clone'])
+def test_rules_notebook_execution_and_reuse(tmp_path, monkeypatch, mode):
     nbformat = pytest.importorskip('nbformat')
     nbclient = pytest.importorskip('nbclient')
     pytest.importorskip('ipykernel')
     import sys
     import shutil
+    import subprocess
+    import zipfile
     source, _, cache = make_bundle(tmp_path)
     cache('test')
     # Run a real editable copy, autosaving after every cell, as Jupyter does.
@@ -183,19 +186,61 @@ def test_rules_notebook_execution_and_reuse(tmp_path, monkeypatch):
     notebook_path = repo / 'notebooks/dpe_weighting_rules.ipynb'
     notebook_path.parent.mkdir()
     template = nbformat.read(ROOT / 'notebooks/dpe_weighting_rules.ipynb', as_version=4)
-    output = tmp_path / 'notebook-suite'
+    work = tmp_path / 'session'
+    mount = tmp_path / 'attached-input'
+    mount.mkdir()
+    archive = tmp_path / 'h2-standard-seed0.zip'
+    with zipfile.ZipFile(archive, 'w') as zipped:
+        for path in source.rglob('*'):
+            if path.is_file():
+                zipped.write(path, 'enclosing/run/' + str(path.relative_to(source)))
+    if mode == 'kaggle_zip_clone':
+        shutil.copyfile(archive, mount / archive.name)
+        (mount / archive.name).chmod(0o444)
+    if mode != 'existing':
+        subprocess.run(['git', 'init', '-q', '-b', 'notebook-test', str(repo)], check=True)
+        subprocess.run(['git', '-C', str(repo), 'add', '.'], check=True)
+        subprocess.run(['git', '-C', str(repo), '-c', 'user.name=Notebook Test',
+                        '-c', 'user.email=notebook-test@example.invalid', 'commit', '-qm', 'Synthetic notebook fixture'], check=True)
     for cell in template.cells:
         if cell.cell_type == 'code':
-            cell.source = cell.source.replace('REPO_PATH = None', f'REPO_PATH = {str(repo)!r}')
-            if 'SOURCE_RUN_DIR =' in cell.source:
-                # Keep the actual readiness checks, changing only user settings.
-                cell.source = cell.source.replace(
-                    '(REPO / "outputs/dpe_head_reweighting_runs/h2-standard-seed0").resolve()',
-                    f'Path({str(source)!r})')
-                cell.source = cell.source.replace(
-                    '(REPO / "outputs/dpe_weighting_rule_runs" / SUITE_NAME).resolve()',
-                    f'Path({str(output)!r})')
+            if 'SOURCE = None' in cell.source:
+                cell.source = cell.source.replace('WORK_DIR = None', f'WORK_DIR = {str(work)!r}')
+                cell.source = cell.source.replace('SEARCH_PATHS = None', f'SEARCH_PATHS = [{str(mount)!r}]')
+                if mode == 'existing':
+                    cell.source = cell.source.replace('REPO_PATH = None', f'REPO_PATH = {str(repo)!r}')
+                    cell.source = cell.source.replace('SOURCE = None', f'SOURCE = {str(source)!r}')
+                else:
+                    cell.source = cell.source.replace('REPO_URL = "https://github.com/chautanphat/waterbirds-shortcut-mitigation.git"',
+                                                       f'REPO_URL = {str(repo)!r}')
+                    cell.source = cell.source.replace('REPO_REF = "experiment/dpe-multiple-weighting-rules"',
+                                                       'REPO_REF = "notebook-test"')
+            if mode != 'existing' and 'PLATFORM = ' in cell.source:
+                # Platform defaults and file dialogs are mocked; actual cloning,
+                # read-only ZIP discovery/extraction and numerical stages run.
+                cell.source += f'\nPLATFORM = {("colab" if mode == "colab_upload_clone" else "kaggle")!r}\n'
+                if mode == 'colab_upload_clone':
+                    cell.source += f'''
+import types
+mock_colab = types.ModuleType("google.colab")
+def mock_upload():
+    import shutil
+    target = Path.cwd() / {archive.name!r}
+    shutil.copyfile({str(archive)!r}, target)
+    counter = Path({str(tmp_path / 'upload-count')!r})
+    counter.write_text(str(int(counter.read_text()) + 1) if counter.exists() else "1")
+    return {{target.name: target.read_bytes()}}
+def mock_download(path):
+    assert Path(path).is_file()
+    Path({str(tmp_path / 'downloaded-path')!r}).write_text(path)
+mock_colab.files = types.SimpleNamespace(upload=mock_upload, download=mock_download)
+sys.modules["google.colab"] = mock_colab
+'''
     nbformat.write(template, notebook_path)
+    if mode != 'existing':
+        subprocess.run(['git', '-C', str(repo), 'add', 'notebooks/dpe_weighting_rules.ipynb'], check=True)
+        subprocess.run(['git', '-C', str(repo), '-c', 'user.name=Notebook Test',
+                        '-c', 'user.email=notebook-test@example.invalid', 'commit', '-qm', 'Configure fixture'], check=True)
     kernels = tmp_path / 'jupyter/kernels/h2-rules'
     kernels.mkdir(parents=True)
     (kernels / 'kernel.json').write_text(json.dumps(dict(
@@ -204,16 +249,28 @@ def test_rules_notebook_execution_and_reuse(tmp_path, monkeypatch):
         env=dict(OMP_NUM_THREADS='1', MKL_NUM_THREADS='1'))))
     monkeypatch.setenv('JUPYTER_PATH', str(tmp_path / 'jupyter'))
     identities = None
+    working = tmp_path / 'empty-notebook-session'
+    working.mkdir()
+    local_notebook = working / 'run.ipynb'
+    shutil.copyfile(notebook_path, local_notebook)
     for _ in range(2):
-        notebook = nbformat.read(notebook_path, as_version=4)
+        actual_notebook = notebook_path if mode == 'existing' else local_notebook
+        notebook = nbformat.read(actual_notebook, as_version=4)
         nbclient.NotebookClient(notebook, timeout=120, kernel_name='h2-rules',
-                                on_cell_executed=lambda **kwargs: nbformat.write(notebook, notebook_path),
-                                resources={'metadata': {'path': str(repo / 'notebooks')}}).execute()
+                                on_cell_executed=lambda **kwargs: nbformat.write(notebook, actual_notebook),
+                                resources={'metadata': {'path': str(working)}}).execute()
+        displays = str([o for c in notebook.cells if c.cell_type == 'code' for o in c.outputs])
+        assert "doesn't exist" not in displays  # FileLink must resolve after chdir.
+        outputs = list((work / 'results').iterdir())
+        output, = [p for p in outputs if p.is_dir()]
         current = [(output / name).read_bytes() for name in ('selection.json', 'metrics.json')]
         if identities is not None:
             assert identities == current
         identities = current
         assert output.with_suffix('.zip').is_file()
+    if mode == 'colab_upload_clone':
+        assert (tmp_path / 'upload-count').read_text() == '1'
+        assert Path((tmp_path / 'downloaded-path').read_text()).is_file()
 
 
 def test_notebook_hash_ignores_execution_but_detects_code_edits(tmp_path):

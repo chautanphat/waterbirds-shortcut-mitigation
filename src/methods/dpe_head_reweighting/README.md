@@ -286,13 +286,38 @@ H2 run's cached per-head probabilities, fits every rule on B and selects on C.
 It does not retrain ResNet or prototype heads, extract raw features or perform
 another image-inference pass. CPU execution is sufficient.
 
-First complete the original end-to-end notebook, or extract its results ZIP.
-Set `SOURCE_RUN_DIR` to the directory containing `experiment/`, `checkpoints/`
-and `results/`. Set a new `SUITE_NAME` and run the notebook top to bottom.
-The default suite output is `outputs/dpe_weighting_rule_runs/<suite-name>/`,
-outside the original run. The original files remain unchanged. Source track,
-training seed, partition and head ordering are inherited from the original run.
-Both standard and enhanced source bundles are accepted; report them separately.
+First obtain the original end-to-end notebook's H2 results ZIP. Summary-only
+reports do not contain the per-image probabilities needed for this comparison.
+The hosted workflow normally needs no code edits:
+
+1. **Kaggle:** import the multi-rule notebook, attach the H2 ZIP as an input
+   dataset, enable Internet and choose Run All. CPU is sufficient.
+2. **Colab:** open the multi-rule notebook and choose Run all. Upload the H2 ZIP
+   when prompted, unless it is already in the session. A results download starts
+   at the end; a file link is also displayed.
+
+When no compatible checkout exists, the notebook clones
+`experiment/dpe-multiple-weighting-rules` from the project repository. It installs
+missing dependencies, finds one complete ZIP/extracted run, extracts ZIPs into
+writable session storage, validates inputs and infers track and seed. It accepts
+a run at ZIP root or inside an enclosing directory. Original files are read only;
+ZIP extraction rejects path escapes, symbolic links and duplicate members.
+Existing checkouts are used as supplied without switching their Git revision.
+
+`SOURCE=None` discovers attached inputs automatically. If several different runs
+are present, set `SOURCE` to the desired ZIP or directory in the first cell.
+Duplicate ZIP/extracted copies of the same manifest count as one run. Optional
+`REPO_PATH`, `WORK_DIR` and `SEARCH_PATHS` support existing/offline checkouts and
+custom inputs. Internet is needed for a fresh clone or missing packages.
+
+The default `SUITE_NAME=None` derives a name from track, seed and input/code/grid/
+numerical-library identities. Identical reruns reuse verified output; changed
+identities get a fresh directory. A manual name remains available. Results are
+saved to `WORK_DIR/results/<suite-name>/`, outside the original run, and exported
+to a ZIP with a download link. Kaggle and Colab use their writable working
+directories by default; local execution uses a session folder under repository
+`outputs/`. Keep the source H2 ZIP separately. Standard and enhanced source
+bundles are both accepted; report them separately.
 
 The [fixed rule configuration](../../../configs/dpe_head_reweighting/weighting_rules.yaml)
 declares seven additional candidates and the solver settings:
@@ -344,7 +369,7 @@ The suite checks unique/disjoint A/B/C IDs, cache row alignment, class/group
 consistency, preprocessing and ensemble identities. It recomputes the original
 power decision from B/C before reusing old bundles. If original test metrics are
 present, their uniform metrics must agree with the test cache. New output binds
-the resolved rule configuration, implementation/notebook hashes, SciPy version,
+the resolved rule configuration, implementation/notebook hashes, SciPy/NumPy versions,
 source hashes, selection hash and test-cache hash. The notebook identity hashes
 code cells only: autosaved outputs, execution counts and editor metadata do not
 invalidate a run. Code edits do invalidate it. Re-running verifies the
@@ -420,7 +445,7 @@ python -m pip install -r src/methods/dpe_head_reweighting/requirements-weighting
 python -m pytest tests/methods/dpe_head_reweighting -q
 ```
 
-The checks cover reference inference, atomic artifact writes, numerical stability, weight calculations, partition isolation, changed-input rejection and input-readiness failures. The new multi-rule checks include a known complementary-head optimum, original power-grid parity, failed-solver rejection, B-only fitting, uniform fallback, frozen-source checks and notebook execution/reuse with autosaving after every cell. Full notebook integration checks are enabled when the optional Jupyter test dependencies are installed:
+The checks cover reference inference, atomic artifact writes, numerical stability, weight calculations, partition isolation, changed-input rejection and input-readiness failures. The new multi-rule checks include a known complementary-head optimum, original power-grid parity, failed-solver rejection, B-only fitting, uniform fallback, frozen-source checks and notebook execution/reuse with autosaving after every cell. Hosted setup tests exercise fresh local clones, read-only attached ZIPs, nested extraction, automatic naming and simulated Colab upload/download. These tests do not run inside the live Kaggle or Colab service. Full notebook integration checks are enabled when the optional Jupyter test dependencies are installed:
 
 ```bash
 python -m pip install nbclient ipykernel

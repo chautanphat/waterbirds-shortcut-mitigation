@@ -98,7 +98,7 @@ def validation_context(source, config_path):
              'experiment/predictions/B.npz', 'experiment/predictions/C.npz']
     identity = dict(inputs={name: digest(source / name) for name in files},
                     config=object_hash(c), implementation=runtime()['implementation'],
-                    scipy=scipy.__version__)
+                    scipy=scipy.__version__, numpy=np.__version__)
     identity['implementation']['scripts/dpe_weighting_rules.py'] = digest('scripts/dpe_weighting_rules.py')
     identity['implementation']['notebooks/dpe_weighting_rules.ipynb'] = notebook_code_hash(
         'notebooks/dpe_weighting_rules.ipynb')
