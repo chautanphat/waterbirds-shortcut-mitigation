@@ -1,0 +1,100 @@
+{
+  "config": {
+    "joint_lambdas": [
+      1.0,
+      0.1,
+      0.01
+    ],
+    "softmax_betas": [
+      10.0,
+      30.0
+    ],
+    "solver": {
+      "feasibility_tolerance": 1e-07,
+      "ftol": 1e-10,
+      "maxiter": 1000,
+      "probability_floor": 1e-12
+    },
+    "top_k": [
+      10,
+      5
+    ],
+    "version": 1
+  },
+  "documentation": {
+    "accelerator": null,
+    "date": "2026-11-08",
+    "elapsed_seconds": null,
+    "execution_date": null,
+    "execution_date_note": "No calendar execution timestamp or elapsed time is recorded in the supplied suite metadata.",
+    "execution_notebook": "notebooks/dpe_weighting_rules.ipynb",
+    "experiment_id": "exp-dpe-h2-rules-waterbirds-standard-seed0-001",
+    "hosting_service": null,
+    "original_member_sha256": {
+      "candidate_comparison.csv": "e2fc120a99129c3f1747b05bdae67d81771a66ac98918ba86e24e1c83be702ef",
+      "metrics.json": "e9e577e93d8398fcff1ca77ee5ff351a403145232e43ac2e145316d3f70fbb85",
+      "report.md": "605a2ff33a86f845aba4b6af7f95c5d7484c8ea9d70f9afe526cc3d671075ce4",
+      "run.json": "cce451aab6cb7ff5965555c28a694ba60d3d5b853deced08d8ac73819d6b432a",
+      "selection.json": "1cd0dcfcd3947562b09e7558b77f2a46b0dc070a3261c12e7717854197e00ac0"
+    },
+    "retention": "Original ZIP retained outside Git; tracked record contains only lightweight metrics, selections and provenance.",
+    "review": {
+      "candidate_count": 20,
+      "checks": [
+        "selection hash; selection/result input locks; rule config hash",
+        "source ensemble/manifest/selection identities agree with original documented H2 run",
+        "B scores agree with original H2 selection",
+        "all nonjoint weight formulas; simplex and effective-head constraints",
+        "joint solver status and objective arithmetic (B fitting data unavailable)",
+        "candidate CSV/JSON parity; C metrics/counts; family/global C selection",
+        "test integer counts, group/overall metrics, paired deltas, changed-ID counts"
+      ],
+      "code_identity_files_checked": 11,
+      "independent_solver_refit_performed": false,
+      "prediction_caches_present": false,
+      "scope": "aggregate record consistency, weight formulas and code/source identities; not prediction-cache re-inference",
+      "status": "passed"
+    },
+    "source_archive": {
+      "filename": "h2-standard-seed0-rules-6452ea10e0.zip",
+      "sha256": "3ad0509e83299a4680a081856f1834dcceebb358312ec4aade2d2b2a9ef9c186"
+    },
+    "source_experiment": "exp-dpe-h2-waterbirds-standard-seed0-001",
+    "suite_name": "h2-standard-seed0-rules-6452ea10e0"
+  },
+  "execution": {
+    "evaluation": "rule_suite.evaluate",
+    "interface": "python_api",
+    "selection": "rule_suite.select"
+  },
+  "runtime": {
+    "commit": "3ee1c6e7a9cfad351d69e75c92ad0d9c85d4c424",
+    "cuda": "13.0",
+    "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "implementation": {
+      "scripts/dpe_head_reweighting.py": "d67779a35d9abdfd79d54bc18e0011b1d2ef7a1fd30081d3f743ae438bd531df",
+      "src/methods/dpe_head_reweighting/ensemble.py": "ecc109502eacefb1b42d3f9ef006fd8dd03b5da675092e529910baacb5aa6186",
+      "src/methods/dpe_head_reweighting/experiment.py": "2e6085c8e75cfc02b127d68bb92e83f5d7496278618008f51e0b35e6cc14ecac",
+      "src/methods/dpe_head_reweighting/notebook_setup.py": "f5d04aacabdda3b5bf358749c15d8e0ea9cfa0841338593423991e3aee26ec09",
+      "src/methods/dpe_head_reweighting/reweighting.py": "7e81fb815214960ede76898a08866066f0564eecf613ec8293fa98162c688d78",
+      "src/methods/dpe_head_reweighting/rule_suite.py": "33b095570056439016a8a06c215e335a94e2076923efc9e61a2368fd47c5c249",
+      "src/methods/dpe_head_reweighting/stage0.py": "2192c4e50de8fed708175b79820283d970e44b2306b91708da7e74ca00daa1e8",
+      "src/methods/dpe_head_reweighting/train_heads.py": "e8ee1b456ae2f852fb4387a2f93e2089e613e6a2d5e1c1d716aad8cc180891ae",
+      "src/methods/dpe_head_reweighting/weighting_rules.py": "012e4d0737e0476f91e53e6771125a55f4cf47500bef6e38ba74b0f5b49c3096"
+    },
+    "numpy": "2.1.3",
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130"
+  },
+  "scipy": "1.16.3",
+  "seed": 0,
+  "source_artifacts": {
+    "checkpoints/ensemble.pt": "111268e36b43cfa9112f0def79242e93ccae05de80b4fe6dabde465518f351be",
+    "experiment/manifest.json": "ac10340593fd09b926895273bdbfa2905cc114dc49b5acb1b34d0e694ca78f08",
+    "experiment/predictions/B.npz": "111c607660dedd6a2b40ffcb75539cfab465f80580f840b4ce590c3b60c08382",
+    "experiment/predictions/C.npz": "f1b7bf013400cdb7a53f320a565b59b6fea9852d6251479b5a2cd2ca7f865dea",
+    "experiment/selection.json": "871b6fd005356fecc965260e787eedd9e67e44b85545f6313b6eadb60aaa6c0e"
+  },
+  "track": "standard"
+}

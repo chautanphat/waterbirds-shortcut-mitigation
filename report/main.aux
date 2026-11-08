@@ -1,0 +1,48 @@
+\relax 
+\citation{waterbirds}
+\citation{poter}
+\citation{dpe}
+\citation{autobackswap}
+\@writefile{toc}{\contentsline {title}{Background Shortcut Learning Mitigation for Waterbirds}{1}{}\protected@file@percent }
+\@writefile{toc}{\authcount {4}}
+\@writefile{toc}{\contentsline {author}{Chau Tan Phat \and Nguyen Dang Khang \and Nguyen Phu Trong \and Nguyen Dinh Minh Huy}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Problem statement}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Definition.}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Why it is hard.}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Research scope}{1}{}\protected@file@percent }
+\citation{waterbirds}
+\citation{dpe}
+\citation{poter}
+\citation{autobackswap}
+\citation{waterbirds}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Literature review}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Contributions}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Approach}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Dataset and Metrics}{2}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Results on Waterbirds (\%). Acc denotes overall accuracy and WGA denotes worst-group accuracy. DPE, ERM, and AutoBackSwap are evaluated on the held-out test split. POTER currently reflects validation metrics (epoch 258) for seed 1; held-out test evaluation is pending artifact recovery.}}{3}{}\protected@file@percent }
+\newlabel{tab1}{{1}{3}{}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Settings}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Results and Discussion}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Comparison with the papers}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Failure Case Analysis (AutoBackSwap)}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Ablation Study (DPE)}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Observations and Hypotheses on DPE}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Observation.}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{H1: Shuffling prototype pairs across heads.}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces H1: change which prototypes compete. Original DPE compares $L_i$ only with $W_i$. An example re-pairing compares $L_i$ with $W_{\pi (i)}$; each new pair still produces a two-class probability, and the ensemble still averages the pair probabilities. Circles denote landbird prototypes and squares waterbird prototypes; subscripts identify the source head. Only three of 15 pairs are shown. The prototypes stay fixed; whether the new comparisons improve WGA is untested.}}{5}{}\protected@file@percent }
+\newlabel{fig:dpe-h1}{{1}{5}{}{figure.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{H2: Reweighting the heads.}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces H2: change how much each head contributes. The same head probabilities $p_i(c\mid x)$ enter either a uniform average or a weighted sum. Arrow widths on the right illustrate unequal contributions, not measured reliability. Nonnegative weights that sum to one would be chosen using validation data, including performance on background-conflicting groups $G_2$ and $G_3$, then fixed for test evaluation. No head has yet been identified as background-dependent.}}{5}{}\protected@file@percent }
+\newlabel{fig:dpe-h2}{{2}{5}{}{figure.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{H3: Multiple prototypes per class within each head.}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces H3: give each head more prototypes while retaining the ensemble. The middle panel shows two prototypes per class in three illustrative heads; all 15 heads still output two class probabilities before averaging or H2 weighting. Circles are landbird prototypes, squares are waterbird prototypes, and subscripts identify their source heads in the existing pool. Each softmax is computed within the receiving head's subset, then probability mass is summed by class. The bottom panel shows global pooling as the special case of identical full-pool heads. No accuracy gain is assumed.}}{6}{}\protected@file@percent }
+\newlabel{fig:dpe-h3}{{3}{6}{}{figure.3}{}}
+\bibcite{dpe}{1}
+\bibcite{poter}{2}
+\bibcite{autobackswap}{3}
+\bibcite{waterbirds}{4}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{7}{}\protected@file@percent }
+\gdef \@abspage@last{7}

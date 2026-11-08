@@ -1,0 +1,10 @@
+# B fits weights; C selects configurations. Candidate order breaks complete ties.
+version: 1
+softmax_betas: [10.0, 30.0]
+top_k: [10, 5]
+joint_lambdas: [1.0, 0.1, 0.01]
+solver:
+  maxiter: 1000
+  ftol: 1.0e-10
+  feasibility_tolerance: 1.0e-7
+  probability_floor: 1.0e-12

@@ -1,0 +1,22 @@
+# Portable path transcription of the executed shared ERM configuration.
+profile: dpe_standard_erm
+dataset:
+  data_dir: data/waterbirds
+  batch_size: 128
+  batch_size_eval: 256
+  workers: 2
+  augmentation: false
+model:
+  weights: IMAGENET1K_V2
+  freeze_bn: false
+training:
+  steps: null
+  epochs: 100
+  lr: 0.001
+  momentum: 0.9
+  weight_decay: 0.0
+  sampling: class_balanced
+  eval_every: 300
+  seed: 0
+  device: cuda
+output_dir: checkpoints/waterbirds_stage0_standard_erm/seed0

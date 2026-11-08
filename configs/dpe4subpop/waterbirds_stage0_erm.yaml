@@ -1,3 +1,4 @@
+# Descriptive notebook settings; upstream CLI does not automatically load this nested YAML.
 # Waterbirds Stage-0 Backbone Training & Feature Extraction
 method: erm
 stage: 0
@@ -5,9 +6,9 @@ no_augmentation: true  # Standard SubpopBench protocol (no photometric distortio
 
 dataset:
   dataset_name: Waterbirds
-  data_dir: data/waterbirds
+  data_dir: data
   batch_size: 128
-  batch_size_eval: 512
+  batch_size_eval: 256
   workers: 4
 
 model:
@@ -21,7 +22,7 @@ training:
   lr: 0.001
   momentum: 0.9
   optim: sgd
-  optim_weight_decay: 0.0001
+  optim_weight_decay: 0.0
   scheduler: none
   seed: 0
 

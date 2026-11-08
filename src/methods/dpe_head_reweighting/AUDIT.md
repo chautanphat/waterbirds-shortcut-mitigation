@@ -1,0 +1,103 @@
+# Reweighting implementation audit
+
+## Scope and evidence
+
+The audit covers the experiment's complete execution path: shared Waterbirds
+loading and transforms, class-balanced sampling, ResNet construction, ERM
+optimization and checkpoint selection, ordered raw-feature extraction, Stage-0
+handoff, A/B/C partitioning, sequential prototype training, aggregation, final
+evaluation, artifact reuse and the portable notebook. Reference comparisons use
+the preserved DPE implementation and historical reproduction notebook. Unrelated
+preserved methods are not certified by this audit.
+
+The supplied seed-0 execution log records source commit `5ebb112`, 100 backbone
+epochs, 3,700 updates, all 15 heads, final evaluation and archive creation. Its
+selected configuration is `alpha=0`, `gamma=1`, with all weights equal to `1/15`.
+Uniform and selected test WGA are both 89.7561%, and overall accuracy is
+91.2323%. These equal results follow from the selected configuration. The log
+does not contain the complete candidate table or per-head prediction arrays.
+
+All 100 logged backbone records were checked for consistent epoch/update counts,
+split counts, group-weighted overall accuracy and minimum-group accuracy.
+
+## Findings and corrections
+
+1. **Saved results were not bound to the selection file.** The notebook checked
+   model/input locks, but an edited selection could coexist with an old final
+   report and still pass its reuse checks. Final reports now record the SHA-256
+   of `selection.json`, and notebook reuse checks it. Before evaluation, the
+   saved selection is also recomputed from the B/C prediction caches, whose
+   IDs, labels, groups, ensemble identity and preprocessing are checked against
+   the manifest. Inconsistent candidates or weights are rejected before test
+   prediction. No evidence in the supplied log shows that this failure occurred.
+
+2. **Shared metrics silently truncated fractional inputs.** Binary validation
+   occurred after integer conversion. Fractional predictions, labels or
+   attributes could be accepted as binary integers. Validation now precedes
+   conversion. The actual dataset loader supplies integer labels and attributes,
+   and evaluation uses class argmax; this does not explain the recorded equality.
+
+3. **Candidate decisions were insufficiently visible.** Only the winner was
+   printed. The notebook now displays all 13 candidates with C WGA, C overall
+   accuracy, effective head count, probability differences and changed class
+   predictions relative to uniform. The selection stage also writes
+   `candidate_comparison.csv`. This distinguishes changed probabilities from
+   changed classifications; weights can differ without changing accuracy.
+
+No forced-uniform aggregation, reversed head axis, ignored selected weights or
+unconditional copying of uniform metrics was found in the inspected path. This
+is a code-review finding, not proof about unprovided runtime artifacts.
+
+## Independent verification
+
+The independent checker imports no production selection, combination or metric
+functions. It checks the fixed grid, computes B scores and weights, explicitly
+sums weighted C probabilities, applies the declared tie breakers, then computes
+test group metrics, paired differences, changed error IDs and effective head
+count. It also checks manifest/checkpoint/cache identities and disjoint IDs.
+It supports the original results-bundle format from `5ebb112`.
+
+Extract the notebook results archive and run from a repository checkout:
+
+```bash
+python scripts/audit_dpe_head_reweighting.py --run-dir path/to/extracted/run
+```
+
+This command reads the archived bundle without modifying it. It does not load
+raw images, rerun ResNet or establish that cached image labels match the
+original dataset. Those checks additionally require the retained dataset,
+backbone and raw features. The supplied text log alone cannot support this
+artifact-level verification of the particular seed-0 run.
+
+Regression checks include nonuniform winners, uniform winners, changed
+probabilities with unchanged class predictions, 100 randomized independent
+selection comparisons, corrupt selection rejection, stale final-report
+rejection and full notebook execution/reuse for both tracks. Notebook checks
+use synthetic inputs and a tiny trained backbone; full ResNet GPU accuracy is
+not established by these tests.
+
+The complete repository test suite passed: 30 tests and two subtests, including
+both notebook tracks, reuse checks, independent bundle audits and rejection of
+stale reports. All project-owned Python modules/scripts and notebook code cells
+also passed syntax parsing.
+
+## Interpretation and compatibility
+
+Subset C contains 26 examples in each waterbird/background group. One changed
+prediction changes such a group accuracy by about 3.85 percentage points.
+Consequently, selection can be coarse and ties can be common. The declared
+tie breaker prefers uniform when WGA and overall accuracy tie; this is a
+protocol choice, not evidence that reweighting is effective or ineffective in
+general. The test set must not guide changes to the candidate grid.
+
+The shared backbone recipe and the historical baseline do not promise identical
+random streams: the latter also iterates the test loader every epoch. The two
+aggregation conditions within H2 nevertheless use the same saved backbone,
+features and trained heads.
+
+Keep completed original runs intact. New implementation hashes invalidate
+continuation through the normal experiment runner. Use the independent checker
+to inspect old bundles; use a fresh H2 run directory for the updated runner.
+The existing completed backbone can be reused. If extraction-source checks
+reject an old feature bundle, export into a fresh input directory. A complete
+rerun is not necessary merely to inspect the old candidate decision.

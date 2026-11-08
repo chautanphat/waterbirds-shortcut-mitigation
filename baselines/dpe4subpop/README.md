@@ -103,7 +103,8 @@ Ensure the Waterbirds dataset follows the standard SubpopBench directory format:
 ```text
 data/waterbirds/
 ├── metadata_waterbirds.csv
-└── [image directories]
+└── waterbird_complete95_forest2water2/
+    └── [image directories]
 ```
 
 ### Step 4.2: Stage-0 Backbone Training & Feature Pre-extraction
@@ -116,7 +117,7 @@ Pass `--no_augmentation` to enforce deterministic evaluation preprocessing (`Res
 ```bash
 python baselines/dpe4subpop/main.py \
   --dataset_name Waterbirds \
-  --data_dir data/waterbirds \
+  --data_dir data \
   --ckpt_dir checkpoints/waterbirds_stage0_standard_erm \
   --model_name resnet50 \
   --pretrained_imgnet \
@@ -132,12 +133,12 @@ python baselines/dpe4subpop/main.py \
 ```
 *Expected Stage 0 WGA: ~62%–69%.*
 
-#### Track B: Enhanced $\text{ERM}^*$ Track (Author's Data-Augmented Setup)
-Omit `--no_augmentation` to enable `torchvision.transforms.v2.RandomPhotometricDistort(p=0.5)` during Stage 0 training:
+#### Track B: Historical Augmented ERM Adaptation
+Omit `--no_augmentation` to enable random resized crops, photometric distortion and horizontal flips during Stage 0 training. The upstream Waterbirds launcher uses 400 epochs for the enhanced recipe; the recorded project reproduction used a shorter 100-epoch augmented adaptation:
 ```bash
 python baselines/dpe4subpop/main.py \
   --dataset_name Waterbirds \
-  --data_dir data/waterbirds \
+  --data_dir data \
   --ckpt_dir checkpoints/waterbirds_stage0_erm \
   --model_name resnet50 \
   --pretrained_imgnet \
@@ -153,13 +154,13 @@ python baselines/dpe4subpop/main.py \
 *Expected Stage 0 WGA: ~77%–78%.*
 
 ### Step 4.3: Stage-1+ Diverse Prototypical Ensemble Training
-Train the 16-stage prototype ensemble on pre-extracted embeddings (runs in ~2 minutes):
+Train 15 prototype heads (stages 1 through 15; `num_stages=16` is exclusive) on pre-extracted embeddings (runs in ~2 minutes):
 
-**Attribute-Agnostic Setting (No Group Labels Used):**
+**Class-balanced head fitting (`train_attr no`; WGA selection still uses group labels):**
 ```bash
 python baselines/dpe4subpop/main.py \
   --dataset_name Waterbirds \
-  --data_dir data/waterbirds \
+  --data_dir data \
   --pretrained_path checkpoints/waterbirds_stage0_standard_erm/ckpt_last.pt \
   --ckpt_dir checkpoints/waterbirds_dpe \
   --loss_name isomax \
@@ -169,7 +170,7 @@ python baselines/dpe4subpop/main.py \
   --batch_size 256 \
   --lr 0.001 \
   --train_attr no \
-  --subsample_type class \
+  --subsample_type group \
   --cov_reg 5.e5 \
   --entropic_scale 30 \
   --train_mode freeze \
@@ -184,7 +185,7 @@ python baselines/dpe4subpop/main.py \
 ```bash
 python baselines/dpe4subpop/main.py \
   --dataset_name Waterbirds \
-  --data_dir data/waterbirds \
+  --data_dir data \
   --pretrained_path checkpoints/waterbirds_stage0_standard_erm/ckpt_last.pt \
   --ckpt_dir checkpoints/waterbirds_dpe \
   --loss_name isomax \
@@ -214,11 +215,13 @@ python baselines/dpe4subpop/main.py \
 | Method / Track | Group Info (Train / Val) | Paper Worst-Group Acc | Paper Overall Acc | Reproduced WGA (Seed 0) | Reproduced Overall Acc |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Standard ERM** (`--no_augmentation`) | None / None | 69.1% ± 4.7% | 84.1% ± 1.7% | **62.5%** | 88.6% |
-| **Standard ERM + DPE (Ours)** | None / Val | 91.0% ± 0.5% | 92.5% ± 0.2% | **89.0%** | 91.4% |
+| **Standard ERM + DPE (annotated)** | None / Val | 91.0% ± 0.4% | 92.5% ± 0.2% | **89.0%** | 91.4% |
 | **Enhanced $\text{ERM}^*$** (with Photometric Distort) | None / None | 77.9% ± 3.0% | 92.1% ± 0.2% | **77.1%** | 93.6% |
-| **Enhanced $\text{ERM}^*$ + DPE** | None / Val | 94.1% ± 0.2% | 96.0% ± 0.1% | **92.7%** | 93.3% |
+| **Enhanced $\text{ERM}^*$ + DPE (annotated)** | None / Val | 94.1% ± 0.4% | 96.0% ± 0.1% | **92.7%** | 93.3% |
 | **GroupDRO** (reference) | Train & Val | 89.9% ± 0.9% | 93.5% ± 0.3% | — | — |
 | **DFR** (reference) | Val only | 92.9% ± 0.4% | 94.0% ± 0.3% | — | — |
+
+The DPE paper values above use its annotated-validation Table 2. Table 1 reports unannotated WGA 91.0 ± 0.5 for ERM + DPE and 94.1 ± 0.2 for ERM* + DPE. ERM/ERM* describe backbone recipes, independently of annotation availability. Historical reproduced ERM values above require re-evaluation: the original project notebook fed standardized DPE features to the raw-feature ERM head. The DPE head path already used its intended standardized inputs. Preserve those historical numbers as records rather than relabeling them as corrected measurements.
 
 *Note: All runs, ablation studies (Covariance Regularization vs. Random Subsets Only vs. Single Fixed Subset), and logs are indexed in [`docs/experiment_log.md`](../../docs/experiment_log.md).*
 
@@ -267,3 +270,32 @@ baselines/dpe4subpop/
 }
 ```
 
+
+
+## Reproduction integration corrections
+
+The project notebook `notebooks/dpe_waterbirds_end_to_end.ipynb` contains the runtime fixes; preserved upstream Python files remain unchanged.
+
+- ERM test evaluation now passes raw `feats_test.npy` to its linear head. DPE continues to use row-standardized features. Previously both used standardized features, which could change the ERM baseline prediction.
+- Prototype inference preserves the batch dimension for a final batch containing one example. Prototype classification loss uses stable log-softmax cross entropy at the same entropic scale, and nonfinite loss is rejected.
+- CE-to-prototype checkpoint loading checks that only the intended head keys differ. Backbone mismatches fail instead of being silently accepted.
+- Existing feature caches require matching checkpoint, metadata, row-order and feature-file hashes. Legacy feature caches without this evidence are re-extracted. Backbone reuse requires `stage0_complete.json`, written only after successful training, with matching checkpoint/metadata hashes and command. Partial or legacy checkpoints without that record are rejected; preserve them and use a fresh `ckpt_dir`. Missing features no longer retrain a verified completed backbone.
+- Standard descriptive YAML now matches the executed notebook: zero SGD weight decay, evaluation batch size 256, annotated prototype training, and matching checkpoint paths. These nested YAML files are descriptive; upstream `main.py` does not automatically ingest them.
+- Upstream CLI `--data_dir` takes the parent `data` directory. Its parser accepts `--subsample_type group`, with `--train_attr no` selecting the class-balancing target internally; `--subsample_type class` is rejected by the parser. The displayed class-balanced command still uses group labels for WGA selection, so it is not an end-to-end annotation-free protocol.
+
+After these fixes, retain old result directories and perform a fresh evaluation/run before updating reported numbers. A passing CPU regression test is not a new Waterbirds benchmark result. Tests execute the notebook's actual evaluation functions with raw-feature, singleton-batch, corrupt-cache and checkpoint-mismatch fixtures:
+
+```bash
+python -m pytest tests/methods/dpe_reproduction -q
+```
+
+To correct ERM metrics from a retained legacy backbone without retraining it or modifying the historical notebook outputs, use the shared image-based evaluator. It applies the original image preprocessing and forwards raw backbone embeddings to the CE head:
+
+```bash
+python scripts/evaluate_erm.py \
+  --checkpoint checkpoints/waterbirds_stage0_standard_erm/ckpt_last.pt \
+  --data-dir data/waterbirds --split test \
+  --output results/dpe4subpop/erm_test_corrected.json
+```
+
+The dataset images and original checkpoint are required. This separate evaluation does not require a new completion record and does not certify the legacy checkpoint's training history; record that history from the retained run log. Do not overwrite the historical result with an unlabelled replacement.

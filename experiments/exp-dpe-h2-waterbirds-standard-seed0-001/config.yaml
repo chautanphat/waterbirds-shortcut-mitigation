@@ -1,0 +1,23 @@
+# Portable path transcription of the archived resolved H2 configuration.
+backbone: checkpoints/waterbirds_stage0_standard_erm/seed0/ckpt_last.pt
+device: cuda
+dim: 2048
+ensemble_path: outputs/dpe_head_reweighting_runs/h2-standard-seed0/checkpoints/ensemble.pt
+experiment_dir: outputs/dpe_head_reweighting_runs/h2-standard-seed0/experiment
+metadata: outputs/dpe_features/standard/seed0/metadata.csv
+provenance: outputs/dpe_features/standard/seed0/provenance.json
+results_dir: outputs/dpe_head_reweighting_runs/h2-standard-seed0/results
+seed: 0
+test_features: outputs/dpe_features/standard/seed0/test_raw.npz
+track: standard
+training:
+  batch_size: 256
+  cov_reg: 500000.0
+  entropic_scale: 30.0
+  epochs: 20
+  heads: 15
+  lr: 0.001
+  momentum: 0.9
+  wd_weight: 10.0
+val_features: outputs/dpe_features/standard/seed0/val_raw.npz
+version: 1

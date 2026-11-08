@@ -10,7 +10,7 @@ class Logger(object):
         self.console = sys.stdout
         self.file = None
         if fpath is not None:
-            self.file = open(fpath, mode)
+            self.file = open(fpath, mode, encoding='utf-8')
 
     def __del__(self):
         self.close()
