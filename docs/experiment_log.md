@@ -30,6 +30,8 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 
 ## exp-dpe-waterbirds-ermstar-001 — 2026-11-02
 
+**Audit note:** This is a historical, group-annotated head-training run with a 100-epoch augmented backbone, not the upstream 400-epoch ERM* recipe. Original ERM test evaluation used standardized features with a head trained on raw features; its recorded ERM metrics require re-evaluation. DPE used its intended standardized features. The paper's corresponding annotated DPE reference is 94.1 ± 0.4 WGA; 94.1 ± 0.2 is the unannotated reference. No historical measurements have been replaced by corrected-run claims.
+
 - **Method / version:** Diverse Prototypical Ensembles (DPE) / commit `68b8114`
 - **Purpose:** Original reproduction on Waterbirds (Enhanced $\text{ERM}^*$ Track with Photometric Distortion)
 - **Branch or commit:** `main`
@@ -45,12 +47,14 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
   - **Stage 15 Full DPE (Cov Reg + Random Subsets):** Overall Acc: 93.30%; Per-group Acc: [93.6%, 93.0%, 92.7%, 93.9%]; Worst-Group Acc (WGA): 92.70%
   - **Stage 15 Ablation 1 (Random Subsets Only, $\lambda_{\text{cov}}=0$):** Overall Acc: 93.70%; Per-group Acc: [94.2%, 93.5%, 92.8%, 94.3%]; Worst-Group Acc (WGA): 92.80%
   - **Stage 15 Ablation 2 (Single Fixed Subset, $\lambda_{\text{cov}}=0$):** Overall Acc: 93.70%; Per-group Acc: [94.3%, 93.7%, 92.7%, 94.1%]; Worst-Group Acc (WGA): 92.70%
-- **Paper comparison or expected behavior:** Closely matches the paper's reported $\text{ERM}^*$ baseline ($77.9\% \pm 3.0\%$ WGA) and $\text{ERM}^*$ + DPE benchmark ($93.0\% \pm 0.4\%$ / $94.1\% \pm 0.2\%$ WGA). The photometric augmentations produced robust backbone representations, leading to relatively flat ablation metrics across the ensemble variants.
-- **Status:** verified reproduction
+- **Paper comparison or expected behavior:** Closely matches the paper's reported $\text{ERM}^*$ baseline ($77.9\% \pm 3.0\%$ WGA) and $\text{ERM}^*$ + DPE benchmark ($94.1\% \pm 0.4\%$ WGA, annotated validation). The photometric augmentations produced robust backbone representations, leading to relatively flat ablation metrics across the ensemble variants.
+- **Status:** historical reproduction; corrected ERM evaluation pending
 - **Notes and follow-up:** Validates the paper's enhanced data-augmented track. The presence of `RandomPhotometricDistort` mitigated background bias during Stage 0 (+10% WGA over standard ERM).
 
 
 ## exp-dpe-waterbirds-standard-002 — 2026-11-02
+
+**Audit note:** The executed notebook uses group-annotated validation data for head fitting and epoch selection. Its descriptive Stage-1 YAML previously disagreed with that setting; notebook Python defaults determine this run. Original ERM test evaluation used standardized features with a head trained on raw features; its recorded ERM metrics require re-evaluation. The paper's annotated DPE reference is 91.0 ± 0.4 WGA. DPE used its intended standardized features; no new accuracy result is claimed by the integration fixes.
 
 - **Method / version:** Diverse Prototypical Ensembles (DPE) / commit `68b8114`
 - **Purpose:** Original reproduction on Waterbirds (Standard SubpopBench ERM Track, `--no_augmentation`)
@@ -67,9 +71,9 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
   - **Stage 15 Full DPE (Cov Reg + Random Subsets):** Overall Acc: 91.40%; Per-group Acc: [93.8%, 89.0%, 89.9%, 92.7%]; Worst-Group Acc (WGA): 89.00%
   - **Stage 15 Ablation 1 (Random Subsets Only, $\lambda_{\text{cov}}=0$):** Overall Acc: 93.50%; Per-group Acc: [96.3%, 93.5%, 88.2%, 89.6%]; Worst-Group Acc (WGA): 88.20%
   - **Stage 15 Ablation 2 (Single Fixed Subset, $\lambda_{\text{cov}}=0$):** Overall Acc: 93.30%; Per-group Acc: [95.5%, 93.2%, 88.8%, 90.3%]; Worst-Group Acc (WGA): 88.80%
-- **Paper comparison or expected behavior:** Matches the paper's canonical Standard ERM baseline ($69.1\% \pm 4.7\%$ WGA) and reproduces the Standard ERM + DPE benchmark ($91.0\% \pm 0.5\%$ WGA) within 2.0% on a single seed. On standard shortcut-susceptible representations, Full DPE outperformed the no-covariance-regularization ablation by +0.8% WGA (89.00% vs. 88.20%), confirming the empirical benefit of prototype covariance regularization.
-- **Status:** verified reproduction
-- **Notes and follow-up:** Confirms the primary paper claims across both Standard and Enhanced tracks. Next steps: multi-seed runs (seeds 1 & 2) and unannotated subsampling evaluation (`train_attr=no`, `subsample_type=class`).
+- **Paper comparison or expected behavior:** Matches the paper's canonical Standard ERM baseline ($69.1\% \pm 4.7\%$ WGA) and reproduces the Standard ERM + DPE benchmark ($91.0\% \pm 0.4\%$ WGA, annotated validation) within 2.0% on a single seed. On standard shortcut-susceptible representations, Full DPE outperformed the no-covariance-regularization ablation by +0.8% WGA (89.00% vs. 88.20%), confirming the empirical benefit of prototype covariance regularization.
+- **Status:** historical reproduction; corrected ERM evaluation pending
+- **Notes and follow-up:** Confirms the primary paper claims across both Standard and Enhanced tracks. Next steps: multi-seed runs (seeds 1 & 2) and unannotated subsampling evaluation (`train_attr=no`, class-balanced sampling; the upstream CLI token is `subsample_type=group`).
 
 
 ## exp-poter-waterbirds-standard-seed1-001 — 2026-11-04
