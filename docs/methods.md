@@ -36,7 +36,7 @@ Add approved methods below this heading using the shared template.
 - **Mechanism:** Full-backbone ResNet-50 fine-tuning with mean cross entropy and class-balanced replacement sampling. Training group labels are unused.
 - **Settings:** [`configs/erm/waterbirds_standard.yaml`](../configs/erm/waterbirds_standard.yaml): ImageNet V2 weights, updated BatchNorm statistics, 100 epochs, train/eval batch sizes 128/256, SGD LR 0.001, momentum 0.9, weight decay 0, no scheduler or augmentation. These match the effective stage-0 command in the existing DPE notebook, including CLI defaults.
 - **Evaluation:** `ckpt_last.pt` is the default, matching DPE's last-epoch handoff. An additional `ckpt_best_wga.pt` tracks validation WGA for experiments using validation selection. Held-out test evaluation is a separate command. Reports include overall/per-group accuracy, WGA and counts.
-- **Status:** Standard-track seeds 0/1/2 are recorded in the [H2 study](hypotheses/dpe_h2.md); seed 0 was reused and seeds 1/2 trained in the completed study. Backbone validation logs are available. ERM-only test performance and an independent raw-image inference reproduction are not established by these artifacts.
+- **Status:** Standard-track seeds 0/1/2 are recorded in the [H2 study](../report/main.tex); seed 0 was reused and seeds 1/2 trained in the completed study. Backbone validation logs are available. ERM-only test performance and an independent raw-image inference reproduction are not established by these artifacts.
 - **Reuse:** Project-level train/evaluate/export scripts operate independently of all preserved baselines. Checkpoints and raw ordered feature caches can be consumed by DPE; historical DPE runs remain unchanged.
 
 ## DPE head reweighting (H2)
@@ -63,7 +63,7 @@ B-group NLL plus a penalty toward uniform over nonnegative, sum-to-one weights.
 
 ### Evaluation
 
-The [H2 hypothesis summary](hypotheses/dpe_h2.md)
+The [H2 hypothesis summary](../report/main.tex)
 covers the original power study, expanded seed-0 grid, failed solver attempt and
 completed three-seed study. Uniform test accuracy/WGA=91.2668±0.3293/89.5196±0.6538%;
 overall C selection=91.2553±0.3317/89.4752±0.6339% (mean±sample SD across seeds).

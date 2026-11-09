@@ -168,7 +168,7 @@ training loops, rather than a new GPU Waterbirds benchmark run.
 
 The subsequently supplied `standard-seeds012-aed182e8ca.zip` contains all three
 original prediction bundles and frozen multi-rule decisions at `dbeba0f`.
-The [H2 summary](../../../docs/hypotheses/dpe_h2.md)
+The [H2 summary](../../../report/main.tex)
 and [machine-readable checks](../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/artifact_checks.json)
 supersede the earlier absence of real seed-1/2 arrays for this completed rerun.
 All 60 B/C candidates were recomputed, all nine joint fits reproduced and all
