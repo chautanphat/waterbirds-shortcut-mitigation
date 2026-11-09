@@ -13,6 +13,7 @@ import yaml
 from . import experiment as ex
 from .notebook_setup import extract_source, find_sources
 from . import rule_suite
+from .recovery import recover_test_cache
 
 
 def ensure_dataset(work, roots, explicit=None, download=True):
@@ -155,11 +156,15 @@ def run_study(work_dir, *, track=None, seeds=None, source=None, search_roots=(),
     work = Path(work_dir).expanduser().resolve()
     work.mkdir(parents=True, exist_ok=True)
     config_path = Path(settings['rules']).resolve()
-    choices = find_sources([*search_roots, work / 'source-inputs']) if source is None else (
+    choices = find_sources([*search_roots, work / 'source-inputs', work / 'h2_sources',
+                            work / 'recovered_sources', work / 'studies'], require_test=False) if source is None else (
         list(source) if isinstance(source, (list,tuple)) else [source])
-    cached = {}
+    cached, managed = {}, {}
     for item in choices:
-        root = extract_source(item, work / 'source-inputs')
+        item_path = Path(item).expanduser().resolve()
+        local = any(base == item_path or base in item_path.parents
+                    for base in (work / 'h2_sources', work / 'recovered_sources', work / 'studies'))
+        root = extract_source(item, work / 'source-inputs', require_test=False)
         _, _, manifest, _, _, identity = rule_suite.validation_context(root, config_path)
         provenance = manifest['provenance']
         if provenance['track'] != track:
@@ -168,6 +173,7 @@ def run_study(work_dir, *, track=None, seeds=None, source=None, search_roots=(),
         if seed in cached and cached[seed][1] != identity['inputs']:
             raise ValueError(f'Multiple different source runs for seed {seed}; specify SOURCE explicitly')
         cached[seed] = (root, identity['inputs'])
+        managed[seed] = local
     if seeds is None:
         seeds = sorted(cached) if mode == 'cached' else settings['seeds']
     if mode == 'cached' and not seeds:
@@ -185,7 +191,7 @@ def run_study(work_dir, *, track=None, seeds=None, source=None, search_roots=(),
         print('CPU training is supported but slow. A GPU runtime is recommended for new backbones.', flush=True)
     plan = dict(version=1, track=track, seeds=seeds, device=device, workers=workers, mode=mode,
                 settings=settings, rules=yaml.safe_load(config_path.read_text()),
-                cached_sources={str(s): cached[s][1] for s in seeds if s in cached},
+                cached_sources={str(s): cached[s][1] for s in seeds if s in cached and not managed[s]},
                 implementation=ex.runtime()['implementation'],
                 notebook=rule_suite.notebook_code_hash('notebooks/dpe_weighting_rules.ipynb'))
     study_dir = work / 'studies' / f"{track}-seeds{''.join(map(str,seeds))}-{ex.object_hash(plan)[:10]}"
@@ -212,6 +218,8 @@ def run_study(work_dir, *, track=None, seeds=None, source=None, search_roots=(),
         ex.write_json(study_dir / 'progress.json', progress)
         if c is not None:
             ensure_test_cache(c)
+        elif not (root / 'experiment/predictions/test.npz').is_file():
+            root = recover_test_cache(root, [work, *search_roots], work, device=device)
         result = rule_suite.evaluate(root, config_path, output)
         with np.load(root / 'experiment/predictions/test.npz', allow_pickle=False) as f:
             rows = sorted(zip(f['ids'].astype(str).tolist(), f['labels'].tolist(), f['groups'].astype(str).tolist()))

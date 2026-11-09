@@ -28,6 +28,25 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 
 ---
 
+## exp-dpe-h2-rules-waterbirds-standard-seeds012-002 — 2026-11-09
+
+The date is the review date; the supplied corrected `download.txt` records elapsed
+times, not the execution date. See the [failure audit and log identity](../src/methods/dpe_head_reweighting/AUDIT.md#multi-seed-joint-solver-failure--reviewed-2026-11-09).
+
+- **Method / version:** H2 automated multi-seed weighting study; project-owned DPE adaptation.
+- **Purpose:** Continue the fixed 20-candidate comparison across standard-track seeds 0/1/2.
+- **Branch or commit:** `experiment/dpe-multiple-weighting-rules`; the exact executed commit is not printed in the log. The traceback uses the original SLSQP-only fitter.
+- **Configuration:** [Study defaults](../configs/dpe_head_reweighting/study.yaml), [fixed weighting grid](../configs/dpe_head_reweighting/weighting_rules.yaml), [standard H2](../configs/dpe_head_reweighting/waterbirds_standard.yaml) and [standard backbone](../configs/erm/waterbirds_standard.yaml); no resolved configuration archive was supplied for this failed run.
+- **Dataset and split:** Official Waterbirds; intended A/B/C fit/select separation from the standard H2 configuration. The epoch-100 log reports 1,199 validation examples.
+- **Seed:** Planned 0/1/2; seed 0 reused an attached H2 bundle, seed 1 trained, seed 2 was not reached.
+- **Environment and hardware:** Kaggle; user screenshot reports GPU T4 ×2. Python 3.13 appears in the traceback; package versions and actual multi-GPU utilization are not established by this log.
+- **Command:** Run All in `notebooks/dpe_weighting_rules.ipynb`, calling `study.run_study`; no shell training command is claimed.
+- **Output location:** Untracked WORK_DIR-relative `studies/standard-seeds012-865e9b8015.zip` (seed-0 partial study), `backbones/`, `features/` and `h2_sources/`; preserve the failed notebook version's saved outputs.
+- **Results:** Seed 1 completed 100 backbone epochs/3,700 updates and all 15 heads. Final-epoch backbone validation overall/WGA=86.4887/62.4060%, group accuracies=99.3576/77.6824/62.4060/96.2406%, counts=467/466/133/133. These are backbone validation metrics, not DPE test results. Seed-1 final DPE test metrics are absent.
+- **Paper comparison or expected behavior:** No new completed multi-seed comparison or reproduction claim.
+- **Status:** partial reproduction; failed at 5,969.9 elapsed seconds during joint-weight fitting, with SLSQP `Positive directional derivative for linesearch`.
+- **Notes and follow-up:** The failing lambda is not logged. The numerical fix retries the identical objective with a second solver and reuses frozen heads/B/C plus verified raw features; it does not change the grid. Attach the failed version's full outputs when rerunning the updated notebook. Exact failed-array recovery remains unverified because only the log was supplied.
+
 ## exp-dpe-h2-rules-waterbirds-standard-seed0-001 — 2026-11-08
 
 The date is the documentation date; execution date and elapsed time are not recorded in the supplied suite metadata.

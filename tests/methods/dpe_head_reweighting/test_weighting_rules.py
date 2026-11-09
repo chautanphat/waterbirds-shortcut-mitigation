@@ -72,12 +72,57 @@ def test_joint_known_complementary_optimum_and_uniform_penalty():
     np.testing.assert_allclose(w, np.ones(15) / 15, atol=1e-7)
 
 
+@pytest.mark.parametrize('penalty', [1., .1, .01])
+def test_joint_fallback_matches_primary_on_unequal_soft_groups(monkeypatch, penalty):
+    from scipy.optimize import OptimizeResult
+    groups = np.repeat(['00', '01', '10', '11'], [94, 93, 27, 27])
+    y = np.array([int(group[0]) for group in groups])
+    rng = np.random.default_rng(93)
+    logits = rng.normal(0, 3, (1, len(y))) + rng.normal(0, 1, (15, len(y)))
+    p = probabilities(1 / (1 + np.exp(-logits)), y)
+    _, reference = rules.joint_weights(p, y, groups, penalty, config()['solver'])
+    real = rules.minimize
+    def fail_slsqp(*args, **kwargs):
+        if kwargs['method'] == 'SLSQP':
+            return OptimizeResult(success=False, status=8, message='Positive directional derivative for linesearch')
+        return real(*args, **kwargs)
+    monkeypatch.setattr(rules, 'minimize', fail_slsqp)
+    w, fit = rules.joint_weights(p, y, groups, penalty, config()['solver'])
+    assert fit['method'] == 'trust-constr' and fit['optimality'] <= 1e-7
+    assert w.min() >= 0 and w.sum() == pytest.approx(1)
+    assert fit['objective'] == pytest.approx(reference['objective'], abs=1e-7)
+
+
 def test_joint_rejects_solver_failure(monkeypatch):
     from scipy.optimize import OptimizeResult
     monkeypatch.setattr(rules, 'minimize', lambda *a, **k: OptimizeResult(success=False, message='iteration limit'))
     p, y, g = arrays()
     with pytest.raises(ValueError, match='Joint solver failed'):
         rules.joint_weights(p, y, g, .1, config()['solver'])
+
+
+def test_joint_recovers_logged_linesearch_failure(monkeypatch):
+    from scipy.optimize import OptimizeResult
+    real = rules.minimize
+    def fail_slsqp(*args, **kwargs):
+        if kwargs['method'] == 'SLSQP':
+            return OptimizeResult(success=False, status=8, message='Positive directional derivative for linesearch')
+        return real(*args, **kwargs)
+    monkeypatch.setattr(rules, 'minimize', fail_slsqp)
+    y = np.array([0,0,1,1])
+    g = np.array(['00','01','10','11'])
+    p = np.stack([probabilities(q,y) for q in ([.9,.9,.3,.3],[.3,.3,.9,.9],[.1]*4)])
+    w, fit = rules.joint_weights(p,y,g,.01,config()['solver'])
+    np.testing.assert_allclose(w,[.5,.5,0],atol=1e-6)
+    expected_objective = -np.log(.6) + .01/6
+    assert fit['objective'] == pytest.approx(expected_objective, abs=1e-7)
+    assert fit['method'] == 'trust-constr' and not fit['attempts'][0]['success']
+    assert fit['attempts'][1]['success'] and fit['optimality'] <= 1e-7
+    # Full candidate selection/evaluation can reproducibly validate these fits.
+    p,y,g = arrays()
+    first = rules.fit_rules(p,y,g,p,y,g,config())
+    second = rules.fit_rules(p,y,g,p,y,g,config())
+    assert first == second
 
 
 def test_all_rules_and_original_power_parity():

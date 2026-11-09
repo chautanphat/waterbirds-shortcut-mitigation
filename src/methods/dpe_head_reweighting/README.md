@@ -341,10 +341,25 @@ reject nonempty incomplete runs by default.
 Feature extraction is published atomically. Interrupted head training restarts
 its short feature-only stage. Changed extraction or H2 code gets separate
 feature/head directories; completed, matching stages are reused after checks.
+Completed frozen heads with B/C caches can also be reused across a weighting-only
+code change, even when the old run stopped before test inference.
 Keep WORK_DIR persistent to survive deletion of a hosted VM. Colab users can
 point it at an already mounted Drive directory; Kaggle users must retain saved
 outputs/checkpoints. A runtime restart with the same files can resume, but the
 compact ZIP does not include large backbone/resume checkpoints or raw features.
+
+**Recover the joint-solver failure from a saved Kaggle version:** attach that
+failed version's notebook outputs as an input, import the updated notebook,
+restart the kernel and Run All with the defaults. Keep both `h2_sources/` and
+`features/` from that version; its partial study ZIP alone does not contain the
+unfinished seed's heads/raw features. Discovery finds completed seeds and frozen
+pretest bundles automatically. Recovery verifies the backbone, metadata, raw
+validation features, test features and provenance against the saved handoff,
+fits/freezes the new rules on B/C, then generates only the missing test predictions
+from the original 15 heads. It writes a separate managed copy and preserves the
+attached outputs. Missing seeds still train normally. The bootstrap uses a new
+managed checkout when the old checkout lacks the recovery module, avoiding stale
+imports after a kernel restart. An explicit `REPO_PATH` must contain this update.
 
 ### Study outputs
 
@@ -380,7 +395,8 @@ declares seven additional candidates and the solver settings:
 | Regularized joint weights | Fit the combined probabilities with a worst-group log-loss objective | lambda 1, 0.1 and 0.01 |
 
 There are 20 distinct candidate records including uniform. Joint fitting solves
-the following convex problem on B, using an epigraph variable and SciPy SLSQP:
+the following convex problem on B, using an epigraph variable and SciPy SLSQP
+with a deterministic SciPy `trust-constr` recovery solver:
 
 ```math
 \min_{w\geq0,\ \sum_h w_h=1}
@@ -392,10 +408,15 @@ the following convex problem on B, using an epigraph variable and SciPy SLSQP:
 The solver starts at uniform. Correct-class head probabilities are floored at
 `1e-12` for the fitting objective to avoid undefined logarithms; reported
 inference probabilities remain unchanged. The YAML declares `maxiter=1000`,
-`ftol=1e-10` and feasibility tolerance `1e-7`. Nonconvergence, infeasible or
-nonfinite weights, and an objective worse than the uniform start are errors;
-the suite does not silently omit a failed candidate. Solver success, iteration
-count, objective and B-group log losses are saved with each joint candidate.
+`ftol=1e-10` and feasibility tolerance `1e-7`. If SLSQP fails its success,
+finite-weight, simplex, epigraph or objective checks (including its status-8
+line-search failure), `trust-constr` solves the same objective and constraints
+from uniform, with analytic gradients/Hessians. Its optimality residual must also
+be at most `1e-7`. Neither C nor test results decide whether to retry. Failure
+of both solvers remains an error; no candidate is silently omitted. The solver
+method, attempt messages, success, iteration count, objective and B-group log
+losses are saved with each joint candidate. This changes numerical recovery,
+not the candidate grid or the scientific objective.
 Only the weights are optimized; there is no fitted intercept, feature-dependent
 gate, probability calibration or change to the heads.
 

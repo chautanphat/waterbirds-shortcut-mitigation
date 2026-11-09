@@ -1,6 +1,6 @@
 """Additional B-only weight fits; C is used exclusively for selection."""
 import numpy as np
-from scipy.optimize import minimize
+from scipy.optimize import Bounds, LinearConstraint, NonlinearConstraint, minimize
 
 from .reweighting import GROUPS, combine, metrics, probabilities, weights
 
@@ -44,17 +44,62 @@ def joint_weights(p, y, groups, penalty, solver):
                           dict(type='ineq', fun=constraints, jac=jacobian),
                       ], options=dict(maxiter=solver['maxiter'], ftol=solver['ftol']))
     tol = solver['feasibility_tolerance']
-    if (not result.success or not np.isfinite(result.x).all() or
-            abs(result.x[:-1].sum() - 1) > tol or
-            result.x[:-1].min() < -tol or constraints(result.x).min() < -tol):
-        raise ValueError(f'Joint solver failed; no candidate accepted: {result.message}')
+
+    def acceptable(value):
+        return (value.success and hasattr(value, 'x') and np.isfinite(value.x).all() and
+                abs(value.x[:-1].sum() - 1) <= tol and value.x[:-1].min() >= -tol and
+                constraints(value.x).min() >= -tol and
+                objective(value.x) <= objective(initial) + tol)
+
+    attempts = [dict(method='SLSQP', success=bool(result.success), message=str(result.message))]
+    method = 'SLSQP'
+    if not acceptable(result):
+        print(f'Joint lambda={penalty}: SLSQP did not pass checks; retrying the same fit with trust-constr.',
+              flush=True)
+        # SLSQP can stop with status 8 on this convex problem at tight tolerances.
+        # Solve the SAME objective from a strictly feasible uniform start using
+        # an interior-point method, without consulting C or test performance.
+        def objective_hessian(z):
+            return np.diag(np.r_[np.full(h, 2 * penalty), 0.])
+
+        def constraint_hessian(z, multipliers):
+            block = np.zeros((h, h))
+            for multiplier, q in zip(multipliers, grouped):
+                scaled = q / (z[:-1] @ q)
+                block -= multiplier * (scaled @ scaled.T) / q.shape[1]
+            value = np.zeros((h + 1, h + 1))
+            value[:-1, :-1] = block
+            return value
+
+        start = initial.copy()
+        start[-1] += .1
+        method = 'trust-constr'
+        # Keep weights positive so log loss is defined during optimization.
+        # Allow temporary epigraph violations; forcing those feasible at every
+        # step can stall at a boundary when several groups share the worst loss.
+        result = minimize(objective, start, jac=gradient, hess=objective_hessian,
+                          method=method,
+                          bounds=Bounds(np.zeros(h+1), np.r_[np.ones(h), np.inf], keep_feasible=True),
+                          constraints=[LinearConstraint(np.r_[np.ones(h), 0.][None], 1., 1.),
+                                       NonlinearConstraint(constraints, 0., np.inf, jac=jacobian,
+                                                           hess=constraint_hessian)],
+                          options=dict(maxiter=solver['maxiter'], gtol=min(solver['ftol'], 1e-12),
+                                       xtol=solver['ftol'], barrier_tol=solver['ftol'],
+                                       initial_barrier_parameter=solver['ftol'],
+                                       initial_barrier_tolerance=solver['ftol']))
+        attempts.append(dict(method=method, success=bool(result.success), message=str(result.message)))
+        if not acceptable(result) or getattr(result, 'optimality', np.inf) > tol:
+            messages = '; '.join(f"{a['method']}: {a['message']}" for a in attempts)
+            raise ValueError(f'Joint solver failed; no candidate accepted (lambda={penalty}): {messages}')
     w = np.clip(result.x[:-1], 0, 1)
     w /= w.sum()
     # Normalization must not hide a failure to improve on the feasible start.
     value = float(losses(w).max() + penalty * np.square(w - u).sum())
     if value > objective(initial) + tol:
         raise ValueError('Joint solver returned an objective worse than uniform')
-    return w, dict(success=True, iterations=int(result.nit), message=str(result.message),
+    return w, dict(success=True, method=method, attempts=attempts,
+                   optimality=float(result.optimality) if method == 'trust-constr' else None,
+                   iterations=int(result.nit), message=str(result.message),
                    objective=value, max_group_nll=float(losses(w).max()),
                    group_nll=dict(zip(GROUPS, losses(w).tolist())))
 

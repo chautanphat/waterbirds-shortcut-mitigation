@@ -101,3 +101,39 @@ to inspect old bundles; use a fresh H2 run directory for the updated runner.
 The existing completed backbone can be reused. If extraction-source checks
 reject an old feature bundle, export into a fresh input directory. A complete
 rerun is not necessary merely to inspect the old candidate decision.
+
+## Multi-seed joint-solver failure — reviewed 2026-11-09
+
+The corrected supplied `download.txt` (SHA-256
+`e69f336f09ec66629fe8a789edab586bc7a302583472e7a9f45f47fcd897ae6d`)
+records seed 0 completing from an attached source and seed 1 completing 100
+backbone epochs/3,700 updates, raw-feature export and all 15 heads. At 5,969.9
+elapsed seconds, SLSQP rejects a joint fit with `Positive directional derivative
+for linesearch`. This is a numerical optimizer failure, after training. The log
+does not identify which lambda failed or provide the B/C arrays needed to rerun
+that exact problem. No seed-1 final test result or seed-2 training is recorded.
+The traceback's actual exception, rather than later nbconvert warnings, explains
+the failed notebook status.
+
+The joint fitter now retains SLSQP as primary and retries an unsuccessful or
+invalid result with `trust-constr` on the identical convex objective/constraints.
+The recovery solver uses analytic derivatives, checks feasibility, objective
+against uniform and first-order optimality, and records both attempts. C still
+selects among the same frozen candidate grid; test data remain held out.
+
+The study discovers frozen pretest source bundles and matches their saved raw
+feature handoff by hashes/provenance. After B/C selection is frozen, it performs
+only the missing test inference with those same heads in a separate source copy.
+This avoids retraining merely because the weighting implementation changed.
+The failed version's complete saved outputs are required; a log or partial
+summary ZIP alone cannot restore seed 1. See the method README for Kaggle steps.
+
+Regression checks force the logged SLSQP failure and compare recovery with a
+known complementary-head optimum and 15-head unequal-group soft-probability
+problems for all three lambdas. Integration checks recover saved heads/features
+with dataset preparation/training disabled, verify exact test predictions and
+unchanged original inputs, and reject changed feature artifacts. These are
+synthetic implementation checks, not a rerun of the unavailable seed-1 arrays
+or a new benchmark measurement.
+The full repository suite passed: 65 tests and two subtests, including notebook
+execution/reuse, hosted bootstrap simulations and complete multi-seed smoke runs.
