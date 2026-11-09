@@ -163,3 +163,24 @@ The final full suite passed 179 tests and two subtests. An additional joint-fit
 subset passed 115 tests on NumPy 2.1.3/SciPy 1.16.3; the main suite used NumPy
 1.26.4/SciPy 1.12.0. Full notebook checks use synthetic backbones and real
 training loops, rather than a new GPU Waterbirds benchmark run.
+
+## Completed real-data study — reviewed 2026-11-09
+
+The subsequently supplied `standard-seeds012-aed182e8ca.zip` contains all three
+original prediction bundles and frozen multi-rule decisions at `dbeba0f`.
+The [study report](../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/report.md)
+and [machine-readable checks](../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/artifact_checks.json)
+supersede the earlier absence of real seed-1/2 arrays for this completed rerun.
+All 60 B/C candidates were recomputed, all nine joint fits reproduced and all
+selected test metrics, group counts, changed errors, means and sample SDs matched.
+Refitted weights matched exactly on NumPy 2.1.3/SciPy 1.16.3; source/code and
+selection/cache identities also agreed. Seed 1's λ=0.01 SLSQP line-search failure
+was recovered by `trust-constr` in 24 iterations, with objective-gap bound
+5.53e-10. The real-data workflow completed all three seeds.
+
+The 200 logged backbone epochs passed count/update/group-arithmetic checks.
+Seed 1 trained again and its logged trajectory matches the earlier failed
+attempt; this does not prove identity of the unavailable failed-version
+checkpoints. Raw-image feature extraction and cross-hardware parity remain
+outside the audit. Successful numerical recovery does not establish a
+scientific benefit of weighting: no C-selected procedure improved test WGA.

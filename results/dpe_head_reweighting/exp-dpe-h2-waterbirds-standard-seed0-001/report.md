@@ -1,5 +1,7 @@
 # DPE head reweighting: standard ERM, seed 0
 
+**Follow-up (2026-11-09):** The [consolidated three-seed report](../exp-dpe-h2-rules-waterbirds-standard-seeds012-003/report.md) records completed seeds 0/1/2, prediction-cache verification and revised follow-up hypotheses. This earlier record retains its original measurements and review scope.
+
 ## Status and traceability
 
 This is a completed, exploratory Waterbirds adaptation with one seed. The record was prepared on 2026-11-08 from the supplied `download.txt` log and `h2-standard-seed0.zip` archive. Their calendar execution date is not established: the log records elapsed times only. This is not a verified reproduction of the paper or a final multi-seed comparison.

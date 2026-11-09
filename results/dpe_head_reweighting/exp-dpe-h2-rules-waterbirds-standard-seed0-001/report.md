@@ -1,5 +1,7 @@
 # H2: multiple weighting rules, standard ERM, seed 0
 
+**Follow-up (2026-11-09):** The [consolidated three-seed report](../exp-dpe-h2-rules-waterbirds-standard-seeds012-003/report.md) records completed seeds 0/1/2, prediction-cache verification and revised follow-up hypotheses. This earlier record retains its original measurements and review scope.
+
 ## Status and provenance
 
 Completed exploratory cached-prediction comparison, documented on 2026-11-08.

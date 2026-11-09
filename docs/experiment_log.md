@@ -28,6 +28,24 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 
 ---
 
+## exp-dpe-h2-rules-waterbirds-standard-seeds012-003 — 2026-11-09
+
+The date is the documentation date; the supplied log records elapsed times only.
+
+- **Method / version:** H2, standard-track DPE aggregation; uniform, power, softmax, top-k and joint rules.
+- **Purpose:** Exploratory three-seed comparison with matched frozen heads and a fixed 20-candidate grid.
+- **Branch or commit:** `experiment/dpe-multiple-weighting-rules`, executed `dbeba0f3d1659596e605395bf5235d5d1b6c48e2`.
+- **Configuration:** [Rule grid](../experiments/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/config.yaml), [study plan](../experiments/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/plan.json), and portable per-seed H2/backbone configurations linked from [run metadata](../experiments/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/run.json).
+- **Dataset and split:** Official Waterbirds 4,795/1,199/5,794; A/B/C=720/241/238, fixed partition seed 0. B fits weights; C freezes choices before new test inference.
+- **Seed:** 0/1/2. Seed 0 reuses the earlier H2 bundle; seeds 1/2 each train a 100-epoch backbone and 15 heads. Earlier seed-0 comparisons are not additional independent replicates.
+- **Environment and hardware:** Kaggle CUDA runtime; Python 3.13.16, NumPy 2.1.3, SciPy 1.16.3, torch 2.11.0+cu130, torchvision 0.26.0+cu130, CUDA 13.0. Physical GPU model/utilization is not recorded.
+- **Command:** Run All in `notebooks/dpe_weighting_rules.ipynb`; `study.run_study` delegates to `rule_suite.select`/`evaluate`.
+- **Output location:** Untracked `WORK_DIR/studies/standard-seeds012-aed182e8ca.zip`; [tracked results and interpretation](../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/report.md).
+- **Results:** Uniform test accuracy/WGA=91.2668±0.3293/89.5196±0.6538%; overall C selection=91.2553±0.3317/89.4752±0.6339%. Values are means±sample SD across training seeds. Paired WGA change=−0.0443±0.0768 pp: seed 0 selects top-10 (−0.1330 pp); seeds 1/2 select uniform (0 pp). Power, softmax and joint families select uniform in every seed. [Per-group counts and accuracies](../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/group_metrics.csv).
+- **Paper comparison or expected behavior:** No selected reweighting improves test WGA. H2 changes the head-training data budget and is not a paper reproduction.
+- **Status:** completed exploratory adaptation; all 60 B/C candidates refitted, selected test metrics and aggregate statistics recomputed from included prediction caches.
+- **Notes and follow-up:** Joint NLL improves while WGA ties or decreases; conditional weighting and selection-stability explanations remain hypotheses. [Evidence, limitations and proposed tests](../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/report.md#follow-up-hypotheses--untested). Neural stacking/gating has not been run. Test inspection and the shared validation partition limit confirmatory interpretation.
+
 ## exp-dpe-h2-rules-waterbirds-standard-seeds012-002 — 2026-11-09
 
 The date is the review date; the supplied corrected `download.txt` records elapsed
@@ -45,7 +63,7 @@ times, not the execution date. See the [failure audit and log identity](../src/m
 - **Results:** Seed 1 completed 100 backbone epochs/3,700 updates and all 15 heads. Final-epoch backbone validation overall/WGA=86.4887/62.4060%, group accuracies=99.3576/77.6824/62.4060/96.2406%, counts=467/466/133/133. These are backbone validation metrics, not DPE test results. Seed-1 final DPE test metrics are absent.
 - **Paper comparison or expected behavior:** No new completed multi-seed comparison or reproduction claim.
 - **Status:** partial reproduction; failed at 5,969.9 elapsed seconds during joint-weight fitting, with SLSQP `Positive directional derivative for linesearch`.
-- **Notes and follow-up:** The failing lambda is not logged. The numerical fix retries the identical objective with a second solver and reuses frozen heads/B/C plus verified raw features; it does not change the grid. Attach the failed version's full outputs when rerunning the updated notebook. Exact failed-array recovery remains unverified because only the log was supplied.
+- **Notes and follow-up:** The failing lambda is not logged in this failed attempt. The completed rerun is [seeds012-003](#exp-dpe-h2-rules-waterbirds-standard-seeds012-003--2026-11-09): seed 1 trained again and all 100 logged epoch records match the earlier attempt. Its λ=0.01 line-search failure is handled by the recovery solver. The original failed-version checkpoint/cache identities remain unverified because only its log was supplied; this entry retains its failed status.
 
 ## exp-dpe-h2-rules-waterbirds-standard-seed0-001 — 2026-11-08
 
@@ -65,6 +83,8 @@ The date is the documentation date; execution date and elapsed time are not reco
 - **Status:** exploratory; completed single-seed comparison with aggregate-record consistency review, not an independent prediction-cache audit.
 - **Notes and follow-up:** Selection/result hashes, recorded code identities, nonjoint weight formulas, candidate selection and metric/count arithmetic agree. The supplied suite ZIP excludes prediction caches and heads, so sample-level metrics and joint optimization cannot be independently rerun from it. Preserve the C-selected top-k10 outcome; complete seeds 1/2 with the frozen grid and report paired differences. See [full interpretation and verification limits](../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seed0-001/report.md).
 
+**Follow-up:** The completed [three-seed study](#exp-dpe-h2-rules-waterbirds-standard-seeds012-003--2026-11-09) now supplies prediction bundles and solver refits. This earlier single-seed record and its original review limits are retained.
+
 ## exp-dpe-h2-waterbirds-standard-seed0-001 — 2026-11-08
 
 The date is the documentation date; the supplied execution log contains elapsed times only.
@@ -82,6 +102,8 @@ The date is the documentation date; the supplied execution log contains elapsed 
 - **Paper comparison or expected behavior:** The annotated paper reference is 91.0 ± 0.4% WGA, but H2 reserves B/C and trains heads using A; its single-seed score is not a like-for-like paper reproduction.
 - **Status:** exploratory; completed single-seed adaptation, independently audited saved predictions and records.
 - **Notes and follow-up:** No weighting improvement demonstrated. [Full candidate comparison and audit evidence](../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md) reproduce the saved decision. Raw-image feature extraction could not be independently checked because images/backbone/raw features are excluded from the supplied archive. [Additional summary diagnostics](../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md#additional-summary-diagnostics--2026-11-08) find B-to-C head-WGA rank correlation -0.0276 and effective heads 14.3720 even for the strongest candidate. These are aggregate-record calculations, not a new run or archive re-audit. Complete seeds 1/2; check score stability and consider regularized joint weights as separately labeled, unmeasured follow-ups.
+
+**Follow-up:** The fixed multi-rule grid, including joint weights, has subsequently been evaluated for seeds 0/1/2 in [seeds012-003](#exp-dpe-h2-rules-waterbirds-standard-seeds012-003--2026-11-09). The original power experiment remains a distinct historical record.
 
 
 ## exp-dpe-waterbirds-ermstar-001 — 2026-11-02
@@ -103,9 +125,9 @@ The date is the documentation date; the supplied execution log contains elapsed 
   - **Stage 15 Full DPE (Cov Reg + Random Subsets):** Overall Acc: 93.30%; Per-group Acc: [93.6%, 93.0%, 92.7%, 93.9%]; Worst-Group Acc (WGA): 92.70%
   - **Stage 15 Ablation 1 (Random Subsets Only, $\lambda_{\text{cov}}=0$):** Overall Acc: 93.70%; Per-group Acc: [94.2%, 93.5%, 92.8%, 94.3%]; Worst-Group Acc (WGA): 92.80%
   - **Stage 15 Ablation 2 (Single Fixed Subset, $\lambda_{\text{cov}}=0$):** Overall Acc: 93.70%; Per-group Acc: [94.3%, 93.7%, 92.7%, 94.1%]; Worst-Group Acc (WGA): 92.70%
-- **Paper comparison or expected behavior:** Closely matches the paper's reported $\text{ERM}^*$ baseline ($77.9\% \pm 3.0\%$ WGA) and $\text{ERM}^*$ + DPE benchmark ($94.1\% \pm 0.4\%$ WGA, annotated validation). The photometric augmentations produced robust backbone representations, leading to relatively flat ablation metrics across the ensemble variants.
+- **Paper comparison or expected behavior:** The annotated DPE reference is 94.1±0.4% test WGA. The reported 92.70% is a single historical run with a different 100-epoch backbone recipe; this is not a verified paper reproduction. The legacy ERM evaluation mismatch prevents a valid ERM-only comparison.
 - **Status:** historical reproduction; corrected ERM evaluation pending
-- **Notes and follow-up:** Validates the paper's enhanced data-augmented track. The presence of `RandomPhotometricDistort` mitigated background bias during Stage 0 (+10% WGA over standard ERM).
+- **Notes and follow-up:** Preserve the reported DPE ablations; their 0.1-pp range is descriptive. Correct the legacy ERM evaluation before interpreting the augmentation effect or comparing it with standard ERM. This editorial clarification does not replace historical measurements.
 
 
 ## exp-dpe-waterbirds-standard-002 — 2026-11-02
@@ -127,7 +149,7 @@ The date is the documentation date; the supplied execution log contains elapsed 
   - **Stage 15 Full DPE (Cov Reg + Random Subsets):** Overall Acc: 91.40%; Per-group Acc: [93.8%, 89.0%, 89.9%, 92.7%]; Worst-Group Acc (WGA): 89.00%
   - **Stage 15 Ablation 1 (Random Subsets Only, $\lambda_{\text{cov}}=0$):** Overall Acc: 93.50%; Per-group Acc: [96.3%, 93.5%, 88.2%, 89.6%]; Worst-Group Acc (WGA): 88.20%
   - **Stage 15 Ablation 2 (Single Fixed Subset, $\lambda_{\text{cov}}=0$):** Overall Acc: 93.30%; Per-group Acc: [95.5%, 93.2%, 88.8%, 90.3%]; Worst-Group Acc (WGA): 88.80%
-- **Paper comparison or expected behavior:** Matches the paper's canonical Standard ERM baseline ($69.1\% \pm 4.7\%$ WGA) and reproduces the Standard ERM + DPE benchmark ($91.0\% \pm 0.4\%$ WGA, annotated validation) within 2.0% on a single seed. On standard shortcut-susceptible representations, Full DPE outperformed the no-covariance-regularization ablation by +0.8% WGA (89.00% vs. 88.20%), confirming the empirical benefit of prototype covariance regularization.
+- **Paper comparison or expected behavior:** The annotated DPE reference is 91.0±0.4% test WGA. The reported single-seed 89.00% is 2.0 pp lower. Full DPE exceeds the random-subset/no-covariance ablation by 0.8 pp in this run; the result does not establish a general regularization benefit. Legacy ERM metrics require corrected evaluation before a baseline comparison.
 - **Status:** historical reproduction; corrected ERM evaluation pending
 - **Notes and follow-up:** Confirms the primary paper claims across both Standard and Enhanced tracks. Next steps: multi-seed runs (seeds 1 & 2) and unannotated subsampling evaluation (`train_attr=no`, class-balanced sampling; the upstream CLI token is `subsample_type=group`).
 

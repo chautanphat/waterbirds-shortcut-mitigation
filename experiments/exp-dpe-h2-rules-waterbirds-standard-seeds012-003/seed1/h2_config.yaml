@@ -1,0 +1,22 @@
+version: 1
+track: standard
+seed: 1
+device: cuda
+dim: 2048
+metadata: outputs/dpe_features/standard/seed1/metadata.csv
+val_features: outputs/dpe_features/standard/seed1/val_raw.npz
+test_features: outputs/dpe_features/standard/seed1/test_raw.npz
+backbone: checkpoints/waterbirds_stage0_standard_erm/seed1/ckpt_last.pt
+provenance: outputs/dpe_features/standard/seed1/provenance.json
+experiment_dir: outputs/dpe_head_reweighting_runs/h2-standard-seed1/experiment
+ensemble_path: outputs/dpe_head_reweighting_runs/h2-standard-seed1/checkpoints/ensemble.pt
+results_dir: outputs/dpe_head_reweighting_runs/h2-standard-seed1/results
+training:
+  heads: 15
+  epochs: 20
+  batch_size: 256
+  lr: 0.001
+  momentum: 0.9
+  entropic_scale: 30.0
+  cov_reg: 500000.0
+  wd_weight: 10.0
