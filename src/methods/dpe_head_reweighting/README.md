@@ -485,9 +485,12 @@ template. Synthetic regression results must not be reported as Waterbirds accura
 
 The separate [neural-combiner experiment](NEURAL_COMBINERS.md) adds logistic
 stacking, an 8-unit MLP and an 8-unit softmax gate, including prediction-dropout
-ablations. Its [notebook](../../../notebooks/dpe_neural_combiners.ipynb) reuses
-the completed H2 study's original prediction bundles and freezes all planned
-seed choices on B/C before optional test evaluation. This is a project adaptation
+ablations. Its [notebook](../../../notebooks/dpe_neural_combiners.ipynb) works
+without attachments: auto mode downloads Waterbirds and prepares missing
+backbones/heads with the existing H2 recipe. Optional completed prediction
+bundles save training time. It freezes all planned seed choices on B/C before
+optional test evaluation, and supports checkpoint resume and partial ZIP export.
+This is a project adaptation
 inspired by Regularized Neural Ensemblers (AutoML 2025); Waterbirds results are
 pending. The original global-weighting grid and recorded H2 results are preserved.
 

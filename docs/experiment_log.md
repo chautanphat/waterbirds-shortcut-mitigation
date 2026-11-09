@@ -28,6 +28,21 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 
 ---
 
+## implementation-dpe-neural-auto-sources-smoke — 2026-11-09
+
+- **Method / version:** Neural study runtime 2, automatic source preparation; the 11-candidate neural recipe is unchanged.
+- **Purpose:** Make Run All work without attached source bundles or user code-cell edits.
+- **Branch or commit:** `experiment/dpe-neural-combiner`, following `889520e`.
+- **Configuration:** [Source preparation](../configs/dpe_head_reweighting/neural_study.yaml), [unchanged combiner grid](../configs/dpe_head_reweighting/neural_combiners.yaml).
+- **Dataset and split:** Synthetic inputs with official split/group counts; image decoding and ResNet replaced by tiny test fixtures, dataset download intercepted. No real Waterbirds accuracy or download verification is claimed.
+- **Seed:** Default 0/1/2, with real 100-epoch shared optimization loops (3,700 updates each), feature handoff, 15 DPE heads per seed and default 400-step neural fits. Rerun verifies reuse without retraining completed backbones.
+- **Environment and hardware:** CPU, Python 3.12, torch 2.6.0+cpu, NumPy 1.26.4, SciPy 1.12.0.
+- **Command:** `python -m pytest tests/methods/dpe_head_reweighting/test_neural_combiners.py -q`.
+- **Output location:** Untracked pytest temporary directories; real runs use WORK_DIR `backbones/`, `features/`, `h2_sources/` and `studies/`.
+- **Results:** 22 checks passed, including the complete default notebook with no source attachments, automatic download dispatch, missing-seed generation, completed-source reuse, mixed cached/new seeds, interrupted-run partial ZIP preservation and all-seeds-freeze-before-test ordering. Default notebook creates B/C selections for all three seeds without generating test prediction caches.
+- **Status:** Synthetic software validation; live Kaggle GPU execution and neural Waterbirds results remain pending.
+- **Notes and follow-up:** Enable Internet and choose a GPU runtime on Kaggle; attach nothing and Run All. Test evaluation remains opt-in through `EVALUATE_TEST`. Keep WORK_DIR for epoch resume and later test inference; compact ZIPs include frozen head/prediction bundles but exclude raw features and backbone checkpoints.
+
 ## implementation-dpe-neural-combiners-smoke — 2026-11-09
 
 - **Method / version:** Project-owned neural combination of frozen DPE head predictions, inspired by Regularized Neural Ensemblers (AutoML 2025), not a paper reproduction.
@@ -41,7 +56,7 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 - **Output location:** Untracked pytest temporary directories; real runs will write to the configured WORK_DIR under `studies/neural-.../`.
 - **Results:** 18 neural checks passed, including learned complementary routing, dropout normalization, C-independent fits, deterministic model replay, changed-input rejection, nested study ZIP reuse and repeat notebook execution from existing/fresh cloned checkouts. The complete DPE head-reweighting compatibility suite passed 176 checks. No Waterbirds accuracy or WGA is claimed.
 - **Status:** Synthetic software validation; real exploratory comparison pending.
-- **Notes and follow-up:** [Execution instructions and deviations](../src/methods/dpe_head_reweighting/NEURAL_COMBINERS.md), [cached-only notebook](../notebooks/dpe_neural_combiners.ipynb). Reuse the original heads and B/C caches; freeze choices before optional test evaluation. All follow-up test comparisons remain exploratory.
+- **Notes and follow-up:** [Execution instructions and deviations](../src/methods/dpe_head_reweighting/NEURAL_COMBINERS.md), [notebook](../notebooks/dpe_neural_combiners.ipynb). Reuse the original heads and B/C caches; freeze choices before optional test evaluation. All follow-up test comparisons remain exploratory.
 
 ## exp-dpe-h2-rules-waterbirds-standard-seeds012-003 — 2026-11-09
 

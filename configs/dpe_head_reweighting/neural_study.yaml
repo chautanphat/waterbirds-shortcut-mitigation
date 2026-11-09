@@ -1,0 +1,7 @@
+# Source preparation follows the existing H2 backbone/head recipe unchanged.
+version: 1
+track: standard
+seeds: [0, 1, 2]
+workers: 2
+download_data: true
+resume_backbone: true

@@ -82,21 +82,37 @@ an invented effective-head count.
 ## Run the next experiment
 
 Open [dpe_neural_combiners.ipynb](../../../notebooks/dpe_neural_combiners.ipynb)
-in a compatible checkout. For a fresh hosted clone, the implementation branch
-must first be published; until then set `REPO_PATH` to a checkout containing this
-change. A CPU runtime suffices; there is no backbone/head retraining.
+on Kaggle or Colab, select a **GPU runtime**, enable Internet on Kaggle and choose
+**Run All**. No attachments or code-cell edits are required. The notebook clones
+the published `experiment/dpe-neural-combiner` branch, installs missing packages,
+discovers or downloads official Waterbirds, and prepares missing seeds using the
+existing H2 recipe: 100-epoch ImageNet-initialized ERM backbone, raw features,
+and 15 A-trained heads per seed. Neural fitting still runs on CPU. GPU time is
+required for practical new backbone training; CPU is supported but slow.
 
-Attach the previous combined H2 study ZIP **including `source_archives/`**,
+The [source-preparation settings](../../../configs/dpe_head_reweighting/neural_study.yaml)
+retain the existing recipe and enable automatic dataset download and epoch-boundary
+backbone resume. Keep WORK_DIR persistent across runtime deletion. Completed
+backbones, verified features, frozen heads and neural selections are reused;
+an interruption within an epoch replays that epoch. No neural architecture,
+candidate grid or scientific training recipe changes in this orchestration update.
+
+Optionally attach the previous combined H2 study ZIP **including `source_archives/`**,
 individual original H2 ZIPs, or extracted runs. A summary-only ZIP or the tracked
 JSON/CSV results cannot supply the per-head predictions. `SOURCE` accepts a path
 or list of paths; automatic discovery searches the notebook's input roots.
 Inputs are read only. The runner extracts nested source ZIPs into separate
-managed storage and checks the original B/C selection against the caches.
+managed storage and checks the original B/C selection against the caches. Optional
+sources save work; auto mode trains only the missing seeds. `MODE="cached"`
+disables new training and requires every requested seed to be supplied.
 
-Default `SEEDS=[0,1,2]` requires all three sources; use `[0]` explicitly for a
+Default `SEEDS=[0,1,2]` prepares all three seeds; use `[0]` explicitly for a
 pilot. `EVALUATE_TEST=False` fits/freezes and exports all C comparisons without
-reading test predictions. Set it to `True` and rerun for final frozen-choice
-evaluation. This project has already inspected the common test set, so these
+generating or reading test prediction arrays. Raw test features may already be
+extracted during the unchanged Stage-0 handoff. Set `EVALUATE_TEST=True` and rerun
+for final frozen-choice evaluation. Every planned seed is frozen before the runner
+generates any missing test predictions or evaluates test metrics. This project
+has already inspected the common test set, so these
 follow-ups remain **exploratory**, including later training seeds.
 
 The equivalent single-seed CLI, from the repository root:
@@ -110,25 +126,32 @@ python scripts/dpe_neural_combiners.py evaluate \
   --output-dir outputs/dpe_neural_runs/standard-seed0-v1
 ```
 
-Use `--config` for a separately declared configuration. Dependencies are existing
-Torch, NumPy, SciPy and PyYAML; no new model-training library is needed.
+Use `--config` for a separately declared configuration. Single-seed CLI actions
+remain cached-source operations. Automatic preparation uses the notebook/API.
+The notebook installs missing Torch/torchvision, NumPy, SciPy, PyYAML, pandas,
+Pillow and tqdm; no new model-training library is needed.
 
 For a multi-seed run or prior combined ZIP:
 
 ```python
 from src.methods.dpe_head_reweighting.neural_study import run_study
 
-run = run_study("outputs/neural_session", source="outputs/previous_h2_study.zip",
-                seeds=[0, 1, 2], evaluate_test=False)
+run = run_study("outputs/neural_session", evaluate_test=False)
 # After reviewing C selections, keep the declared recipe fixed for evaluation:
-run = run_study("outputs/neural_session", source="outputs/previous_h2_study.zip",
-                seeds=[0, 1, 2], evaluate_test=True)
+run = run_study("outputs/neural_session", evaluate_test=True)
+# Optional cache-only comparison, without training missing seeds:
+run = run_study("outputs/neural_cached", source="outputs/previous_h2_study.zip",
+                mode="cached", evaluate_test=False)
 ```
 
-The study never downloads data or trains missing sources. Missing B/C/test
-predictions require the original H2 bundle or the existing H2 recovery workflow.
-An incomplete source with B/C can still freeze choices; missing test caches are
-reported after freezing, without generating them in this runner.
+`device="auto"`, `workers`, `data_dir` and `search_roots` provide operational
+overrides. Invalid model settings fail before downloads/training. An attached
+incomplete B/C source can freeze choices without test artifacts. To evaluate it,
+retain the matching raw feature handoff: the existing H2 recovery workflow
+verifies it and generates test predictions only after all neural choices are
+frozen. A B/C-only compact ZIP without the matching raw features/backbone cannot
+reconstruct those test predictions after VM deletion; preserve WORK_DIR or keep
+a completed source ZIP containing the test cache.
 
 ## Outputs and verification
 
@@ -143,8 +166,11 @@ cross-hardware bitwise equality.
 
 The notebook/API adds `plan.json`, `progress.json`, per-seed comparison directories,
 and a ZIP updated after every frozen/evaluated seed. Completed evaluations add
-`summary.json`, `per_seed.csv` and an aggregate `report.md`. The ZIP retains the
-new combiner states and reports; **retain source prediction bundles separately**.
+`summary.json`, `per_seed.csv` and an aggregate `report.md`. `source_archives/`
+retains source heads and B/C predictions; test predictions are added when
+evaluation is requested. Images, backbone/resume checkpoints and raw feature
+arrays remain in WORK_DIR, outside the compact download. The download cell can
+retrieve the latest partial ZIP if later training is interrupted.
 
 Run the functional checks with:
 
@@ -154,6 +180,11 @@ python -m pytest tests/methods/dpe_head_reweighting/test_neural_combiners.py -q
 
 The checks use synthetic complementary-expert tasks, reversed signals, B/C
 isolation, source/checkpoint tampering, dropout normalization, deterministic
-replay, multi-seed source ZIPs and notebook execution. They establish software
+replay, multi-seed source ZIPs and notebook execution. The no-attachment notebook
+test keeps default user settings, intercepts the dataset download, replaces
+image decoding/ResNet with synthetic inputs/a tiny model, and executes the real
+100-epoch optimizer, feature handoff and head/neural stages for all three seeds.
+It checks reuse and that default execution does not generate test predictions.
+These checks establish software
 behavior only. Record actual Waterbirds runs in `docs/experiment_log.md` and keep
 their reports beside this method or in the experiment/result directories.

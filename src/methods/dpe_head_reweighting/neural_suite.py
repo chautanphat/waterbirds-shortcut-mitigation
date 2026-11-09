@@ -174,7 +174,8 @@ def summarize(output, completed, planned, track):
     for family, r in summary['results'].items():
         lines.append(f"| {family} | {display(r['overall'],100)} | {display(r['wga'],100)} | {display(r['wga_delta_pp'])} |")
     lines += ['', 'Per-seed choices: `per_seed.csv`. C candidates, model states and detailed group metrics: `comparisons/`.',
-              'Retain original H2 source bundles separately; this archive does not duplicate them.', '']
+              'The study archive retains original head/prediction bundles in `source_archives/`.',
+              'Large backbones, training states, images and raw features remain in WORK_DIR.', '']
     (output / 'report.md').write_text('\n'.join(lines))
     return summary
 

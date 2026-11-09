@@ -230,7 +230,79 @@ def test_prior_study_zip_freezes_all_seeds_before_test(tmp_path, small_config, m
     assert result['summary']['results']['uniform']['wga']['sample_std'] == 0
     assert outer.read_bytes() == before and Path(result['archive']).is_file()
     with pytest.raises(ValueError, match='Missing frozen H2 bundles'):
-        study.run_study(tmp_path / 'other', source=outer, seeds=[2], config_path=small_config)
+        study.run_study(tmp_path / 'other', source=outer, seeds=[2], config_path=small_config, mode='cached')
+
+
+def test_auto_download_build_freeze_test_and_reuse(tmp_path, small_config, monkeypatch):
+    work = tmp_path / 'work'
+    downloads, built, inferred, caches = [], [], [], {}
+    def dataset(work_dir, roots, explicit, download):
+        assert download and explicit is None
+        downloads.append(True)
+        return tmp_path / 'dataset'
+    def build(work_dir, data, track, seed, device, workers, resume):
+        assert track == 'standard' and device == 'cpu' and workers == 2 and resume
+        built.append(seed)
+        root, caches[seed] = make_bundle(work_dir / 'h2_sources', seed)
+        return root, dict(seed=seed)
+    def infer(c):
+        # All three decisions must exist before ANY test predictions are made.
+        choices = list((work / 'studies').glob('*/comparisons/seed*/selection.json'))
+        assert len(choices) == 3
+        assert not (work / 'h2_sources' / f"original-{c['seed']}" / 'experiment/predictions/test.npz').exists()
+        inferred.append(c['seed'])
+        caches[c['seed']]('test')
+    monkeypatch.setattr(study, 'ensure_dataset', dataset)
+    monkeypatch.setattr(study, 'build_source', build)
+    monkeypatch.setattr(study, 'ensure_test_cache', infer)
+    run = study.run_study(work, device='cpu', config_path=small_config, evaluate_test=True)
+    assert downloads == [True] and built == inferred == [0, 1, 2]
+    assert run['summary']['status'] == 'complete'
+    assert len(list((Path(run['output_dir']) / 'source_archives').glob('*.zip'))) == 3
+    again = study.run_study(work, device='cpu', config_path=small_config, evaluate_test=True)
+    assert again == run  # Same plan, frozen states and results after managed-source discovery.
+    assert downloads == [True] and built == inferred == [0, 1, 2]
+
+
+def test_auto_mixed_sources_and_interruption_preserve_progress(tmp_path, small_config, monkeypatch):
+    source, _ = make_bundle(tmp_path)
+    original = {str(p): p.read_bytes() for p in source.rglob('*') if p.is_file()}
+    work = tmp_path / 'work'
+    built, interrupted = [], [True]
+    monkeypatch.setattr(study, 'ensure_dataset', lambda *a: tmp_path / 'dataset')
+    monkeypatch.setattr(study, 'ensure_test_cache', lambda *a: pytest.fail('Selection-only must not infer test'))
+    def build(work_dir, data, track, seed, device, workers, resume):
+        built.append(seed)
+        if seed == 2 and interrupted[0]:
+            raise RuntimeError('Interrupted backbone')
+        root, _ = make_bundle(work_dir / 'h2_sources', seed)
+        return root, dict(seed=seed)
+    monkeypatch.setattr(study, 'build_source', build)
+    with pytest.raises(RuntimeError, match='Interrupted backbone'):
+        study.run_study(work, source=source, device='cpu', config_path=small_config)
+    output, = [p for p in (work / 'studies').iterdir() if p.is_dir()]
+    assert (output / 'comparisons/seed1/selection.json').is_file()
+    with zipfile.ZipFile(output.with_suffix('.zip')) as archive:
+        assert 'source_archives/h2-standard-seed1.zip' in archive.namelist()
+    interrupted[0] = False
+    run = study.run_study(work, source=source, device='cpu', config_path=small_config)
+    assert built == [1, 2, 2] and run['output_dir'] == str(output)
+    assert run['summary'] is None
+    assert json.loads((output / 'progress.json').read_text())['frozen_seeds'] == [0, 1, 2]
+    for path, content in original.items():
+        assert Path(path).read_bytes() == content
+
+
+def test_invalid_grid_and_cached_mode_fail_before_training(tmp_path, small_config, monkeypatch):
+    monkeypatch.setattr(study, 'ensure_dataset', lambda *a: pytest.fail('Must fail before download'))
+    monkeypatch.setattr(study, 'build_source', lambda *a: pytest.fail('Must fail before training'))
+    with pytest.raises(ValueError, match='Missing frozen H2 bundles'):
+        study.run_study(tmp_path / 'cached', mode='cached', config_path=small_config)
+    c = yaml.safe_load(small_config.read_text())
+    c['steps'] = 0
+    small_config.write_text(yaml.safe_dump(c))
+    with pytest.raises(ValueError, match='neural-combiner contract'):
+        study.run_study(tmp_path / 'invalid', config_path=small_config)
 
 
 @pytest.mark.parametrize('name,value', [('steps', True), ('hidden_units', 0), ('prediction_dropout', 1),
@@ -308,3 +380,93 @@ def test_notebook_runs_and_reuses_saved_models(tmp_path, small_config, monkeypat
         frozen = model
         assert json.loads((out / 'summary.json').read_text())['status'] == 'complete'
         assert (out / 'report.md').is_file() and out.with_suffix('.zip').is_file()
+
+
+def test_default_notebook_without_attachments_downloads_trains_and_reuses(tmp_path, monkeypatch):
+    """Default user cells unchanged; replace only network/image/model dependencies."""
+    import importlib.util
+    import shutil
+    import subprocess
+    import sys
+    nbformat = pytest.importorskip('nbformat')
+    nbclient = pytest.importorskip('nbclient')
+    repo = tmp_path / 'checkout'
+    subprocess.run(['git', 'clone', '-q', '--no-hardlinks', str(ROOT), str(repo)], check=True)
+    for folder in ('src', 'scripts', 'configs'):
+        shutil.copytree(ROOT / folder, repo / folder, dirs_exist_ok=True)
+    previous_spec = importlib.util.spec_from_file_location('backbone_fixture', Path(__file__).with_name('test_notebook.py'))
+    previous = importlib.util.module_from_spec(previous_spec)
+    previous_spec.loader.exec_module(previous)
+    fixture_code = previous.SYNTHETIC_BACKBONE + '''
+import csv
+import src.datasets.loaders as loader_module
+import src.methods.dpe_head_reweighting.neural_study as neural_runner
+torch.set_num_threads(1)
+# Preserve the notebook's workers setting while avoiding multiprocessing in this fixture.
+RealDataLoader = loader_module.DataLoader
+def tiny_loader(*args, **kwargs):
+    kwargs['num_workers'] = 0
+    return RealDataLoader(*args, **kwargs)
+loader_module.DataLoader = tiny_loader
+real_run = subprocess.run
+def fixture_download(command, *args, **kwargs):
+    if len(command) > 1 and command[1] == 'scripts/prepare_waterbirds.py':
+        target = Path(command[-1]) / 'waterbirds'
+        target.mkdir(parents=True)
+        (target / 'image.jpg').write_bytes(b'Synthetic fixture only')
+        rows = []
+        for split, counts in enumerate(([3498,184,56,1057], [467,466,133,133], [2255,2255,642,642])):
+            for group, count in zip(('00','01','10','11'), counts):
+                for i in range(count):
+                    name = f'{split}_{group}_{i}.jpg'
+                    (target / name).symlink_to('image.jpg')
+                    rows.append(dict(img_filename=name,y=int(group[0]),place=int(group[1]),split=split))
+        with (target / 'metadata.csv').open('w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+            writer.writeheader()
+            writer.writerows(rows)
+        return subprocess.CompletedProcess(command, 0)
+    return real_run(command, *args, **kwargs)
+subprocess.run = fixture_download
+if (WORK_DIR / 'backbones/standard/seed2/summary.json').exists():
+    def forbidden_training(*args, **kwargs):
+        raise AssertionError('Completed backbones must not retrain')
+    stage0_module.run_training = forbidden_training
+'''
+    notebook = nbformat.read(ROOT / 'notebooks/dpe_neural_combiners.ipynb', as_version=4)
+    assert 'MODE = "auto"' in notebook.cells[1].source and 'SOURCE = None' in notebook.cells[1].source
+    assert 'EVALUATE_TEST = False' in notebook.cells[1].source
+    notebook.cells.insert(3, nbformat.v4.new_code_cell(fixture_code))
+    path = repo / 'notebooks/dpe_neural_combiners.ipynb'
+    nbformat.write(notebook, path)
+    kernels = tmp_path / 'jupyter/kernels/neural-default'
+    kernels.mkdir(parents=True)
+    (kernels / 'kernel.json').write_text(json.dumps(dict(
+        argv=[sys.executable, '-m', 'ipykernel_launcher', '-f', '{connection_file}'],
+        display_name='Default neural study fixture', language='python',
+        env=dict(OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', IPYTHONDIR=str(tmp_path / 'ipython')))))
+    monkeypatch.setenv('JUPYTER_PATH', str(tmp_path / 'jupyter'))
+    frozen = None
+    work = repo / 'outputs/dpe_neural_combiners_session'
+    for _ in range(2):
+        actual = nbformat.read(path, as_version=4)
+        nbclient.NotebookClient(actual, timeout=300, kernel_name='neural-default',
+                                resources={'metadata': {'path': str(repo / 'notebooks')}},
+                                on_cell_executed=lambda **kw: nbformat.write(actual, path)).execute()
+        out, = [p for p in (work / 'studies').iterdir() if p.is_dir()]
+        progress = json.loads((out / 'progress.json').read_text())
+        assert progress['frozen_seeds'] == [0, 1, 2] and progress['stage'] == 'selection_complete'
+        assert progress['evaluated_seeds'] == [] and not (out / 'summary.json').exists()
+        checkpoints, models = [], []
+        for seed in (0, 1, 2):
+            backbone = work / 'backbones/standard' / f'seed{seed}'
+            assert json.loads((backbone / 'summary.json').read_text())['updates'] == 3700
+            checkpoints.append(digest(backbone / 'ckpt_last.pt'))
+            models.append((out / 'comparisons' / f'seed{seed}/selection.json').read_bytes())
+            with zipfile.ZipFile(out / 'source_archives' / f'h2-standard-seed{seed}.zip') as archive:
+                assert 'experiment/predictions/B.npz' in archive.namelist()
+                assert 'experiment/predictions/test.npz' not in archive.namelist()
+        if frozen is not None:
+            assert frozen == (checkpoints, models)
+        frozen = (checkpoints, models)
+        assert out.with_suffix('.zip').is_file()
