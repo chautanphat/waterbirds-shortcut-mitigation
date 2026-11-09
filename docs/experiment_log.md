@@ -28,6 +28,21 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 
 ---
 
+## implementation-dpe-neural-combiners-smoke — 2026-11-09
+
+- **Method / version:** Project-owned neural combination of frozen DPE head predictions, inspired by Regularized Neural Ensemblers (AutoML 2025), not a paper reproduction.
+- **Purpose:** Implementation and synthetic software smoke checks before a new Waterbirds comparison.
+- **Branch or commit:** Local `experiment/dpe-neural-combiner`, based on `281ac4f`.
+- **Configuration:** [Declared 11-candidate grid](../configs/dpe_head_reweighting/neural_combiners.yaml); shortened steps in lifecycle/notebook fixtures are test-only overrides.
+- **Dataset and split:** Synthetic complementary-expert/reversed-signal fixtures and original-H2-format synthetic prediction bundles. No Waterbirds images or real prediction caches were evaluated.
+- **Seed:** Synthetic fit seed 10000; lifecycle fixtures use source seeds 0/1 and offset 10000. Planned Waterbirds source seeds are 0/1/2.
+- **Environment and hardware:** CPU, Python 3.12, torch 2.6.0+cpu, NumPy 1.26.4, SciPy 1.12.0, PyYAML 6.0.3.
+- **Command:** `python -m pytest tests/methods/dpe_head_reweighting/test_neural_combiners.py -q`.
+- **Output location:** Untracked pytest temporary directories; real runs will write to the configured WORK_DIR under `studies/neural-.../`.
+- **Results:** 18 neural checks passed, including learned complementary routing, dropout normalization, C-independent fits, deterministic model replay, changed-input rejection, nested study ZIP reuse and repeat notebook execution from existing/fresh cloned checkouts. The complete DPE head-reweighting compatibility suite passed 176 checks. No Waterbirds accuracy or WGA is claimed.
+- **Status:** Synthetic software validation; real exploratory comparison pending.
+- **Notes and follow-up:** [Execution instructions and deviations](../src/methods/dpe_head_reweighting/NEURAL_COMBINERS.md), [cached-only notebook](../notebooks/dpe_neural_combiners.ipynb). Reuse the original heads and B/C caches; freeze choices before optional test evaluation. All follow-up test comparisons remain exploratory.
+
 ## exp-dpe-h2-rules-waterbirds-standard-seeds012-003 — 2026-11-09
 
 The date is the documentation date; the supplied log records elapsed times only.

@@ -481,6 +481,16 @@ recomputed from prediction caches. Add a dated experiment entry and lightweight
 result summary for subsequent real runs, following the existing experiment-log
 template. Synthetic regression results must not be reported as Waterbirds accuracy.
 
+## Neural combiners on frozen heads
+
+The separate [neural-combiner experiment](NEURAL_COMBINERS.md) adds logistic
+stacking, an 8-unit MLP and an 8-unit softmax gate, including prediction-dropout
+ablations. Its [notebook](../../../notebooks/dpe_neural_combiners.ipynb) reuses
+the completed H2 study's original prediction bundles and freezes all planned
+seed choices on B/C before optional test evaluation. This is a project adaptation
+inspired by Regularized Neural Ensemblers (AutoML 2025); Waterbirds results are
+pending. The original global-weighting grid and recorded H2 results are preserved.
+
 ## Output specification
 
 | Artifact | Contents |

@@ -47,7 +47,9 @@ def load_cache(source, role, manifest, head_ids, ensemble_hash):
     return p, y, g, ids
 
 
-def validation_context(source, config_path):
+def validation_context(source, config_path, config_validator=validate_config, *,
+                       script_path='scripts/dpe_weighting_rules.py',
+                       notebook_path='notebooks/dpe_weighting_rules.ipynb'):
     source = Path(source).resolve()
     required = ['experiment/manifest.json', 'experiment/selection.json',
                 'checkpoints/ensemble.pt', 'experiment/predictions/B.npz',
@@ -63,7 +65,7 @@ def validation_context(source, config_path):
     head_ids = original['head_ids']
     if len(head_ids) != 15 or len(set(head_ids)) != len(head_ids):
         raise ValueError('The declared suite requires 15 distinct head IDs')
-    validate_config(c, len(head_ids))
+    config_validator(c, len(head_ids))
     model_hash = digest(source / 'checkpoints/ensemble.pt')
     if (original['lock']['ensemble'] != model_hash or
             original['lock']['manifest'] != digest(source / 'experiment/manifest.json')):
@@ -99,9 +101,8 @@ def validation_context(source, config_path):
     identity = dict(inputs={name: digest(source / name) for name in files},
                     config=object_hash(c), implementation=runtime()['implementation'],
                     scipy=scipy.__version__, numpy=np.__version__)
-    identity['implementation']['scripts/dpe_weighting_rules.py'] = digest('scripts/dpe_weighting_rules.py')
-    identity['implementation']['notebooks/dpe_weighting_rules.ipynb'] = notebook_code_hash(
-        'notebooks/dpe_weighting_rules.ipynb')
+    identity['implementation'][script_path] = digest(script_path)
+    identity['implementation'][notebook_path] = notebook_code_hash(notebook_path)
     return source, c, manifest, head_ids, data, identity
 
 

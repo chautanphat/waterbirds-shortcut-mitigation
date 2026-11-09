@@ -77,7 +77,7 @@ Per-group metrics/counts, exact weights and B/C diagnostics accompany the report
 - **Waterbirds adaptation:** Completed exploratory three-seed comparison; all 60 B/C candidates recomputed, nine joint fits refitted and selected test metrics independently recomputed from supplied prediction caches. See the [experiment index](experiment_log.md#exp-dpe-h2-rules-waterbirds-standard-seeds012-003--2026-11-09).
 - **Finding:** No selected rule improves test WGA. Joint weighting lowers NLL while WGA ties or decreases; lower loss alone does not establish a classification gain.
 - **Limits:** One shared validation partition and test set; reused, previously inspected seed 0; raw-image inference not rerun. Original failed-version checkpoints were not supplied.
-- **Untested follow-ups:** Objective sensitivity, partition/weight stability and input-dependent weighting. Neural stacking/gating and DFR are proposals, with evidence and references in the report.
+- **Follow-ups:** [Neural stacking/gating with prediction dropout](../src/methods/dpe_head_reweighting/NEURAL_COMBINERS.md) is implemented as a separate cached-head comparison with synthetic software checks; Waterbirds evaluation is pending. Objective sensitivity, partition/weight stability and DFR remain untested proposals. The original H2 findings are unchanged.
 
 ## Diverse Prototypical Ensembles (DPE)
 
