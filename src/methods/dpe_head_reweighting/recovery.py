@@ -1,6 +1,8 @@
 """Recover frozen heads/B/C caches after a weighting failure, without retraining."""
 from pathlib import Path
+import os
 import shutil
+import tempfile
 
 from . import ensemble
 from . import experiment as ex
@@ -58,7 +60,13 @@ def recover_test_cache(source, roots, work, *, device='cpu'):
             if ex.digest(copy) != ex.digest(original):
                 raise ValueError('Existing recovery source copy changed')
         else:
-            shutil.copyfile(original, copy)
+            fd, temporary = tempfile.mkstemp(prefix=f'.{copy.name}.', dir=copy.parent)
+            os.close(fd)
+            try:
+                shutil.copyfile(original, temporary)
+                os.replace(temporary, copy)
+            finally:
+                Path(temporary).unlink(missing_ok=True)
     target = root / 'experiment/predictions/test.npz'
     origin = root / 'test_cache_recovery.json'
     expected = dict(source_inputs=identity, test_features_hash=ex.digest(bundle / 'test_raw.npz'),

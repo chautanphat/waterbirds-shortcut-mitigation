@@ -78,3 +78,26 @@ def test_recovery_rejects_changed_feature_artifacts(tmp_path):
     (feature/'test_raw.npz').write_bytes(b'tampered')
     with pytest.raises(ValueError,match='Recovery feature artifact changed'):
         recovery.recover_test_cache(source,[old],tmp_path/'new')
+
+
+def test_recovery_copy_interruption_does_not_block_retry(tmp_path, monkeypatch):
+    old, source, feature, _ = failed_output(tmp_path)
+    def interrupted(original, destination):
+        Path(destination).write_bytes(b'partial copy')
+        raise OSError('simulated interrupted copy')
+    with monkeypatch.context() as patch:
+        patch.setattr(recovery.shutil, 'copyfile', interrupted)
+        with pytest.raises(OSError, match='interrupted copy'):
+            recovery.recover_test_cache(source, [old], tmp_path / 'work')
+    assert not list((tmp_path / 'work/recovered_sources').rglob('manifest.json'))
+    result = recovery.recover_test_cache(source, [old], tmp_path / 'work')
+    assert (result / 'experiment/predictions/test.npz').is_file()
+    assert ex.digest(result / 'checkpoints/ensemble.pt') == ex.digest(source / 'checkpoints/ensemble.pt')
+
+
+def test_missing_recovery_inputs_fail_before_missing_seed_training(tmp_path, monkeypatch):
+    old, source, feature, _ = failed_output(tmp_path)
+    (feature / 'handoff.json').unlink()
+    monkeypatch.setattr(study, 'ensure_dataset', lambda *a, **kw: pytest.fail('Must fail before training seed 0'))
+    with pytest.raises(ValueError, match='No unique verified'):
+        study.run_study(tmp_path / 'work', seeds=[0, 1], search_roots=[old], device='cpu')

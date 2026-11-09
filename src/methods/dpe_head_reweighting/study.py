@@ -1,10 +1,12 @@
 """One-call Waterbirds -> ERM -> DPE -> all weighting rules -> seed summary."""
 import csv
 import gc
+import os
 from pathlib import Path
 import shutil
 import subprocess
 import sys
+import tempfile
 
 import numpy as np
 import torch
@@ -13,7 +15,17 @@ import yaml
 from . import experiment as ex
 from .notebook_setup import extract_source, find_sources
 from . import rule_suite
-from .recovery import recover_test_cache
+from .recovery import recover_test_cache, verified_test_features
+from .weighting_rules import validate_config
+
+
+def publish_zip(source, destination):
+    """Keep the previous complete download if an archive write is interrupted."""
+    destination = Path(destination)
+    with tempfile.TemporaryDirectory(prefix='.archive-', dir=destination.parent) as temporary:
+        archive = shutil.make_archive(str(Path(temporary) / 'bundle'), 'zip', root_dir=source)
+        os.replace(archive, destination)
+    return str(destination)
 
 
 def ensure_dataset(work, roots, explicit=None, download=True):
@@ -156,6 +168,8 @@ def run_study(work_dir, *, track=None, seeds=None, source=None, search_roots=(),
     work = Path(work_dir).expanduser().resolve()
     work.mkdir(parents=True, exist_ok=True)
     config_path = Path(settings['rules']).resolve()
+    rules = yaml.safe_load(config_path.read_text())
+    validate_config(rules, 15)
     choices = find_sources([*search_roots, work / 'source-inputs', work / 'h2_sources',
                             work / 'recovered_sources', work / 'studies'], require_test=False) if source is None else (
         list(source) if isinstance(source, (list,tuple)) else [source])
@@ -181,6 +195,9 @@ def run_study(work_dir, *, track=None, seeds=None, source=None, search_roots=(),
     if not isinstance(seeds, (list,tuple)) or not seeds or any(type(s) is not int or s not in (0,1,2) for s in seeds) or len(set(seeds)) != len(seeds):
         raise ValueError('SEEDS must contain distinct values from 0, 1, 2')
     seeds = list(seeds)
+    for seed in seeds:
+        if seed in cached and not (cached[seed][0] / 'experiment/predictions/test.npz').is_file():
+            verified_test_features(cached[seed][0], [work, *search_roots])
     missing = [s for s in seeds if s not in cached]
     if mode == 'cached' and missing:
         raise ValueError(f'Cached-only mode is missing H2 bundles for seeds {missing}')
@@ -190,7 +207,7 @@ def run_study(work_dir, *, track=None, seeds=None, source=None, search_roots=(),
     if missing and device == 'cpu':
         print('CPU training is supported but slow. A GPU runtime is recommended for new backbones.', flush=True)
     plan = dict(version=1, track=track, seeds=seeds, device=device, workers=workers, mode=mode,
-                settings=settings, rules=yaml.safe_load(config_path.read_text()),
+                settings=settings, rules=rules,
                 cached_sources={str(s): cached[s][1] for s in seeds if s in cached and not managed[s]},
                 implementation=ex.runtime()['implementation'],
                 notebook=rule_suite.notebook_code_hash('notebooks/dpe_weighting_rules.ipynb'))
@@ -231,12 +248,12 @@ def run_study(work_dir, *, track=None, seeds=None, source=None, search_roots=(),
         shutil.copytree(output, study_dir / 'comparisons' / f'seed{seed}', dirs_exist_ok=True)
         archives = study_dir / 'source_archives'
         archives.mkdir(exist_ok=True)
-        shutil.make_archive(str(archives / f'h2-{track}-seed{seed}'), 'zip', root_dir=root)
+        publish_zip(root, archives / f'h2-{track}-seed{seed}.zip')
         summary = summarize(study_dir, completed, seeds, track)
         progress.update(completed_seeds=sorted(completed), stage='complete' if summary['status']=='complete' else 'seed_complete')
         ex.write_json(study_dir / 'progress.json', progress)
         # Update the downloadable artifact after each seed, even before all finish.
-        archive = shutil.make_archive(str(study_dir), 'zip', root_dir=study_dir)
+        archive = publish_zip(study_dir, study_dir.with_suffix('.zip'))
         print(f'Seed {seed} complete. Current results ZIP: {archive}', flush=True)
         gc.collect()
         if torch.cuda.is_available():

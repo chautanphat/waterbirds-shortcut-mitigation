@@ -6,6 +6,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import zipfile
 
 import numpy as np
 import pytest
@@ -108,6 +109,42 @@ def test_summary_uses_paired_deltas_and_sample_sd(tmp_path):
     assert result['results']['uniform']['wga_delta_pp']['mean'] == 0
     assert result['results']['uniform']['wga_delta_pp']['sample_std'] == pytest.approx(np.sqrt(2))
     assert study.summarize(tmp_path,{0:completed[0]},[0,1,2],'standard')['results']['uniform']['wga']['sample_std'] is None
+
+
+def test_interrupted_zip_preserves_previous_download(tmp_path, monkeypatch):
+    source = tmp_path / 'source'
+    source.mkdir()
+    (source / 'report.md').write_text('first completed seed')
+    destination = tmp_path / 'study.zip'
+    study.publish_zip(source, destination)
+    before = destination.read_bytes()
+    def interrupted(base_name, *args, **kwargs):
+        Path(base_name + '.zip').write_bytes(b'partial ZIP')
+        raise OSError('simulated interrupted archive')
+    with monkeypatch.context() as patch:
+        patch.setattr(study.shutil, 'make_archive', interrupted)
+        with pytest.raises(OSError, match='interrupted archive'):
+            study.publish_zip(source, destination)
+    assert destination.read_bytes() == before
+    (source / 'report.md').write_text('all seeds complete')
+    study.publish_zip(source, destination)
+    with zipfile.ZipFile(destination) as archive:
+        assert archive.read('report.md') == b'all seeds complete'
+
+
+def test_invalid_rules_fail_before_backbone_training(tmp_path, monkeypatch):
+    import yaml
+    settings = yaml.safe_load((ROOT / 'configs/dpe_head_reweighting/study.yaml').read_text())
+    rules = yaml.safe_load((ROOT / settings['rules']).read_text())
+    rules['top_k'] = [16]
+    rules_path = tmp_path / 'rules.yaml'
+    rules_path.write_text(yaml.safe_dump(rules))
+    settings['rules'] = str(rules_path)
+    config_path = tmp_path / 'study.yaml'
+    config_path.write_text(yaml.safe_dump(settings))
+    monkeypatch.setattr(study, 'ensure_dataset', lambda *a, **kw: pytest.fail('Must fail before training'))
+    with pytest.raises(ValueError, match='Invalid top_k'):
+        study.run_study(tmp_path / 'work', config_path=config_path, device='cpu')
 
 
 def test_full_study_notebook_without_any_h2_zip(tmp_path, monkeypatch):

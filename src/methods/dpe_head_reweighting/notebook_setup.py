@@ -9,6 +9,8 @@ import zipfile
 from .experiment import digest, object_hash
 from .rule_suite import validation_context
 
+NOTEBOOK_RUNTIME_VERSION = 2
+
 REQUIRED = ('experiment/manifest.json', 'experiment/selection.json', 'checkpoints/ensemble.pt',
             'experiment/predictions/B.npz', 'experiment/predictions/C.npz',
             'experiment/predictions/test.npz')

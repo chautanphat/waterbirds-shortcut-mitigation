@@ -45,15 +45,15 @@ def joint_weights(p, y, groups, penalty, solver):
                       ], options=dict(maxiter=solver['maxiter'], ftol=solver['ftol']))
     tol = solver['feasibility_tolerance']
 
-    def acceptable(value):
-        return (value.success and hasattr(value, 'x') and np.isfinite(value.x).all() and
+    def feasible(value):
+        return (hasattr(value, 'x') and np.isfinite(value.x).all() and
                 abs(value.x[:-1].sum() - 1) <= tol and value.x[:-1].min() >= -tol and
                 constraints(value.x).min() >= -tol and
                 objective(value.x) <= objective(initial) + tol)
 
     attempts = [dict(method='SLSQP', success=bool(result.success), message=str(result.message))]
     method = 'SLSQP'
-    if not acceptable(result):
+    if not result.success or not feasible(result):
         print(f'Joint lambda={penalty}: SLSQP did not pass checks; retrying the same fit with trust-constr.',
               flush=True)
         # SLSQP can stop with status 8 on this convex problem at tight tolerances.
@@ -88,7 +88,41 @@ def joint_weights(p, y, groups, penalty, solver):
                                        initial_barrier_parameter=solver['ftol'],
                                        initial_barrier_tolerance=solver['ftol']))
         attempts.append(dict(method=method, success=bool(result.success), message=str(result.message)))
-        if not acceptable(result) or getattr(result, 'optimality', np.inf) > tol:
+        certificate = None
+        if feasible(result) and getattr(result, 'optimality', np.inf) <= tol:
+            w = np.clip(result.x[:-1], 0, 1)
+            w /= w.sum()
+            # Every convex combination of group losses is a lower bound on
+            # their maximum. Its tangent plus the exact quadratic regularizer
+            # gives a global lower bound after minimization over the simplex.
+            # Thus a solver iteration-limit flag need not discard a solution
+            # that is independently certified within the declared tolerance.
+            multipliers = np.maximum(-np.asarray(result.v[1]), 0)
+            if np.isfinite(multipliers).all() and multipliers.sum() > 0:
+                multipliers /= multipliers.sum()
+                group_losses = losses(w)
+                group_gradients = np.array([-(q / (w @ q)).mean(axis=1) for q in grouped])
+                grad = multipliers @ group_gradients + 2 * penalty * (w - u)
+                if penalty:
+                    centered = grad - grad.mean()
+                    v = w - centered / (2 * penalty)
+                    ordered = np.sort(v)[::-1]
+                    thresholds = (ordered.cumsum() - 1) / np.arange(1, h + 1)
+                    rho = np.flatnonzero(ordered > thresholds)[-1]
+                    projected = np.maximum(v - thresholds[rho], 0)
+                    # Use the equality multiplier's dual bound; it remains
+                    # valid if rounding makes projected.sum() differ from 1.
+                    gap = (group_losses.max() - multipliers @ group_losses + centered @ w -
+                           penalty * (w @ w) + 2 * penalty * thresholds[rho] +
+                           penalty * (projected @ projected))
+                else:
+                    gap = group_losses.max() - multipliers @ group_losses + grad @ w - grad.min()
+                value = group_losses.max() + penalty * np.square(w - u).sum()
+                if np.isfinite(gap) and gap >= -tol:
+                    certificate = dict(objective_gap_bound=float(max(0., gap)),
+                                       objective_lower_bound=float(value - max(0., gap)),
+                                       group_multipliers=multipliers.tolist())
+        if certificate is None or certificate['objective_gap_bound'] > tol:
             messages = '; '.join(f"{a['method']}: {a['message']}" for a in attempts)
             raise ValueError(f'Joint solver failed; no candidate accepted (lambda={penalty}): {messages}')
     w = np.clip(result.x[:-1], 0, 1)
@@ -98,6 +132,8 @@ def joint_weights(p, y, groups, penalty, solver):
     if value > objective(initial) + tol:
         raise ValueError('Joint solver returned an objective worse than uniform')
     return w, dict(success=True, method=method, attempts=attempts,
+                   termination_success=bool(result.success),
+                   certificate=certificate if method == 'trust-constr' else None,
                    optimality=float(result.optimality) if method == 'trust-constr' else None,
                    iterations=int(result.nit), message=str(result.message),
                    objective=value, max_group_nll=float(losses(w).max()),

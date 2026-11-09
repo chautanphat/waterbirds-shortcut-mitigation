@@ -137,3 +137,29 @@ synthetic implementation checks, not a rerun of the unavailable seed-1 arrays
 or a new benchmark measurement.
 The full repository suite passed: 65 tests and two subtests, including notebook
 execution/reuse, hosted bootstrap simulations and complete multi-seed smoke runs.
+
+### Further crash-path checks — 2026-11-09
+
+A deeper 108-case stress check forced the SLSQP failure across all three
+lambdas, 15 heads, unequal B-group sizes (94/93/27/27), identical heads and
+increasingly saturated probabilities. Four `trust-constr` fits reached their
+iteration limit on NumPy 1.26.4/SciPy 1.12.0 despite near-optimal solutions.
+Recovery now independently computes a global objective-gap certificate from a
+convex combination of group tangents and the exact quadratic regularizer. Its
+simplex dual lower bound, primal checks and first-order residual must pass the
+declared `1e-7` tolerance. Raw solver termination flags remain recorded; a
+success flag or feasibility alone cannot authorize acceptance. All 108 cases
+pass, and a deliberately feasible but suboptimal fake result is rejected.
+The same joint-fit checks also pass with isolated NumPy 2.1.3/SciPy 1.16.3.
+
+Recovery copies and study/source ZIPs now publish atomically. Simulated interrupted
+copies can be retried without stale partial files; interrupted ZIP exports retain
+the previous complete download. Rule-grid errors and missing recovery handoffs
+are checked before training a missing seed. The notebook uses an explicit
+runtime compatibility marker to avoid importing an older managed checkout.
+These checks supplement the previous failure audit; they do not supply the
+missing real seed-1 prediction arrays or certify hosted-service uptime.
+The final full suite passed 179 tests and two subtests. An additional joint-fit
+subset passed 115 tests on NumPy 2.1.3/SciPy 1.16.3; the main suite used NumPy
+1.26.4/SciPy 1.12.0. Full notebook checks use synthetic backbones and real
+training loops, rather than a new GPU Waterbirds benchmark run.

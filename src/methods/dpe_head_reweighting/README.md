@@ -357,9 +357,13 @@ pretest bundles automatically. Recovery verifies the backbone, metadata, raw
 validation features, test features and provenance against the saved handoff,
 fits/freezes the new rules on B/C, then generates only the missing test predictions
 from the original 15 heads. It writes a separate managed copy and preserves the
-attached outputs. Missing seeds still train normally. The bootstrap uses a new
-managed checkout when the old checkout lacks the recovery module, avoiding stale
-imports after a kernel restart. An explicit `REPO_PATH` must contain this update.
+attached outputs. Missing seeds still train normally. The bootstrap checks the
+notebook runtime version and uses a separate managed checkout when the old
+checkout is incompatible, avoiding stale imports after a kernel restart. An
+explicit `REPO_PATH` must contain this update. Rule settings and feature handoffs
+for incomplete bundles are checked before any missing seed starts training.
+Source copies and ZIP downloads are published atomically; an interrupted ZIP
+export preserves the previous complete download.
 
 ### Study outputs
 
@@ -411,12 +415,17 @@ inference probabilities remain unchanged. The YAML declares `maxiter=1000`,
 `ftol=1e-10` and feasibility tolerance `1e-7`. If SLSQP fails its success,
 finite-weight, simplex, epigraph or objective checks (including its status-8
 line-search failure), `trust-constr` solves the same objective and constraints
-from uniform, with analytic gradients/Hessians. Its optimality residual must also
-be at most `1e-7`. Neither C nor test results decide whether to retry. Failure
-of both solvers remains an error; no candidate is silently omitted. The solver
-method, attempt messages, success, iteration count, objective and B-group log
-losses are saved with each joint candidate. This changes numerical recovery,
-not the candidate grid or the scientific objective.
+from uniform, with analytic gradients/Hessians. Its optimality residual and an
+independent global objective-gap bound must both be at most `1e-7`. The bound
+uses a convex combination of B-group loss tangents and the exact quadratic
+regularizer, minimized over the simplex via a dual lower bound. It can certify
+an iteration-limited result that has already solved the problem to that
+tolerance. A feasible result or solver success flag alone is insufficient.
+Neither C nor test results decide acceptance. An uncertified fit remains an
+error; no candidate is silently omitted. The solver method, attempt messages,
+raw termination success, certificate, iteration count, objective and B-group
+log losses are saved with each joint candidate. This changes numerical
+verification, not the candidate grid or the scientific objective.
 Only the weights are optimized; there is no fitted intercept, feature-dependent
 gate, probability calibration or change to the heads.
 
