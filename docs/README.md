@@ -39,6 +39,7 @@ waterbirds-shortcut-mitigation/
 - Put reproducible settings in `configs/` and experiment metadata in `experiments/`.
 - Keep raw data, checkpoints, caches, and large local outputs out of Git.
 - Put project-wide rules in `CONTRIBUTING.md` and `docs/`; put method-specific setup and commands beside the method.
+- Put hypothesis-level findings and interpretation in `docs/hypotheses/`, linked to the corresponding experiment records and result data. Supporting audits belong with that documentation rather than inside experiment-specific output folders.
 
 | Document | Purpose |
 | --- | --- |
@@ -47,6 +48,7 @@ waterbirds-shortcut-mitigation/
 | [`dataset.md`](dataset.md) | Waterbirds source, groups, splits, local-data expectations, and verification. |
 | [`methods.md`](methods.md) | Method inventory and the rule for documenting a baseline. |
 | [`experiment_log.md`](experiment_log.md) | Traceable index of meaningful runs. |
+| [DPE H2 hypothesis summary](hypotheses/dpe_h2.md) | Evidence, conclusion, limitations and follow-up hypotheses for DPE head weighting. |
 | [Shared ERM](../src/methods/erm/README.md) | DPE-aligned repository-wide fine-tuning, evaluation, and reusable features. |
 
 ## Baseline contribution checklist

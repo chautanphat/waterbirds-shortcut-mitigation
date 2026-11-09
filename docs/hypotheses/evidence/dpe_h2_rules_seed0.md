@@ -1,6 +1,6 @@
 # H2: multiple weighting rules, standard ERM, seed 0
 
-**Follow-up (2026-11-09):** The [consolidated three-seed report](../exp-dpe-h2-rules-waterbirds-standard-seeds012-003/report.md) records completed seeds 0/1/2, prediction-cache verification and revised follow-up hypotheses. This earlier record retains its original measurements and review scope.
+**Follow-up (2026-11-09):** The [consolidated three-seed report](../dpe_h2.md) records completed seeds 0/1/2, prediction-cache verification and revised follow-up hypotheses. This earlier record retains its original measurements and review scope.
 
 ## Status and provenance
 
@@ -17,7 +17,7 @@ This is one seed and is not a final multi-seed result or a paper reproduction.
 - Runtime: Linux, Python 3.13.16, NumPy 2.1.3, SciPy 1.16.3,
   PyTorch 2.11.0+cu130; CUDA 13.0 is recorded, but GPU use is not established.
 - Inputs: the same saved ensemble and prediction caches as the
-  [original H2 seed-0 run](../exp-dpe-h2-waterbirds-standard-seed0-001/report.md).
+  [original H2 seed-0 run](dpe_h2_power_seed0.md).
   Source ensemble, manifest, selection and original test-result identities match
   the existing record. No backbone, raw features or heads were retrained.
 
@@ -50,9 +50,9 @@ are not evaluated on test in this archive.
 
 Equal test results for power, softmax and joint mean that these families selected
 the uniform fallback. They are not measurements of those families' unselected
-nonuniform weights. See [metrics.json](metrics.json) for exact values and error
-IDs, [selection.json](selection.json) for weights and solver diagnostics, and
-[candidate_comparison.csv](candidate_comparison.csv) for all C candidates.
+nonuniform weights. See [metrics.json](../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seed0-001/metrics.json) for exact values and error
+IDs, [selection.json](../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seed0-001/selection.json) for weights and solver diagnostics, and
+[candidate_comparison.csv](../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seed0-001/candidate_comparison.csv) for all C candidates.
 
 | Group | Test count | Uniform correct | Top-10 correct | Uniform accuracy | Top-10 accuracy |
 | --- | ---: | ---: | ---: | ---: | ---: |
