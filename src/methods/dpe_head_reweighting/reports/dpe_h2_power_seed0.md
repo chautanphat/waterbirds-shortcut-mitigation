@@ -1,13 +1,15 @@
 # DPE head reweighting: standard ERM, seed 0
 
+**Follow-up (2026-11-09):** The [consolidated three-seed report](h2.md) records completed seeds 0/1/2, prediction-cache verification and revised follow-up hypotheses. This earlier record retains its original measurements and review scope.
+
 ## Status and traceability
 
 This is a completed, exploratory Waterbirds adaptation with one seed. The record was prepared on 2026-11-08 from the supplied `download.txt` log and `h2-standard-seed0.zip` archive. Their calendar execution date is not established: the log records elapsed times only. This is not a verified reproduction of the paper or a final multi-seed comparison.
 
 - **Executed source:** `5ebb1128fe84200938e73c1fe85e317ecb39f09d`, recorded clean working tree.
-- **Method:** [implementation and mechanism](../../../src/methods/dpe_head_reweighting/README.md).
-- **Settings:** [H2 configuration](../../../experiments/exp-dpe-h2-waterbirds-standard-seed0-001/config.yaml), [backbone configuration](../../../experiments/exp-dpe-h2-waterbirds-standard-seed0-001/stage0_config.yaml).
-- **Provenance:** [run metadata and source checksums](../../../experiments/exp-dpe-h2-waterbirds-standard-seed0-001/run.json).
+- **Method:** [implementation and mechanism](../README.md).
+- **Settings:** [H2 configuration](../../../../experiments/exp-dpe-h2-waterbirds-standard-seed0-001/config.yaml), [backbone configuration](../../../../experiments/exp-dpe-h2-waterbirds-standard-seed0-001/stage0_config.yaml).
+- **Provenance:** [run metadata and source checksums](../../../../experiments/exp-dpe-h2-waterbirds-standard-seed0-001/run.json).
 - **Execution interface:** `notebooks/dpe_head_reweighting.ipynb` at the executed commit; `TRACK="standard"`, `SEED=0`, `WORKERS=2`, `RUN_NAME="h2-standard-seed0"`.
 - **Environment:** Tesla T4 GPU, Python 3.13.16, PyTorch 2.11.0+cu130, torchvision 0.26.0+cu130, NumPy 2.1.3, CUDA 13.0. The hosting service was Kaggle; the procedure is not specific to that service. End-to-end elapsed time was approximately 104 minutes, including setup and archive export.
 
@@ -40,7 +42,7 @@ For each head, its B WGA is the reliability score. Candidates interpolate normal
 
 ### Backbone validation
 
-All 100 epochs and 3,700 updates completed. Training accuracy first reached 100% at epoch 35. At the final epoch, training loss was 0.000956 and validation loss 0.515452. [Epoch records](backbone_epochs.csv) are extracted from the supplied log.
+All 100 epochs and 3,700 updates completed. Training accuracy first reached 100% at epoch 35. At the final epoch, training loss was 0.000956 and validation loss 0.515452. [Epoch records](../../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/backbone_epochs.csv) are extracted from the supplied log.
 
 | Checkpoint | Validation overall accuracy | Validation WGA |
 | --- | ---: | ---: |
@@ -59,7 +61,7 @@ B reliability scores range from 0.740741 to 0.888889. All 13 candidates classify
 | alpha=0.5, gamma=4 | 5.6945–8.2295% | 14.8379 | 0.1438 percentage points | 0 |
 | alpha=1, gamma=4 | 4.7224–9.7923% | 14.3720 | 0.2875 percentage points | 0 |
 
-The [full candidate comparison](candidate_comparison.csv) was independently recomputed from saved C probabilities after execution; it is not a new training run or a new test-driven selection. CSV probability differences use fractions, whereas this table expresses them as percentage points. Complete original candidate and per-head B/C metrics are in [selection.json](selection.json).
+The [full candidate comparison](../../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/candidate_comparison.csv) was independently recomputed from saved C probabilities after execution; it is not a new training run or a new test-driven selection. CSV probability differences use fractions, whereas this table expresses them as percentage points. Complete original candidate and per-head B/C metrics are in [selection.json](../../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/selection.json).
 
 ### Held-out test
 
@@ -72,13 +74,13 @@ The [full candidate comparison](candidate_comparison.csv) was independently reco
 | 11: waterbird / water | 642 | 586 | 91.2773% | 586 | 91.2773% |
 | Worst-group accuracy | — | — | **89.7561%** | — | **89.7561%** |
 
-The paired selected-minus-uniform difference is **0.0000 percentage points** for overall accuracy and WGA. There are zero fixed errors, zero newly introduced errors and zero changed test classifications. Identical test results follow from selecting exactly uniform weights. Weighted candidates were compared on C; they were not selected using test performance. See [metrics.json](metrics.json) and [per-head group metrics](per_head.csv).
+The paired selected-minus-uniform difference is **0.0000 percentage points** for overall accuracy and WGA. There are zero fixed errors, zero newly introduced errors and zero changed test classifications. Identical test results follow from selecting exactly uniform weights. Weighted candidates were compared on C; they were not selected using test performance. See [metrics.json](../../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/metrics.json) and [per-head group metrics](../../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/per_head.csv).
 
 ## Artifact audit and interpretation
 
 Independent recomputation checked all head B scores, candidate weights, C metrics, the selected decision and final test metrics. It also reconciled every one of the 45 per-head CSV rows with prediction caches. Parameter/prediction checks found 15 distinct prototype heads and 15 distinct probability arrays per role. On C, pairs of heads disagree on 5.46–21.01% of examples. Identical candidate decisions therefore do not imply duplicated heads.
 
-The audit verified disjoint validation subsets, no validation/test ID overlap, exact agreement with the declared partition algorithm, source-file hashes against the executed commit, and consistency of stored manifest, ensemble and input identities. The original artifact format predates the later selection-hash fix; recomputation of its candidates and metrics found no inconsistency. [Independent audit](independent_audit.json) and [additional artifact checks](artifact_checks.json) retain the evidence.
+The audit verified disjoint validation subsets, no validation/test ID overlap, exact agreement with the declared partition algorithm, source-file hashes against the executed commit, and consistency of stored manifest, ensemble and input identities. The original artifact format predates the later selection-hash fix; recomputation of its candidates and metrics found no inconsistency. [Independent audit](../../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/independent_audit.json) and [additional artifact checks](../../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/artifact_checks.json) retain the evidence.
 
 The supported conclusion is narrow: this power-weight grid did not change C class predictions for standard ERM, seed 0, and the selected method provided no improvement over its matched uniform control. This does not establish that all weighting rules are ineffective. C has only 26 examples in each waterbird group, so a single changed prediction moves either group's accuracy by approximately 3.85 percentage points.
 
@@ -103,9 +105,9 @@ The historical implementation and notebook are at commit `5ebb112`. A replay use
 These are new calculations from the tracked summaries, not another training run.
 The current checkout has no original ZIP or sample-level B/C/test prediction
 caches, so the earlier archive audit was reviewed but not rerun here. Calculations
-use per-head B/C WGA in [selection.json](selection.json), taking Spearman
+use per-head B/C WGA in [selection.json](../../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/selection.json), taking Spearman
 correlation with average ranks for tied scores. Candidate weight concentration
-and probability changes come from [candidate_comparison.csv](candidate_comparison.csv).
+and probability changes come from [candidate_comparison.csv](../../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/candidate_comparison.csv).
 The B/C per-head tables, candidate weights and metrics, and selected/uniform
 agreement were cross-checked against the retained records. No one-off diagnostic
 script or duplicate generated summary is required to run the experiments.
@@ -150,7 +152,7 @@ The preserved reference implementation averages each head's two-class softmax
 probabilities before class argmax (`baselines/dpe4subpop/notebooks/src/utils.py`,
 `evaluate_ensemble`). Groups are evaluation strata, not four predicted classes.
 
-The 15 test rows in [per_head.csv](per_head.csv) have distinct group-accuracy
+The 15 test rows in [per_head.csv](../../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/per_head.csv) have distinct group-accuracy
 vectors. Multiplying each accuracy by its group count recovers integer correct
 counts within numerical precision. The following statistics were recalculated
 from those rows. SD is the sample standard deviation across heads, descriptive
@@ -185,7 +187,7 @@ bound on total head-versus-ensemble disagreement: at least 86 examples for head
 15 heads). These are lower bounds, not exact per-head disagreement counts;
 opposing errors can cancel in aggregate accuracies.
 
-The earlier [artifact audit](artifact_checks.json) records 15 unique test
+The earlier [artifact audit](../../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/artifact_checks.json) records 15 unique test
 probability arrays and 2,216/5,794=38.2465% test images with at least one head
 disagreeing with another. Across the 105 head pairs, mean label disagreement
 is 11.4910%; the range corresponds to 341–1,025 images per pair

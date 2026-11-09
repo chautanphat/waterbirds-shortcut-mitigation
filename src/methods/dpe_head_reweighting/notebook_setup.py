@@ -9,18 +9,21 @@ import zipfile
 from .experiment import digest, object_hash
 from .rule_suite import validation_context
 
+NOTEBOOK_RUNTIME_VERSION = 2
+
 REQUIRED = ('experiment/manifest.json', 'experiment/selection.json', 'checkpoints/ensemble.pt',
             'experiment/predictions/B.npz', 'experiment/predictions/C.npz',
             'experiment/predictions/test.npz')
 
 
-def zip_prefix(path):
+def zip_prefix(path, *, require_test=True):
     """Accept one complete run at ZIP root or inside one enclosing directory."""
     try:
         with zipfile.ZipFile(path) as archive:
             names = set(archive.namelist())
-            prefixes = [name[:-len(REQUIRED[0])] for name in names if name.endswith(REQUIRED[0])]
-            prefixes = [prefix for prefix in prefixes if all(prefix + name in names for name in REQUIRED)]
+            required = REQUIRED if require_test else REQUIRED[:-1]
+            prefixes = [name[:-len(required[0])] for name in names if name.endswith(required[0])]
+            prefixes = [prefix for prefix in prefixes if all(prefix + name in names for name in required)]
             if len(prefixes) != 1:
                 return None
             return prefixes[0]
@@ -28,9 +31,10 @@ def zip_prefix(path):
         return None
 
 
-def find_sources(roots):
+def find_sources(roots, *, require_test=True):
     """Search bounded input roots, deduplicating ZIP/extracted copies by manifest."""
     found = {}
+    required = REQUIRED if require_test else REQUIRED[:-1]
     for root in dict.fromkeys(Path(p).expanduser().resolve() for p in roots):
         if not root.exists():
             continue
@@ -38,11 +42,11 @@ def find_sources(roots):
         manifests = [root / REQUIRED[0]] if (root / REQUIRED[0]).is_file() else root.rglob('manifest.json')
         for manifest in manifests:
             source = manifest.parent.parent
-            if manifest.parent.name == 'experiment' and all((source / p).is_file() for p in REQUIRED):
+            if manifest.parent.name == 'experiment' and all((source / p).is_file() for p in required):
                 found.setdefault(digest(manifest), source)
         archives = [root] if root.is_file() else root.rglob('*.zip')
         for path in archives:
-            prefix = zip_prefix(path)
+            prefix = zip_prefix(path, require_test=require_test)
             if prefix is not None:
                 with zipfile.ZipFile(path) as archive:
                     identity = hashlib.sha256(archive.read(prefix + REQUIRED[0])).hexdigest()
@@ -50,17 +54,17 @@ def find_sources(roots):
     return sorted(found.values(), key=str)
 
 
-def extract_source(path, cache_dir):
+def extract_source(path, cache_dir, *, require_test=True):
     path = Path(path).expanduser().resolve()
     if path.is_dir():
-        sources = find_sources([path])
+        sources = find_sources([path], require_test=require_test)
         if len(sources) != 1:
             raise ValueError('SOURCE directory must contain exactly one complete H2 run; '
                              f'found {len(sources)}. Point SOURCE at the desired run or ZIP.')
         if sources[0].is_dir():
             return sources[0]
-        return extract_source(sources[0], cache_dir)
-    prefix = zip_prefix(path)
+        return extract_source(sources[0], cache_dir, require_test=require_test)
+    prefix = zip_prefix(path, require_test=require_test)
     if prefix is None:
         raise ValueError('SOURCE must be a complete H2 results ZIP or extracted run, '
                          'including the ensemble and B/C/test prediction caches.')
@@ -70,7 +74,7 @@ def extract_source(path, cache_dir):
     destination = cache_dir / identity
     if destination.exists():
         source = destination / prefix
-        if not all((source / name).is_file() for name in REQUIRED):
+        if not all((source / name).is_file() for name in (REQUIRED if require_test else REQUIRED[:-1])):
             raise ValueError('Cached extraction is incomplete; remove only that extraction directory and retry.')
         return source
     with zipfile.ZipFile(path) as archive, tempfile.TemporaryDirectory(dir=cache_dir) as temporary:

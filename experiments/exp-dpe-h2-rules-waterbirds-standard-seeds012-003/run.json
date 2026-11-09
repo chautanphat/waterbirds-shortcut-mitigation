@@ -1,0 +1,165 @@
+{
+  "branch": "experiment/dpe-multiple-weighting-rules",
+  "documentation_date": "2026-11-09",
+  "environment": {
+    "cuda": "13.0",
+    "device": "cuda",
+    "hosting": "Kaggle, confirmed by log",
+    "numpy": "2.1.3",
+    "physical_gpu_model": null,
+    "physical_gpu_note": "Not recorded in this run archive; no multi-GPU utilization claim.",
+    "python": "3.13.16",
+    "scipy": "1.16.3",
+    "torch": "2.11.0+cu130",
+    "torchvision": "0.26.0+cu130"
+  },
+  "execution": {
+    "action": "Run All with default study settings; attached seed-0 original H2 bundle",
+    "final_notebook_export_elapsed_seconds": 11799.5,
+    "interface": "study.run_study; rule_suite.select; rule_suite.evaluate",
+    "notebook": "notebooks/dpe_weighting_rules.ipynb",
+    "scientific_completion_elapsed_seconds": 11789.7
+  },
+  "execution_commit": "dbeba0f3d1659596e605395bf5235d5d1b6c48e2",
+  "execution_date": null,
+  "execution_date_note": "The supplied log gives elapsed times only.",
+  "experiment_id": "exp-dpe-h2-rules-waterbirds-standard-seeds012-003",
+  "historical_comparisons": [
+    "exp-dpe-h2-waterbirds-standard-seed0-001",
+    "exp-dpe-h2-rules-waterbirds-standard-seed0-001",
+    "exp-dpe-h2-rules-waterbirds-standard-seeds012-002"
+  ],
+  "original_member_sha256": {
+    "comparisons/seed0/candidate_comparison.csv": "e2fc120a99129c3f1747b05bdae67d81771a66ac98918ba86e24e1c83be702ef",
+    "comparisons/seed0/metrics.json": "3ebd3a3daabe09f68eb665a3f0c4c630920916be072a23713b1cffdee5947a0d",
+    "comparisons/seed0/report.md": "605a2ff33a86f845aba4b6af7f95c5d7484c8ea9d70f9afe526cc3d671075ce4",
+    "comparisons/seed0/run.json": "fbef9dbf0e8fd4f652c31a05f6fddeff711cc3756024771c12f09215e2984ea1",
+    "comparisons/seed0/selection.json": "84d839f9ba18b797f904b18d5ebe6045b7729ce41012c54a0169cb8b7e12852e",
+    "comparisons/seed1/candidate_comparison.csv": "03af9eb34a3e16e6698cd98f91abe52292a6bd01c6e5507f43261f2facadc6ff",
+    "comparisons/seed1/metrics.json": "9844375297092b5232feaca9438af2584bed8e84cd1ebdaed4e2ae78cbdb844f",
+    "comparisons/seed1/report.md": "1b86a62f9b0b40939fdf0f78090d4c38df874c6365fd1ed6c8bc88a29743f81e",
+    "comparisons/seed1/run.json": "af88a67baff2c18786747150078ce9a607ccbbe4a0e102e339e0874b128bea19",
+    "comparisons/seed1/selection.json": "ffb8eb7e1e4d9085a784bc284f90f76eb3c663e6d42e365a2b1fe298367c16c0",
+    "comparisons/seed2/candidate_comparison.csv": "81c8923c358a1588b178a92feb85bd52eae63db8ba224688897f3c0a1ddfdf8b",
+    "comparisons/seed2/metrics.json": "9deed948ffc8fe5d6e295ddf6634c3235d5c506c5945f6e9a6be3a2791bb2eea",
+    "comparisons/seed2/report.md": "3e1efea747b6707e0eec4ae190428cb0e51a1f329ed3e01128babb7dfb4311bb",
+    "comparisons/seed2/run.json": "7471c3c24c6f251a39851c9247a4ed2fb5beb21da0d40f2aa7779dbe25a03d2e",
+    "comparisons/seed2/selection.json": "a96b70c8eee2ee5a6bfeaf3672e1d37d185028437394b2dd260352766542ebd6",
+    "per_seed.csv": "fd765770e6ba8abf48b0fae97b2ca16bd8d7d98dbc27af4c9d521aa46da6ff31",
+    "plan.json": "f8ff3ab0c36def7f87c95f00b667c6406a352f16e84cce8e1e8f5dde8e5ea4a4",
+    "progress.json": "c3fe9996e9ee62103c1e3709ff3825b02dbffcd6026f6d46f9e8c4d0d464876f",
+    "report.md": "4eb5e30cdd57040430699f46e63bf691186c1c80f113f06c9848494115bce310",
+    "summary.json": "34e1751ac8d2d286ec6026017d2b90f96bd82e88fa295f96fb9845fd29296931"
+  },
+  "portable_configs": {
+    "note": "Per-seed H2 and stage-0 configurations preserve scientific settings but transcribe absolute paths to repository-relative paths; original configuration hashes are retained above.",
+    "resolved_plan": "plan.json",
+    "rule_grid": "config.yaml",
+    "seed_backbone_configuration_paths": [
+      "seed0/stage0_config.yaml",
+      "seed1/stage0_config.yaml",
+      "seed2/stage0_config.yaml"
+    ],
+    "seed_configuration_paths": [
+      "seed0/h2_config.yaml",
+      "seed1/h2_config.yaml",
+      "seed2/h2_config.yaml"
+    ],
+    "study_settings": "study.yaml"
+  },
+  "retention": "Only lightweight records are tracked; original ZIP/log, datasets, backbone states, trained heads and prediction/feature caches stay outside Git.",
+  "review": {
+    "artifact_checks": "../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/artifact_checks.json",
+    "status": "passed"
+  },
+  "source_archive": {
+    "filename": "standard-seeds012-aed182e8ca.zip",
+    "sha256": "e7d67c61172ecf6a13a9551d6e05db628ba6f4de693a1ef4b36d672868b89fae"
+  },
+  "source_log": {
+    "filename": "download.txt",
+    "sha256": "6b6a969ff7db8f4abacecb2dfd170b1f3f33aa23476d22a022c38aedcbd63408"
+  },
+  "source_runs": [
+    {
+      "archive_sha256": "1cb1e768d1a40951ceb0077e39ba790c4f4a9b476580265e1ad7377ac1731395",
+      "backbone_training_commit": "5ebb1128fe84200938e73c1fe85e317ecb39f09d",
+      "mode": "reused_original_h2_bundle",
+      "original_h2_config_sha256": "1178fa6c01ece4028b5eaeeb696753cc97640ecd1c99c5aaab456143e294376c",
+      "original_stage0_config_sha256": "39a59705166a4db2bbdc057dfcb487becd6488c97600bfab4e1a928445351955",
+      "seed": 0,
+      "source_inputs": {
+        "checkpoints/ensemble.pt": "111268e36b43cfa9112f0def79242e93ccae05de80b4fe6dabde465518f351be",
+        "experiment/manifest.json": "ac10340593fd09b926895273bdbfa2905cc114dc49b5acb1b34d0e694ca78f08",
+        "experiment/predictions/B.npz": "111c607660dedd6a2b40ffcb75539cfab465f80580f840b4ce590c3b60c08382",
+        "experiment/predictions/C.npz": "f1b7bf013400cdb7a53f320a565b59b6fea9852d6251479b5a2cd2ca7f865dea",
+        "experiment/selection.json": "871b6fd005356fecc965260e787eedd9e67e44b85545f6313b6eadb60aaa6c0e"
+      },
+      "stage0_summary": {
+        "best_checkpoint": "ckpt_best_wga.pt",
+        "best_position": {
+          "epoch": 50
+        },
+        "best_val_wga": 0.6240601539611816,
+        "last_checkpoint": "ckpt_last.pt",
+        "selected_checkpoint": "ckpt_last.pt",
+        "updates": 3700
+      },
+      "test_cache_sha256": "2bb4c823abbb382451911f7289b11e7dcf60a1a61750c29df050a477984d6a3f"
+    },
+    {
+      "archive_sha256": "ab85c8d79e7a65e56ab05e77089cb58ac7b4f121dc028efb63a1a82264083c89",
+      "backbone_training_commit": "dbeba0f3d1659596e605395bf5235d5d1b6c48e2",
+      "mode": "trained_in_this_study",
+      "original_h2_config_sha256": "813e7be8926f9662992a1f3009c0aa41e70365c434d63df0dbc0d40af9769eec",
+      "original_stage0_config_sha256": "659c92cdb100e0828be8884f75a9459c33a06633877ba1f3204e94e972950501",
+      "seed": 1,
+      "source_inputs": {
+        "checkpoints/ensemble.pt": "39d5c4db4f6ed7a30326b2c6c018c330c6be31467fa75b2e4af2734e1e94a388",
+        "experiment/manifest.json": "bd36c6e3bec1525916ad20e134e86958be3da8f5c71d2ee7342e64eaf31806e7",
+        "experiment/predictions/B.npz": "f02923887bafbf6bb32eb73278108509b18356174779bc4ddd33fc5e93692884",
+        "experiment/predictions/C.npz": "162f1f4712037a7dadd0f8779f82aace89014411fc48e935ecd05118d2602f46",
+        "experiment/selection.json": "2f2230ded1101056465c9327f8d3e1298c5fd7ac137c07d6f0cf84a4c6761f18"
+      },
+      "stage0_summary": {
+        "best_checkpoint": "ckpt_best_wga.pt",
+        "best_position": {
+          "epoch": 44
+        },
+        "best_val_wga": 0.6315789222717285,
+        "last_checkpoint": "ckpt_last.pt",
+        "selected_checkpoint": "ckpt_last.pt",
+        "updates": 3700
+      },
+      "test_cache_sha256": "bdefaccaa8e4945e6e988b56f90dc4f6d624fa8c7ed4683e7e8f42f45d335b19"
+    },
+    {
+      "archive_sha256": "8e4af125be99b051cb2f246404280a1324db0461f554c2c7c3d21c8285b9be02",
+      "backbone_training_commit": "dbeba0f3d1659596e605395bf5235d5d1b6c48e2",
+      "mode": "trained_in_this_study",
+      "original_h2_config_sha256": "09eec8f017217a270c50bb0174a3cd3a30a258a7a4219879a7549409e75c1981",
+      "original_stage0_config_sha256": "bedde7d91de8dfd4a0215fe39cf66cc2d00acd99448ce8a88a4498163754de9b",
+      "seed": 2,
+      "source_inputs": {
+        "checkpoints/ensemble.pt": "59368b31d9edfc5379faed9d19f772ea6db0f7c82bb12ff9f85d3671c3e5ac9d",
+        "experiment/manifest.json": "7b3f35e5872dbb50fb5cfa70b9f051a8f68ba870cd016a8ed694aa93938e62b5",
+        "experiment/predictions/B.npz": "d119057a2b992795730e4895ce41519032be6de14f2baaa0a153064c6edbc953",
+        "experiment/predictions/C.npz": "900adc1d105688b75ee1c36ab40c25aa803ec60fae7c35f3dffd39cef882cb40",
+        "experiment/selection.json": "14c82743c888455a018d56aafcd72e7c4c324c7dab0f8b58321e904ce83ed88c"
+      },
+      "stage0_summary": {
+        "best_checkpoint": "ckpt_best_wga.pt",
+        "best_position": {
+          "epoch": 52
+        },
+        "best_val_wga": 0.61654132604599,
+        "last_checkpoint": "ckpt_last.pt",
+        "selected_checkpoint": "ckpt_last.pt",
+        "updates": 3700
+      },
+      "test_cache_sha256": "0de728cfa286b84e7a3758ad9e6793b6acc1bc6d37ab27afd84b40dba64ee4a7"
+    }
+  ],
+  "status": "completed exploratory Waterbirds adaptation",
+  "tracked_record_format": "CSV line endings normalized to LF; parsed fields unchanged. Original archive member hashes refer to the supplied bytes. JSON records copied from the archive retain their original bytes; portable configurations and derived diagnostics are identified separately."
+}

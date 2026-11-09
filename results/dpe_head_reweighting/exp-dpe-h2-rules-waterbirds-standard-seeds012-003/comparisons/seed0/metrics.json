@@ -1,0 +1,464 @@
+{
+  "lock": {
+    "config": "bcecd1ae5e317796f759a54b5ed4226e4667aae11beb1b08df0047ac63c241a8",
+    "implementation": {
+      "notebooks/dpe_weighting_rules.ipynb": "8e35259649559a21b1ad8264f3642718bd77ba84774da2ea83e747ee9277c644",
+      "scripts/dpe_head_reweighting.py": "d67779a35d9abdfd79d54bc18e0011b1d2ef7a1fd30081d3f743ae438bd531df",
+      "scripts/dpe_weighting_rules.py": "0ce20caca6115dbdf54537b873e1e63fee5a7fa486680f6299c045de961d6e5e",
+      "src/methods/dpe_head_reweighting/ensemble.py": "ecc109502eacefb1b42d3f9ef006fd8dd03b5da675092e529910baacb5aa6186",
+      "src/methods/dpe_head_reweighting/experiment.py": "0d679757213f43db735dd3825f9cb8f42e09344db16f66235014314da89d6169",
+      "src/methods/dpe_head_reweighting/notebook_setup.py": "0725e52330d9a967c10d033932be82194408df0446d721f6adb55162b3651b3c",
+      "src/methods/dpe_head_reweighting/recovery.py": "94edfc8c7668224801abe58347a3dcf8a946bd219083f82e837e25d8e7e88b09",
+      "src/methods/dpe_head_reweighting/reweighting.py": "7e81fb815214960ede76898a08866066f0564eecf613ec8293fa98162c688d78",
+      "src/methods/dpe_head_reweighting/rule_suite.py": "33b095570056439016a8a06c215e335a94e2076923efc9e61a2368fd47c5c249",
+      "src/methods/dpe_head_reweighting/stage0.py": "91c716b1f61831618083fbc7a38997a130bb97e2c9ffd1a27cd56a5b9e613730",
+      "src/methods/dpe_head_reweighting/study.py": "c8dfdf4c4a689dc60c24cfea391f863552446b871a29990b89022e95425d0ff1",
+      "src/methods/dpe_head_reweighting/train_heads.py": "e8ee1b456ae2f852fb4387a2f93e2089e613e6a2d5e1c1d716aad8cc180891ae",
+      "src/methods/dpe_head_reweighting/weighting_rules.py": "3da136881267906e892ccd6fd3d7485838b0a449e7372aec6cd0688f8e75ae22"
+    },
+    "inputs": {
+      "checkpoints/ensemble.pt": "111268e36b43cfa9112f0def79242e93ccae05de80b4fe6dabde465518f351be",
+      "experiment/manifest.json": "ac10340593fd09b926895273bdbfa2905cc114dc49b5acb1b34d0e694ca78f08",
+      "experiment/predictions/B.npz": "111c607660dedd6a2b40ffcb75539cfab465f80580f840b4ce590c3b60c08382",
+      "experiment/predictions/C.npz": "f1b7bf013400cdb7a53f320a565b59b6fea9852d6251479b5a2cd2ca7f865dea",
+      "experiment/selection.json": "871b6fd005356fecc965260e787eedd9e67e44b85545f6313b6eadb60aaa6c0e"
+    },
+    "numpy": "2.1.3",
+    "scipy": "1.16.3"
+  },
+  "original_test_metrics_hash": "364dbe24613e762063afbc0640c80226140a4d18dee4969aa69357a5b9f114dd",
+  "results": {
+    "joint": {
+      "candidate": "uniform",
+      "changed_predictions": 0,
+      "delta_pp": {
+        "overall": 0.0,
+        "wga": 0.0
+      },
+      "effective_heads": 15.0,
+      "fixed_ids": [],
+      "group_delta_pp": {
+        "00": 0.0,
+        "01": 0.0,
+        "10": 0.0,
+        "11": 0.0
+      },
+      "metrics": {
+        "counts": {
+          "00": 2255,
+          "01": 2255,
+          "10": 642,
+          "11": 642
+        },
+        "groups": {
+          "00": 0.9272727272727272,
+          "01": 0.8975609756097561,
+          "10": 0.9112149532710281,
+          "11": 0.9127725856697819
+        },
+        "overall": 0.9123230928546773,
+        "wga": 0.8975609756097561
+      },
+      "new_error_ids": [],
+      "parameters": {},
+      "weights": [
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667
+      ]
+    },
+    "overall_selected": {
+      "candidate": "top-k10",
+      "changed_predictions": 56,
+      "delta_pp": {
+        "overall": -0.034518467380051376,
+        "wga": -0.1330376940133049
+      },
+      "effective_heads": 9.999999999999996,
+      "fixed_ids": [
+        "021.Eastern_Towhee/Eastern_Towhee_0086_22611.jpg",
+        "021.Eastern_Towhee/Eastern_Towhee_0091_22629.jpg",
+        "021.Eastern_Towhee/Eastern_Towhee_0014_22367.jpg",
+        "022.Chuck_will_Widow/Chuck_Will_Widow_0009_796955.jpg",
+        "022.Chuck_will_Widow/Chuck_Will_Widow_0051_796991.jpg",
+        "028.Brown_Creeper/Brown_Creeper_0085_24938.jpg",
+        "030.Fish_Crow/Fish_Crow_0071_25155.jpg",
+        "033.Yellow_billed_Cuckoo/Yellow_Billed_Cuckoo_0023_26637.jpg",
+        "049.Boat_tailed_Grackle/Boat_Tailed_Grackle_0065_33423.jpg",
+        "070.Green_Violetear/Green_Violetear_0048_60789.jpg",
+        "076.Dark_eyed_Junco/Dark_Eyed_Junco_0031_66785.jpg",
+        "097.Orchard_Oriole/Orchard_Oriole_0101_91233.jpg",
+        "107.Common_Raven/Common_Raven_0021_101767.jpg",
+        "107.Common_Raven/Common_Raven_0082_102306.jpg",
+        "108.White_necked_Raven/White_Necked_Raven_0057_797358.jpg",
+        "114.Black_throated_Sparrow/Black_Throated_Sparrow_0051_107217.jpg",
+        "137.Cliff_Swallow/Cliff_Swallow_0036_133168.jpg",
+        "142.Black_Tern/Black_Tern_0034_144106.jpg",
+        "146.Forsters_Tern/Forsters_Tern_0057_151570.jpg",
+        "146.Forsters_Tern/Forsters_Tern_0116_151688.jpg",
+        "147.Least_Tern/Least_Tern_0026_153702.jpg",
+        "147.Least_Tern/Least_Tern_0035_152932.jpg",
+        "159.Black_and_white_Warbler/Black_And_White_Warbler_0109_160245.jpg",
+        "170.Mourning_Warbler/Mourning_Warbler_0018_795386.jpg",
+        "177.Prothonotary_Warbler/Prothonotary_Warbler_0031_174578.jpg",
+        "185.Bohemian_Waxwing/Bohemian_Waxwing_0078_796649.jpg",
+        "191.Red_headed_Woodpecker/Red_Headed_Woodpecker_0042_182834.jpg"
+      ],
+      "group_delta_pp": {
+        "00": -0.22172949002217113,
+        "01": -0.1330376940133049,
+        "10": 0.4672897196261627,
+        "11": 0.4672897196261738
+      },
+      "metrics": {
+        "counts": {
+          "00": 2255,
+          "01": 2255,
+          "10": 642,
+          "11": 642
+        },
+        "groups": {
+          "00": 0.9250554323725055,
+          "01": 0.8962305986696231,
+          "10": 0.9158878504672897,
+          "11": 0.9174454828660437
+        },
+        "overall": 0.9119779081808768,
+        "wga": 0.8962305986696231
+      },
+      "new_error_ids": [
+        "004.Groove_billed_Ani/Groove_Billed_Ani_0017_1561.jpg",
+        "019.Gray_Catbird/Gray_Catbird_0060_20656.jpg",
+        "021.Eastern_Towhee/Eastern_Towhee_0001_22314.jpg",
+        "031.Black_billed_Cuckoo/Black_Billed_Cuckoo_0032_26292.jpg",
+        "033.Yellow_billed_Cuckoo/Yellow_Billed_Cuckoo_0014_26754.jpg",
+        "036.Northern_Flicker/Northern_Flicker_0094_28726.jpg",
+        "041.Scissor_tailed_Flycatcher/Scissor_Tailed_Flycatcher_0103_41938.jpg",
+        "057.Rose_breasted_Grosbeak/Rose_Breasted_Grosbeak_0052_39044.jpg",
+        "057.Rose_breasted_Grosbeak/Rose_Breasted_Grosbeak_0089_39211.jpg",
+        "076.Dark_eyed_Junco/Dark_Eyed_Junco_0105_66479.jpg",
+        "077.Tropical_Kingbird/Tropical_Kingbird_0040_69728.jpg",
+        "080.Green_Kingfisher/Green_Kingfisher_0006_71297.jpg",
+        "080.Green_Kingfisher/Green_Kingfisher_0036_71156.jpg",
+        "082.Ringed_Kingfisher/Ringed_Kingfisher_0038_73041.jpg",
+        "089.Hooded_Merganser/Hooded_Merganser_0094_796786.jpg",
+        "092.Nighthawk/Nighthawk_0088_82225.jpg",
+        "104.American_Pipit/American_Pipit_0099_99971.jpg",
+        "108.White_necked_Raven/White_Necked_Raven_0064_797378.jpg",
+        "108.White_necked_Raven/White_Necked_Raven_0028_797392.jpg",
+        "110.Geococcyx/Geococcyx_0120_104176.jpg",
+        "110.Geococcyx/Geococcyx_0033_104195.jpg",
+        "110.Geococcyx/Geococcyx_0101_104230.jpg",
+        "111.Loggerhead_Shrike/Loggerhead_Shrike_0025_104828.jpg",
+        "117.Clay_colored_Sparrow/Clay_Colored_Sparrow_0046_110728.jpg",
+        "155.Warbling_Vireo/Warbling_Vireo_0047_158250.jpg",
+        "160.Black_throated_Blue_Warbler/Black_Throated_Blue_Warbler_0119_161416.jpg",
+        "168.Kentucky_Warbler/Kentucky_Warbler_0014_165336.jpg",
+        "176.Prairie_Warbler/Prairie_Warbler_0078_172729.jpg",
+        "179.Tennessee_Warbler/Tennessee_Warbler_0076_174807.jpg"
+      ],
+      "parameters": {
+        "k": 10
+      },
+      "weights": [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1,
+        0.1
+      ]
+    },
+    "power": {
+      "candidate": "uniform",
+      "changed_predictions": 0,
+      "delta_pp": {
+        "overall": 0.0,
+        "wga": 0.0
+      },
+      "effective_heads": 15.0,
+      "fixed_ids": [],
+      "group_delta_pp": {
+        "00": 0.0,
+        "01": 0.0,
+        "10": 0.0,
+        "11": 0.0
+      },
+      "metrics": {
+        "counts": {
+          "00": 2255,
+          "01": 2255,
+          "10": 642,
+          "11": 642
+        },
+        "groups": {
+          "00": 0.9272727272727272,
+          "01": 0.8975609756097561,
+          "10": 0.9112149532710281,
+          "11": 0.9127725856697819
+        },
+        "overall": 0.9123230928546773,
+        "wga": 0.8975609756097561
+      },
+      "new_error_ids": [],
+      "parameters": {},
+      "weights": [
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667
+      ]
+    },
+    "softmax": {
+      "candidate": "uniform",
+      "changed_predictions": 0,
+      "delta_pp": {
+        "overall": 0.0,
+        "wga": 0.0
+      },
+      "effective_heads": 15.0,
+      "fixed_ids": [],
+      "group_delta_pp": {
+        "00": 0.0,
+        "01": 0.0,
+        "10": 0.0,
+        "11": 0.0
+      },
+      "metrics": {
+        "counts": {
+          "00": 2255,
+          "01": 2255,
+          "10": 642,
+          "11": 642
+        },
+        "groups": {
+          "00": 0.9272727272727272,
+          "01": 0.8975609756097561,
+          "10": 0.9112149532710281,
+          "11": 0.9127725856697819
+        },
+        "overall": 0.9123230928546773,
+        "wga": 0.8975609756097561
+      },
+      "new_error_ids": [],
+      "parameters": {},
+      "weights": [
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667
+      ]
+    },
+    "top_k": {
+      "candidate": "top-k10",
+      "changed_predictions": 56,
+      "delta_pp": {
+        "overall": -0.034518467380051376,
+        "wga": -0.1330376940133049
+      },
+      "effective_heads": 9.999999999999996,
+      "fixed_ids": [
+        "021.Eastern_Towhee/Eastern_Towhee_0086_22611.jpg",
+        "021.Eastern_Towhee/Eastern_Towhee_0091_22629.jpg",
+        "021.Eastern_Towhee/Eastern_Towhee_0014_22367.jpg",
+        "022.Chuck_will_Widow/Chuck_Will_Widow_0009_796955.jpg",
+        "022.Chuck_will_Widow/Chuck_Will_Widow_0051_796991.jpg",
+        "028.Brown_Creeper/Brown_Creeper_0085_24938.jpg",
+        "030.Fish_Crow/Fish_Crow_0071_25155.jpg",
+        "033.Yellow_billed_Cuckoo/Yellow_Billed_Cuckoo_0023_26637.jpg",
+        "049.Boat_tailed_Grackle/Boat_Tailed_Grackle_0065_33423.jpg",
+        "070.Green_Violetear/Green_Violetear_0048_60789.jpg",
+        "076.Dark_eyed_Junco/Dark_Eyed_Junco_0031_66785.jpg",
+        "097.Orchard_Oriole/Orchard_Oriole_0101_91233.jpg",
+        "107.Common_Raven/Common_Raven_0021_101767.jpg",
+        "107.Common_Raven/Common_Raven_0082_102306.jpg",
+        "108.White_necked_Raven/White_Necked_Raven_0057_797358.jpg",
+        "114.Black_throated_Sparrow/Black_Throated_Sparrow_0051_107217.jpg",
+        "137.Cliff_Swallow/Cliff_Swallow_0036_133168.jpg",
+        "142.Black_Tern/Black_Tern_0034_144106.jpg",
+        "146.Forsters_Tern/Forsters_Tern_0057_151570.jpg",
+        "146.Forsters_Tern/Forsters_Tern_0116_151688.jpg",
+        "147.Least_Tern/Least_Tern_0026_153702.jpg",
+        "147.Least_Tern/Least_Tern_0035_152932.jpg",
+        "159.Black_and_white_Warbler/Black_And_White_Warbler_0109_160245.jpg",
+        "170.Mourning_Warbler/Mourning_Warbler_0018_795386.jpg",
+        "177.Prothonotary_Warbler/Prothonotary_Warbler_0031_174578.jpg",
+        "185.Bohemian_Waxwing/Bohemian_Waxwing_0078_796649.jpg",
+        "191.Red_headed_Woodpecker/Red_Headed_Woodpecker_0042_182834.jpg"
+      ],
+      "group_delta_pp": {
+        "00": -0.22172949002217113,
+        "01": -0.1330376940133049,
+        "10": 0.4672897196261627,
+        "11": 0.4672897196261738
+      },
+      "metrics": {
+        "counts": {
+          "00": 2255,
+          "01": 2255,
+          "10": 642,
+          "11": 642
+        },
+        "groups": {
+          "00": 0.9250554323725055,
+          "01": 0.8962305986696231,
+          "10": 0.9158878504672897,
+          "11": 0.9174454828660437
+        },
+        "overall": 0.9119779081808768,
+        "wga": 0.8962305986696231
+      },
+      "new_error_ids": [
+        "004.Groove_billed_Ani/Groove_Billed_Ani_0017_1561.jpg",
+        "019.Gray_Catbird/Gray_Catbird_0060_20656.jpg",
+        "021.Eastern_Towhee/Eastern_Towhee_0001_22314.jpg",
+        "031.Black_billed_Cuckoo/Black_Billed_Cuckoo_0032_26292.jpg",
+        "033.Yellow_billed_Cuckoo/Yellow_Billed_Cuckoo_0014_26754.jpg",
+        "036.Northern_Flicker/Northern_Flicker_0094_28726.jpg",
+        "041.Scissor_tailed_Flycatcher/Scissor_Tailed_Flycatcher_0103_41938.jpg",
+        "057.Rose_breasted_Grosbeak/Rose_Breasted_Grosbeak_0052_39044.jpg",
+        "057.Rose_breasted_Grosbeak/Rose_Breasted_Grosbeak_0089_39211.jpg",
+        "076.Dark_eyed_Junco/Dark_Eyed_Junco_0105_66479.jpg",
+        "077.Tropical_Kingbird/Tropical_Kingbird_0040_69728.jpg",
+        "080.Green_Kingfisher/Green_Kingfisher_0006_71297.jpg",
+        "080.Green_Kingfisher/Green_Kingfisher_0036_71156.jpg",
+        "082.Ringed_Kingfisher/Ringed_Kingfisher_0038_73041.jpg",
+        "089.Hooded_Merganser/Hooded_Merganser_0094_796786.jpg",
+        "092.Nighthawk/Nighthawk_0088_82225.jpg",
+        "104.American_Pipit/American_Pipit_0099_99971.jpg",
+        "108.White_necked_Raven/White_Necked_Raven_0064_797378.jpg",
+        "108.White_necked_Raven/White_Necked_Raven_0028_797392.jpg",
+        "110.Geococcyx/Geococcyx_0120_104176.jpg",
+        "110.Geococcyx/Geococcyx_0033_104195.jpg",
+        "110.Geococcyx/Geococcyx_0101_104230.jpg",
+        "111.Loggerhead_Shrike/Loggerhead_Shrike_0025_104828.jpg",
+        "117.Clay_colored_Sparrow/Clay_Colored_Sparrow_0046_110728.jpg",
+        "155.Warbling_Vireo/Warbling_Vireo_0047_158250.jpg",
+        "160.Black_throated_Blue_Warbler/Black_Throated_Blue_Warbler_0119_161416.jpg",
+        "168.Kentucky_Warbler/Kentucky_Warbler_0014_165336.jpg",
+        "176.Prairie_Warbler/Prairie_Warbler_0078_172729.jpg",
+        "179.Tennessee_Warbler/Tennessee_Warbler_0076_174807.jpg"
+      ],
+      "parameters": {
+        "k": 10
+      },
+      "weights": [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1,
+        0.1
+      ]
+    },
+    "uniform": {
+      "candidate": "uniform",
+      "changed_predictions": 0,
+      "delta_pp": {
+        "overall": 0.0,
+        "wga": 0.0
+      },
+      "effective_heads": 15.0,
+      "fixed_ids": [],
+      "group_delta_pp": {
+        "00": 0.0,
+        "01": 0.0,
+        "10": 0.0,
+        "11": 0.0
+      },
+      "metrics": {
+        "counts": {
+          "00": 2255,
+          "01": 2255,
+          "10": 642,
+          "11": 642
+        },
+        "groups": {
+          "00": 0.9272727272727272,
+          "01": 0.8975609756097561,
+          "10": 0.9112149532710281,
+          "11": 0.9127725856697819
+        },
+        "overall": 0.9123230928546773,
+        "wga": 0.8975609756097561
+      },
+      "new_error_ids": [],
+      "parameters": {},
+      "weights": [
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667,
+        0.06666666666666667
+      ]
+    }
+  },
+  "selection_hash": "84d839f9ba18b797f904b18d5ebe6045b7729ce41012c54a0169cb8b7e12852e",
+  "source_seed": 0,
+  "source_track": "standard",
+  "status": "exploratory; cached-prediction comparison",
+  "test_cache_hash": "2bb4c823abbb382451911f7289b11e7dcf60a1a61750c29df050a477984d6a3f",
+  "version": 1
+}

@@ -4,7 +4,7 @@
 
 This project-owned adaptation of Diverse Prototypical Ensembles (DPE) evaluates whether validation-derived head weights improve worst-group accuracy (WGA) on Waterbirds relative to uniform probability averaging. WGA is the minimum accuracy over the four bird/background groups. Both aggregation conditions use the same frozen ResNet-50 representation and the same 15 trained prototype heads.
 
-The end-to-end workflow reuses the shared ERM trainer and feature extractor, then performs sequential head training, reliability estimation, aggregation selection, artifact validation and held-out evaluation. A completed exploratory standard-track seed-0 power-rule run is documented in the [original run report](../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/report.md). The subsequent [multi-rule seed-0 report](../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seed0-001/report.md) records a C-selected top-k10 test WGA of 89.6231% versus 89.7561% for uniform; no selected new procedure improves test WGA in that run. Multi-seed conclusions and GPU parity remain unverified.
+The end-to-end workflow reuses the shared ERM trainer and feature extractor, then performs sequential head training, reliability estimation, aggregation selection, artifact validation and held-out evaluation. The [H2 hypothesis summary](reports/h2.md) records the earlier power/multi-rule seed-0 studies, a failed solver run and the completed standard-track seeds 0/1/2 study. Uniform test WGA is 89.5196±0.6538%; overall C selection gives 89.4752±0.6339%, with paired change −0.0443±0.0768 pp (mean±sample SD). No selected procedure improves test WGA. These are exploratory adaptation results, with verified prediction-cache calculations; raw-image inference and GPU parity have not been independently reproduced.
 
 ## Experimental protocol
 
@@ -341,10 +341,29 @@ reject nonempty incomplete runs by default.
 Feature extraction is published atomically. Interrupted head training restarts
 its short feature-only stage. Changed extraction or H2 code gets separate
 feature/head directories; completed, matching stages are reused after checks.
+Completed frozen heads with B/C caches can also be reused across a weighting-only
+code change, even when the old run stopped before test inference.
 Keep WORK_DIR persistent to survive deletion of a hosted VM. Colab users can
 point it at an already mounted Drive directory; Kaggle users must retain saved
 outputs/checkpoints. A runtime restart with the same files can resume, but the
 compact ZIP does not include large backbone/resume checkpoints or raw features.
+
+**Recover the joint-solver failure from a saved Kaggle version:** attach that
+failed version's notebook outputs as an input, import the updated notebook,
+restart the kernel and Run All with the defaults. Keep both `h2_sources/` and
+`features/` from that version; its partial study ZIP alone does not contain the
+unfinished seed's heads/raw features. Discovery finds completed seeds and frozen
+pretest bundles automatically. Recovery verifies the backbone, metadata, raw
+validation features, test features and provenance against the saved handoff,
+fits/freezes the new rules on B/C, then generates only the missing test predictions
+from the original 15 heads. It writes a separate managed copy and preserves the
+attached outputs. Missing seeds still train normally. The bootstrap checks the
+notebook runtime version and uses a separate managed checkout when the old
+checkout is incompatible, avoiding stale imports after a kernel restart. An
+explicit `REPO_PATH` must contain this update. Rule settings and feature handoffs
+for incomplete bundles are checked before any missing seed starts training.
+Source copies and ZIP downloads are published atomically; an interrupted ZIP
+export preserves the previous complete download.
 
 ### Study outputs
 
@@ -380,7 +399,8 @@ declares seven additional candidates and the solver settings:
 | Regularized joint weights | Fit the combined probabilities with a worst-group log-loss objective | lambda 1, 0.1 and 0.01 |
 
 There are 20 distinct candidate records including uniform. Joint fitting solves
-the following convex problem on B, using an epigraph variable and SciPy SLSQP:
+the following convex problem on B, using an epigraph variable and SciPy SLSQP
+with a deterministic SciPy `trust-constr` recovery solver:
 
 ```math
 \min_{w\geq0,\ \sum_h w_h=1}
@@ -392,10 +412,20 @@ the following convex problem on B, using an epigraph variable and SciPy SLSQP:
 The solver starts at uniform. Correct-class head probabilities are floored at
 `1e-12` for the fitting objective to avoid undefined logarithms; reported
 inference probabilities remain unchanged. The YAML declares `maxiter=1000`,
-`ftol=1e-10` and feasibility tolerance `1e-7`. Nonconvergence, infeasible or
-nonfinite weights, and an objective worse than the uniform start are errors;
-the suite does not silently omit a failed candidate. Solver success, iteration
-count, objective and B-group log losses are saved with each joint candidate.
+`ftol=1e-10` and feasibility tolerance `1e-7`. If SLSQP fails its success,
+finite-weight, simplex, epigraph or objective checks (including its status-8
+line-search failure), `trust-constr` solves the same objective and constraints
+from uniform, with analytic gradients/Hessians. Its optimality residual and an
+independent global objective-gap bound must both be at most `1e-7`. The bound
+uses a convex combination of B-group loss tangents and the exact quadratic
+regularizer, minimized over the simplex via a dual lower bound. It can certify
+an iteration-limited result that has already solved the problem to that
+tolerance. A feasible result or solver success flag alone is insufficient.
+Neither C nor test results decide acceptance. An uncertified fit remains an
+error; no candidate is silently omitted. The solver method, attempt messages,
+raw termination success, certificate, iteration count, objective and B-group
+log losses are saved with each joint candidate. This changes numerical
+verification, not the candidate grid or the scientific objective.
 Only the weights are optimized; there is no fitted intercept, feature-dependent
 gate, probability calibration or change to the heads.
 
@@ -445,7 +475,7 @@ notebook exports a ZIP of this new comparison without duplicating the source
 predictions or heads; retain the original H2 ZIP separately for replay.
 
 The first completed standard seed-0 suite is documented in the
-[multi-rule run report](../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seed0-001/report.md).
+[multi-rule run report](reports/dpe_h2_rules_seed0.md).
 Its uploaded aggregate records were checked for consistency, not independently
 recomputed from prediction caches. Add a dated experiment entry and lightweight
 result summary for subsequent real runs, following the existing experiment-log
@@ -503,7 +533,7 @@ python -m pip install nbclient ipykernel
 python -m pytest tests/methods/dpe_head_reweighting -q
 ```
 
-The notebook checks execute both standard and enhanced tracks in separate Jupyter kernels, with 15 heads, 20 epochs, 2048-dimensional synthetic features and official split/group counts. They verify final evaluation, archive creation and reuse of completed stages. Without the optional dependencies, these two integration checks are skipped. The notebook tests run the shared 100-epoch optimization loop with a small synthetic classifier in place of ResNet-50, then use the real feature handoff and H2 stages. They also verify completed-backbone and feature-bundle reuse. Synthetic results establish software behavior only; the fixture models are not Waterbirds ResNet-50 backbones. Real Waterbirds performance and GPU parity remain unverified.
+The notebook checks execute both standard and enhanced tracks in separate Jupyter kernels, with 15 heads, 20 epochs, 2048-dimensional synthetic features and official split/group counts. They verify final evaluation, archive creation and reuse of completed stages. Without the optional dependencies, these two integration checks are skipped. The notebook tests run the shared 100-epoch optimization loop with a small synthetic classifier in place of ResNet-50, then use the real feature handoff and H2 stages. They also verify completed-backbone and feature-bundle reuse. Synthetic results establish software behavior only; the fixture models are not Waterbirds ResNet-50 backbones. Real Waterbirds results and their cache-level verification are documented in the [three-seed report](reports/h2.md); GPU parity remains unverified.
 
 Feature-only initialization consumes random numbers differently from the original reproduction notebook; the implementation does not reproduce its historical head parameters exactly. The original baseline and reproduction notebook are preserved.
 

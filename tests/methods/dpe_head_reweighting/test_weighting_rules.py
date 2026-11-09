@@ -72,12 +72,100 @@ def test_joint_known_complementary_optimum_and_uniform_penalty():
     np.testing.assert_allclose(w, np.ones(15) / 15, atol=1e-7)
 
 
+@pytest.mark.parametrize('penalty', [1., .1, .01])
+def test_joint_fallback_matches_primary_on_unequal_soft_groups(monkeypatch, penalty):
+    from scipy.optimize import OptimizeResult
+    groups = np.repeat(['00', '01', '10', '11'], [94, 93, 27, 27])
+    y = np.array([int(group[0]) for group in groups])
+    rng = np.random.default_rng(93)
+    logits = rng.normal(0, 3, (1, len(y))) + rng.normal(0, 1, (15, len(y)))
+    p = probabilities(1 / (1 + np.exp(-logits)), y)
+    _, reference = rules.joint_weights(p, y, groups, penalty, config()['solver'])
+    real = rules.minimize
+    def fail_slsqp(*args, **kwargs):
+        if kwargs['method'] == 'SLSQP':
+            return OptimizeResult(success=False, status=8, message='Positive directional derivative for linesearch')
+        return real(*args, **kwargs)
+    monkeypatch.setattr(rules, 'minimize', fail_slsqp)
+    w, fit = rules.joint_weights(p, y, groups, penalty, config()['solver'])
+    assert fit['method'] == 'trust-constr' and fit['optimality'] <= 1e-7
+    assert w.min() >= 0 and w.sum() == pytest.approx(1)
+    assert fit['objective'] == pytest.approx(reference['objective'], abs=1e-7)
+
+
 def test_joint_rejects_solver_failure(monkeypatch):
     from scipy.optimize import OptimizeResult
     monkeypatch.setattr(rules, 'minimize', lambda *a, **k: OptimizeResult(success=False, message='iteration limit'))
     p, y, g = arrays()
     with pytest.raises(ValueError, match='Joint solver failed'):
         rules.joint_weights(p, y, g, .1, config()['solver'])
+
+
+def test_joint_recovers_logged_linesearch_failure(monkeypatch):
+    from scipy.optimize import OptimizeResult
+    real = rules.minimize
+    def fail_slsqp(*args, **kwargs):
+        if kwargs['method'] == 'SLSQP':
+            return OptimizeResult(success=False, status=8, message='Positive directional derivative for linesearch')
+        return real(*args, **kwargs)
+    monkeypatch.setattr(rules, 'minimize', fail_slsqp)
+    y = np.array([0,0,1,1])
+    g = np.array(['00','01','10','11'])
+    p = np.stack([probabilities(q,y) for q in ([.9,.9,.3,.3],[.3,.3,.9,.9],[.1]*4)])
+    w, fit = rules.joint_weights(p,y,g,.01,config()['solver'])
+    np.testing.assert_allclose(w,[.5,.5,0],atol=1e-6)
+    expected_objective = -np.log(.6) + .01/6
+    assert fit['objective'] == pytest.approx(expected_objective, abs=1e-7)
+    assert fit['method'] == 'trust-constr' and not fit['attempts'][0]['success']
+    assert fit['attempts'][1]['success'] and fit['optimality'] <= 1e-7
+    assert fit['certificate']['objective_gap_bound'] <= 1e-7
+    assert fit['certificate']['objective_lower_bound'] <= expected_objective + 1e-12
+    # Full candidate selection/evaluation can reproducibly validate these fits.
+    p,y,g = arrays()
+    first = rules.fit_rules(p,y,g,p,y,g,config())
+    second = rules.fit_rules(p,y,g,p,y,g,config())
+    assert first == second
+
+
+@pytest.mark.parametrize('seed', range(12))
+@pytest.mark.parametrize('scale', [1, 8, 40])
+@pytest.mark.parametrize('penalty', [1., .1, .01])
+def test_joint_saturated_probabilities_and_iteration_limits(monkeypatch, seed, scale, penalty):
+    from scipy.optimize import OptimizeResult
+    groups = np.repeat(['00', '01', '10', '11'], [94, 93, 27, 27])
+    y = np.array([int(group[0]) for group in groups])
+    rng = np.random.default_rng(seed)
+    for current in (1, 8, 40):
+        logits = rng.normal(0, current, (1, len(y))) + rng.normal(0, current / 2, (15, len(y)))
+        if current == scale:
+            break
+    q = 1 / (1 + np.exp(-logits))
+    if seed % 3 == 0:
+        q = np.repeat(q[:1], 15, axis=0)
+    p = probabilities(q, y)
+    real = rules.minimize
+    def fail_slsqp(*args, **kwargs):
+        if kwargs['method'] == 'SLSQP':
+            return OptimizeResult(success=False, status=8, message='Positive directional derivative for linesearch')
+        return real(*args, **kwargs)
+    monkeypatch.setattr(rules, 'minimize', fail_slsqp)
+    w, fit = rules.joint_weights(p, y, groups, penalty, config()['solver'])
+    assert np.isfinite(w).all() and w.min() >= 0 and w.sum() == pytest.approx(1)
+    assert fit['success'] and fit['optimality'] <= 1e-7
+    assert fit['certificate']['objective_gap_bound'] <= 1e-7
+
+
+def test_joint_rejects_uncertified_feasible_result(monkeypatch):
+    from scipy.optimize import OptimizeResult
+    p, y, g = arrays()
+    def pretend_success(*args, **kwargs):
+        if kwargs['method'] == 'SLSQP':
+            return OptimizeResult(success=False, message='forced primary failure')
+        return OptimizeResult(success=True, message='pretend success', x=args[1],
+                              optimality=0., nit=1, v=[np.zeros(1), np.full(4, -.25)])
+    monkeypatch.setattr(rules, 'minimize', pretend_success)
+    with pytest.raises(ValueError, match='Joint solver failed'):
+        rules.joint_weights(p, y, g, .01, config()['solver'])
 
 
 def test_all_rules_and_original_power_parity():
@@ -168,7 +256,7 @@ def test_invalidated_config_and_cache_and_source_protection(tmp_path):
         suite.select(source, CONFIG, tmp_path / 'other-suite')
 
 
-@pytest.mark.parametrize('mode', ['existing', 'kaggle_zip_clone', 'colab_zip_clone'])
+@pytest.mark.parametrize('mode', ['existing', 'kaggle_zip_clone', 'colab_zip_clone', 'stale_checkout'])
 def test_rules_notebook_execution_and_reuse(tmp_path, monkeypatch, mode):
     nbformat = pytest.importorskip('nbformat')
     nbclient = pytest.importorskip('nbclient')
@@ -194,7 +282,7 @@ def test_rules_notebook_execution_and_reuse(tmp_path, monkeypatch, mode):
         for path in source.rglob('*'):
             if path.is_file():
                 zipped.write(path, 'enclosing/run/' + str(path.relative_to(source)))
-    if mode in ('kaggle_zip_clone', 'colab_zip_clone'):
+    if mode != 'existing':
         shutil.copyfile(archive, mount / archive.name)
         (mount / archive.name).chmod(0o444)
     if mode != 'existing':
@@ -245,6 +333,11 @@ sys.modules["google.colab"] = mock_colab
     identities = None
     working = tmp_path / 'empty-notebook-session'
     working.mkdir()
+    if mode == 'stale_checkout':
+        stale = working / 'src/methods/dpe_head_reweighting'
+        stale.mkdir(parents=True)
+        (stale / 'recovery.py').write_text('# Old recovery implementation must not be imported.\n')
+        (stale / 'notebook_setup.py').write_text('NOTEBOOK_RUNTIME_VERSION = 1\n')
     local_notebook = working / 'run.ipynb'
     shutil.copyfile(notebook_path, local_notebook)
     for _ in range(2):
@@ -262,6 +355,9 @@ sys.modules["google.colab"] = mock_colab
             assert identities == current
         identities = current
         assert output.with_suffix('.zip').is_file()
+    if mode == 'stale_checkout':
+        assert (work / 'repository-runtime-v2/src/methods/dpe_head_reweighting/study.py').is_file()
+        assert (stale / 'notebook_setup.py').read_text() == 'NOTEBOOK_RUNTIME_VERSION = 1\n'
     if mode == 'colab_zip_clone':
         assert Path((tmp_path / 'downloaded-path').read_text()).is_file()
 
