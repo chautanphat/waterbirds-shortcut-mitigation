@@ -1,6 +1,6 @@
 # Supporting audit: three-seed DPE head weighting
 
-The H2 discussion in the [research report](../main.tex) is the primary narrative. This audit retains detailed methods, diagnostics and provenance.
+The [H2 experiment summary](h2.md) is the primary narrative. This audit retains detailed methods, diagnostics and provenance.
 
 **Status:** completed exploratory adaptation, standard track, seeds 0/1/2.
 **Documentation date:** 2026-11-09; the execution calendar date is not recorded.
@@ -19,11 +19,11 @@ Earlier records remain the source for their full settings, group metrics and abl
 
 | Experiment | Evidence and result | Relationship to this study |
 | --- | --- | --- |
-| [Historical standard DPE](../../docs/experiment_log.md#exp-dpe-waterbirds-standard-002--2026-11-02) | Seed 0: reported test accuracy/WGA 91.40/89.00%. | Different validation-data budget; not a matched H2 control. |
-| [Historical enhanced DPE](../../docs/experiment_log.md#exp-dpe-waterbirds-ermstar-001--2026-11-02) | Seed 0: reported test accuracy/WGA 93.30/92.70%. | Augmented 100-epoch backbone; not the upstream 400-epoch ERM* recipe. |
+| [Historical standard DPE](../../../../docs/experiment_log.md#exp-dpe-waterbirds-standard-002--2026-11-02) | Seed 0: reported test accuracy/WGA 91.40/89.00%. | Different validation-data budget; not a matched H2 control. |
+| [Historical enhanced DPE](../../../../docs/experiment_log.md#exp-dpe-waterbirds-ermstar-001--2026-11-02) | Seed 0: reported test accuracy/WGA 93.30/92.70%. | Augmented 100-epoch backbone; not the upstream 400-epoch ERM* recipe. |
 | [Original H2 power grid](dpe_h2_power_seed0.md) | Seed 0: uniform selected; test accuracy/WGA 91.2323/89.7561%. All 13 candidates give identical C labels. | Establishes the A-trained matched uniform control. |
 | [Expanded weighting grid](dpe_h2_rules_seed0.md) | Same seed-0 heads: top-10 selected; test accuracy/WGA 91.1978/89.6231%. | Reuses seed 0; not another independent training replicate. |
-| [Failed multi-seed attempt](../../docs/experiment_log.md#exp-dpe-h2-rules-waterbirds-standard-seeds012-002--2026-11-09) | Seed 1 finished training, then joint fitting stopped with an SLSQP line-search error. No final seed-1 test comparison. | Software failure, not a scientific negative result. |
+| [Failed multi-seed attempt](../../../../docs/experiment_log.md#exp-dpe-h2-rules-waterbirds-standard-seeds012-002--2026-11-09) | Seed 1 finished training, then joint fitting stopped with an SLSQP line-search error. No final seed-1 test comparison. | Software failure, not a scientific negative result. |
 | This study, `…seeds012-003` | Seeds 0/1/2 completed with the same 20-candidate grid. | Seed 0 reused; seeds 1/2 trained. All three comparisons re-evaluated. |
 
 Historical DPE scores are retained as reported, without a new artifact audit.
@@ -45,14 +45,14 @@ examples and 26 C examples. All three training seeds share partition seed 0.
 Backbones use ImageNet V2 initialization and 100 epochs without augmentation;
 the final epoch supplies frozen features. Each of 15 heads trains for 20 epochs
 on 320 balanced A examples. Optimizer/loss settings are preserved in the
-[per-seed configurations](../../experiments/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/run.json)
-and [method README](../../src/methods/dpe_head_reweighting/README.md).
+[per-seed configurations](../../../../experiments/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/run.json)
+and [method README](../README.md).
 
 The fixed grid contains uniform, 12 power rules, softmax β=10/30, top-k=10/5 and
 joint λ=1/0.1/0.01. Joint fitting minimizes worst B-group negative log likelihood
 (NLL), plus λ times squared distance from uniform, over simplex weights.
 Probability floor is 1e-12; solver tolerances and limits are in the
-[recorded grid](../../experiments/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/config.yaml).
+[recorded grid](../../../../experiments/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/config.yaml).
 
 C selects by WGA, then overall accuracy; complete ties prefer uniform and then
 declaration order. Every family includes uniform. Weights are not refitted on
@@ -67,8 +67,8 @@ unselected candidates are not swept on test.
 | 1 | 86.4887 | 62.4060 |
 | 2 | 86.5721 | 59.3985 |
 
-Seed 0 comes from the [earlier backbone log](../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/backbone_epochs.csv);
-seeds 1/2 are in [backbone_epochs.csv](../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/backbone_epochs.csv). These are backbone
+Seed 0 comes from the [earlier backbone log](../../../../results/dpe_head_reweighting/exp-dpe-h2-waterbirds-standard-seed0-001/backbone_epochs.csv);
+seeds 1/2 are in [backbone_epochs.csv](../../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/backbone_epochs.csv). These are backbone
 validation scores, not DPE or ERM-only test scores; differences across those
 stages/splits are not matched test improvements.
 
@@ -106,8 +106,8 @@ change for top-k/overall selection is −0.0115 ± 0.0199 pp.
 
 Group 01 is the test worst group in every seed. Seed-0 top-10 corrects one extra
 C image (C WGA 89.2473→90.3226%), but fixes 27 test errors and introduces 29.
-Counts and exact values are retained in [group_metrics.csv](../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/group_metrics.csv),
-[per_seed.csv](../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/per_seed.csv), [summary.json](../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/summary.json) and `comparisons/seed*/`.
+Counts and exact values are retained in [group_metrics.csv](../../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/group_metrics.csv),
+[per_seed.csv](../../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/per_seed.csv), [summary.json](../../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/summary.json) and `comparisons/seed*/`.
 
 ## Diagnostics and interpretation
 
@@ -137,7 +137,7 @@ versus 15 for uniform. Seed 1 assigns approximately 82.87% to `head-00` and
 Mean pairwise test disagreement is 11.4910/11.4631/10.7089%; identical heads
 therefore cannot explain the selected-score equality. B-to-C per-head WGA rank
 correlations are −0.0276/0.4954/0.7796, so poor ranking transfer is not universal.
-See [joint_diagnostics.csv](../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/joint_diagnostics.csv) and [artifact_checks.json](../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/artifact_checks.json).
+See [joint_diagnostics.csv](../../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/joint_diagnostics.csv) and [artifact_checks.json](../../../../results/dpe_head_reweighting/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/artifact_checks.json).
 
 The seed-1 λ=0.01 SLSQP line-search failure recurred; `trust-constr` converged in
 24 iterations with objective-gap bound 5.53e-10, below tolerance 1e-7. All nine
@@ -166,7 +166,7 @@ The study ran `notebooks/dpe_weighting_rules.ipynb` at commit `dbeba0f`, calling
 Python 3.13.16, NumPy 2.1.3, SciPy 1.16.3, torch 2.11.0+cu130, torchvision
 0.26.0+cu130, CUDA 13.0; physical GPU model/utilization is not recorded. Scientific
 completion took 11,789.7 s; final notebook export finished at 11,799.5 s.
-See [run metadata](../../experiments/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/run.json)
+See [run metadata](../../../../experiments/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/run.json)
 for archive/log checksums, source identities, commands and portable per-seed configurations.
 
 Review recomputed all 60 B/C candidates, refitted all nine joint fits, and checked selected test metrics/error changes,

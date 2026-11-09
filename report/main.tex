@@ -49,7 +49,7 @@ Vietnam National University, Ho Chi Minh City, Vietnam\\
 \maketitle
 %
 \begin{abstract}
-This is our weekly report on three methods that try to stop image classifiers from relying on the background: DPE, POTER, and AutoBackSwap. We ran each method on the Waterbirds dataset and compared our numbers with the ones in the papers. DPE and AutoBackSwap came close to the published worst-group accuracy. POTER finished training for one seed, but we only have validation results so far. While looking at AutoBackSwap's mistakes, we found that three bird species seem to be labeled wrongly in the dataset, and that they cause many of its errors. We also evaluate the head-reweighting hypothesis for DPE over three training seeds. Validation-selected weighting did not improve worst-group accuracy over matched uniform averaging; two other DPE hypotheses remain untested.
+This is our weekly report on three methods that try to stop image classifiers from relying on the background: DPE, POTER, and AutoBackSwap. We ran each method on the Waterbirds dataset and compared our numbers with the ones in the papers. DPE and AutoBackSwap came close to the published worst-group accuracy. POTER finished training for one seed, but we only have validation results so far. While looking at AutoBackSwap's mistakes, we found that three bird species seem to be labeled wrongly in the dataset, and that they cause many of its errors. We also list three ideas for improving DPE that we plan to try next week.
 
 \keywords{Shortcut learning \and Waterbirds \and Reproducibility \and Worst-group accuracy.}
 \end{abstract}
@@ -63,7 +63,7 @@ Each image in the Waterbirds dataset \cite{waterbirds} shows a bird, and the tas
 A normally trained model (ERM, which simply minimizes the average training loss) tends to learn this shortcut. It then fails on the rare images where the background is misleading, such as a landbird on water. In practice we also do not know which group an image belongs to during training, which makes the problem harder.
 
 \subsubsection{Research scope}
-We re-ran three existing methods on Waterbirds, compared our results with the papers, and investigated their errors. We subsequently tested whether reweighting frozen DPE heads improves worst-group accuracy.
+This week we re-ran three existing methods on Waterbirds, compared our results with the papers, and looked at some of the mistakes they make.
 
 \subsection{Literature review}
 The three methods we study take different approaches. POTER \cite{poter} gives more weight to training images that look like the hard cases in a small validation set. DPE \cite{dpe} trains many small classifiers on top of a frozen model and averages them. AutoBackSwap \cite{autobackswap} cuts the bird out of each image and pastes it onto a different background, so the model cannot depend on the background.
@@ -72,7 +72,7 @@ The three methods we study take different approaches. POTER \cite{poter} gives m
 \begin{itemize}
     \item We ran DPE, POTER, AutoBackSwap, and an ERM baseline, and compared the results with the papers.
     \item We checked the individual test predictions of AutoBackSwap and ERM, and found a possible labeling problem in the dataset and a small bug in the released code.
-    \item We formulated three DPE hypotheses and evaluated head reweighting (H2) using matched ensembles over seeds 0--2; prototype re-pairing (H1) and larger prototype subsets (H3) remain untested.
+    \item We wrote down three ideas for improving DPE, to be tested next week.
 \end{itemize}
 
 \section{Related Work}
@@ -94,10 +94,10 @@ $G_1$ landbird on land (2,255 test images),
 $G_2$ landbird on water (2,255),
 $G_3$ waterbird on land (642), and
 $G_4$ waterbird on water (642).
-We report overall accuracy (Acc) and worst-group accuracy (WGA), which is the lowest accuracy among the four groups. Checkpoint and aggregation choices follow the documented method-specific protocol, without test-based selection. In the H2 study, the backbone uses its final epoch; head epochs and aggregation are selected using separate validation subsets.
+We report overall accuracy (Acc) and worst-group accuracy (WGA), which is the lowest accuracy among the four groups. The best checkpoint is always chosen on the validation set, never on the test set.
 
 \subsection{Settings}
-The historical DPE runs used seed 0 in two versions: the standard one, and the enhanced one that uses a stronger ERM model (ERM$^*$). POTER was trained once (seed 1) for 300 epochs. AutoBackSwap and ERM were run on a Tesla T4 GPU: seeds 0--2 without minority-group training images, plus one AutoBackSwap run and three ERM runs with them. The subsequent H2 study uses three standard-track training seeds (0--2), with a separate validation allocation described below; its uniform ensembles are the matched controls for reweighting.
+DPE was run once (seed 0) in two versions: the standard one, and the enhanced one that uses a stronger ERM model (ERM$^*$). POTER was trained once (seed 1) for 300 epochs. AutoBackSwap and ERM were run on a Tesla T4 GPU: seeds 0--2 without minority-group training images, plus one AutoBackSwap run and three ERM runs with them.
 
 \subsection{Results and Discussion}
 \subsubsection{Comparison with the papers}
@@ -144,7 +144,7 @@ We noticed three more things:
 In the standard setting, the full DPE gets 89.00\% WGA. Using random subsets without the covariance term gives 88.20\%, and using one fixed subset gives 88.80\%. So the full method is better by 0.2--0.8 points, which is a small gap from a single seed. In the enhanced setting all three variants give 92.70--92.80\%, so the differences are negligible.
 
 \subsubsection{Observations and Hypotheses on DPE}
-We formulated three hypotheses from the DPE aggregation procedure. H2 has now been evaluated using prediction caches and matched controls; H1 and H3 remain untested. Prediction disagreements are measured below, but no image-level attribution has established which heads rely on backgrounds.
+We have not yet audited per-image failure cases for DPE. The observations below come from studying the method, and the hypotheses are open questions that we have not tested yet; we plan to evaluate them next week.
 
 \paragraph{Observation.} Each of the 15 DPE heads is a binary prototype classifier that holds exactly two prototypes, one per class. For an input feature, a head computes class probabilities from the distances to its own two prototypes only, and the final prediction is the uniform average of the 15 head probabilities. This design has three consequences: (i)~prototypes are only compared within their original pair, (ii)~every head contributes equally regardless of what it has learned, and (iii)~each head's decision uses only 2 of the 30 available prototypes.
 
@@ -157,76 +157,14 @@ We formulated three hypotheses from the DPE aggregation procedure. H2 has now be
 \label{fig:dpe-h1}
 \end{figure}
 
-\paragraph{H2: Reweighting the heads.}
-Can validation-derived weights improve WGA over uniform $1/15$ probability averaging? Within each training seed, the backbone, features, 15 heads and test images are fixed; only aggregation changes. This tests a project adaptation, not an exact reproduction of the original DPE validation budget.
+\paragraph{H2: Reweighting the heads.} Uniform $1/15$ averaging assumes all heads are equally reliable. If some heads have learned background features and are therefore noisy, can reweighting the heads improve accuracy? We will estimate per-head weights on the validation set (e.g., from per-head worst-group accuracy) and check whether heads that receive low weights are those with low accuracy on the background-conflicting groups $G_2$ and $G_3$.
 
 \begin{figure}[H]
 \centering
 \input{figures/dpe_h2_weights.tex}
-\caption{H2 compares uniform averaging with nonnegative weights summing to one, using the same frozen head probabilities. Unequal arrow widths are schematic. Weights are fitted and selected using validation data before test evaluation; unequal weights alone do not establish background dependence.}
+\caption{H2: change how much each head contributes. The same head probabilities $p_i(c\mid x)$ enter either a uniform average or a weighted sum. Arrow widths on the right illustrate unequal contributions, not measured reliability. Nonnegative weights that sum to one would be chosen using validation data, including performance on background-conflicting groups $G_2$ and $G_3$, then fixed for test evaluation. No head has yet been identified as background-dependent.}
 \label{fig:dpe-h2}
 \end{figure}
-
-\paragraph{Protocol and experiment history.}
-Validation subsets A, B and C contain 720, 241 and 238 images: A fits heads and selects their epochs, B fits weights, and C selects aggregation. All three training seeds share partition seed 0. Each standard-track backbone trains for 100 epochs without augmentation, then each of 15 heads trains for 20 epochs on a balanced 320-image A subset. The initial seed-0 power study produced identical C predictions for all 13 candidates, so uniform won. The expanded grid contains 20 candidates: uniform, 12 power rules, softmax with $\beta\in\{10,30\}$, top-$k$ with $k\in\{10,5\}$, and joint weighting with $\lambda\in\{1,0.1,0.01\}$. Joint fitting minimizes worst B-group negative log likelihood (NLL) plus $\lambda\| w-\mathbf{1}/15\|_2^2$ on the probability simplex. C selects by WGA, then overall accuracy; uniform wins complete ties and is available within every family. Only frozen winners and uniform are evaluated on test.
-
-An initial multi-seed attempt stopped during joint optimization after seed-1 training; it supplies no final seed-1 comparison. After solver correction, the completed study reused seed 0 and trained seeds 1/2. Reused seed-0 results are not additional replicates.
-
-\paragraph{Results.}
-Power, softmax and joint families selected uniform in all seeds. Top-$k$ and overall selection chose top-10 for seed 0 and uniform for seeds 1/2 (Table~\ref{tab:h2-results}). Seed-0 top-10 corrected one additional C image, but changed 56 test labels: 27 errors were corrected and 29 introduced. Thus the selected procedure yielded zero test-WGA improvements, two ties and one decrease.
-
-\begin{table}[H]
-\centering
-\caption{H2 held-out test results (\%). Selected denotes the overall C winner. Differences are paired WGA changes in percentage points (pp). Summary values are mean $\pm$ sample SD over three training seeds, not confidence intervals.}
-\label{tab:h2-results}
-\small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}clrrrrr@{}}
-\toprule
- & C choice & \multicolumn{2}{c}{Uniform} & \multicolumn{2}{c}{Selected} & $\Delta$ WGA \\
-\cmidrule(lr){3-4}\cmidrule(lr){5-6}
-Seed & & Acc & WGA & Acc & WGA & (pp) \\
-\midrule
-0 & Top-10 & 91.2323 & 89.7561 & 91.1978 & 89.6231 & $-0.1330$ \\
-1 & Uniform & 91.6120 & 90.0222 & 91.6120 & 90.0222 & 0.0000 \\
-2 & Uniform & 90.9562 & 88.7805 & 90.9562 & 88.7805 & 0.0000 \\
-\bottomrule
-\end{tabular}
-\par\vspace{3pt}
-{\footnotesize Uniform: Acc $91.2668\pm0.3293$, WGA $89.5196\pm0.6538$.\\
-Selected: Acc $91.2553\pm0.3317$, WGA $89.4752\pm0.6339$.\\
-Paired WGA change: $-0.0443\pm0.0768$ pp.}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{H2 group-wise test accuracy (\%). Counts are the official test counts. Power, softmax and joint winners equal uniform; selected seed-1/2 predictions also equal uniform. $G_2$ is the worst group in every row.}
-\label{tab:h2-groups}
-\small
-\begin{tabular}{@{}llrrrr@{}}
-\toprule
-Seed & Aggregation & $G_1$ (2,255) & $G_2$ (2,255) & $G_3$ (642) & $G_4$ (642) \\
-\midrule
-0 & Uniform & 92.7273 & 89.7561 & 91.1215 & 91.2773 \\
-0 & Selected top-10 & 92.5055 & 89.6231 & 91.5888 & 91.7445 \\
-1 & Uniform/selected & 93.5255 & 90.0222 & 90.3427 & 91.7445 \\
-2 & Uniform/selected & 93.0820 & 88.7805 & 89.8754 & 92.2118 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\paragraph{Interpretation.}
-The joint objective improved without improving WGA. For seed 1, $\lambda=0.01$ reduced worst-group NLL on B ($0.6566\rightarrow0.6283$) and C ($0.6563\rightarrow0.6418$), while WGA fell on B ($88.89\rightarrow85.19\%$) and C ($89.25\rightarrow84.95\%$). This trade-off already occurs on the fitting set; improved C NLL makes a pure B-overfitting explanation insufficient. NLL rewards probability changes that need not increase the number of correct classifications.
-
-Aggressive joint weighting concentrated the ensemble: effective head counts were 1.84/1.40/3.27 for seeds 0/1/2 at $\lambda=0.01$; seed 1 assigned approximately 82.87\% and 17.13\% to two heads. At $\lambda=1$, no C classifications changed, so uniform won the ties. Mean pairwise test-head disagreement was 11.49\%, 11.46\% and 10.71\%: the heads are distinct, and identical selected scores do not imply duplicate predictions or inactive weighting code.
-
-\paragraph{Conclusion, limitations and follow-up hypotheses.}
-H2 is not supported by the tested global weighting procedures. This does not establish statistical superiority of uniform or rule out other combiners. The study uses three training seeds, one validation partition and one test set; seed 0 informed follow-up design. Results remain exploratory. All 60 B/C candidates and selected test metrics were recomputed from supplied caches, but image-to-feature inference was not independently rerun.
-
-Three explanations motivate further tests: (i)~objective sensitivity, tested by predeclared losses or decision thresholds fitted on B and selected by C WGA; (ii)~weight/selection instability, tested by stratified B resampling and repeated A/B/C partitions, retraining heads for each new A; and (iii)~input-dependent head strengths, tested by regularized stacking \cite{stacking} or a small softmax gating network \cite{mixtures}. These extensions are untested; a neural combiner does not automatically resolve the NLL--WGA trade-off. B has only 27 examples per waterbird group, and one C image changes group accuracy by 1.08 or 3.85 pp, so selection stability requires particular attention.
-
-\paragraph{Traceability.}
-Run details are indexed in \path{docs/experiment_log.md} under the completed three-seed study (identifier suffix \path{seeds012-003}). That record links configurations, run identities and CSV/JSON results. Detailed historical audits, diagnostics and provenance are retained in \path{report/evidence/}. Historical standard/enhanced DPE runs have different head-training data budgets and are not matched H2 controls.
 
 \paragraph{H3: Multiple prototypes per class within each head.} Can each of the 15 heads make a better prediction by using several prototypes per class instead of one? Multiple prototypes may represent different appearances within a class. We will first reuse the existing 30 trained prototypes: head $i$ receives a class-balanced subset $S_i$, computes a softmax over negative-distance scores within that subset, and sums the prototype probabilities by class to obtain $p_i(L\mid x)$ and $p_i(W\mid x)$. Different heads retain different subsets. We will first average these 15 probability vectors uniformly, then evaluate the H2 weighting rule as a separate combination. Learning additional prototypes within each head would require retraining and is a possible later extension.
 
@@ -240,7 +178,7 @@ The original DPE is the two-prototype case, $S_i=\{L_i,W_i\}$. Global pooling is
 \end{figure}
 
 \section{Conclusion}
-DPE and AutoBackSwap gave results close to their papers, and POTER still needs its test evaluation. Looking at AutoBackSwap's mistakes, we found that three species may be mislabeled in the dataset, and that they explain about 80\% of its $G_4$ errors. The three-seed H2 study found no WGA improvement from validation-selected global head weights over matched uniform averaging. Next steps are to investigate objective sensitivity and selection stability, and to evaluate conditional combiners; H1 and H3 remain open.
+DPE and AutoBackSwap gave results close to their papers, and POTER still needs its test evaluation. Looking at AutoBackSwap's mistakes, we found that three species may be mislabeled in the dataset, and that they explain about 80\% of its $G_4$ errors. Next week we will finish POTER's test evaluation, look at DPE's failure cases, and try the three ideas above.
 %
 % ---- Bibliography ----
 %
@@ -257,10 +195,5 @@ Roder, C., Schweighofer, K.: Automated background swapping for robustness agains
 
 \bibitem{waterbirds}
 Sagawa, S., Koh, P.W., Hashimoto, T.B., Liang, P.: Distributionally robust neural networks for group shifts: On the importance of regularization for worst-case generalization. In: International Conference on Learning Representations (2020).
-\bibitem{stacking}
-Wolpert, D.H.: Stacked generalization. Neural Networks 5(2), 241--259 (1992). \url{https://doi.org/10.1016/S0893-6080(05)80023-1}
-
-\bibitem{mixtures}
-Jacobs, R.A., Jordan, M.I., Nowlan, S.J., Hinton, G.E.: Adaptive mixtures of local experts. Neural Computation 3(1), 79--87 (1991). \url{https://doi.org/10.1162/neco.1991.3.1.79}
 \end{thebibliography}
 \end{document}

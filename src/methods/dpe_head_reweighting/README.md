@@ -4,7 +4,7 @@
 
 This project-owned adaptation of Diverse Prototypical Ensembles (DPE) evaluates whether validation-derived head weights improve worst-group accuracy (WGA) on Waterbirds relative to uniform probability averaging. WGA is the minimum accuracy over the four bird/background groups. Both aggregation conditions use the same frozen ResNet-50 representation and the same 15 trained prototype heads.
 
-The end-to-end workflow reuses the shared ERM trainer and feature extractor, then performs sequential head training, reliability estimation, aggregation selection, artifact validation and held-out evaluation. The [H2 hypothesis summary](../../../report/main.tex) records the earlier power/multi-rule seed-0 studies, a failed solver run and the completed standard-track seeds 0/1/2 study. Uniform test WGA is 89.5196±0.6538%; overall C selection gives 89.4752±0.6339%, with paired change −0.0443±0.0768 pp (mean±sample SD). No selected procedure improves test WGA. These are exploratory adaptation results, with verified prediction-cache calculations; raw-image inference and GPU parity have not been independently reproduced.
+The end-to-end workflow reuses the shared ERM trainer and feature extractor, then performs sequential head training, reliability estimation, aggregation selection, artifact validation and held-out evaluation. The [H2 hypothesis summary](reports/h2.md) records the earlier power/multi-rule seed-0 studies, a failed solver run and the completed standard-track seeds 0/1/2 study. Uniform test WGA is 89.5196±0.6538%; overall C selection gives 89.4752±0.6339%, with paired change −0.0443±0.0768 pp (mean±sample SD). No selected procedure improves test WGA. These are exploratory adaptation results, with verified prediction-cache calculations; raw-image inference and GPU parity have not been independently reproduced.
 
 ## Experimental protocol
 
@@ -475,7 +475,7 @@ notebook exports a ZIP of this new comparison without duplicating the source
 predictions or heads; retain the original H2 ZIP separately for replay.
 
 The first completed standard seed-0 suite is documented in the
-[multi-rule run report](../../../report/evidence/dpe_h2_rules_seed0.md).
+[multi-rule run report](reports/dpe_h2_rules_seed0.md).
 Its uploaded aggregate records were checked for consistency, not independently
 recomputed from prediction caches. Add a dated experiment entry and lightweight
 result summary for subsequent real runs, following the existing experiment-log
@@ -533,7 +533,7 @@ python -m pip install nbclient ipykernel
 python -m pytest tests/methods/dpe_head_reweighting -q
 ```
 
-The notebook checks execute both standard and enhanced tracks in separate Jupyter kernels, with 15 heads, 20 epochs, 2048-dimensional synthetic features and official split/group counts. They verify final evaluation, archive creation and reuse of completed stages. Without the optional dependencies, these two integration checks are skipped. The notebook tests run the shared 100-epoch optimization loop with a small synthetic classifier in place of ResNet-50, then use the real feature handoff and H2 stages. They also verify completed-backbone and feature-bundle reuse. Synthetic results establish software behavior only; the fixture models are not Waterbirds ResNet-50 backbones. Real Waterbirds results and their cache-level verification are documented in the [three-seed report](../../../report/main.tex); GPU parity remains unverified.
+The notebook checks execute both standard and enhanced tracks in separate Jupyter kernels, with 15 heads, 20 epochs, 2048-dimensional synthetic features and official split/group counts. They verify final evaluation, archive creation and reuse of completed stages. Without the optional dependencies, these two integration checks are skipped. The notebook tests run the shared 100-epoch optimization loop with a small synthetic classifier in place of ResNet-50, then use the real feature handoff and H2 stages. They also verify completed-backbone and feature-bundle reuse. Synthetic results establish software behavior only; the fixture models are not Waterbirds ResNet-50 backbones. Real Waterbirds results and their cache-level verification are documented in the [three-seed report](reports/h2.md); GPU parity remains unverified.
 
 Feature-only initialization consumes random numbers differently from the original reproduction notebook; the implementation does not reproduce its historical head parameters exactly. The original baseline and reproduction notebook are preserved.
 

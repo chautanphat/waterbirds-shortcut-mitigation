@@ -39,7 +39,6 @@ waterbirds-shortcut-mitigation/
 - Put reproducible settings in `configs/` and experiment metadata in `experiments/`.
 - Keep raw data, checkpoints, caches, and large local outputs out of Git.
 - Put project-wide rules in `CONTRIBUTING.md` and `docs/`; put method-specific setup and commands beside the method.
-- The research report is maintained in `report/main.tex` (rendered as `report/main.pdf`); H2 findings are integrated into its DPE hypothesis discussion. Supporting H2 audits are in `report/evidence/`. Experiment configurations and result data remain in their existing folders.
 
 | Document | Purpose |
 | --- | --- |
@@ -48,7 +47,7 @@ waterbirds-shortcut-mitigation/
 | [`dataset.md`](dataset.md) | Waterbirds source, groups, splits, local-data expectations, and verification. |
 | [`methods.md`](methods.md) | Method inventory and the rule for documenting a baseline. |
 | [`experiment_log.md`](experiment_log.md) | Traceable index of meaningful runs. |
-| [Research report](../report/main.tex) / [PDF](../report/main.pdf) | Research narrative, including H2 evidence, interpretation, limitations and follow-up hypotheses. |
+| [DPE H2 experiment report](../src/methods/dpe_head_reweighting/reports/h2.md) | Summary of head-weighting experiments, results, interpretation and follow-up hypotheses. |
 | [Shared ERM](../src/methods/erm/README.md) | DPE-aligned repository-wide fine-tuning, evaluation, and reusable features. |
 
 ## Baseline contribution checklist
