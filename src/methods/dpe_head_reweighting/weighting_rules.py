@@ -220,3 +220,37 @@ def fit_rules(p_b, y_b, g_b, p_c, y_c, g_c, config):
                 for family in ('power', 'softmax', 'top_k', 'joint')}
     return dict(candidates=candidates, per_family_selected=families,
                 selected=best_candidate(candidates)['id'], b_scores=scores.tolist())
+
+
+def fit_all_rules(p, y, groups, config):
+    """Fit every global rule independently on supplied data, without selection."""
+    p = probabilities(p)
+    if p.ndim != 3:
+        raise ValueError('Expected head predictions [H,N,2]')
+    validate_config(config, len(p))
+    scores = np.array([metrics(head, y, groups)['wga'] for head in p])
+    h = len(p)
+    rows = []
+
+    def add(name, family, parameters, w, fitted=None):
+        rows.append(dict(id=name, family=family, parameters=parameters,
+                         weights=w.tolist(), fit=fitted))
+
+    add('uniform', 'uniform', {}, np.full(h, 1 / h))
+    for alpha in (.25, .5, .75, 1):
+        for gamma in (1, 2, 4):
+            w, fallback = weights(scores, alpha, gamma)
+            add(f'power-a{alpha}-g{gamma}', 'power', dict(alpha=alpha, gamma=gamma),
+                w, dict(fallback=fallback))
+    for beta in config['softmax_betas']:
+        q = np.exp(beta * (scores - scores.max()))
+        add(f'softmax-b{beta}', 'softmax', dict(beta=beta), q / q.sum())
+    order = np.argsort(-scores, kind='stable')
+    for k in config['top_k']:
+        w = np.zeros(h)
+        w[order[:k]] = 1 / k
+        add(f'top-k{k}', 'top_k', dict(k=k), w)
+    for penalty in config['joint_lambdas']:
+        w, fitted = joint_weights(p, y, groups, penalty, config['solver'])
+        add(f'joint-l{penalty}', 'joint', dict(penalty=penalty), w, fitted)
+    return rows

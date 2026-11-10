@@ -281,3 +281,17 @@ The date is the documentation date; the supplied execution log contains elapsed 
 - **Verification scope:** Synthetic fixtures check pooled fitting, all-configuration evaluation, model-state replay/tamper rejection and default no-attachment notebook execution/reuse. The notebook fixture substitutes download/image decoding/ResNet and exercises actual backbone/head/combiner loops. These checks do not establish Waterbirds performance.
 - **Previous experiment audit:** Original power weighting and expanded H2 global rules used A/B/C=720/241/238, fit on B, selected on C, and tested only uniform plus frozen family/overall winners. Existing reports and result artifacts are preserved; they are not all-configuration test comparisons. See `src/methods/dpe_head_reweighting/reports/h2.md` and `reports/dpe_h2_three_seed_audit.md` beside it.
 - **Next action:** Run the updated notebook on real Waterbirds, preferably retaining the existing source artifacts; report every configuration across all three seeds as exploratory.
+
+## exp-dpe-combined-bc-all-software-check — 2026-11-10
+
+- **Method / version:** Unified global weighting rules and neural combiners, `bc_all` protocol.
+- **Purpose:** Synthetic software validation; actual Waterbirds test comparison pending.
+- **Branch:** `experiment/dpe-neural-combiner`.
+- **Configuration:** `configs/dpe_head_reweighting/combined_comparison.yaml`.
+- **Dataset and split:** Same frozen backbone, 15 A-trained heads, pooled B+C=479 fitting examples and official test images for every configuration. No C selection or test-based tuning.
+- **Configurations:** One shared uniform reference, 12 power, 2 softmax, 2 top-k, 3 joint-weight fits and 10 neural configurations, each reported independently (30 total).
+- **Seed:** 0/1/2.
+- **Command:** `OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m pytest tests/methods/dpe_head_reweighting/test_neural_combiners.py tests/methods/dpe_head_reweighting/test_weighting_rules.py -q`.
+- **Results:** 149 checks passed across the neural-combiner and weighting-rule suites. This is software validation only; no new Waterbirds metrics were generated.
+- **Verification scope:** Synthetic altered-C fixture verifies global weights match fits on pooled data, forbids global/neural winner selection, and checks every configuration reaches test and aggregate reports. The default no-attachment notebook fixture exercises all 30 configurations across three seeds and verifies completed-backbone/model reuse. Legacy H2 result artifacts and selection workflows are preserved.
+- **Next action:** Run the updated notebook against real Waterbirds, preferably reusing retained source artifacts; retain exploratory labeling for the previously inspected test set.

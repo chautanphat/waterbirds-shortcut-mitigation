@@ -341,7 +341,7 @@ def test_notebook_runs_and_reuses_saved_models(tmp_path, small_config, monkeypat
             cell.source = cell.source.replace('SEEDS = [0, 1, 2]', 'SEEDS = [0]')
             cell.source = cell.source.replace('EVALUATE_TEST = False', 'EVALUATE_TEST = True')
             cell.source = cell.source.replace('WORK_DIR = None', f'WORK_DIR = {str(work)!r}')
-            cell.source = cell.source.replace('CONFIG_PATH = "configs/dpe_head_reweighting/neural_comparison.yaml"',
+            cell.source = cell.source.replace('CONFIG_PATH = "configs/dpe_head_reweighting/combined_comparison.yaml"',
                                               f'CONFIG_PATH = {str(small_config)!r}')
             if hosted:
                 cell.source = cell.source.replace('REPO_URL = "https://github.com/chautanphat/waterbirds-shortcut-mitigation.git"',
@@ -457,7 +457,7 @@ if (WORK_DIR / 'backbones/standard/seed2/summary.json').exists():
         progress = json.loads((out / 'progress.json').read_text())
         assert progress['frozen_seeds'] == [0, 1, 2] and progress['stage'] == 'complete'
         assert progress['evaluated_seeds'] == [0, 1, 2]
-        assert len(json.loads((out / 'summary.json').read_text())['results']) == 11
+        assert len(json.loads((out / 'summary.json').read_text())['results']) == 30
         checkpoints, models = [], []
         for seed in (0, 1, 2):
             backbone = work / 'backbones/standard' / f'seed{seed}'
@@ -466,7 +466,7 @@ if (WORK_DIR / 'backbones/standard/seed2/summary.json').exists():
             model_bytes = (out / 'comparisons' / f'seed{seed}/selection.json').read_bytes()
             decision = json.loads(model_bytes)
             assert decision['protocol'] == 'bc_all' and decision['training_count'] == 479
-            assert len(decision['candidates']) == 11 and 'selected' not in decision
+            assert len(decision['candidates']) == 30 and 'selected' not in decision
             models.append(model_bytes)
             with zipfile.ZipFile(out / 'source_archives' / f'h2-standard-seed{seed}.zip') as archive:
                 assert 'experiment/predictions/B.npz' in archive.namelist()
@@ -512,3 +512,45 @@ def test_bc_all_pools_training_and_evaluates_every_configuration(tmp_path, small
     write_json(output / 'selection.json', decision)
     with pytest.raises(ValueError, match='Frozen neural selection'):
         suite.evaluate(source, small_config, output)
+
+
+def test_combined_rules_fit_pooled_data_and_all_reach_test(tmp_path, monkeypatch):
+    from src.methods.dpe_head_reweighting import weighting_rules as rules
+    c = yaml.safe_load((ROOT / 'configs/dpe_head_reweighting/combined_comparison.yaml').read_text())
+    c['steps'] = 4
+    config_path = tmp_path / 'combined.yaml'
+    config_path.write_text(yaml.safe_dump(c))
+    source, cache = make_bundle(tmp_path)
+    # Make C predictions different so using B alone gives different global fits.
+    path = source / 'experiment/predictions/C.npz'
+    with np.load(path, allow_pickle=False) as f:
+        altered = {k: f[k] for k in f.files}
+    altered['probabilities'] = altered['probabilities'].copy()
+    altered['probabilities'][0] = altered['probabilities'][0, :, ::-1]
+    np.savez(path, **altered)
+    p, y, g = routing_problem()
+    original = old_select(p, y, g, altered['probabilities'], y, g)
+    saved = json.loads((source / 'experiment/selection.json').read_text())
+    original.update(head_ids=saved['head_ids'], lock=saved['lock'])
+    write_json(source / 'experiment/selection.json', original)
+    pooled = np.concatenate([p, altered['probabilities']], axis=1)
+    expected = rules.fit_rules(pooled, np.tile(y, 2), np.tile(g, 2), p, y, g, c['weighting_rules'])
+    def forbidden(*args):
+        raise AssertionError('Combined experiment must not select global-rule winners')
+    monkeypatch.setattr(rules, 'best_candidate', forbidden)
+    monkeypatch.setattr(neural, 'best_candidate', forbidden)
+    output = tmp_path / 'combined-output'
+    decision = suite.select(source, config_path, output)  # Test file is absent.
+    assert len(decision['candidates']) == 30
+    actual = {row['id']: row for row in decision['candidates']}
+    for row in expected['candidates']:
+        if row['id'] != 'uniform':
+            np.testing.assert_allclose(actual[row['id']]['weights'], row['weights'], rtol=0, atol=1e-12)
+    assert len([row for row in actual.values() if row['family'] == 'power']) == 12
+    assert 'selected' not in decision and 'per_family_selected' not in decision
+    cache('test')
+    result = suite.evaluate(source, config_path, output)
+    assert set(result['results']) == set(actual)
+    assert all(key == row['candidate'] for key, row in result['results'].items())
+    summary = suite.summarize(tmp_path / 'aggregate', {0: result}, [0], 'standard')
+    assert len(summary['results']) == 30

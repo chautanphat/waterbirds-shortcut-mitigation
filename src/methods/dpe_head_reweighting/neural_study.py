@@ -16,7 +16,7 @@ from .recovery import recover_test_cache, verified_test_features
 from .study import build_source, ensure_dataset, ensure_test_cache, publish_zip
 from .rule_suite import notebook_code_hash
 
-NEURAL_STUDY_RUNTIME_VERSION = 3
+NEURAL_STUDY_RUNTIME_VERSION = 4
 DEFAULT_STUDY_CONFIG = 'configs/dpe_head_reweighting/neural_study.yaml'
 
 

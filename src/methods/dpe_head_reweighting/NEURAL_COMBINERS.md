@@ -1,8 +1,8 @@
-# Neural combiners over frozen DPE heads
+# Global weighting rules and neural combiners over frozen DPE heads
 
 **Status:** implemented project adaptation; synthetic software validation only.
 The initial B/C neural run completed without a C-selected improvement over uniform;
-the B+C comparison is pending. The existing H2 result records and global
+the combined B+C comparison is pending. The existing H2 result records and global
 weighting suite are unchanged. Work began on 2026-11-09.
 
 ## Question and attribution
@@ -61,10 +61,31 @@ the same retained binary prediction, so dropout cannot break normalization.
 
 ## Current protocol: train on B+C, compare all on test
 
-The notebook now uses [neural_comparison.yaml](../../../configs/dpe_head_reweighting/neural_comparison.yaml),
+The notebook now uses [combined_comparison.yaml](../../../configs/dpe_head_reweighting/combined_comparison.yaml),
 with `protocol: bc_all`. Keep A, the backbone, head training and head order fixed.
 Pool the old B=241 and C=238 caches into 479 combiner-training examples. Train
-all ten learned configurations for fixed steps; uniform is the eleventh configuration.
+all ten neural configurations for fixed steps, and fit all 19 nonuniform global
+weighting configurations on the same pooled predictions. Share one uniform reference,
+for **30 configurations total**:
+
+| Approach | Configurations |
+| --- | ---: |
+| Uniform averaging | 1 |
+| Power weighting: α=0.25/0.5/0.75/1, γ=1/2/4 | 12 |
+| Softmax weighting: β=10/30 | 2 |
+| Top-k averaging: k=10/5 | 2 |
+| Joint weights: λ=1/0.1/0.01 | 3 |
+| Logistic, MLP, MLP dropout, gate, gate dropout; two weight decays each | 10 |
+
+Power, softmax and top-k derive weights from each head's **pooled B+C WGA**.
+Joint weights optimize pooled worst-group NLL plus regularization toward uniform,
+using the original checked solver. Neural models optimize pooled group-balanced BCE.
+These objectives differ by method, but use identical heads, examples and test images.
+Every α/γ/β/k/λ and neural weight-decay setting retains a separate row in the test
+and aggregate reports. The power rule's mathematical uniform fallback for degenerate
+reliability scores is retained and recorded under that rule's own ID; no candidate
+is replaced because another candidate scores better.
+
 Both weight-decay values are separate configurations. There is no C selection,
 no uniform fallback replacing a learned candidate, and no early stopping.
 All configurations across all planned seeds are frozen before any test cache is read.
@@ -81,6 +102,7 @@ do not measure every nonuniform configuration individually. See
 [H2](reports/h2.md) and the [three-seed audit](reports/dpe_h2_three_seed_audit.md).
 Their recorded results and implementations remain unchanged.
 
+The neural-only B+C configuration remains available as `neural_comparison.yaml` (11 candidates).
 The original [neural_combiners.yaml](../../../configs/dpe_head_reweighting/neural_combiners.yaml)
 retains this legacy `b_select_c` protocol (default when the protocol key is absent).
 The new experiment changes both the fitting sample size and the evaluation
@@ -135,7 +157,7 @@ python scripts/dpe_neural_combiners.py evaluate \
   --output-dir outputs/dpe_neural_runs/standard-seed0-v1
 ```
 
-Use `--config` for a separately declared configuration. Pass `--config configs/dpe_head_reweighting/neural_comparison.yaml` for the new protocol.
+Use `--config` for a separately declared configuration. Pass `--config configs/dpe_head_reweighting/combined_comparison.yaml` for the new protocol.
 Single-seed CLI actions remain cached-source operations. The API/CLI default stays legacy for compatibility; the notebook explicitly uses the new configuration. Automatic preparation uses the notebook/API.
 The notebook installs missing Torch/torchvision, NumPy, SciPy, PyYAML, pandas,
 Pillow and tqdm; no new model-training library is needed.
@@ -145,9 +167,9 @@ For a multi-seed run or prior combined ZIP:
 ```python
 from src.methods.dpe_head_reweighting.neural_study import run_study
 
-run = run_study("outputs/neural_session", config_path="configs/dpe_head_reweighting/neural_comparison.yaml", evaluate_test=False)
+run = run_study("outputs/neural_session", config_path="configs/dpe_head_reweighting/combined_comparison.yaml", evaluate_test=False)
 # Keep the declared recipe fixed for test evaluation:
-run = run_study("outputs/neural_session", config_path="configs/dpe_head_reweighting/neural_comparison.yaml", evaluate_test=True)
+run = run_study("outputs/neural_session", config_path="configs/dpe_head_reweighting/combined_comparison.yaml", evaluate_test=True)
 # Optional cache-only comparison, without training missing seeds:
 run = run_study("outputs/neural_cached", source="outputs/previous_h2_study.zip",
                 mode="cached", evaluate_test=False)

@@ -7,7 +7,7 @@ from torch import nn
 from torch.nn import functional as F
 
 from .reweighting import GROUPS, combine, metrics, probabilities
-from .weighting_rules import best_candidate
+from .weighting_rules import best_candidate, fit_all_rules, validate_config as validate_rules
 
 FAMILIES = ('logistic', 'mlp', 'mlp_dropout', 'gate', 'gate_dropout')
 
@@ -15,10 +15,14 @@ FAMILIES = ('logistic', 'mlp', 'mlp_dropout', 'gate', 'gate_dropout')
 def validate_config(c, heads):
     expected = {'version', 'heads', 'hidden_units', 'steps', 'learning_rate',
                 'weight_decays', 'prediction_dropout', 'seed_offset', 'loss'}
-    if not isinstance(c, dict) or set(c) not in (expected, expected | {'protocol'}):
+    if not isinstance(c, dict) or set(c) not in (expected, expected | {'protocol'}, expected | {'protocol', 'weighting_rules'}):
         raise ValueError('Invalid neural-combiner configuration fields')
     if c.get('protocol', 'b_select_c') not in ('b_select_c', 'bc_all'):
         raise ValueError('Invalid neural protocol')
+    if 'weighting_rules' in c:
+        if c.get('protocol') != 'bc_all' or not isinstance(c['weighting_rules'], dict):
+            raise ValueError('Global rules require the bc_all protocol and a rule configuration')
+        validate_rules(c['weighting_rules'], heads)
     if (type(c['version']) is not int or c['version'] != 1 or
             type(c['heads']) is not int or c['heads'] != heads or heads != 15 or
             type(c['hidden_units']) is not int or not 1 <= c['hidden_units'] <= 32 or
@@ -185,6 +189,9 @@ def complementarity(p, y, groups):
 
 
 def candidate_prediction(row, p):
+    if 'weights' in row:
+        w = np.asarray(row['weights'], dtype=float)
+        return combine(p, w), np.broadcast_to(w, (p.shape[1], len(w)))
     if row['family'] == 'uniform':
         return combine(p, np.full(len(p), 1 / len(p))), np.full((p.shape[1], len(p)), 1 / len(p))
     return predict(row['model'], p)
@@ -249,5 +256,9 @@ def fit_all(p, y, g, config, source_seed):
                 item['training_group_balanced_bce'] = item.pop('b_group_balanced_bce')
             add(dict(id=f'{family}-wd{wd}', family=family,
                      parameters=dict(weight_decay=wd, prediction_dropout=dropout), model=model, fit=fitted))
+    if 'weighting_rules' in config:
+        for row in fit_all_rules(p, y, g, config['weighting_rules']):
+            if row['id'] != 'uniform':  # Share one matched uniform reference.
+                add(row)
     return dict(protocol='bc_all', training_role='B+C', training_count=len(y), candidates=rows,
                 complementarity={'B+C': complementarity(p, y, g)})
