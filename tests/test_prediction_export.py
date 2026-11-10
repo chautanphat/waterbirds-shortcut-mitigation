@@ -1,11 +1,13 @@
 """CPU export-contract tests. No downloads, datasets or trained checkpoints."""
 
 import csv
+import ast
 import importlib.util
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import numpy as np
@@ -34,6 +36,47 @@ def fixture(root):
 
 
 class PredictionExportTests(unittest.TestCase):
+    def test_recovery_uses_general_experiment_split_location(self):
+        from src.evaluation.prediction_export import recover_autobackswap
+        from scripts.export_predictions import parser
+        self.assertEqual(parser().parse_args(["recover-autobackswap"]).output_root, ROOT / "experiments")
+        with TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            metadata = fixture(root)
+            content = "image_path,true_label,predicted_label,correct,group,group_name,spurious_attribute,confidence,run_label,seed\n"
+            names = ["Landbird on Land", "Landbird on Water", "Waterbird on Land", "Waterbird on Water"]
+            for g in range(4):
+                label = "landbird" if g < 2 else "waterbird"
+                content += f"bird/2_{g}.jpg,{label},{label},1,{g+1},{names[g]},{'water' if g%2 else 'land'},0.9,ours_seed0,0\n"
+            responses = ["a" * 40 + "\n", "results/autobackswap/predictions/ours_seed0/predictions.csv\n", content.encode()]
+            with patch("src.evaluation.prediction_export.subprocess.check_output", side_effect=responses):
+                recover_autobackswap(ROOT, metadata, root / "experiments")
+            destination = root / "experiments/ours_seed0/predictions/test"
+            self.assertTrue((destination / "predictions.csv").is_file())
+            self.assertTrue((destination / "provenance.json").is_file())
+
+    def test_legacy_autobackswap_export_block_uses_shared_contract_and_provenance(self):
+        from src.evaluation.prediction_protocol import validate_prediction_csv
+        source = ROOT / "scripts/autobackswap/dump_all_predictions.py"
+        tree = ast.parse(source.read_text())
+        start = next(i for i, node in enumerate(tree.body) if isinstance(node, ast.Assign)
+                     and any(isinstance(t, ast.Name) and t.id == "tot" for t in node.targets))
+        block = compile(ast.Module(body=tree.body[start:], type_ignores=[]), str(source), "exec")
+        with TemporaryDirectory() as temporary:
+            out = Path(temporary) / "run"
+            records = [SimpleNamespace(img_filename=f"bird/{g}.jpg", y=g // 2, place=g % 2, group=g + 1) for g in range(4)]
+            env = dict(meta=SimpleNamespace(iterrows=lambda: enumerate(records)), preds=[0, 1, 1, 1],
+                confs=[.9, .8, .7, .95], a=SimpleNamespace(run_label="ours_seed0", seed=0, device="cpu"),
+                out=str(out), ckpt="selected.pt", write_predictions=write_predictions, sha256=lambda _: "fixture-hash",
+                GN={i + 1: name for i, name in enumerate(["Landbird on Land", "Landbird on Water", "Waterbird on Land", "Waterbird on Water"])},
+                print=lambda *args, **kwargs: None)
+            exec(block, env)
+            report = validate_prediction_csv(out / "predictions.csv")
+            self.assertEqual(report["count"], 4)
+            self.assertEqual(report["errors"], 1)
+            self.assertEqual(report["split"], "test")
+            self.assertEqual(json.loads((out / "provenance.json").read_text())["prediction_schema_version"], 1)
+
     def test_metadata_aliases_and_identity_alignment(self):
         with TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -80,6 +123,31 @@ class PredictionExportTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     write_predictions(root / "bad", rows, p, run_label="test", seed=0, provenance={})
                 self.assertFalse((root / "bad").exists())
+
+    def test_label_only_methods_write_blank_confidence_and_schema_version(self):
+        from src.evaluation.prediction_protocol import validate_prediction_csv
+        with TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            rows = read_metadata(fixture(root))
+            report = write_predictions(root / "labels", rows, None, predicted_labels=[0, 0, 1, 1],
+                run_label="label_method", seed=0, provenance={"confidence": "not available"})
+            self.assertEqual(report["prediction_schema_version"], 1)
+            result = validate_prediction_csv(root / "labels/predictions.csv")
+            self.assertEqual(result["missing_confidence"], 4)
+            self.assertEqual(result["accuracy"], 1.)
+            with self.assertRaises(ValueError):
+                write_predictions(root / "invalid", rows, None, predicted_labels=[0, 0, 1, 1],
+                    confidence=[float("nan")] * 4, run_label="invalid", seed=0, provenance={})
+
+    def test_writer_rejects_noncanonical_identity_before_exposing_export(self):
+        with TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            rows = read_metadata(fixture(root))
+            p = np.full((4, 2), .5)
+            with self.assertRaises(ValueError):
+                write_predictions(root / "bad", rows, p, run_label=" padded ", seed=0, provenance={})
+            self.assertFalse((root / "bad").exists())
+            self.assertFalse(any(root.glob(".bad-*")))
 
     def test_original_and_images_subfolder_layouts_and_singleton_batch(self):
         with TemporaryDirectory() as temporary:

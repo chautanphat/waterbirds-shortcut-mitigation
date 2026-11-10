@@ -203,10 +203,13 @@ function mountViewer() {
   }
   const document = { getElementById:id => { if (!ids.has(id)) throw new Error(`Missing element ${id}`); return ids.get(id); }, createElement:tag => new Element(tag), body:new Element('body') };
   let nextURL = 0;
-  const urls = { createObjectURL:() => `blob:local-test-${++nextURL}`, revokeObjectURL:() => {} };
+  const blobs = [];
+  const urls = { createObjectURL:blob => { blobs.push(blob); return `blob:local-test-${++nextURL}`; }, revokeObjectURL:() => {} };
   const context = { document, URL:urls, Blob, Uint8Array, atob, setTimeout:fn => fn() };
   vm.runInNewContext(script, context, { filename:'failure_case_viewer.html' });
-  return id => document.getElementById(id);
+  const lookup = id => document.getElementById(id);
+  lookup.blobs = blobs;
+  return lookup;
 }
 
 test('UI demo renders, A/B filters and group buttons work, dialog navigates, reset clears filters', () => {
@@ -296,4 +299,63 @@ test('experiment folder without predictions explains what is missing and sample 
   assert.match($('notice').textContent, /No prediction CSVs found/);
   assert.equal($('workspace').hidden, true);
   $('sample').click();
+});
+
+test('downloaded example uses the canonical v1 columns and one-based groups', async () => {
+  const $ = mountViewer();
+  $('sample').click();
+  const csv = await $.blobs.at(-1).text();
+  assert.equal(csv.split('\r\n')[0], 'image_path,true_label,predicted_label,correct,group,group_name,spurious_attribute,confidence,run_label,seed,split');
+  const records = F.parseCSV(csv);
+  assert.deepEqual(plain(records.map(r => [r.correct, r.group, r.group_name, r.split])), [
+    ['0', '3', 'Waterbird on Land', 'test'], ['1', '4', 'Waterbird on Water', 'test'],
+  ]);
+  assert.equal(F.normalizeRows(records, {filename:'example_predictions.csv', groupBase:1})[0].rows.size, 2);
+});
+
+test('multi-method modes (common-wrong, active-disagree, any-active-wrong), species breakdown, and grouping', () => {
+  const dpe = run([
+    row('102.Western_Wood_Pewee/a.jpg', 1, 0, 1, { run_label:'dpe_standard_seed0' }),
+    row('001.Albatross/b.jpg', 1, 1, 1, { run_label:'dpe_standard_seed0' }),
+    row('002.Sparrow/c.jpg', 0, 0, 0, { run_label:'dpe_standard_seed0' }),
+  ], 'dpe');
+  const abs = run([
+    row('102.Western_Wood_Pewee/a.jpg', 1, 0, 1, { run_label:'ours_minority_false_seed0' }),
+    row('001.Albatross/b.jpg', 1, 0, 1, { run_label:'ours_minority_false_seed0' }),
+    row('002.Sparrow/c.jpg', 0, 0, 0, { run_label:'ours_minority_false_seed0' }),
+  ], 'abs');
+  const poter = run([
+    row('102.Western_Wood_Pewee/a.jpg', 1, 0, 1, { run_label:'poter_seed1' }),
+    row('001.Albatross/b.jpg', 1, 1, 1, { run_label:'poter_seed1' }),
+    row('002.Sparrow/c.jpg', 0, 0, 0, { run_label:'poter_seed1' }),
+  ], 'poter');
+  const examples = F.mergeExamples([dpe, abs, poter]);
+  const activeIds = ['dpe', 'abs', 'poter'];
+
+  assert.deepEqual(plain(examples.filter(e => F.matchesMode(e, 'dpe', 'abs', 'common-wrong', activeIds)).map(e => e.path)), ['102.Western_Wood_Pewee/a.jpg']);
+  assert.deepEqual(plain(examples.filter(e => F.matchesMode(e, 'dpe', 'abs', 'active-disagree', activeIds)).map(e => e.path)), ['001.Albatross/b.jpg']);
+  assert.equal(examples.filter(e => F.matchesMode(e, 'dpe', 'abs', 'any-active-wrong', activeIds)).length, 2);
+
+  const sp = F.speciesBreakdown(examples, activeIds);
+  assert.equal(sp[0].species, '102.Western_Wood_Pewee');
+  assert.equal(sp[0].failingImages, 1);
+
+  const bySpecies = F.filterExamples(examples, { a:'dpe', b:'abs', mode:'any-active-wrong', activeIds, species:'102.Western_Wood_Pewee' });
+  assert.deepEqual(plain(bySpecies.map(e => e.path)), ['102.Western_Wood_Pewee/a.jpg']);
+
+  const groupedByG = F.groupExamples(examples, 'group');
+  assert.equal(groupedByG.length, 2);
+  const groupedBySp = F.groupExamples(examples, 'species');
+  assert.equal(groupedBySp.length, 3);
+});
+
+test('smart default active runs picks one representative per method family when >4 runs are loaded', () => {
+  const runs = [
+    { id:'r1', label:'ours_minority_false_seed0 · seed 0' },
+    { id:'r2', label:'ours_minority_false_seed1 · seed 1' },
+    { id:'r3', label:'ours_minority_false_seed2 · seed 2' },
+    { id:'r4', label:'dpe_standard_seed0 · seed 0' },
+    { id:'r5', label:'poter_seed1 · seed 1' },
+  ];
+  assert.deepEqual(plain(F.defaultActiveRuns(runs)), ['r1', 'r4', 'r5']);
 });

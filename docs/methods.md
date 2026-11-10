@@ -11,6 +11,7 @@ Add a method only after the team agrees to investigate it. Then:
 3. Add a method-specific README with source, paper, license, setup, commands, and Waterbirds-specific changes.
 4. Add one entry here using the template in [`README.md`](README.md).
 5. Link a tracked configuration and experiment-log entry.
+6. Document the method's [canonical prediction export](prediction_protocol.md), its reference metadata, and the validation command. Apply this to all future methods and exports.
 
 Do not claim an original reproduction when the work is only a smoke test or an adaptation.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Create failure-viewer CSVs without training or selecting models."""
+"""Create shared prediction artifacts without training or selecting models."""
 
 import argparse
 import json
@@ -16,7 +16,7 @@ def parser():
     for method in ("erm", "poter", "autobackswap", "dpe-probabilities", "dpe-heads"):
         p = commands.add_parser(method)
         p.add_argument("--metadata", required=True, type=Path)
-        p.add_argument("--output", required=True, type=Path, help="New run directory, not a filename")
+        p.add_argument("--output", required=True, type=Path, help="New experiments/<experiment-id>/predictions/<split> directory")
         p.add_argument("--run-label", required=True)
         p.add_argument("--seed", required=True, type=int)
         p.add_argument("--split", choices=("val", "test"), default="test")
@@ -38,7 +38,7 @@ def parser():
     p = commands.add_parser("recover-autobackswap", help="Recover 10 saved CSVs from the cached Git ref, with no network")
     p.add_argument("--ref", default="origin/method/autobackswap")
     p.add_argument("--metadata", type=Path, default=ROOT / "baselines/autobackswap/data/waterbird_complete95_forest2water2/metadata.csv")
-    p.add_argument("--output-root", type=Path, default=ROOT / "outputs/failure_cases")
+    p.add_argument("--output-root", type=Path, default=ROOT / "experiments", help="Experiment root; each recovered run gets <run>/predictions/test")
     p = commands.add_parser("package-dpe-features", help="Package a notebook NPY using its verified feature manifest")
     for name in ("features", "manifest", "metadata", "backbone", "output"):
         p.add_argument(f"--{name}", required=True, type=Path)
