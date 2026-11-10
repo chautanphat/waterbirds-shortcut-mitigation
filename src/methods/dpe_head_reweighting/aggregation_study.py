@@ -11,12 +11,12 @@ import yaml
 
 from . import aggregation_suite as suite
 from .experiment import digest, object_hash, write_json
-from .notebook_setup import extract_source, find_sources, zip_prefix
-from .recovery import recover_test_cache, verified_test_features
-from .study import build_source, ensure_dataset, ensure_test_cache, publish_zip
+from .aggregation_source import (extract_source, find_sources, zip_prefix, recover_test_cache,
+                                 verified_test_features, build_source, ensure_test_cache, head_settings)
+from .study import ensure_dataset, publish_zip
 from .rule_suite import notebook_code_hash
 
-AGGREGATION_STUDY_RUNTIME_VERSION = 5
+AGGREGATION_STUDY_RUNTIME_VERSION = 6
 DEFAULT_STUDY_CONFIG = 'configs/dpe_head_reweighting/aggregation_study.yaml'
 
 
@@ -60,7 +60,7 @@ def run_study(work_dir, *, source=None, search_roots=(), track=None, seeds=None,
             set(settings) != {'version', 'track', 'seeds', 'workers', 'download_data', 'resume_backbone'} or
             type(settings['version']) is not int or settings['version'] != 1 or
             any(type(settings[k]) is not bool for k in ('download_data', 'resume_backbone'))):
-        raise ValueError('Invalid neural study configuration')
+        raise ValueError('Invalid head-aggregation study configuration')
     track = settings['track'] if track is None else track
     seeds = settings['seeds'] if seeds is None else seeds
     workers = settings['workers'] if workers is None else workers
@@ -73,10 +73,11 @@ def run_study(work_dir, *, source=None, search_roots=(), track=None, seeds=None,
     config = yaml.safe_load(config_path.read_text())
     # Fail before dataset downloads or expensive training for an invalid grid.
     suite.neural.validate_config(config, 15)
+    source_settings = head_settings()
     work = Path(work_dir).expanduser().resolve()
     paths = list(source) if isinstance(source, (list, tuple)) else [source] if source is not None else list(search_roots)
-    # Managed B/C sources survive notebook interruption before test inference.
-    managed_roots = (work / 'h2_sources', work / 'recovered_sources')
+    # Managed head-training sources survive notebook interruption before test inference.
+    managed_roots = (work / 'head_sources', work / 'recovered_sources')
     choices = source_choices([*paths, *managed_roots, work / 'source-inputs'], work)
     selected, external = {}, {}
     for item in choices:
@@ -93,8 +94,8 @@ def run_study(work_dir, *, source=None, search_roots=(), track=None, seeds=None,
             external[str(seed)] = identity['inputs']
     missing = sorted(set(seeds) - set(selected))
     if mode == 'cached' and missing:
-        raise ValueError(f'Missing frozen H2 bundles for seeds {missing}. Attach the previous study ZIP '
-                         'with source_archives/, individual H2 ZIPs, or extracted original runs. '
+        raise ValueError(f'Missing frozen head bundles for seeds {missing}. Attach the previous study ZIP '
+                         'with source_archives/, individual source ZIPs, or extracted original runs. '
                          'Or use mode="auto" to prepare and train missing seeds.')
     # Reject unrecoverable cached sources before training other missing seeds.
     if evaluate_test:
@@ -112,8 +113,8 @@ def run_study(work_dir, *, source=None, search_roots=(), track=None, seeds=None,
     implementation['notebooks/dpe_head_aggregation.ipynb'] = notebook_code_hash('notebooks/dpe_head_aggregation.ipynb')
     implementation['scripts/dpe_head_aggregation.py'] = digest('scripts/dpe_head_aggregation.py')
     plan = dict(version=2, track=track, seeds=list(seeds), config=config, settings=settings,
-                mode=mode, device=device, workers=workers, cached_sources=external,
-                implementation=implementation, software={k: runtime[k] for k in ('python', 'torch', 'numpy')},
+                mode=mode, device=device, workers=workers, cached_sources=external, head_training=source_settings,
+                implementation=implementation, software=dict(scipy=suite.scipy.__version__, **{k: runtime[k] for k in ('python', 'torch', 'numpy')}),
                 status='exploratory adaptation')
     output = work / 'studies' / f"aggregation-{track}-seeds{''.join(map(str,seeds))}-{object_hash(plan)[:12]}"
     # Reject overlap before creating any result files, including plan/progress.
@@ -139,13 +140,13 @@ def run_study(work_dir, *, source=None, search_roots=(), track=None, seeds=None,
             print(f'Reusing frozen DPE source: {selected[seed][0]}', flush=True)
         print(f'Fitting/freezing head aggregation configurations: {track} seed {seed}', flush=True)
         comparison = output / 'comparisons' / f'seed{seed}'
-        suite.select(selected[seed][0], config_path, comparison)
+        suite.fit(selected[seed][0], config_path, comparison)
         frozen.append(seed)
         write_json(output / 'progress.json', dict(frozen_seeds=frozen, evaluated_seeds=[],
-                                                 previously_evaluated_seeds=previous, stage='selection'))
+                                                 previously_evaluated_seeds=previous, stage='models_frozen'))
         sources = output / 'source_archives'
         sources.mkdir(exist_ok=True)
-        publish_zip(selected[seed][0], sources / f'h2-{track}-seed{seed}.zip')
+        publish_zip(selected[seed][0], sources / f'heads-{track}-seed{seed}.zip')
         publish_zip(output, archive)
         gc.collect()
         if torch.cuda.is_available():
@@ -164,11 +165,11 @@ def run_study(work_dir, *, source=None, search_roots=(), track=None, seeds=None,
             suite.summarize(output, completed, seeds, track)
             write_json(output / 'progress.json', dict(frozen_seeds=frozen, evaluated_seeds=sorted(completed),
                                                        stage='complete' if len(completed) == len(seeds) else 'evaluation'))
-            publish_zip(root, output / 'source_archives' / f'h2-{track}-seed{seed}.zip')
+            publish_zip(root, output / 'source_archives' / f'heads-{track}-seed{seed}.zip')
             publish_zip(output, archive)
     else:
         write_json(output / 'progress.json', dict(frozen_seeds=frozen, evaluated_seeds=[],
-                                                 previously_evaluated_seeds=previous, stage='selection_complete'))
+                                                 previously_evaluated_seeds=previous, stage='models_frozen'))
         publish_zip(output, archive)
     return dict(output_dir=str(output), archive=str(archive),
                 summary=suite.read_json(output / 'summary.json') if evaluate_test else None)

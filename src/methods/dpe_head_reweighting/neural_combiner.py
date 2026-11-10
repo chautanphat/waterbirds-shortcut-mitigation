@@ -7,7 +7,7 @@ from torch import nn
 from torch.nn import functional as F
 
 from .reweighting import GROUPS, combine, metrics, probabilities
-from .weighting_rules import best_candidate, fit_all_rules, validate_config as validate_rules
+from .weighting_rules import fit_all_rules, validate_config as validate_rules
 
 FAMILIES = ('logistic', 'mlp', 'mlp_dropout', 'gate', 'gate_dropout')
 
@@ -15,13 +15,13 @@ FAMILIES = ('logistic', 'mlp', 'mlp_dropout', 'gate', 'gate_dropout')
 def validate_config(c, heads):
     expected = {'version', 'heads', 'hidden_units', 'steps', 'learning_rate',
                 'weight_decays', 'prediction_dropout', 'seed_offset', 'loss'}
-    if not isinstance(c, dict) or set(c) not in (expected, expected | {'protocol'}, expected | {'protocol', 'weighting_rules'}):
+    if not isinstance(c, dict) or set(c) not in (expected | {'protocol'}, expected | {'protocol', 'weighting_rules'}):
         raise ValueError('Invalid neural-combiner configuration fields')
-    if c.get('protocol', 'b_select_c') not in ('b_select_c', 'bc_all'):
+    if c.get('protocol') != 'independent_comparison':
         raise ValueError('Invalid neural protocol')
     if 'weighting_rules' in c:
-        if c.get('protocol') != 'bc_all' or not isinstance(c['weighting_rules'], dict):
-            raise ValueError('Global rules require the bc_all protocol and a rule configuration')
+        if c.get('protocol') != 'independent_comparison' or not isinstance(c['weighting_rules'], dict):
+            raise ValueError('Global rules require the independent-comparison protocol and a rule configuration')
         validate_rules(c['weighting_rules'], heads)
     if (type(c['version']) is not int or c['version'] != 1 or
             type(c['heads']) is not int or c['heads'] != heads or heads != 15 or
@@ -127,13 +127,13 @@ def predict(record, p):
     return probabilities(np.stack([1 - result, result], axis=-1)), None if w is None else w.numpy()
 
 
-def fit(p_b, y_b, g_b, config, kind, weight_decay, dropout, seed):
+def fit(p_train, y_train, g_train, config, kind, weight_decay, dropout, seed):
     """Fixed-step, full-batch CPU float64 AdamW on supplied training data only."""
-    q = tensor_inputs(p_b)
-    for head in p_b:
-        metrics(head, y_b, g_b)
-    y = torch.tensor(y_b, dtype=torch.float64)
-    groups = torch.tensor([GROUPS.index(g) for g in g_b])
+    q = tensor_inputs(p_train)
+    for head in p_train:
+        metrics(head, y_train, g_train)
+    y = torch.tensor(y_train, dtype=torch.float64)
+    groups = torch.tensor([GROUPS.index(g) for g in g_train])
     with cpu_randomness(seed):
         generator = torch.Generator().manual_seed(seed + 1)
         model = Combiner(kind, q.shape[1], config['hidden_units'])
@@ -143,7 +143,7 @@ def fit(p_b, y_b, g_b, config, kind, weight_decay, dropout, seed):
         for step in range(config['steps'] + 1):
             if step % 100 == 0 or step == config['steps']:
                 with torch.no_grad():
-                    history.append(dict(step=step, b_group_balanced_bce=float(group_loss(model(q)[0], y, groups))))
+                    history.append(dict(step=step, training_group_balanced_bce=float(group_loss(model(q)[0], y, groups))))
             if step == config['steps']:
                 break
             model.train()
@@ -197,45 +197,8 @@ def candidate_prediction(row, p):
     return predict(row['model'], p)
 
 
-def fit_select(p_b, y_b, g_b, p_c, y_c, g_c, config, source_seed):
-    p_b, p_c = probabilities(p_b), probabilities(p_c)
-    if p_b.ndim != 3 or p_c.ndim != 3 or len(p_b) != len(p_c):
-        raise ValueError('Expected matching head axes')
-    validate_config(config, len(p_b))
-    if type(source_seed) is not int or source_seed not in (0, 1, 2):
-        raise ValueError('Expected source training seed 0, 1 or 2')
-    for p, y, g in ((p_b, y_b, g_b), (p_c, y_c, g_c)):
-        for head in p:
-            metrics(head, y, g)
-    uniform = combine(p_c, np.full(len(p_c), 1 / len(p_c)))
-    rows = []
-
-    def add(row):
-        b, wb = candidate_prediction(row, p_b)
-        c, wc = candidate_prediction(row, p_c)
-        row.update(b=diagnostics(b, y_b, g_b, wb), c=diagnostics(c, y_c, g_c, wc),
-                   metrics=metrics(c, y_c, g_c),
-                   c_prediction_changes=int((c.argmax(axis=1) != uniform.argmax(axis=1)).sum()),
-                   c_probability_max_abs_delta=float(np.abs(c - uniform).max()))
-        rows.append(row)
-
-    add(dict(id='uniform', family='uniform', parameters={}, model=None, fit=None))
-    for family in FAMILIES:
-        kind = family.split('_')[0]
-        dropout = config['prediction_dropout'] if family.endswith('_dropout') else 0.
-        for wd in config['weight_decays']:
-            model, fitted = fit(p_b, y_b, g_b, config, kind, wd, dropout, source_seed + config['seed_offset'])
-            add(dict(id=f'{family}-wd{wd}', family=family,
-                     parameters=dict(weight_decay=wd, prediction_dropout=dropout), model=model, fit=fitted))
-    return dict(candidates=rows, selected=best_candidate(rows)['id'],
-                per_family_selected={family: best_candidate([r for r in rows if r['family'] in ('uniform', family)])['id']
-                                     for family in FAMILIES},
-                complementarity={role: complementarity(p, y, g) for role, p, y, g in
-                                 [('B', p_b, y_b, g_b), ('C', p_c, y_c, g_c)]})
-
-
 def fit_all(p, y, g, config, source_seed):
-    """Fit every declared configuration on pooled B+C; no model selection."""
+    """Fit every declared configuration on combiner-training data; no model selection."""
     validate_config(config, len(p))
     if type(source_seed) is not int or source_seed not in (0, 1, 2):
         raise ValueError('Expected source training seed 0, 1 or 2')
@@ -252,13 +215,11 @@ def fit_all(p, y, g, config, source_seed):
         for wd in config['weight_decays']:
             model, fitted = fit(p, y, g, config, family.split('_')[0], wd, dropout,
                                 source_seed + config['seed_offset'])
-            for item in fitted['history']:
-                item['training_group_balanced_bce'] = item.pop('b_group_balanced_bce')
             add(dict(id=f'{family}-wd{wd}', family=family,
                      parameters=dict(weight_decay=wd, prediction_dropout=dropout), model=model, fit=fitted))
     if 'weighting_rules' in config:
         for row in fit_all_rules(p, y, g, config['weighting_rules']):
             if row['id'] != 'uniform':  # Share one matched uniform reference.
                 add(row)
-    return dict(protocol='bc_all', training_role='B+C', training_count=len(y), candidates=rows,
-                complementarity={'B+C': complementarity(p, y, g)})
+    return dict(protocol='independent_comparison', training_role='combiner_training', training_count=len(y), candidates=rows,
+                complementarity={'combiner_training': complementarity(p, y, g)})

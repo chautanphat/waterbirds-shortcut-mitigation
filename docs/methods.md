@@ -39,45 +39,38 @@ Add approved methods below this heading using the shared template.
 - **Status:** Standard-track seeds 0/1/2 are recorded in the [H2 study](../src/methods/dpe_head_reweighting/reports/h2.md); seed 0 was reused and seeds 1/2 trained in the completed study. Backbone validation logs are available. ERM-only test performance and an independent raw-image inference reproduction are not established by these artifacts.
 - **Reuse:** Project-level train/evaluate/export scripts operate independently of all preserved baselines. Checkpoints and raw ordered feature caches can be consumed by DPE; historical DPE runs remain unchanged.
 
-## DPE head reweighting (H2)
+## DPE head aggregation
 
 ### Overview
 
-- **Full name:** Validation-derived reweighting of Diverse Prototypical Ensemble heads.
-- **Paper/source:** Project-owned adaptation of [DPE](https://arxiv.org/abs/2505.23027), ICML 2025; the weighting rule is not a paper result.
-- **Implementation:** [Method and execution instructions](../src/methods/dpe_head_reweighting/README.md), [end-to-end notebook](../notebooks/dpe_head_aggregation.ipynb).
+- **Full name:** Independent comparison of global weighting rules and neural combiners over frozen Diverse Prototypical Ensemble heads.
+- **Source:** Project-owned adaptation of [DPE](https://arxiv.org/abs/2505.23027), ICML 2025. Neural combination and prediction dropout are motivated by [Regularized Neural Ensemblers](https://proceedings.mlr.press/v293/arango25a.html), AutoML 2025; this is not an exact reproduction of either experiment.
+- **Implementation:** [Method guide](../src/methods/dpe_head_reweighting/HEAD_AGGREGATION.md), [Run All notebook](../notebooks/dpe_head_aggregation.ipynb).
 
-### Mechanism and settings
+### Mechanism and protocol
 
-Freeze each seed's final-epoch standard ERM backbone and 15 A-trained prototype
-heads. Fit weights on B, select each family and the overall procedure on C, then
-evaluate the frozen choices on test. Uniform is the matched control and every
-family's fallback. The fixed grid has 20 candidates: uniform, 12 power rules,
-softmax β=10/30, top-k=10/5 and joint λ=1/0.1/0.01. Joint fitting minimizes worst
-B-group NLL plus a penalty toward uniform over nonnegative, sum-to-one weights.
+Train an ImageNet-initialized ResNet-50 on the official 4,795 training images
+for 100 epochs, retaining the final checkpoint. Divide validation directly into
+a head-training split (720 images) and a combiner-training split (479 images),
+using group-stratified 60/40 allocation with fixed split seed 0. Train 15 heads
+for 20 epochs on balanced head-training subsamples. Fit every weighting rule and
+neural combiner only on combiner-training predictions.
 
-- **Dataset:** Official Waterbirds; group-annotated validation A/B/C=720/241/238, fixed partition seed 0; test=5,794.
-- **Optimization:** ImageNet-pretrained ResNet-50, 100 epochs, batch 128; 15 heads × 20 epochs, batch 256. SGD LR 0.001/momentum 0.9; standard track has no augmentation.
-- **Seeds:** 0/1/2 completed; seed 0 reused, seeds 1/2 trained. The notebook automatically prepares data and reuses completed stages; backbone epochs can resume.
-- **Traceability:** [Fixed grid and recorded plan](../experiments/exp-dpe-h2-rules-waterbirds-standard-seeds012-003/run.json), including portable per-seed configurations and archive identities.
+The 30 configurations are uniform, 12 power rules, 2 softmax rules, 2 top-k
+rules, 3 joint fits and 10 neural configurations. Evaluate each independently
+on the same official 5,794 test images across seeds 0/1/2, after all model fits
+are frozen. Report overall/group accuracy, WGA, counts and paired changes
+against uniform. Do not use test results to choose hyperparameters.
 
-### Evaluation
+### Status and historical evidence
 
-The [H2 hypothesis summary](../src/methods/dpe_head_reweighting/reports/h2.md)
-covers the original power study, expanded seed-0 grid, failed solver attempt and
-completed three-seed study. Uniform test accuracy/WGA=91.2668±0.3293/89.5196±0.6538%;
-overall C selection=91.2553±0.3317/89.4752±0.6339% (mean±sample SD across seeds).
-Paired WGA change=−0.0443±0.0768 pp: seed 0 selects top-10 and loses 0.1330 pp;
-seeds 1/2 select uniform. Power, softmax and joint select uniform in every seed.
-Per-group metrics/counts, exact weights and B/C diagnostics accompany the report.
-
-### Status and interpretation
-
-- **Original reproduction:** Not claimed; H2 reserves B/C and changes the head-training data budget.
-- **Waterbirds adaptation:** Completed exploratory three-seed comparison; all 60 B/C candidates recomputed, nine joint fits refitted and selected test metrics independently recomputed from supplied prediction caches. See the [experiment index](experiment_log.md#exp-dpe-h2-rules-waterbirds-standard-seeds012-003--2026-11-09).
-- **Finding:** No selected rule improves test WGA. Joint weighting lowers NLL while WGA ties or decreases; lower loss alone does not establish a classification gain.
-- **Limits:** One shared validation partition and test set; reused, previously inspected seed 0; raw-image inference not rerun. Original failed-version checkpoints were not supplied.
-- **Follow-ups:** [Neural stacking/gating with prediction dropout](../src/methods/dpe_head_reweighting/HEAD_AGGREGATION.md) is implemented as a separate comparison with synthetic software checks; its notebook automatically prepares missing sources or reuses frozen heads/predictions. The unified comparison fits global weighting rules and neural combiners on B+C and evaluates all 30 declared configurations separately on test; the old B/C selection protocol remains available. Its Waterbirds test evaluation is pending. Objective sensitivity, partition/weight stability and DFR remain untested proposals. The original H2 findings are unchanged.
+The two-split comparison is implemented with synthetic software checks; real
+Waterbirds evaluation of this protocol is pending. Results remain exploratory
+because the common test set has previously informed project research.
+Earlier weighting experiments used a different selection protocol. Their
+records and interpretations are preserved in the [historical H2 report](../src/methods/dpe_head_reweighting/reports/h2.md)
+and [experiment index](experiment_log.md). Those results are not measurements
+of every independently evaluated configuration in the current protocol.
 
 ## Diverse Prototypical Ensembles (DPE)
 

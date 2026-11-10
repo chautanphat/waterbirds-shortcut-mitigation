@@ -1,0 +1,9 @@
+# Frozen-feature prototype-head training.
+heads: 15
+epochs: 20
+batch_size: 256
+lr: 0.001
+momentum: 0.9
+entropic_scale: 30.0
+cov_reg: 500000.0
+wd_weight: 10.0

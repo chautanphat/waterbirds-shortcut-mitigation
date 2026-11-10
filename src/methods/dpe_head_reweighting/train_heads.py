@@ -8,8 +8,8 @@ from .ensemble import Head, PREPROCESSING, standardize
 from .reweighting import GROUPS, metrics
 
 
-def train(raw_a, y_a, groups_a, settings, seed, provenance, device='cpu', progress=False):
-    """Only A is accepted: both fitting and epoch selection reuse A by design."""
+def train(head_raw, head_labels, head_groups, settings, seed, provenance, device='cpu', progress=False):
+    """Only head-training examples are accepted; epoch selection reuses those examples."""
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -17,19 +17,19 @@ def train(raw_a, y_a, groups_a, settings, seed, provenance, device='cpu', progre
         torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    x = standardize(raw_a)
-    y, groups = np.asarray(y_a), np.asarray(groups_a)
+    x = standardize(head_raw)
+    y, groups = np.asarray(head_labels), np.asarray(head_groups)
     metrics(np.full((len(y), 2), .5), y, groups)
     pools = [np.flatnonzero(groups == g) for g in GROUPS]
     # Upstream samples groups in decreasing group-size order, interleaving rows.
     order = sorted(range(4), key=lambda i: (-len(pools[i]), i))
     n = min(map(len, pools))
     if 4 * n < settings['batch_size']:
-        raise ValueError('Balanced A produces zero optimizer batches with drop_last=True')
+        raise ValueError('Balanced head-training data produces zero optimizer batches with drop_last=True')
     prototypes, scales, epochs = [], [], []
     for stage in range(1, settings['heads'] + 1):
         if progress:
-            print(f'Head {stage}/{settings["heads"]}: training on {4*n} balanced A examples', flush=True)
+            print(f'Head {stage}/{settings["heads"]}: training on {4*n} balanced head-training examples', flush=True)
         idx = np.stack([np.random.permutation(pools[i])[:n] for i in order], axis=1).ravel()
         loader = DataLoader(TensorDataset(x[idx], torch.tensor(y[idx], dtype=torch.long)),
                             batch_size=settings['batch_size'], shuffle=True, drop_last=True)
@@ -56,8 +56,8 @@ def train(raw_a, y_a, groups_a, settings, seed, provenance, device='cpu', progre
                 loss.backward()
                 opt.step()
             with torch.no_grad():
-                p_a = torch.cat([head(b.to(device)).softmax(-1).cpu() for b in x.split(256)]).numpy()
-            wga = metrics(p_a, y, groups)['wga']
+                head_probabilities = torch.cat([head(b.to(device)).softmax(-1).cpu() for b in x.split(256)]).numpy()
+            wga = metrics(head_probabilities, y, groups)['wga']
             if wga >= best_wga:
                 best_wga = wga
                 best = (head.prototypes.detach().cpu().clone(), head.distance_scale.detach().cpu().clone(), epoch)
@@ -65,7 +65,7 @@ def train(raw_a, y_a, groups_a, settings, seed, provenance, device='cpu', progre
         scales.append(best[1].squeeze())
         epochs.append(best[2])
         if progress:
-            print(f'Head {stage}: selected epoch {best[2]}, A WGA {best_wga:.4f}', flush=True)
+            print(f'Head {stage}: selected epoch {best[2]}, head-training WGA {best_wga:.4f}', flush=True)
     return dict(version=1, prototypes=torch.stack(prototypes), distance_scales=torch.stack(scales),
                 temperatures=torch.ones(len(scales)), head_ids=[f'head-{i:02d}' for i in range(len(scales))],
                 selected_epochs=epochs, classes=[0, 1], groups=list(GROUPS),
