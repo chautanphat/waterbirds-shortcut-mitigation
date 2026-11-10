@@ -73,3 +73,10 @@ Thumbs.db
 *.log
 *.tmp
 tempCodeRunnerFile.py
+
+# LaTeX build artifacts
+*.synctex.gz
+*.synctex(busy)
+*.fls
+*.fdb_latexmk
+

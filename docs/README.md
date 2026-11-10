@@ -48,6 +48,8 @@ waterbirds-shortcut-mitigation/
 | [`methods.md`](methods.md) | Method inventory and the rule for documenting a baseline. |
 | [`experiment_log.md`](experiment_log.md) | Traceable index of meaningful runs. |
 | [Shared ERM](../src/methods/erm/README.md) | DPE-aligned repository-wide fine-tuning, evaluation, and reusable features. |
+| [Failure case viewer](failure_case_viewer.md) | Local image inspection and comparison of saved per-example predictions across approaches. |
+| [Export predictions](export_predictions.md) | Viewer CSV recovery and export for POTER, original DPE, AutoBackSwap, and ERM. |
 
 ## Baseline contribution checklist
 
