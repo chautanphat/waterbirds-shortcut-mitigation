@@ -1,7 +1,8 @@
 # Neural combiners over frozen DPE heads
 
 **Status:** implemented project adaptation; synthetic software validation only.
-Waterbirds experiments are pending. The existing H2 result records and global
+The initial B/C neural run completed without a C-selected improvement over uniform;
+the B+C comparison is pending. The existing H2 result records and global
 weighting suite are unchanged. Work began on 2026-11-09.
 
 ## Question and attribution
@@ -15,7 +16,7 @@ The main methodological reference is Pineda Arango et al.,
 It motivates neural combination of model predictions and prediction dropout.
 This code is independently written and is **not an implementation or reproduction
 of their complete paper**. Our binary architectures, CPU optimizer, small grid,
-group-balanced loss, neutral replacement and H2 B/C selection protocol are
+group-balanced loss, neutral replacement and training/evaluation protocols are
 project choices. We do not claim the paper's diversity guarantees for them.
 In particular, our tiny binary MLPs replace the paper's class-shared stacking
 network and Deep Set averaging architecture; neutral masking without inverted
@@ -42,7 +43,7 @@ Stackers return a new probability and can learn negative coefficients or
 nonlinear interactions; they do not have convex head weights.
 
 Every candidate trains for **400 full-batch CPU float64 AdamW steps**, LR 0.01,
-with the declared weight decay. Loss is the mean BCE over each of the four B
+with the declared weight decay. Loss is the mean BCE over each of the four training
 groups, then averaged equally across groups. This is **group-balanced BCE**, not
 the previous joint fitter's maximum-group NLL and not direct WGA optimization.
 Probabilities are clamped to `[1e-12, 1-1e-12]` only for the training BCE.
@@ -58,26 +59,33 @@ heads from its softmax and renormalizes the retained weights. At inference every
 head is available and dropout is disabled. Both class probabilities come from
 the same retained binary prediction, so dropout cannot break normalization.
 
-## Fit, select, evaluate
+## Current protocol: train on B+C, compare all on test
 
-- Keep the original backbone, heads, head order and A/B/C partition fixed.
-- Fit only on B; training code accepts no C/test data. No C-based early stopping.
-- Use C WGA, then C overall accuracy, to freeze one choice per family and one
-  overall choice. Uniform is eligible in every family and wins a complete tie;
-  otherwise declared order wins, preferring larger weight decay.
-- No B+C refit. Every planned seed's choices are saved before any test cache is
-  read by the study runner. Evaluate uniform and only frozen family/overall
-  choices. Do not choose a family from its test result.
-- Report all seeds and procedures, including uniform fallbacks and failures to
-  improve. Sample SD across seeds is not a confidence interval.
+The notebook now uses [neural_comparison.yaml](../../../configs/dpe_head_reweighting/neural_comparison.yaml),
+with `protocol: bc_all`. Keep A, the backbone, head training and head order fixed.
+Pool the old B=241 and C=238 caches into 479 combiner-training examples. Train
+all ten learned configurations for fixed steps; uniform is the eleventh configuration.
+Both weight-decay values are separate configurations. There is no C selection,
+no uniform fallback replacing a learned candidate, and no early stopping.
+All configurations across all planned seeds are frozen before any test cache is read.
+Evaluate and report every configuration separately, including group metrics and
+paired changes against uniform. Do not tune hyperparameters using the test table.
+B+C NLL, WGA and complementarity are training diagnostics, not held-out results.
 
-The B/C diagnostic includes a label-aware head oracle: how many uniform errors
-have at least one correct head? It measures possible room for convex gating;
-the oracle is not a deployable predictor. B/C group NLL accompanies WGA to expose
-the previous loss/accuracy trade-off. Test outputs include group accuracy and
-counts, paired deltas, corrected/new error IDs and gate concentration. Effective
-head counts are computed **per example**, then summarized; stackers do not receive
-an invented effective-head count.
+### Previous experiments used C
+
+The original power-weighting experiment, expanded global-rule study, and initial
+neural experiment all fit weights on B and select on C by WGA then accuracy.
+Only uniform and frozen winners were evaluated on test. Thus their test tables
+do not measure every nonuniform configuration individually. See
+[H2](reports/h2.md) and the [three-seed audit](reports/dpe_h2_three_seed_audit.md).
+Their recorded results and implementations remain unchanged.
+
+The original [neural_combiners.yaml](../../../configs/dpe_head_reweighting/neural_combiners.yaml)
+retains this legacy `b_select_c` protocol (default when the protocol key is absent).
+The new experiment changes both the fitting sample size and the evaluation
+procedure, so it is a separate exploratory comparison. Old C metrics cannot be
+reused as held-out validation for models retrained on B+C.
 
 ## Run the next experiment
 
@@ -94,8 +102,8 @@ The [source-preparation settings](../../../configs/dpe_head_reweighting/neural_s
 retain the existing recipe and enable automatic dataset download and epoch-boundary
 backbone resume. Keep WORK_DIR persistent across runtime deletion. Completed
 backbones, verified features, frozen heads and neural selections are reused;
-an interruption within an epoch replays that epoch. No neural architecture,
-candidate grid or scientific training recipe changes in this orchestration update.
+an interruption within an epoch replays that epoch. The current protocol keeps the architectures, candidate grid and optimizer settings,
+while changing neural fitting to B+C and reporting every test configuration.
 
 Optionally attach the previous combined H2 study ZIP **including `source_archives/`**,
 individual original H2 ZIPs, or extracted runs. A summary-only ZIP or the tracked
@@ -107,10 +115,11 @@ sources save work; auto mode trains only the missing seeds. `MODE="cached"`
 disables new training and requires every requested seed to be supplied.
 
 Default `SEEDS=[0,1,2]` prepares all three seeds; use `[0]` explicitly for a
-pilot. `EVALUATE_TEST=False` fits/freezes and exports all C comparisons without
+pilot. The notebook defaults to `EVALUATE_TEST=True` to compare all configurations.
+Set `EVALUATE_TEST=False` to fit/freeze and export all configurations without
 generating or reading test prediction arrays. Raw test features may already be
 extracted during the unchanged Stage-0 handoff. Set `EVALUATE_TEST=True` and rerun
-for final frozen-choice evaluation. Every planned seed is frozen before the runner
+for evaluation of all configurations. Every configuration for every planned seed is frozen before the runner
 generates any missing test predictions or evaluates test metrics. This project
 has already inspected the common test set, so these
 follow-ups remain **exploratory**, including later training seeds.
@@ -126,8 +135,8 @@ python scripts/dpe_neural_combiners.py evaluate \
   --output-dir outputs/dpe_neural_runs/standard-seed0-v1
 ```
 
-Use `--config` for a separately declared configuration. Single-seed CLI actions
-remain cached-source operations. Automatic preparation uses the notebook/API.
+Use `--config` for a separately declared configuration. Pass `--config configs/dpe_head_reweighting/neural_comparison.yaml` for the new protocol.
+Single-seed CLI actions remain cached-source operations. The API/CLI default stays legacy for compatibility; the notebook explicitly uses the new configuration. Automatic preparation uses the notebook/API.
 The notebook installs missing Torch/torchvision, NumPy, SciPy, PyYAML, pandas,
 Pillow and tqdm; no new model-training library is needed.
 
@@ -136,9 +145,9 @@ For a multi-seed run or prior combined ZIP:
 ```python
 from src.methods.dpe_head_reweighting.neural_study import run_study
 
-run = run_study("outputs/neural_session", evaluate_test=False)
-# After reviewing C selections, keep the declared recipe fixed for evaluation:
-run = run_study("outputs/neural_session", evaluate_test=True)
+run = run_study("outputs/neural_session", config_path="configs/dpe_head_reweighting/neural_comparison.yaml", evaluate_test=False)
+# Keep the declared recipe fixed for test evaluation:
+run = run_study("outputs/neural_session", config_path="configs/dpe_head_reweighting/neural_comparison.yaml", evaluate_test=True)
 # Optional cache-only comparison, without training missing seeds:
 run = run_study("outputs/neural_cached", source="outputs/previous_h2_study.zip",
                 mode="cached", evaluate_test=False)
@@ -156,10 +165,10 @@ a completed source ZIP containing the test cache.
 ## Outputs and verification
 
 Each comparison writes `selection.json` with exact data-only model states,
-training histories, hyperparameters, B/C diagnostics and input/code/software
-identities; `candidate_comparison.csv` includes every C candidate. Evaluation
-adds `metrics.json`, `run.json` and `report.md`. Only those selected configurations
-are scored on test. Saved selections are replayed deterministically before reuse;
+training histories, hyperparameters and training diagnostics and input/code/software
+identities; `candidate_comparison.csv` includes every configuration. Evaluation
+adds `metrics.json`, `run.json` and `report.md`. The new protocol scores every configuration on test; legacy mode scores only frozen winners.
+`selection.json` retains its historical filename in the new protocol, but contains no winner or family selection. Saved selections are replayed deterministically before reuse;
 edited states, selections, configs, inputs and final metrics are rejected. This
 guarantees consistency within the recorded CPU software, not cross-version or
 cross-hardware bitwise equality.

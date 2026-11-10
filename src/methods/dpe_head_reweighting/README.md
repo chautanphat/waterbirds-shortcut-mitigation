@@ -488,11 +488,11 @@ stacking, an 8-unit MLP and an 8-unit softmax gate, including prediction-dropout
 ablations. Its [notebook](../../../notebooks/dpe_neural_combiners.ipynb) works
 without attachments: auto mode downloads Waterbirds and prepares missing
 backbones/heads with the existing H2 recipe. Optional completed prediction
-bundles save training time. It freezes all planned seed choices on B/C before
-optional test evaluation, and supports checkpoint resume and partial ZIP export.
+bundles save training time. The current notebook fits every neural configuration on pooled B+C (479 images),
+then optionally evaluates all 11 configurations separately on test, and supports checkpoint resume and partial ZIP export.
 This is a project adaptation
-inspired by Regularized Neural Ensemblers (AutoML 2025); Waterbirds results are
-pending. The original global-weighting grid and recorded H2 results are preserved.
+inspired by Regularized Neural Ensemblers (AutoML 2025); the B+C comparison is
+pending. The original B-only/C-selection protocol remains available. The original global-weighting grid and recorded H2 results are preserved.
 
 ## Output specification
 

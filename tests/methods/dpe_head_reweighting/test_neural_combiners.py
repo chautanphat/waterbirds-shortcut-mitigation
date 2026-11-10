@@ -341,7 +341,7 @@ def test_notebook_runs_and_reuses_saved_models(tmp_path, small_config, monkeypat
             cell.source = cell.source.replace('SEEDS = [0, 1, 2]', 'SEEDS = [0]')
             cell.source = cell.source.replace('EVALUATE_TEST = False', 'EVALUATE_TEST = True')
             cell.source = cell.source.replace('WORK_DIR = None', f'WORK_DIR = {str(work)!r}')
-            cell.source = cell.source.replace('CONFIG_PATH = "configs/dpe_head_reweighting/neural_combiners.yaml"',
+            cell.source = cell.source.replace('CONFIG_PATH = "configs/dpe_head_reweighting/neural_comparison.yaml"',
                                               f'CONFIG_PATH = {str(small_config)!r}')
             if hosted:
                 cell.source = cell.source.replace('REPO_URL = "https://github.com/chautanphat/waterbirds-shortcut-mitigation.git"',
@@ -435,7 +435,7 @@ if (WORK_DIR / 'backbones/standard/seed2/summary.json').exists():
 '''
     notebook = nbformat.read(ROOT / 'notebooks/dpe_neural_combiners.ipynb', as_version=4)
     assert 'MODE = "auto"' in notebook.cells[1].source and 'SOURCE = None' in notebook.cells[1].source
-    assert 'EVALUATE_TEST = False' in notebook.cells[1].source
+    assert 'EVALUATE_TEST = True' in notebook.cells[1].source
     notebook.cells.insert(3, nbformat.v4.new_code_cell(fixture_code))
     path = repo / 'notebooks/dpe_neural_combiners.ipynb'
     nbformat.write(notebook, path)
@@ -455,18 +455,60 @@ if (WORK_DIR / 'backbones/standard/seed2/summary.json').exists():
                                 on_cell_executed=lambda **kw: nbformat.write(actual, path)).execute()
         out, = [p for p in (work / 'studies').iterdir() if p.is_dir()]
         progress = json.loads((out / 'progress.json').read_text())
-        assert progress['frozen_seeds'] == [0, 1, 2] and progress['stage'] == 'selection_complete'
-        assert progress['evaluated_seeds'] == [] and not (out / 'summary.json').exists()
+        assert progress['frozen_seeds'] == [0, 1, 2] and progress['stage'] == 'complete'
+        assert progress['evaluated_seeds'] == [0, 1, 2]
+        assert len(json.loads((out / 'summary.json').read_text())['results']) == 11
         checkpoints, models = [], []
         for seed in (0, 1, 2):
             backbone = work / 'backbones/standard' / f'seed{seed}'
             assert json.loads((backbone / 'summary.json').read_text())['updates'] == 3700
             checkpoints.append(digest(backbone / 'ckpt_last.pt'))
-            models.append((out / 'comparisons' / f'seed{seed}/selection.json').read_bytes())
+            model_bytes = (out / 'comparisons' / f'seed{seed}/selection.json').read_bytes()
+            decision = json.loads(model_bytes)
+            assert decision['protocol'] == 'bc_all' and decision['training_count'] == 479
+            assert len(decision['candidates']) == 11 and 'selected' not in decision
+            models.append(model_bytes)
             with zipfile.ZipFile(out / 'source_archives' / f'h2-standard-seed{seed}.zip') as archive:
                 assert 'experiment/predictions/B.npz' in archive.namelist()
-                assert 'experiment/predictions/test.npz' not in archive.namelist()
+                assert 'experiment/predictions/test.npz' in archive.namelist()
         if frozen is not None:
             assert frozen == (checkpoints, models)
         frozen = (checkpoints, models)
         assert out.with_suffix('.zip').is_file()
+
+
+def test_bc_all_pools_training_and_evaluates_every_configuration(tmp_path, small_config, monkeypatch):
+    c = yaml.safe_load(small_config.read_text())
+    c.update(protocol='bc_all', weight_decays=[.01, .001])
+    small_config.write_text(yaml.safe_dump(c))
+    source, cache = make_bundle(tmp_path)
+    output = tmp_path / 'comparison'
+    calls = []
+    real_fit = neural.fit
+    def record_fit(p, y, g, *args):
+        calls.append((p.shape[1], len(y), len(g)))
+        return real_fit(p, y, g, *args)
+    monkeypatch.setattr(neural, 'fit', record_fit)
+    def reject_selection(*args):
+        raise AssertionError('B+C protocol must never select a winner')
+    monkeypatch.setattr(neural, 'fit_select', reject_selection)
+    decision = suite.select(source, small_config, output)  # No test cache exists yet.
+    assert calls == [(64, 64, 64)] * 10
+    assert len(decision['candidates']) == 11 and decision['training_count'] == 64
+    assert len(set(decision['training_ids'])) == 64
+    assert 'selected' not in decision and 'per_family_selected' not in decision
+    assert all('training' in r and 'c' not in r for r in decision['candidates'])
+    cache('test')
+    first = suite.evaluate(source, small_config, output)
+    assert set(first['results']) == {r['id'] for r in decision['candidates']}
+    assert all(key == row['candidate'] for key, row in first['results'].items())
+    assert suite.evaluate(source, small_config, output) == first
+    summary = suite.summarize(tmp_path / 'summary', {0: first}, [0], 'standard')
+    assert len(summary['results']) == 11 and summary['protocol'] == 'bc_all'
+    report = (output / 'report.md').read_text()
+    assert 'Every family includes uniform' not in report
+    assert 'no C selection' in report
+    decision['candidates'][1]['model']['state']['network.weight'][0][0] += .1
+    write_json(output / 'selection.json', decision)
+    with pytest.raises(ValueError, match='Frozen neural selection'):
+        suite.evaluate(source, small_config, output)

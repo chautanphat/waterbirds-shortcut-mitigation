@@ -16,7 +16,7 @@ from .recovery import recover_test_cache, verified_test_features
 from .study import build_source, ensure_dataset, ensure_test_cache, publish_zip
 from .rule_suite import notebook_code_hash
 
-NEURAL_STUDY_RUNTIME_VERSION = 2
+NEURAL_STUDY_RUNTIME_VERSION = 3
 DEFAULT_STUDY_CONFIG = 'configs/dpe_head_reweighting/neural_study.yaml'
 
 
@@ -159,7 +159,7 @@ def run_study(work_dir, *, source=None, search_roots=(), track=None, seeds=None,
             elif not (root / 'experiment/predictions/test.npz').is_file():
                 root = recover_test_cache(root, [work, *search_roots, *paths], work, device=device)
                 selected[seed] = (root, identity)
-            print(f'Evaluating frozen choices: {track} seed {seed}', flush=True)
+            print(f'Evaluating frozen configurations: {track} seed {seed}', flush=True)
             completed[seed] = suite.evaluate(root, config_path, output / 'comparisons' / f'seed{seed}')
             suite.summarize(output, completed, seeds, track)
             write_json(output / 'progress.json', dict(frozen_seeds=frozen, evaluated_seeds=sorted(completed),

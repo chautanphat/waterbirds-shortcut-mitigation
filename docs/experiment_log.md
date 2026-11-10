@@ -267,3 +267,17 @@ The date is the documentation date; the supplied execution log contains elapsed 
 - **Paper comparison or expected behavior:** paper 74.9 ± 3.3 / 93.6 ± 0.4, both within 2σ (seed 1 worst-group is 1.85σ above the paper mean)
 - **Status:** partial reproduction
 - **Notes and follow-up:** the first seed 0 attempt stopped at epoch 42 of 50 (most likely a notebook kernel restart, not verified) and was rerun with the same seed.
+
+## exp-dpe-neural-bc-all-software-check — 2026-11-10
+
+- **Method / version:** Neural combination of frozen DPE predictions; new `bc_all` protocol.
+- **Purpose:** Synthetic software validation of a separate experiment, not a Waterbirds benchmark run.
+- **Branch:** `experiment/dpe-neural-combiner`.
+- **Configuration:** `configs/dpe_head_reweighting/neural_comparison.yaml`.
+- **Dataset and split:** New protocol pools B+C (479 Waterbirds validation images) for combiner fitting, retains A for head training, and evaluates every declared configuration on the official test set. No C selection or uniform replacement. Both weight-decay settings are reported separately.
+- **Seed:** 0/1/2; architectures, fixed 400-step optimizer and dropout settings retained.
+- **Command:** `OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m pytest tests/methods/dpe_head_reweighting/test_neural_combiners.py tests/methods/dpe_head_reweighting/test_weighting_rules.py -q`.
+- **Results:** 148 checks passed across the neural-combiner and existing weighting-rule suites; a focused pooled-fit/evaluation replay check also passed after report-text cleanup. No Waterbirds accuracy is claimed.
+- **Verification scope:** Synthetic fixtures check pooled fitting, all-configuration evaluation, model-state replay/tamper rejection and default no-attachment notebook execution/reuse. The notebook fixture substitutes download/image decoding/ResNet and exercises actual backbone/head/combiner loops. These checks do not establish Waterbirds performance.
+- **Previous experiment audit:** Original power weighting and expanded H2 global rules used A/B/C=720/241/238, fit on B, selected on C, and tested only uniform plus frozen family/overall winners. Existing reports and result artifacts are preserved; they are not all-configuration test comparisons. See `src/methods/dpe_head_reweighting/reports/h2.md` and `reports/dpe_h2_three_seed_audit.md` beside it.
+- **Next action:** Run the updated notebook on real Waterbirds, preferably retaining the existing source artifacts; report every configuration across all three seeds as exploratory.

@@ -1,4 +1,4 @@
-"""Small B-only neural combiners; a project adaptation, not a paper reproduction."""
+"""Small neural combiners; a project adaptation, not a paper reproduction."""
 from contextlib import contextmanager
 
 import numpy as np
@@ -15,8 +15,10 @@ FAMILIES = ('logistic', 'mlp', 'mlp_dropout', 'gate', 'gate_dropout')
 def validate_config(c, heads):
     expected = {'version', 'heads', 'hidden_units', 'steps', 'learning_rate',
                 'weight_decays', 'prediction_dropout', 'seed_offset', 'loss'}
-    if not isinstance(c, dict) or set(c) != expected:
+    if not isinstance(c, dict) or set(c) not in (expected, expected | {'protocol'}):
         raise ValueError('Invalid neural-combiner configuration fields')
+    if c.get('protocol', 'b_select_c') not in ('b_select_c', 'bc_all'):
+        raise ValueError('Invalid neural protocol')
     if (type(c['version']) is not int or c['version'] != 1 or
             type(c['heads']) is not int or c['heads'] != heads or heads != 15 or
             type(c['hidden_units']) is not int or not 1 <= c['hidden_units'] <= 32 or
@@ -122,7 +124,7 @@ def predict(record, p):
 
 
 def fit(p_b, y_b, g_b, config, kind, weight_decay, dropout, seed):
-    """Fixed-step, full-batch CPU float64 AdamW; accepts no C/test data."""
+    """Fixed-step, full-batch CPU float64 AdamW on supplied training data only."""
     q = tensor_inputs(p_b)
     for head in p_b:
         metrics(head, y_b, g_b)
@@ -223,3 +225,29 @@ def fit_select(p_b, y_b, g_b, p_c, y_c, g_c, config, source_seed):
                                      for family in FAMILIES},
                 complementarity={role: complementarity(p, y, g) for role, p, y, g in
                                  [('B', p_b, y_b, g_b), ('C', p_c, y_c, g_c)]})
+
+
+def fit_all(p, y, g, config, source_seed):
+    """Fit every declared configuration on pooled B+C; no model selection."""
+    validate_config(config, len(p))
+    if type(source_seed) is not int or source_seed not in (0, 1, 2):
+        raise ValueError('Expected source training seed 0, 1 or 2')
+    rows = []
+
+    def add(row):
+        prediction, weights = candidate_prediction(row, p)
+        row['training'] = diagnostics(prediction, y, g, weights)
+        rows.append(row)
+
+    add(dict(id='uniform', family='uniform', parameters={}, model=None, fit=None))
+    for family in FAMILIES:
+        dropout = config['prediction_dropout'] if family.endswith('_dropout') else 0.
+        for wd in config['weight_decays']:
+            model, fitted = fit(p, y, g, config, family.split('_')[0], wd, dropout,
+                                source_seed + config['seed_offset'])
+            for item in fitted['history']:
+                item['training_group_balanced_bce'] = item.pop('b_group_balanced_bce')
+            add(dict(id=f'{family}-wd{wd}', family=family,
+                     parameters=dict(weight_decay=wd, prediction_dropout=dropout), model=model, fit=fitted))
+    return dict(protocol='bc_all', training_role='B+C', training_count=len(y), candidates=rows,
+                complementarity={'B+C': complementarity(p, y, g)})

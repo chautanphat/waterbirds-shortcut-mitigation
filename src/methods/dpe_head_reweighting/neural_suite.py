@@ -1,4 +1,4 @@
-"""Frozen H2-cache -> B-only neural fits -> C selection -> held-out evaluation."""
+"""Frozen H2 caches -> declared neural fitting protocol -> held-out evaluation."""
 import argparse
 import csv
 import json
@@ -24,13 +24,29 @@ def context(source, config_path):
 
 def compute_selection(source, config_path):
     _, c, manifest, heads, data, identity = context(source, config_path)
-    selection = neural.fit_select(*data['B'][:3], *data['C'][:3], c, manifest['provenance']['seed'])
+    if c.get('protocol') == 'bc_all':
+        pooled = [np.concatenate([data['B'][i], data['C'][i]], axis=1 if i == 0 else 0)
+                  for i in range(3)]
+        selection = neural.fit_all(*pooled, c, manifest['provenance']['seed'])
+        selection['training_ids'] = np.concatenate([data['B'][3], data['C'][3]]).tolist()
+    else:
+        selection = neural.fit_select(*data['B'][:3], *data['C'][:3], c, manifest['provenance']['seed'])
     selection.update(version=1, config=c, lock=identity, head_ids=heads,
                      source_track=manifest['provenance']['track'], source_seed=manifest['provenance']['seed'])
     return selection
 
 
 def write_comparison(output, selection):
+    if selection.get('protocol') == 'bc_all':
+        with (output / 'candidate_comparison.csv').open('w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=['id', 'family', 'parameters', 'training_role',
+                                                  'training_wga', 'training_overall'])
+            writer.writeheader()
+            for row in selection['candidates']:
+                m = row['training']['metrics']
+                writer.writerow(dict(id=row['id'], family=row['family'], parameters=json.dumps(row['parameters']),
+                                     training_role='B+C', training_wga=m['wga'], training_overall=m['overall']))
+        return
     fields = ['id', 'family', 'parameters', 'selected_for_family', 'selected_overall',
               'b_wga', 'c_wga', 'c_overall', 'c_prediction_changes', 'c_probability_max_abs_delta']
     with (output / 'candidate_comparison.csv').open('w', newline='') as f:
@@ -86,7 +102,9 @@ def evaluate(source, config_path, output):
                 old['lock']['manifest'] != selection['lock']['inputs']['experiment/manifest.json'] or
                 not same_metrics(old['uniform'], u)):
             raise ValueError('Original uniform test metrics disagree with test cache')
-    chosen = dict(uniform='uniform', **selection['per_family_selected'], overall_selected=selection['selected'])
+    all_candidates = selection.get('protocol') == 'bc_all'
+    chosen = ({r['id']: r['id'] for r in selection['candidates']} if all_candidates else
+              dict(uniform='uniform', **selection['per_family_selected'], overall_selected=selection['selected']))
     results = {}
     for family, name in chosen.items():
         row = candidates[name]
@@ -105,6 +123,8 @@ def evaluate(source, config_path, output):
                   test_cache_hash=digest(source / 'experiment/predictions/test.npz'),
                   test_identity=object_hash(sorted(zip(ids.tolist(), y.tolist(), g.tolist()))),
                   original_test_metrics_hash=digest(original) if original.exists() else None, results=results)
+    if all_candidates:
+        result['protocol'] = 'bc_all'
     marker = output / 'metrics.json'
     if marker.exists():
         if object_hash(read_json(marker)) != object_hash(result):
@@ -121,6 +141,12 @@ def evaluate(source, config_path, output):
              'Only those frozen winners are evaluated on test. No B+C refit or test-driven sweep.', '',
              '| Procedure | C-selected candidate | Test accuracy (%) | Test WGA (%) | WGA delta (pp) |',
              '| --- | --- | ---: | ---: | ---: |']
+    if all_candidates:
+        lines = ['# DPE neural-combiner comparison', '',
+                 'Exploratory: all declared configurations fit on B+C with fixed steps, then evaluated on test.',
+                 'There is no C selection, uniform fallback, early stopping or test-based hyperparameter selection.', '',
+                 '| Configuration | Candidate | Test accuracy (%) | Test WGA (%) | WGA delta (pp) |',
+                 '| --- | --- | ---: | ---: | ---: |']
     for family, r in results.items():
         lines.append(f"| {family} | {r['candidate']} | {100*r['metrics']['overall']:.4f} | "
                      f"{100*r['metrics']['wga']:.4f} | {r['delta_pp']['wga']:.4f} |")
@@ -130,6 +156,11 @@ def evaluate(source, config_path, output):
               'gate concentration and paired error IDs: `metrics.json`. Stackers have no convex head weights.',
               'Selection is CPU deterministic within recorded software; cross-version equivalence is not claimed.',
               'Previously inspected test data remains exploratory. Cached inference is not raw-image verification.', '']
+    if all_candidates:
+        lines = lines[:7 + len(results)] + ['',
+            'Exact model states and B+C training diagnostics: `selection.json` (historical filename; no selection).',
+            'All configurations, group NLL, gate concentration and paired error IDs: `metrics.json`.',
+            'B+C metrics are training metrics. Test results are exploratory; no independent raw-image audit.']
     (output / 'report.md').write_text('\n'.join(lines))
     write_json(marker, result)
     return result
@@ -142,7 +173,14 @@ def summarize(output, completed, planned, track):
     summary = dict(status='complete' if sorted(completed) == sorted(planned) else 'incomplete',
                    track=track, planned_seeds=list(planned), completed_seeds=sorted(completed), results={})
     rows = []
-    for family in ('uniform', *neural.FAMILIES, 'overall_selected'):
+    protocols = {r.get('protocol', 'b_select_c') for r in completed.values()}
+    candidate_sets = {tuple(sorted(r['results'])) for r in completed.values()}
+    if len(protocols) != 1 or len(candidate_sets) != 1:
+        raise ValueError('Cannot aggregate different protocols or candidate grids')
+    all_candidates = protocols == {'bc_all'}
+    if all_candidates:
+        summary['protocol'] = 'bc_all'
+    for family in next(iter(candidate_sets)):
         values = [completed[s]['results'][family] for s in sorted(completed)]
         summary['results'][family] = {}
         for key, a in [('overall', [r['metrics']['overall'] for r in values]),
@@ -171,9 +209,11 @@ def summarize(output, completed, planned, track):
              'Mean ± sample SD across training seeds, not confidence intervals. No family is chosen by test.', '',
              '| Procedure | Accuracy (%) | WGA (%) | Paired WGA change (pp) |',
              '| --- | ---: | ---: | ---: |']
+    if all_candidates:
+        lines[4] = 'Exploratory: every declared configuration fit on B+C; no C selection or uniform fallback.'
     for family, r in summary['results'].items():
         lines.append(f"| {family} | {display(r['overall'],100)} | {display(r['wga'],100)} | {display(r['wga_delta_pp'])} |")
-    lines += ['', 'Per-seed choices: `per_seed.csv`. C candidates, model states and detailed group metrics: `comparisons/`.',
+    lines += ['', 'Per-seed configurations: `per_seed.csv`. Model states and detailed group metrics: `comparisons/`.',
               'The study archive retains original head/prediction bundles in `source_archives/`.',
               'Large backbones, training states, images and raw features remain in WORK_DIR.', '']
     (output / 'report.md').write_text('\n'.join(lines))
