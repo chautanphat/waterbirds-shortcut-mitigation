@@ -1,4 +1,4 @@
-"""Viewer CSVs from explicitly selected Waterbirds predictions/checkpoints.
+"""Shared prediction CSVs from selected Waterbirds predictions/checkpoints.
 
 Export adapters leave training, checkpoint selection and upstream files untouched.
 Imports for image inference are lazy so cached CSV recovery needs only NumPy.
@@ -17,12 +17,8 @@ import tempfile
 
 import numpy as np
 
-LABELS = ("landbird", "waterbird")
-BACKGROUNDS = ("land", "water")
-GROUP_NAMES = ("Landbird on Land", "Landbird on Water", "Waterbird on Land", "Waterbird on Water")
-SPLITS = {"train": "0", "val": "1", "test": "2"}
-FIELDS = ["image_path", "true_label", "predicted_label", "correct", "group", "group_name",
-          "spurious_attribute", "confidence", "run_label", "seed", "split"]
+from .prediction_protocol import (BACKGROUNDS, FIELDS, GROUP_NAMES, LABELS, SCHEMA_VERSION,
+                                  SPLITS, image_path, read_metadata, validate_prediction_csv)
 
 
 def sha256(path):
@@ -31,48 +27,6 @@ def sha256(path):
         for block in iter(lambda: stream.read(1024 * 1024), b""):
             result.update(block)
     return result.hexdigest()
-
-
-def image_path(value):
-    """Normalize known dataset prefixes, keeping the species/image identity."""
-    text = str(value).replace("\\", "/")
-    while text.startswith("./"):
-        text = text[2:]
-    prefix = "waterbird_complete95_forest2water2/"
-    if text.startswith(prefix):
-        text = text[len(prefix):]
-    if text.startswith("images/"):
-        text = text[len("images/"):]
-    parts = text.split("/")
-    if not text or text.startswith("/") or ":" in text or any(p in ("", ".", "..") for p in parts):
-        raise ValueError(f"Invalid relative image path: {value!r}")
-    return str(PurePosixPath(text))
-
-
-def read_metadata(path, split="test"):
-    if split not in SPLITS:
-        raise ValueError("split must be train, val or test")
-    with Path(path).open(newline="", encoding="utf-8-sig") as stream:
-        records = list(csv.DictReader(stream))
-    rows, seen = [], set()
-    for line, record in enumerate(records, 2):
-        try:
-            name = image_path(record.get("img_filename") or record.get("filename") or "")
-            y = record["y"]
-            a = record.get("place", record.get("a"))
-            part = record["split"]
-            if y not in ("0", "1") or a not in ("0", "1") or part not in SPLITS.values():
-                raise ValueError("Labels/backgrounds must be 0/1 and split must be 0/1/2")
-            if name in seen:
-                raise ValueError(f"Duplicate metadata image: {name}")
-            seen.add(name)
-            if part == SPLITS[split]:
-                rows.append(dict(image_path=name, y=int(y), a=int(a), split=split))
-        except (KeyError, ValueError) as error:
-            raise ValueError(f"Metadata record {line}: {error}") from error
-    if not rows:
-        raise ValueError(f"No metadata rows for {split}")
-    return rows
 
 
 def align_ids(ids, rows):
@@ -121,8 +75,8 @@ def write_predictions(output, rows, probabilities, *, run_label, seed, provenanc
                       predicted_labels=None, confidence=None):
     """Write CSV plus provenance in a new directory; refuse existing outputs.
 
-    ``probabilities=None`` is reserved for recovering existing exported predictions
-    without fabricating their unrecorded probability for the other class.
+    Methods with label-only output can pass ``probabilities=None`` and
+    ``predicted_labels``. Unavailable confidences are explicitly ``None``/blank.
     """
     output = Path(output)
     if not run_label.strip() or type(seed) is not int or seed < 0 or not rows:
@@ -136,13 +90,16 @@ def write_predictions(output, rows, probabilities, *, run_label, seed, provenanc
         predictions = p.argmax(1)
         conf = p[np.arange(len(p)), predictions]
     else:
-        predictions, conf = np.asarray(predicted_labels), np.asarray(confidence, dtype=float)
+        predictions = np.asarray(predicted_labels)
         if predictions.shape != (len(rows),) or not np.isin(predictions, (0, 1)).all():
-            raise ValueError("Invalid recovered predictions")
-        if conf.shape != (len(rows),) or not np.isfinite(conf).all() or ((conf < 0) | (conf > 1)).any():
-            raise ValueError("Invalid recovered confidences")
-    report = dict(format_version=1, run_label=run_label, seed=seed, split=rows[0]["split"],
-                  group_convention="1 + 2*y + background", confidence="predicted-class probability",
+            raise ValueError("Invalid predicted labels")
+        values = [None] * len(rows) if confidence is None else list(confidence)
+        if len(values) != len(rows) or any(v is not None and (not np.isfinite(v) or not 0 <= v <= 1) for v in values):
+            raise ValueError("Confidences must be finite probabilities or explicitly None")
+        conf = values
+    report = dict(format_version=1, prediction_schema_version=SCHEMA_VERSION,
+                  run_label=run_label, seed=seed, split=rows[0]["split"],
+                  group_convention="1 + 2*y + background", confidence="predicted-class probability; blank if unavailable",
                   metrics=summary(rows, predictions), provenance=provenance,
                   environment=dict(python=platform.python_version(), numpy=np.__version__, platform=platform.platform()),
                   command=sys.argv, exporter_sha256=sha256(__file__))
@@ -161,7 +118,9 @@ def write_predictions(output, rows, probabilities, *, run_label, seed, provenanc
                 writer.writerow(dict(image_path=row["image_path"], true_label=LABELS[row["y"]],
                     predicted_label=LABELS[int(prediction)], correct=int(prediction == row["y"]),
                     group=group + 1, group_name=GROUP_NAMES[group], spurious_attribute=BACKGROUNDS[row["a"]],
-                    confidence=format(float(certainty), ".10g"), run_label=run_label, seed=seed, split=row["split"]))
+                    confidence="" if certainty is None else format(float(certainty), ".10g"),
+                    run_label=run_label, seed=seed, split=row["split"]))
+        validate_prediction_csv(destination)
         report["csv_sha256"] = sha256(destination)
         (stage / "provenance.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8")
         stage.rename(output)
@@ -310,7 +269,7 @@ def recover_autobackswap(repo, metadata, output_root, ref="origin/method/autobac
                 raise ValueError(f"Saved predictions disagree with metadata in {path}")
             predictions.append(pred)
             confidences.append(float(r["confidence"]))
-        destination = Path(output_root) / PurePosixPath(path).parent.name
+        destination = Path(output_root) / PurePosixPath(path).parent.name / "predictions" / "test"
         reports.append(write_predictions(destination, rows, None, run_label=label, seed=seed,
             predicted_labels=predictions, confidence=confidences,
             provenance=dict(method="erm-autobackswap" if label.startswith("erm_") else "autobackswap",

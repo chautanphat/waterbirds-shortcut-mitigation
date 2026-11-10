@@ -397,7 +397,23 @@ Do not report only overall accuracy, because it can conceal poor performance on 
 
 Every meaningful experiment should be traceable.
 
+All future methods must export per-example evaluation predictions using the
+[shared predictions.csv v1 protocol](docs/prediction_protocol.md). Retain full
+predictions and companion provenance for each run/seed/split, document the export
+command, and validate against reference metadata before reporting results.
+Store new exports at `experiments/<experiment-id>/predictions/<split>/predictions.csv`
+with `provenance.json` beside it. Keep dataset images separate in the dataset directory.
+Preserve method-specific training, preprocessing and model-selection procedures;
+apply the common format at the export boundary.
+
 Use configuration files as the source of truth for experiment settings.
+
+For new meaningful runs, follow the [experiment records contract](docs/experiment_record_contract.md)
+for `experiments/<experiment-id>/run.json` and the
+[model artifacts and inference contract](docs/model_artifact_contract.md) for its
+companion `model.json`. Retain native model formats, resolved settings, artifact
+identities and selection evidence; disclose missing historical inputs. These
+records are reviewed separately from prediction CSV validation.
 
 A configuration should record relevant fields such as:
 

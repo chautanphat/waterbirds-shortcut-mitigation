@@ -50,6 +50,7 @@ Thumbs.db
 
 # Local datasets and generated data
 /datasets/
+/dataset/
 /data/
 *.npy
 *.npz
@@ -68,6 +69,8 @@ Thumbs.db
 /mlruns/
 /lightning_logs/
 /outputs/
+# Generated per-example evaluation artifacts; keep experiment configs/records tracked.
+/experiments/*/predictions/
 
 # Temporary files
 *.log

@@ -9,8 +9,9 @@ A hosted copy works the same way: open its Sites link in Chrome or Edge and sele
 1. Open `scripts/failure_case_viewer.html` in your browser, or open the private Sites address if a hosted copy is configured. **Try a synthetic demo** exercises the controls with clearly labeled illustrative data.
 2. For the quickest setup, choose **Open experiment folder** and select a folder containing prediction CSVs and images. The viewer finds both, skips metadata/summary CSVs, and prefers `predictions.csv` over `errors.csv` in the same directory. With two or more runs, it selects B automatically.
 3. Alternatively, choose prediction CSVs and the image folder separately. You can add more CSVs afterward. A file can contain multiple runs, distinguished by `run_label` and `seed`. Choose the dataset folder, its `images/` folder, or a parent containing them. Images are matched by relative path; ambiguous paths are displayed as missing. **Import settings (optional)** contains the group-ID convention, file scope, and missing-split settings. **Download example CSV** provides an input template.
-4. Choose approach **A** and optionally **B**. Use **A wrong / B correct**, **Both wrong**, **A and B disagree**, or the other case filters. Group buttons filter by the true bird/background combination. Search matches the species folder or image path. The confidence threshold and confidence sort use A's predicted-class confidence.
-5. Click an image to enlarge it and see predictions from every loaded run. Arrow keys navigate matching cases; Escape closes the dialog. **Export filtered CSV** downloads the matching images' predictions, including missing predictions as blank fields.
+4. Toggle one or more methods under **Active Methods to Compare** (by default, the viewer selects one primary seed per method family such as DPE, AutoBackSwap, POTER, and ERM when more than four runs are loaded, or all runs when four or fewer are loaded). Every image card shows a color-coded ✓/✕ prediction and confidence row for each active method.
+5. Use the one-click filter pills (**Common Failures (All Active Wrong)**, **Active Methods Disagree**, **A Wrong / B Correct**, **A Correct / B Wrong**, **Focus A is Wrong**, **Any Active Wrong**, or **All Loaded Images**) or the **Comparison Filter** dropdown. Click the **$G_1\text{--}G_4$ group cards** to filter by true bird/background combination, choose a **Kind of Bird (Species)** from the dropdown or the **Top Failing Species** breakdown panel, or switch **Group Gallery By** between **Flat grid**, **Subpopulation ($G_1\text{--}G_4$)**, and **Kind of bird (Species)**.
+6. Click an image to enlarge it and see predictions from every loaded run. Arrow keys navigate matching cases; Escape closes the dialog. **Export filtered CSV** downloads the matching images' predictions, including missing predictions as blank fields.
 
 ## Expected local files
 
@@ -24,15 +25,15 @@ data/waterbirds/                         # local, ignored by Git
     │   └── Black_Footed_Albatross_0046_18.jpg
     └── ...
 
-outputs/failure_cases/                   # local, ignored by Git
-├── erm_seed0/predictions.csv
-├── autobackswap_seed0/predictions.csv
-└── another_approach_seed0/predictions.csv
+experiments/                            # general evaluation artifacts
+├── erm_seed0/predictions/test/predictions.csv
+├── autobackswap_seed0/predictions/test/predictions.csv
+└── another_approach_seed0/predictions/test/predictions.csv
 ```
 
 The original `waterbird_complete95_forest2water2/<species>/<image>.jpg` layout also works. The CSV's `image_path` should be `<species>/<image>.jpg` in either layout. Images are not resized or cropped by the viewer; they are fitted inside each card. Selecting the full dataset can take time because the browser enumerates its files. A folder containing only error images is also usable, with missing images shown explicitly.
 
-For one-folder setup, a convenient local arrangement is:
+Canonical predictions live at `experiments/<experiment-id>/predictions/<split>/`. Select that directory or the `experiments/` parent, then select dataset images separately. The layout below is an optional temporary viewing bundle, not the canonical location for new experiment exports:
 
 ```text
 failure_cases/
@@ -45,7 +46,9 @@ Choose `failure_cases/` once. Files are read locally even when using the hosted 
 
 ## Prediction CSV
 
-The existing exports from [`dump_all_predictions.py`](../scripts/autobackswap/dump_all_predictions.py) and [`dump_predictions.py`](../scripts/autobackswap/dump_predictions.py) are supported. For other approaches, export each evaluated example using this input format:
+All **new method exports** must follow the [shared predictions.csv v1 protocol](prediction_protocol.md). The viewer additionally accepts legacy formats for historical inspection. The smaller schema and aliases below describe that import compatibility, not the canonical export contract.
+
+The existing exports from [`dump_all_predictions.py`](../scripts/autobackswap/dump_all_predictions.py) and [`dump_predictions.py`](../scripts/autobackswap/dump_predictions.py) are supported. A legacy-compatible input example is:
 
 ```csv
 image_path,true_label,predicted_label,spurious_attribute,confidence,run_label,seed,split

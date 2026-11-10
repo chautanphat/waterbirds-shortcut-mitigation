@@ -2,6 +2,12 @@
 
 Record every meaningful run here. This is an index, not a replacement for configurations, method READMEs, or untracked output files.
 
+New meaningful runs follow the [experiment records contract](experiment_record_contract.md)
+and [model artifacts and inference contract](model_artifact_contract.md). Link
+`experiments/<experiment-id>/run.json` and its companion `model.json` when a
+predictor exists. Execution status and reproduction claims are separate. Existing
+entries below retain their historical structure and evidence limitations.
+
 ## Entry template
 
 ```markdown
@@ -11,6 +17,7 @@ Record every meaningful run here. This is an index, not a replacement for config
 - **Purpose:** smoke test / original reproduction / Waterbirds adaptation / final comparison
 - **Branch or commit:**
 - **Configuration:** `configs/...` or `experiments/...`
+- **Run record / frozen predictor:** `experiments/<experiment-id>/run.json`; `model.json` or why unavailable
 - **Dataset and split:**
 - **Seed:**
 - **Environment and hardware:**
