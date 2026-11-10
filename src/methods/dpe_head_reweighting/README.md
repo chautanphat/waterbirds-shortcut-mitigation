@@ -1,12 +1,25 @@
 # DPE Head Reweighting
 
+## Current comparison
+
+Use [dpe_head_aggregation.ipynb](../../../notebooks/dpe_head_aggregation.ipynb)
+as the single active notebook for global weighting rules and neural combiners.
+It fits all 30 configurations on B+C and evaluates each separately across three
+seeds. Select a GPU runtime, enable Internet on Kaggle, and Run All; no attachments
+or code edits are required. See [HEAD_AGGREGATION.md](HEAD_AGGREGATION.md) for
+configuration, artifact reuse and evaluation details.
+
+Earlier power-only and C-selection notebooks live under `notebooks/archive/`
+for historical reproduction. Their protocols differ from the current comparison.
+The legacy instructions below describe those earlier experiments.
+
 ## Overview
 
 This project-owned adaptation of Diverse Prototypical Ensembles (DPE) evaluates whether validation-derived head weights improve worst-group accuracy (WGA) on Waterbirds relative to uniform probability averaging. WGA is the minimum accuracy over the four bird/background groups. Both aggregation conditions use the same frozen ResNet-50 representation and the same 15 trained prototype heads.
 
 The end-to-end workflow reuses the shared ERM trainer and feature extractor, then performs sequential head training, reliability estimation, aggregation selection, artifact validation and held-out evaluation. The [H2 hypothesis summary](reports/h2.md) records the earlier power/multi-rule seed-0 studies, a failed solver run and the completed standard-track seeds 0/1/2 study. Uniform test WGA is 89.5196±0.6538%; overall C selection gives 89.4752±0.6339%, with paired change −0.0443±0.0768 pp (mean±sample SD). No selected procedure improves test WGA. These are exploratory adaptation results, with verified prediction-cache calculations; raw-image inference and GPU parity have not been independently reproduced.
 
-## Experimental protocol
+## Historical H2 experimental protocol
 
 Stage 0 fine-tunes ImageNet-pretrained ResNet-50 on the official Waterbirds training split using the [shared ERM implementation](../erm/README.md). The notebook and Stage-0 adapter perform training and feature extraction automatically. The feature-only H2 runner can also consume existing, audited artifacts.
 
@@ -223,9 +236,9 @@ From the repository root, using a PyTorch/torchvision pair appropriate for the r
 python -m pip install -r requirements.txt matplotlib tqdm
 ```
 
-### Notebook interface
+### Archived power-study notebook
 
-[dpe_head_reweighting.ipynb](../../../notebooks/dpe_head_reweighting.ipynb) runs the complete experiment: dataset preparation, shared ERM fine-tuning, raw-feature extraction, validation partitioning, head training, weight selection and held-out evaluation. Set `DATA_DIR`, `TRACK` and `SEED`; the remaining paths have defaults. `REPO_PATH` supports an explicit checkout location. The notebook uses that checkout without changing its Git revision.
+[archive/dpe_head_reweighting.ipynb](../../../notebooks/archive/dpe_head_reweighting.ipynb) runs the complete experiment: dataset preparation, shared ERM fine-tuning, raw-feature extraction, validation partitioning, head training, weight selection and held-out evaluation. Set `DATA_DIR`, `TRACK` and `SEED`; the remaining paths have defaults. `REPO_PATH` supports an explicit checkout location. The notebook uses that checkout without changing its Git revision.
 
 The default Stage-0 recipe uses ImageNet `IMAGENET1K_V2`, full-backbone cross-entropy training, class-balanced sampling with replacement, SGD at learning rate 0.001 and momentum 0.9, no weight decay, batch size 128 and 100 epochs. Standard ERM uses square resize, center crop and ImageNet normalization. Enhanced ERM* applies random resized crop, photometric distortion and horizontal flip to training; validation/test feature extraction remains deterministic. The checkpoint is always `ckpt_last.pt`. Validation metrics are recorded by the shared trainer, but do not select the H2 backbone.
 
@@ -278,10 +291,9 @@ python scripts/dpe_head_reweighting.py summarize --config "$CONFIG"
 
 The `check` action validates readiness for a complete run, including the test-feature file, without fitting or scoring models. It reports missing inputs before training. The Stage-0 entry point or notebook generates the required inputs before these H2 commands. The CLI rejects existing stage outputs rather than overwriting them. Independent experiments require distinct output paths. Changes to configuration, features, heads, partitions or implementation files invalidate saved selection records. JSON records, ensemble checkpoints and prediction caches are written atomically so an interrupted write does not replace a complete artifact. An interrupted head-training stage restarts from its beginning; completed stages can be reused by the notebook.
 
-## One end-to-end weighting study
+## Archived C-selection weighting study
 
-Use [dpe_weighting_rules.ipynb](../../../notebooks/dpe_weighting_rules.ipynb) as the
-single entry point. **No original H2 ZIP is required.** The default
+For historical reproduction, [archive/dpe_weighting_rules.ipynb](../../../notebooks/archive/dpe_weighting_rules.ipynb) runs the earlier C-selection study. Use the active head-aggregation notebook above for new comparisons. **No original H2 ZIP is required.** The default
 [study configuration](../../../configs/dpe_head_reweighting/study.yaml) runs
 standard-track seeds 0, 1 and 2 with the unchanged weighting grid.
 
@@ -481,11 +493,11 @@ recomputed from prediction caches. Add a dated experiment entry and lightweight
 result summary for subsequent real runs, following the existing experiment-log
 template. Synthetic regression results must not be reported as Waterbirds accuracy.
 
-## Neural combiners on frozen heads
+## Unified head aggregation on frozen heads
 
-The separate [neural-combiner experiment](NEURAL_COMBINERS.md) adds logistic
+The separate [neural-combiner experiment](HEAD_AGGREGATION.md) adds logistic
 stacking, an 8-unit MLP and an 8-unit softmax gate, including prediction-dropout
-ablations. Its [notebook](../../../notebooks/dpe_neural_combiners.ipynb) works
+ablations. Its [notebook](../../../notebooks/dpe_head_aggregation.ipynb) works
 without attachments: auto mode downloads Waterbirds and prepares missing
 backbones/heads with the existing H2 recipe. Optional completed prediction
 bundles save training time. The current notebook fits every neural configuration on pooled B+C (479 images),

@@ -1,4 +1,4 @@
-"""Waterbirds -> frozen DPE sources -> neural selection, with optional test evaluation."""
+"""Waterbirds -> frozen DPE heads -> global-rule/neural comparison."""
 import gc
 import hashlib
 import os
@@ -9,15 +9,15 @@ import zipfile
 import torch
 import yaml
 
-from . import neural_suite as suite
+from . import aggregation_suite as suite
 from .experiment import digest, object_hash, write_json
 from .notebook_setup import extract_source, find_sources, zip_prefix
 from .recovery import recover_test_cache, verified_test_features
 from .study import build_source, ensure_dataset, ensure_test_cache, publish_zip
 from .rule_suite import notebook_code_hash
 
-NEURAL_STUDY_RUNTIME_VERSION = 4
-DEFAULT_STUDY_CONFIG = 'configs/dpe_head_reweighting/neural_study.yaml'
+AGGREGATION_STUDY_RUNTIME_VERSION = 5
+DEFAULT_STUDY_CONFIG = 'configs/dpe_head_reweighting/aggregation_study.yaml'
 
 
 def source_choices(paths, work):
@@ -109,13 +109,13 @@ def run_study(work_dir, *, source=None, search_roots=(), track=None, seeds=None,
     # Exclude managed outputs so a rerun reuses the same plan as seeds finish.
     runtime = suite.runtime()
     implementation = runtime['implementation']
-    implementation['notebooks/dpe_neural_combiners.ipynb'] = notebook_code_hash('notebooks/dpe_neural_combiners.ipynb')
-    implementation['scripts/dpe_neural_combiners.py'] = digest('scripts/dpe_neural_combiners.py')
+    implementation['notebooks/dpe_head_aggregation.ipynb'] = notebook_code_hash('notebooks/dpe_head_aggregation.ipynb')
+    implementation['scripts/dpe_head_aggregation.py'] = digest('scripts/dpe_head_aggregation.py')
     plan = dict(version=2, track=track, seeds=list(seeds), config=config, settings=settings,
                 mode=mode, device=device, workers=workers, cached_sources=external,
                 implementation=implementation, software={k: runtime[k] for k in ('python', 'torch', 'numpy')},
                 status='exploratory adaptation')
-    output = work / 'studies' / f"neural-{track}-seeds{''.join(map(str,seeds))}-{object_hash(plan)[:12]}"
+    output = work / 'studies' / f"aggregation-{track}-seeds{''.join(map(str,seeds))}-{object_hash(plan)[:12]}"
     # Reject overlap before creating any result files, including plan/progress.
     for root, _ in selected.values():
         suite.output_path(root, output)
@@ -137,7 +137,7 @@ def run_study(work_dir, *, source=None, search_roots=(), track=None, seeds=None,
             generated[seed] = c
         else:
             print(f'Reusing frozen DPE source: {selected[seed][0]}', flush=True)
-        print(f'Fitting/freezing neural combiners: {track} seed {seed}', flush=True)
+        print(f'Fitting/freezing head aggregation configurations: {track} seed {seed}', flush=True)
         comparison = output / 'comparisons' / f'seed{seed}'
         suite.select(selected[seed][0], config_path, comparison)
         frozen.append(seed)

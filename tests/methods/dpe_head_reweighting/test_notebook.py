@@ -81,7 +81,7 @@ def test_notebook_full_run_and_resume(tmp_path, monkeypatch, track):
     bundle = repo / f'outputs/dpe_features/{track}/seed0'
     frozen = None
     for phase in ('full', 'resume'):
-        notebook = nbformat.read(ROOT / 'notebooks/dpe_head_reweighting.ipynb', as_version=4)
+        notebook = nbformat.read(ROOT / 'notebooks/archive/dpe_head_reweighting.ipynb', as_version=4)
         notebook.cells.insert(2, nbformat.v4.new_code_cell(SYNTHETIC_BACKBONE))
         for cell in notebook.cells:
             if cell.cell_type == 'code':

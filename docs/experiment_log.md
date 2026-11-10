@@ -28,36 +28,6 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 
 ---
 
-## implementation-dpe-neural-auto-sources-smoke — 2026-11-09
-
-- **Method / version:** Neural study runtime 2, automatic source preparation; the 11-candidate neural recipe is unchanged.
-- **Purpose:** Make Run All work without attached source bundles or user code-cell edits.
-- **Branch or commit:** `experiment/dpe-neural-combiner`, following `889520e`.
-- **Configuration:** [Source preparation](../configs/dpe_head_reweighting/neural_study.yaml), [unchanged combiner grid](../configs/dpe_head_reweighting/neural_combiners.yaml).
-- **Dataset and split:** Synthetic inputs with official split/group counts; image decoding and ResNet replaced by tiny test fixtures, dataset download intercepted. No real Waterbirds accuracy or download verification is claimed.
-- **Seed:** Default 0/1/2, with real 100-epoch shared optimization loops (3,700 updates each), feature handoff, 15 DPE heads per seed and default 400-step neural fits. Rerun verifies reuse without retraining completed backbones.
-- **Environment and hardware:** CPU, Python 3.12, torch 2.6.0+cpu, NumPy 1.26.4, SciPy 1.12.0.
-- **Command:** `python -m pytest tests/methods/dpe_head_reweighting/test_neural_combiners.py -q`.
-- **Output location:** Untracked pytest temporary directories; real runs use WORK_DIR `backbones/`, `features/`, `h2_sources/` and `studies/`.
-- **Results:** 22 checks passed, including the complete default notebook with no source attachments, automatic download dispatch, missing-seed generation, completed-source reuse, mixed cached/new seeds, interrupted-run partial ZIP preservation and all-seeds-freeze-before-test ordering. Default notebook creates B/C selections for all three seeds without generating test prediction caches.
-- **Status:** Synthetic software validation; live Kaggle GPU execution and neural Waterbirds results remain pending.
-- **Notes and follow-up:** Enable Internet and choose a GPU runtime on Kaggle; attach nothing and Run All. Test evaluation remains opt-in through `EVALUATE_TEST`. Keep WORK_DIR for epoch resume and later test inference; compact ZIPs include frozen head/prediction bundles but exclude raw features and backbone checkpoints.
-
-## implementation-dpe-neural-combiners-smoke — 2026-11-09
-
-- **Method / version:** Project-owned neural combination of frozen DPE head predictions, inspired by Regularized Neural Ensemblers (AutoML 2025), not a paper reproduction.
-- **Purpose:** Implementation and synthetic software smoke checks before a new Waterbirds comparison.
-- **Branch or commit:** Local `experiment/dpe-neural-combiner`, based on `281ac4f`.
-- **Configuration:** [Declared 11-candidate grid](../configs/dpe_head_reweighting/neural_combiners.yaml); shortened steps in lifecycle/notebook fixtures are test-only overrides.
-- **Dataset and split:** Synthetic complementary-expert/reversed-signal fixtures and original-H2-format synthetic prediction bundles. No Waterbirds images or real prediction caches were evaluated.
-- **Seed:** Synthetic fit seed 10000; lifecycle fixtures use source seeds 0/1 and offset 10000. Planned Waterbirds source seeds are 0/1/2.
-- **Environment and hardware:** CPU, Python 3.12, torch 2.6.0+cpu, NumPy 1.26.4, SciPy 1.12.0, PyYAML 6.0.3.
-- **Command:** `python -m pytest tests/methods/dpe_head_reweighting/test_neural_combiners.py -q`.
-- **Output location:** Untracked pytest temporary directories; real runs will write to the configured WORK_DIR under `studies/neural-.../`.
-- **Results:** 18 neural checks passed, including learned complementary routing, dropout normalization, C-independent fits, deterministic model replay, changed-input rejection, nested study ZIP reuse and repeat notebook execution from existing/fresh cloned checkouts. The complete DPE head-reweighting compatibility suite passed 176 checks. No Waterbirds accuracy or WGA is claimed.
-- **Status:** Synthetic software validation; real exploratory comparison pending.
-- **Notes and follow-up:** [Execution instructions and deviations](../src/methods/dpe_head_reweighting/NEURAL_COMBINERS.md), [notebook](../notebooks/dpe_neural_combiners.ipynb). Reuse the original heads and B/C caches; freeze choices before optional test evaluation. All follow-up test comparisons remain exploratory.
-
 ## exp-dpe-h2-rules-waterbirds-standard-seeds012-003 — 2026-11-09
 
 The date is the documentation date; the supplied log records elapsed times only.
@@ -267,31 +237,3 @@ The date is the documentation date; the supplied execution log contains elapsed 
 - **Paper comparison or expected behavior:** paper 74.9 ± 3.3 / 93.6 ± 0.4, both within 2σ (seed 1 worst-group is 1.85σ above the paper mean)
 - **Status:** partial reproduction
 - **Notes and follow-up:** the first seed 0 attempt stopped at epoch 42 of 50 (most likely a notebook kernel restart, not verified) and was rerun with the same seed.
-
-## exp-dpe-neural-bc-all-software-check — 2026-11-10
-
-- **Method / version:** Neural combination of frozen DPE predictions; new `bc_all` protocol.
-- **Purpose:** Synthetic software validation of a separate experiment, not a Waterbirds benchmark run.
-- **Branch:** `experiment/dpe-neural-combiner`.
-- **Configuration:** `configs/dpe_head_reweighting/neural_comparison.yaml`.
-- **Dataset and split:** New protocol pools B+C (479 Waterbirds validation images) for combiner fitting, retains A for head training, and evaluates every declared configuration on the official test set. No C selection or uniform replacement. Both weight-decay settings are reported separately.
-- **Seed:** 0/1/2; architectures, fixed 400-step optimizer and dropout settings retained.
-- **Command:** `OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m pytest tests/methods/dpe_head_reweighting/test_neural_combiners.py tests/methods/dpe_head_reweighting/test_weighting_rules.py -q`.
-- **Results:** 148 checks passed across the neural-combiner and existing weighting-rule suites; a focused pooled-fit/evaluation replay check also passed after report-text cleanup. No Waterbirds accuracy is claimed.
-- **Verification scope:** Synthetic fixtures check pooled fitting, all-configuration evaluation, model-state replay/tamper rejection and default no-attachment notebook execution/reuse. The notebook fixture substitutes download/image decoding/ResNet and exercises actual backbone/head/combiner loops. These checks do not establish Waterbirds performance.
-- **Previous experiment audit:** Original power weighting and expanded H2 global rules used A/B/C=720/241/238, fit on B, selected on C, and tested only uniform plus frozen family/overall winners. Existing reports and result artifacts are preserved; they are not all-configuration test comparisons. See `src/methods/dpe_head_reweighting/reports/h2.md` and `reports/dpe_h2_three_seed_audit.md` beside it.
-- **Next action:** Run the updated notebook on real Waterbirds, preferably retaining the existing source artifacts; report every configuration across all three seeds as exploratory.
-
-## exp-dpe-combined-bc-all-software-check — 2026-11-10
-
-- **Method / version:** Unified global weighting rules and neural combiners, `bc_all` protocol.
-- **Purpose:** Synthetic software validation; actual Waterbirds test comparison pending.
-- **Branch:** `experiment/dpe-neural-combiner`.
-- **Configuration:** `configs/dpe_head_reweighting/combined_comparison.yaml`.
-- **Dataset and split:** Same frozen backbone, 15 A-trained heads, pooled B+C=479 fitting examples and official test images for every configuration. No C selection or test-based tuning.
-- **Configurations:** One shared uniform reference, 12 power, 2 softmax, 2 top-k, 3 joint-weight fits and 10 neural configurations, each reported independently (30 total).
-- **Seed:** 0/1/2.
-- **Command:** `OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m pytest tests/methods/dpe_head_reweighting/test_neural_combiners.py tests/methods/dpe_head_reweighting/test_weighting_rules.py -q`.
-- **Results:** 149 checks passed across the neural-combiner and weighting-rule suites. This is software validation only; no new Waterbirds metrics were generated.
-- **Verification scope:** Synthetic altered-C fixture verifies global weights match fits on pooled data, forbids global/neural winner selection, and checks every configuration reaches test and aggregate reports. The default no-attachment notebook fixture exercises all 30 configurations across three seeds and verifies completed-backbone/model reuse. Legacy H2 result artifacts and selection workflows are preserved.
-- **Next action:** Run the updated notebook against real Waterbirds, preferably reusing retained source artifacts; retain exploratory labeling for the previously inspected test set.

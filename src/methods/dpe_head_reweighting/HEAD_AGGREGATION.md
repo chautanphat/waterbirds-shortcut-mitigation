@@ -22,9 +22,9 @@ In particular, our tiny binary MLPs replace the paper's class-shared stacking
 network and Deep Set averaging architecture; neutral masking without inverted
 scaling also differs from its dropout algorithm.
 
-## Predeclared first comparison
+## Neural configurations
 
-The configuration is [neural_combiners.yaml](../../../configs/dpe_head_reweighting/neural_combiners.yaml).
+The original neural-only configuration is [neural_combiners.yaml](../../../configs/dpe_head_reweighting/neural_combiners.yaml).
 There are **11 candidates**, including uniform:
 
 | Procedure | Architecture | Prediction dropout | Weight decay |
@@ -61,7 +61,7 @@ the same retained binary prediction, so dropout cannot break normalization.
 
 ## Current protocol: train on B+C, compare all on test
 
-The notebook now uses [combined_comparison.yaml](../../../configs/dpe_head_reweighting/combined_comparison.yaml),
+The notebook now uses [aggregation_comparison.yaml](../../../configs/dpe_head_reweighting/aggregation_comparison.yaml),
 with `protocol: bc_all`. Keep A, the backbone, head training and head order fixed.
 Pool the old B=241 and C=238 caches into 479 combiner-training examples. Train
 all ten neural configurations for fixed steps, and fit all 19 nonuniform global
@@ -111,7 +111,7 @@ reused as held-out validation for models retrained on B+C.
 
 ## Run the next experiment
 
-Open [dpe_neural_combiners.ipynb](../../../notebooks/dpe_neural_combiners.ipynb)
+Open [dpe_head_aggregation.ipynb](../../../notebooks/dpe_head_aggregation.ipynb)
 on Kaggle or Colab, select a **GPU runtime**, enable Internet on Kaggle and choose
 **Run All**. No attachments or code-cell edits are required. The notebook clones
 the published `experiment/dpe-neural-combiner` branch, installs missing packages,
@@ -120,7 +120,7 @@ existing H2 recipe: 100-epoch ImageNet-initialized ERM backbone, raw features,
 and 15 A-trained heads per seed. Neural fitting still runs on CPU. GPU time is
 required for practical new backbone training; CPU is supported but slow.
 
-The [source-preparation settings](../../../configs/dpe_head_reweighting/neural_study.yaml)
+The [source-preparation settings](../../../configs/dpe_head_reweighting/aggregation_study.yaml)
 retain the existing recipe and enable automatic dataset download and epoch-boundary
 backbone resume. Keep WORK_DIR persistent across runtime deletion. Completed
 backbones, verified features, frozen heads and neural selections are reused;
@@ -149,29 +149,29 @@ follow-ups remain **exploratory**, including later training seeds.
 The equivalent single-seed CLI, from the repository root:
 
 ```bash
-python scripts/dpe_neural_combiners.py select \
+python scripts/dpe_head_aggregation.py select \
   --source-run outputs/h2_sources/h2-standard-seed0 \
-  --output-dir outputs/dpe_neural_runs/standard-seed0-v1
-python scripts/dpe_neural_combiners.py evaluate \
+  --output-dir outputs/dpe_head_aggregation_runs/standard-seed0-v1
+python scripts/dpe_head_aggregation.py evaluate \
   --source-run outputs/h2_sources/h2-standard-seed0 \
-  --output-dir outputs/dpe_neural_runs/standard-seed0-v1
+  --output-dir outputs/dpe_head_aggregation_runs/standard-seed0-v1
 ```
 
-Use `--config` for a separately declared configuration. Pass `--config configs/dpe_head_reweighting/combined_comparison.yaml` for the new protocol.
-Single-seed CLI actions remain cached-source operations. The API/CLI default stays legacy for compatibility; the notebook explicitly uses the new configuration. Automatic preparation uses the notebook/API.
+Use `--config` for a separately declared configuration. Pass `--config configs/dpe_head_reweighting/aggregation_comparison.yaml` for the new protocol.
+Single-seed CLI actions remain cached-source operations. The API, CLI and notebook default to the unified configuration. Use `--config configs/dpe_head_reweighting/neural_combiners.yaml` only to reproduce the original B/C selection protocol. Automatic preparation uses the notebook/API.
 The notebook installs missing Torch/torchvision, NumPy, SciPy, PyYAML, pandas,
 Pillow and tqdm; no new model-training library is needed.
 
 For a multi-seed run or prior combined ZIP:
 
 ```python
-from src.methods.dpe_head_reweighting.neural_study import run_study
+from src.methods.dpe_head_reweighting.aggregation_study import run_study
 
-run = run_study("outputs/neural_session", config_path="configs/dpe_head_reweighting/combined_comparison.yaml", evaluate_test=False)
+run = run_study("outputs/aggregation_session", config_path="configs/dpe_head_reweighting/aggregation_comparison.yaml", evaluate_test=False)
 # Keep the declared recipe fixed for test evaluation:
-run = run_study("outputs/neural_session", config_path="configs/dpe_head_reweighting/combined_comparison.yaml", evaluate_test=True)
+run = run_study("outputs/aggregation_session", config_path="configs/dpe_head_reweighting/aggregation_comparison.yaml", evaluate_test=True)
 # Optional cache-only comparison, without training missing seeds:
-run = run_study("outputs/neural_cached", source="outputs/previous_h2_study.zip",
+run = run_study("outputs/aggregation_cached", source="outputs/previous_h2_study.zip",
                 mode="cached", evaluate_test=False)
 ```
 
@@ -206,7 +206,7 @@ retrieve the latest partial ZIP if later training is interrupted.
 Run the functional checks with:
 
 ```bash
-python -m pytest tests/methods/dpe_head_reweighting/test_neural_combiners.py -q
+python -m pytest tests/methods/dpe_head_reweighting/test_head_aggregation.py -q
 ```
 
 The checks use synthetic complementary-expert tasks, reversed signals, B/C
@@ -219,3 +219,24 @@ It checks reuse and that default execution does not generate test predictions.
 These checks establish software
 behavior only. Record actual Waterbirds runs in `docs/experiment_log.md` and keep
 their reports beside this method or in the experiment/result directories.
+
+## Entry point consolidation
+
+`notebooks/dpe_head_aggregation.ipynb` is the single active notebook. The
+power-only and global-rule C-selection notebooks are archived under
+`notebooks/archive/` with visible historical-workflow notices. Reports and
+experiment records retain the notebook names used at their recorded commits.
+Scientific configurations for the earlier protocols remain available; their
+results are not rewritten by this cleanup.
+
+The launcher is `scripts/dpe_head_aggregation.py`; orchestration and evaluation
+live in `aggregation_study.py` and `aggregation_suite.py`. Neural architecture
+code remains in `neural_combiner.py`, and global-rule algorithms remain in
+`weighting_rules.py`. The default workspace is `dpe_head_aggregation_session`;
+the notebook reuses an existing `dpe_neural_combiners_session` if no new workspace
+exists, preserving expensive source artifacts. Renamed implementation identities
+produce a new comparison directory; saved results stay intact.
+
+Synthetic execution checks belong in the test suite, not the experiment log.
+Run `python -m pytest tests/methods/dpe_head_reweighting -q` to check the current
+entry point, archived workflows, artifact validation and numerical behavior.

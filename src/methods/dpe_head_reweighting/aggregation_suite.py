@@ -1,4 +1,4 @@
-"""Frozen H2 caches -> declared neural fitting protocol -> held-out evaluation."""
+"""Frozen DPE heads -> global-rule/neural comparison -> held-out evaluation."""
 import argparse
 import csv
 import json
@@ -11,13 +11,13 @@ from . import neural_combiner as neural
 from .experiment import digest, object_hash, read_json, runtime, write_json
 from .rule_suite import load_cache, output_path, same_metrics, validation_context
 
-DEFAULT_CONFIG = 'configs/dpe_head_reweighting/neural_combiners.yaml'
+DEFAULT_CONFIG = 'configs/dpe_head_reweighting/aggregation_comparison.yaml'
 
 
 def context(source, config_path):
     source, c, manifest, heads, data, identity = validation_context(
         source, config_path, config_validator=neural.validate_config,
-        script_path='scripts/dpe_neural_combiners.py', notebook_path='notebooks/dpe_neural_combiners.ipynb')
+        script_path='scripts/dpe_head_aggregation.py', notebook_path='notebooks/dpe_head_aggregation.ipynb')
     identity.update(torch=torch.__version__, execution='cpu-float64-fixed-steps')
     return source, c, manifest, heads, data, identity
 
@@ -132,9 +132,9 @@ def evaluate(source, config_path, output):
         return result
     write_json(output / 'run.json', dict(config=selection['config'], runtime=runtime(),
                                        source_artifacts=selection['lock']['inputs'],
-                                       execution=dict(selection='neural_suite.select', evaluation='neural_suite.evaluate'),
+                                       execution=dict(selection='aggregation_suite.select', evaluation='aggregation_suite.evaluate'),
                                        track=selection['source_track'], seed=selection['source_seed']))
-    lines = ['# DPE neural-combiner comparison', '',
+    lines = ['# DPE head-aggregation comparison', '',
              'Exploratory project adaptation inspired by Regularized Neural Ensemblers (AutoML 2025).',
              'Backbone/heads are frozen. All fits use B only, with fixed training steps.',
              'C WGA, then C accuracy select each family and overall winner. Uniform wins complete ties.',
@@ -142,7 +142,7 @@ def evaluate(source, config_path, output):
              '| Procedure | C-selected candidate | Test accuracy (%) | Test WGA (%) | WGA delta (pp) |',
              '| --- | --- | ---: | ---: | ---: |']
     if all_candidates:
-        lines = ['# DPE neural-combiner comparison', '',
+        lines = ['# DPE head-aggregation comparison', '',
                  'Exploratory: all declared configurations fit on B+C with fixed steps, then evaluated on test.',
                  'There is no C selection, uniform fallback, early stopping or test-based hyperparameter selection.', '',
                  '| Configuration | Candidate | Test accuracy (%) | Test WGA (%) | WGA delta (pp) |',
@@ -203,7 +203,7 @@ def summarize(output, completed, planned, track):
     def display(value, scale=1):
         sd = 'pending' if value['sample_std'] is None else f"{scale*value['sample_std']:.4f}"
         return f"{scale*value['mean']:.4f} ± {sd}"
-    lines = ['# DPE neural-combiner study', '',
+    lines = ['# DPE head-aggregation study', '',
              f"Status: {summary['status']}; track: {track}; completed seeds: {summary['completed_seeds']}.", '',
              'Exploratory cached-prediction adaptation. Every family was selected on C with uniform fallback.',
              'Mean ± sample SD across training seeds, not confidence intervals. No family is chosen by test.', '',

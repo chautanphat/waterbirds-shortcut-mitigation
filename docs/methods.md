@@ -45,7 +45,7 @@ Add approved methods below this heading using the shared template.
 
 - **Full name:** Validation-derived reweighting of Diverse Prototypical Ensemble heads.
 - **Paper/source:** Project-owned adaptation of [DPE](https://arxiv.org/abs/2505.23027), ICML 2025; the weighting rule is not a paper result.
-- **Implementation:** [Method and execution instructions](../src/methods/dpe_head_reweighting/README.md), [end-to-end notebook](../notebooks/dpe_weighting_rules.ipynb).
+- **Implementation:** [Method and execution instructions](../src/methods/dpe_head_reweighting/README.md), [end-to-end notebook](../notebooks/dpe_head_aggregation.ipynb).
 
 ### Mechanism and settings
 
@@ -77,7 +77,7 @@ Per-group metrics/counts, exact weights and B/C diagnostics accompany the report
 - **Waterbirds adaptation:** Completed exploratory three-seed comparison; all 60 B/C candidates recomputed, nine joint fits refitted and selected test metrics independently recomputed from supplied prediction caches. See the [experiment index](experiment_log.md#exp-dpe-h2-rules-waterbirds-standard-seeds012-003--2026-11-09).
 - **Finding:** No selected rule improves test WGA. Joint weighting lowers NLL while WGA ties or decreases; lower loss alone does not establish a classification gain.
 - **Limits:** One shared validation partition and test set; reused, previously inspected seed 0; raw-image inference not rerun. Original failed-version checkpoints were not supplied.
-- **Follow-ups:** [Neural stacking/gating with prediction dropout](../src/methods/dpe_head_reweighting/NEURAL_COMBINERS.md) is implemented as a separate comparison with synthetic software checks; its notebook automatically prepares missing sources or reuses frozen heads/predictions. The unified comparison fits global weighting rules and neural combiners on B+C and evaluates all 30 declared configurations separately on test; the old B/C selection protocol remains available. Its Waterbirds test evaluation is pending. Objective sensitivity, partition/weight stability and DFR remain untested proposals. The original H2 findings are unchanged.
+- **Follow-ups:** [Neural stacking/gating with prediction dropout](../src/methods/dpe_head_reweighting/HEAD_AGGREGATION.md) is implemented as a separate comparison with synthetic software checks; its notebook automatically prepares missing sources or reuses frozen heads/predictions. The unified comparison fits global weighting rules and neural combiners on B+C and evaluates all 30 declared configurations separately on test; the old B/C selection protocol remains available. Its Waterbirds test evaluation is pending. Objective sensitivity, partition/weight stability and DFR remain untested proposals. The original H2 findings are unchanged.
 
 ## Diverse Prototypical Ensembles (DPE)
 

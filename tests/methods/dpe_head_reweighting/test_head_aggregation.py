@@ -9,14 +9,14 @@ import torch
 import yaml
 
 from src.methods.dpe_head_reweighting import neural_combiner as neural
-from src.methods.dpe_head_reweighting import neural_suite as suite
-from src.methods.dpe_head_reweighting import neural_study as study
+from src.methods.dpe_head_reweighting import aggregation_suite as suite
+from src.methods.dpe_head_reweighting import aggregation_study as study
 from src.methods.dpe_head_reweighting.ensemble import PREPROCESSING
 from src.methods.dpe_head_reweighting.experiment import digest, object_hash, write_json
 from src.methods.dpe_head_reweighting.reweighting import fit_select as old_select
 
 ROOT = Path(__file__).resolve().parents[3]
-CONFIG = ROOT / suite.DEFAULT_CONFIG
+CONFIG = ROOT / 'configs/dpe_head_reweighting/neural_combiners.yaml'
 
 
 def config():
@@ -331,9 +331,9 @@ def test_notebook_runs_and_reuses_saved_models(tmp_path, small_config, monkeypat
     repo = tmp_path / 'checkout'
     for folder in ('src', 'scripts', 'configs'):
         shutil.copytree(ROOT / folder, repo / folder)
-    notebook_path = repo / 'notebooks/dpe_neural_combiners.ipynb'
+    notebook_path = repo / 'notebooks/dpe_head_aggregation.ipynb'
     notebook_path.parent.mkdir()
-    notebook = nbformat.read(ROOT / 'notebooks/dpe_neural_combiners.ipynb', as_version=4)
+    notebook = nbformat.read(ROOT / 'notebooks/dpe_head_aggregation.ipynb', as_version=4)
     work = tmp_path / 'work'
     for cell in notebook.cells:
         if cell.cell_type == 'code' and 'SOURCE = None' in cell.source:
@@ -341,7 +341,7 @@ def test_notebook_runs_and_reuses_saved_models(tmp_path, small_config, monkeypat
             cell.source = cell.source.replace('SEEDS = [0, 1, 2]', 'SEEDS = [0]')
             cell.source = cell.source.replace('EVALUATE_TEST = False', 'EVALUATE_TEST = True')
             cell.source = cell.source.replace('WORK_DIR = None', f'WORK_DIR = {str(work)!r}')
-            cell.source = cell.source.replace('CONFIG_PATH = "configs/dpe_head_reweighting/combined_comparison.yaml"',
+            cell.source = cell.source.replace('CONFIG_PATH = "configs/dpe_head_reweighting/aggregation_comparison.yaml"',
                                               f'CONFIG_PATH = {str(small_config)!r}')
             if hosted:
                 cell.source = cell.source.replace('REPO_URL = "https://github.com/chautanphat/waterbirds-shortcut-mitigation.git"',
@@ -400,7 +400,7 @@ def test_default_notebook_without_attachments_downloads_trains_and_reuses(tmp_pa
     fixture_code = previous.SYNTHETIC_BACKBONE + '''
 import csv
 import src.datasets.loaders as loader_module
-import src.methods.dpe_head_reweighting.neural_study as neural_runner
+import src.methods.dpe_head_reweighting.aggregation_study as neural_runner
 torch.set_num_threads(1)
 # Preserve the notebook's workers setting while avoiding multiprocessing in this fixture.
 RealDataLoader = loader_module.DataLoader
@@ -433,11 +433,11 @@ if (WORK_DIR / 'backbones/standard/seed2/summary.json').exists():
         raise AssertionError('Completed backbones must not retrain')
     stage0_module.run_training = forbidden_training
 '''
-    notebook = nbformat.read(ROOT / 'notebooks/dpe_neural_combiners.ipynb', as_version=4)
+    notebook = nbformat.read(ROOT / 'notebooks/dpe_head_aggregation.ipynb', as_version=4)
     assert 'MODE = "auto"' in notebook.cells[1].source and 'SOURCE = None' in notebook.cells[1].source
     assert 'EVALUATE_TEST = True' in notebook.cells[1].source
     notebook.cells.insert(3, nbformat.v4.new_code_cell(fixture_code))
-    path = repo / 'notebooks/dpe_neural_combiners.ipynb'
+    path = repo / 'notebooks/dpe_head_aggregation.ipynb'
     nbformat.write(notebook, path)
     kernels = tmp_path / 'jupyter/kernels/neural-default'
     kernels.mkdir(parents=True)
@@ -447,7 +447,7 @@ if (WORK_DIR / 'backbones/standard/seed2/summary.json').exists():
         env=dict(OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', IPYTHONDIR=str(tmp_path / 'ipython')))))
     monkeypatch.setenv('JUPYTER_PATH', str(tmp_path / 'jupyter'))
     frozen = None
-    work = repo / 'outputs/dpe_neural_combiners_session'
+    work = repo / 'outputs/dpe_head_aggregation_session'
     for _ in range(2):
         actual = nbformat.read(path, as_version=4)
         nbclient.NotebookClient(actual, timeout=300, kernel_name='neural-default',
@@ -516,7 +516,7 @@ def test_bc_all_pools_training_and_evaluates_every_configuration(tmp_path, small
 
 def test_combined_rules_fit_pooled_data_and_all_reach_test(tmp_path, monkeypatch):
     from src.methods.dpe_head_reweighting import weighting_rules as rules
-    c = yaml.safe_load((ROOT / 'configs/dpe_head_reweighting/combined_comparison.yaml').read_text())
+    c = yaml.safe_load((ROOT / 'configs/dpe_head_reweighting/aggregation_comparison.yaml').read_text())
     c['steps'] = 4
     config_path = tmp_path / 'combined.yaml'
     config_path.write_text(yaml.safe_dump(c))
