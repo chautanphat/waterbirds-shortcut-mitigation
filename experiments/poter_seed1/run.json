@@ -1,0 +1,217 @@
+{
+  "record_contract_version": 1,
+  "experiment_id": "poter_seed1",
+  "method": "poter (NeurIPS 2026 baseline reproduction, Waterbirds standard track)",
+  "seed": 1,
+  "purpose": "Original reproduction (single-seed checkpoint evaluation and canonical v1 per-example test prediction export for failure-case comparison)",
+  "execution": {
+    "status": "completed",
+    "training_date": "2026-11-04",
+    "export_date": "2026-11-10",
+    "timezone": "+07:00",
+    "training_invocation": "python scripts/kaggle_waterbirds.py --data-dir /kaggle/working/poter-data --cache /kaggle/working/poter-features/waterbirds_standard.pt --run-dir /kaggle/working/poter-results/CUB/Clean/POTER_CUB_seed1_kaggle --seed 1 --epochs 300 --batch-size 128 --max-hours 9.5",
+    "export_invocation": "python scripts/export_predictions.py poter --checkpoint checkpoints/poter_extracted/CUB/Clean/POTER_CUB_seed1_kaggle/best_validation.pt --metadata dataset/waterbird_complete95_forest2water2/metadata.csv --data-dir dataset --run-label poter_seed1 --seed 1 --output experiments/poter_seed1/predictions/test --batch-size 128",
+    "effective_overrides": {
+      "seed": 1,
+      "epochs": 300,
+      "batch_size": 128,
+      "lr": 1e-05,
+      "weight_decay": 1.0,
+      "f_power": 0.1,
+      "clip_cap": 20.0,
+      "reg_scale": 0.03,
+      "augment_data": true
+    },
+    "attempts": [
+      {
+        "attempt": 1,
+        "role": "kaggle_training",
+        "status": "completed",
+        "note": "Completed all 300 epochs on Kaggle T4; selected epoch 258 (0-based) by validation WGA."
+      },
+      {
+        "attempt": 2,
+        "role": "local_cpu_prediction_export",
+        "status": "completed",
+        "note": "Evaluated saved best_validation.pt on official 5,794-example test split and wrote canonical v1 predictions.csv and provenance.json."
+      }
+    ]
+  },
+  "source": {
+    "repository_commit_for_export": "423a9d15bdbcb915f96f8caf0af627050bb9b44a",
+    "training_branch": "phat/poter-windows-cmnist",
+    "git_dirty_at_export": false,
+    "training_source_sha256": {
+      "train.py": "776603ba16ff00cd27c9075cb2ef6703b41c062eda33c4443e6e4fe4b105431a",
+      "loss.py": "5640227087f82ad7234b8dc39a2b823a7590e4f24a39c3706bdfbc5fe80872d2",
+      "ot_reweight.py": "6b2925c33a12f01404e1a27bf471fb08f8177fb0e3e2068de47588e7785a6f0b",
+      "utils.py": "2299323bbe0c0e1e9c0afea725024d026922c37b3bb97caaa9dda577f8fcf0ba",
+      "run_expt.py": "f0b34fde7a0d26f5bf37604b2b139923d2b8de17e1a6d9dff91dd546054aa01b",
+      "scripts/kaggle_waterbirds.py": "b6e1af63a6a4f6635643c112e4a7c3a66e505775ac2acf2d512ac13dcd5e1dc2"
+    }
+  },
+  "configuration": {
+    "tracked_config": "configs/poter/waterbirds_standard.yaml",
+    "tracked_config_sha256": "61175553e721fdbc2f6e1216cf9825fa0be517cf68b046700770442fabf3a952",
+    "resolved_config_archive_member": "checkpoints/poter-results-backup.zip#CUB/Clean/POTER_CUB_seed1_kaggle/config.json",
+    "resolved_config_sha256": "beb6b7bd3e5a60f03458fc4327b1c48c7c816cdb7abc4bf26064989317f8d3c0"
+  },
+  "dataset": {
+    "release": "waterbird_complete95_forest2water2",
+    "metadata_location": "data/waterbirds/waterbird_complete95_forest2water2/metadata.csv",
+    "metadata_sha256": "2f023b9dc371f6fbb82c7cb810ff0f03e19c54c8055a2e37517ae7bb56644362",
+    "official_splits": {
+      "train": 4795,
+      "val": 1199,
+      "test": 5794
+    },
+    "test_group_counts": {
+      "1": 2255,
+      "2": 2255,
+      "3": 642,
+      "4": 642
+    },
+    "group_mapping": "group = 1 + 2*y + a (1: Landbird on Land, 2: Landbird on Water, 3: Waterbird on Land, 4: Waterbird on Water)"
+  },
+  "randomness": {
+    "main_seed": 1,
+    "deterministic_export": "Fixed evaluation transforms (Resize 256 -> CenterCrop 224) and torch.inference_mode() on CPU."
+  },
+  "environment": {
+    "training": {
+      "hosting": "Kaggle Linux container",
+      "accelerator": "1x NVIDIA Tesla T4",
+      "torch": "2.11.0+cu130",
+      "torchvision": "0.26.0+cu130",
+      "numpy": "2.1.3",
+      "cuda": "13.0",
+      "precision": "float32"
+    },
+    "export": {
+      "os": "Windows-10-10.0.26200-SP0",
+      "python": "3.11.1",
+      "numpy": "2.2.1",
+      "torch": "2.5.1+cpu",
+      "torchvision": "0.20.1+cpu",
+      "device": "cpu",
+      "precision": "float32"
+    }
+  },
+  "selection": {
+    "model_description": "experiments/poter_seed1/model.json",
+    "validation_use": "Group-annotated validation split (1,199 examples) used to compute per-epoch worst-group accuracy.",
+    "candidate_space": "300 epochs (0..299)",
+    "metric": "validation worst-group accuracy",
+    "direction": "maximize",
+    "selected_epoch_0based": 258,
+    "selected_val_wga": 0.901,
+    "selected_val_avg_acc": 0.916
+  },
+  "artifacts": {
+    "model_description": {
+      "location": "experiments/poter_seed1/model.json",
+      "available": true
+    },
+    "backup_archive": {
+      "location": "checkpoints/poter-results-backup.zip",
+      "sha256": "83f927869fb2d2ce76a1db464af3b6d8ac0c3e3bca6ce3f13249f518b3293dd5",
+      "available": true
+    },
+    "selected_checkpoint": {
+      "location": "checkpoints/poter-results-backup.zip#CUB/Clean/POTER_CUB_seed1_kaggle/best_validation.pt",
+      "sha256": "4f405e0e9ec34420aeae5fc2452635c6bc700d714fd033c4c289bea9d2434a9e",
+      "available": true
+    },
+    "training_log": {
+      "location": "checkpoints/poter-results-backup.zip#CUB/Clean/POTER_CUB_seed1_kaggle/log.txt",
+      "sha256": "6955373970ef6ba9d3f6c943b8818f2b10fe963b7a0eea8a6c5c773a75ed22e6",
+      "available": true
+    },
+    "val_epoch_metrics": {
+      "location": "checkpoints/poter-results-backup.zip#CUB/Clean/POTER_CUB_seed1_kaggle/val.csv",
+      "sha256": "c9d4d4d17c7d31135381978f23272e898029d0ad25a41eed6120d6451c27ea13",
+      "available": true
+    },
+    "test_epoch_metrics": {
+      "location": "checkpoints/poter-results-backup.zip#CUB/Clean/POTER_CUB_seed1_kaggle/test.csv",
+      "sha256": "bdb7a052805ce28ecf74bbe3f3fe96d5d1af9ad0f8fcf55ba9f33cfb6b02b0df",
+      "available": true
+    },
+    "test_predictions_csv": {
+      "location": "experiments/poter_seed1/predictions/test/predictions.csv",
+      "sha256": "fa0e42e11c788a1e6b60b8c776be40ce19fb8a7175dc15df8b6e78a676488894",
+      "available": true
+    },
+    "test_predictions_provenance": {
+      "location": "experiments/poter_seed1/predictions/test/provenance.json",
+      "available": true
+    }
+  },
+  "results": {
+    "units": "fractions in [0, 1]",
+    "val": {
+      "count": 1199,
+      "accuracy": 0.916,
+      "worst_group_accuracy": 0.901,
+      "per_group_accuracy": {
+        "1": 0.925,
+        "2": 0.901,
+        "3": 0.925,
+        "4": 0.925
+      }
+    },
+    "test": {
+      "count": 5794,
+      "errors": 464,
+      "accuracy": 0.9199171556782879,
+      "worst_group_accuracy": 0.9104212860310421,
+      "per_group": {
+        "1": {
+          "name": "Landbird on Land",
+          "count": 2255,
+          "accuracy": 0.9290465631929047
+        },
+        "2": {
+          "name": "Landbird on Water",
+          "count": 2255,
+          "accuracy": 0.9104212860310421
+        },
+        "3": {
+          "name": "Waterbird on Land",
+          "count": 642,
+          "accuracy": 0.9252336448598131
+        },
+        "4": {
+          "name": "Waterbird on Water",
+          "count": 642,
+          "accuracy": 0.9158878504672897
+        }
+      },
+      "kaggle_cuda_epoch258_test_csv_reference": {
+        "accuracy": 0.9200897216796875,
+        "worst_group_accuracy": 0.9104213118553162,
+        "per_group_accuracy": {
+          "1": 0.9294899106025696,
+          "2": 0.9104213118553162,
+          "3": 0.9252336025238037,
+          "4": 0.9158878922462463
+        }
+      }
+    }
+  },
+  "assessment": {
+    "reproduction_status": "partial reproduction",
+    "claim_scope": "Single-seed (seed 1) held-out test evaluation and per-example prediction export for failure-case comparison. Paper reports 90.9 +/- 0.3% test WGA across 3 seeds; seed 1 achieves 91.04% test WGA and 91.99% overall test accuracy.",
+    "limitations": [
+      "Single seed only (seed 1); seeds 2 and 3 have not been run.",
+      "Local CPU export (torch 2.5.1+cpu) differs by 1 boundary example in Group 1 from the Kaggle CUDA training-time test log (torch 2.11.0+cu130)."
+    ],
+    "deviations": [],
+    "missing_evidence": [
+      "Training-time per-example test probabilities were not saved by the upstream runner; only epoch-level aggregate test metrics were logged during training."
+    ]
+  },
+  "relationships": {
+    "experiment_log_entry": "exp-poter-waterbirds-standard-seed1-001"
+  }
+}

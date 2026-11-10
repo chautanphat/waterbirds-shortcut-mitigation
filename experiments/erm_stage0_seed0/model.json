@@ -1,0 +1,89 @@
+{
+  "model_contract_version": 1,
+  "experiment_id": "erm_stage0_seed0",
+  "method": "shared Stage-0 ERM ResNet-50 backbone and linear classifier (evaluated on raw embeddings)",
+  "seed": 0,
+  "availability": "complete",
+  "implementation": {
+    "repository": "src/models/resnet.py (compatible with baselines/dpe4subpop Stage-0 ERM sequential ResNet-50)",
+    "commit": "423a9d15bdbcb915f96f8caf0af627050bb9b44a",
+    "constructor": "src.models.resnet.ResNetClassifier(weights=None) (Sequential: 0=resnet50 trunk, 1=Flatten, 2=Linear(2048, 2))",
+    "export_adapter": "src/evaluation/prediction_export.py:write_predictions"
+  },
+  "artifacts": [
+    {
+      "id": "dpe_stage0_ckpt_last",
+      "role": "backbone_and_linear_classifier_state_dict",
+      "location": "checkpoints/dpe_ckpt_last.zip",
+      "sha256": "84cf80674d874f4a200d7474a9f8df79991071a93a3bad2b1909faa3f83f3572",
+      "format": "pytorch_state_dict_weights_only (0.* ResNet-50 backbone keys + 2.weight/2.bias linear classifier keys)",
+      "loader": "torch.load(..., map_location='cpu', weights_only=True) -> model.load_state_dict(state, strict=True)"
+    },
+    {
+      "id": "stage0_val_features",
+      "role": "extracted_raw_validation_embeddings",
+      "location": "checkpoints/waterbirds_stage0_standard_erm/feats_val.npy",
+      "sha256": "33e5cc350e0e68f7c7066522e350a4f13fcbbc0d590989db71cc55ea9b83e6cf",
+      "format": "numpy_npy_float32_1199x2048",
+      "loader": "numpy.load(..., allow_pickle=False)"
+    },
+    {
+      "id": "stage0_test_features",
+      "role": "extracted_raw_test_embeddings",
+      "location": "checkpoints/waterbirds_stage0_standard_erm/feats_test.npy",
+      "sha256": "8bb09522ccb2450ad731b7e01f8d945db5d13bc7429ae337a999cbb08d037612",
+      "format": "numpy_npy_float32_5794x2048",
+      "loader": "numpy.load(..., allow_pickle=False)"
+    }
+  ],
+  "input": {
+    "dataset_release": "waterbird_complete95_forest2water2",
+    "metadata_location": "data/waterbirds/metadata_waterbirds.csv",
+    "metadata_sha256": "7ec721db47c67599634db530625d4eaa4267ce78047701540e9812a1139d0878",
+    "input_kind": "images",
+    "shape": [
+      3,
+      224,
+      224
+    ],
+    "dtype": "float32",
+    "preprocessing": [
+      "PIL.Image.open(path).convert('RGB')",
+      "torchvision.transforms.Resize((256, 256)) (bilinear)",
+      "torchvision.transforms.CenterCrop((224, 224))",
+      "torchvision.transforms.ToTensor()",
+      "torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])",
+      "Forward through ResNet-50 trunk + Flatten to raw 2048-D embedding (no row standardization applied for ERM linear head)"
+    ]
+  },
+  "inference": {
+    "native_class_order": [
+      0,
+      1
+    ],
+    "canonical_class_mapping": {
+      "0": "landbird",
+      "1": "waterbird"
+    },
+    "evaluation_mode": "model.eval() with torch.inference_mode(), raw 2048-D features passed to Linear(2048, 2) head",
+    "precision": "float32",
+    "probability_conversion": "logits.float().softmax(dim=1) at temperature 1.0",
+    "aggregation": "single model (no ensemble)",
+    "decision_rule": "argmax over [p(landbird), p(waterbird)]; equal probabilities select index 0 (landbird)"
+  },
+  "selection": {
+    "procedure": "Fixed final-step checkpoint (ckpt_last.pt at epoch 100 of Stage-0 ERM backbone training)",
+    "selection_data": "None (fixed final epoch per upstream DPE Stage-0 protocol)",
+    "selected_epoch_1based": 100,
+    "metric": null,
+    "direction": null,
+    "evidence_location": "checkpoints/dpe_ckpt_last.zip"
+  },
+  "verification": {
+    "status": "passed",
+    "scope": "Verified exact numerical identity between sequential image-to-logits forward pass and raw-feature linear head evaluation on the validation and test splits (max probability difference 0.0; 100% label agreement)."
+  },
+  "limitations": [
+    "checkpoints/dpe_ckpt_last.zip is a bare PyTorch state_dict without embedded training config metadata. Its empirical test accuracy (92.35% raw, 76.64% WGA) aligns closely with the 100-epoch augmented ERM* Stage-0 checkpoint rather than the unaugmented --no_augmentation Stage-0 run (62.46% WGA), while using the canonical experiment directory ID erm_stage0_seed0 from docs/export_predictions.md."
+  ]
+}

@@ -33,7 +33,7 @@ class PredictionProtocolTests(unittest.TestCase):
     def test_documented_example_and_viewer_download_match_shared_contract(self):
         documentation = (ROOT / "docs/prediction_protocol.md").read_text(encoding="utf-8")
         example = documentation.split("```csv\n", 1)[1].split("```", 1)[0]
-        html = (ROOT / "scripts/failure_case_viewer.html").read_text(encoding="utf-8")
+        html = (ROOT / "scripts/viewer.html").read_text(encoding="utf-8")
         literal = re.search(r"\$\('sample'\)\.onclick = \(\) => downloadCSV\(('(?:[^'\\]|\\.)*')", html).group(1)
         downloaded = ast.literal_eval(literal)
         for text in (example, downloaded):

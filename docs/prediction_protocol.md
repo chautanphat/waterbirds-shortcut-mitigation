@@ -18,7 +18,7 @@ This document is the normative contract for new Waterbirds prediction artifacts.
 - **Frozen predictor:** the checkpoint or ensemble together with its preprocessing, class mapping, inference rule, temperature/thresholds and other prediction-affecting settings.
 - **Reference split:** an explicit set of image identities, ground-truth labels and backgrounds defined by retained metadata.
 - **Artifact:** the pair `predictions.csv` and `provenance.json` for one experiment and reference split.
-- **Consumer:** evaluation/reporting code, a comparison script, or the failure-case viewer.
+- **Consumer:** evaluation/reporting code, a comparison script, or the [Waterbirds Prediction Viewer](viewer.md).
 
 | Party | Contract responsibility |
 | --- | --- |
@@ -52,7 +52,7 @@ experiments/
 │       └── test/provenance.json
 ├── poter_seed1/
 │   └── predictions/test/{predictions.csv,provenance.json}
-└── dpe_original_standard_seed0/
+└── dpe_seed0/
     └── predictions/test/{predictions.csv,provenance.json}
 ```
 
@@ -243,4 +243,4 @@ The viewer remains tolerant of legacy aliases, numeric labels/groups, missing sp
 
 Changes to header order, field meaning, label/group mapping, null representation or the unit of an existing field MUST NOT be made silently under version 1. The CSV contains no embedded version column: its interpretation is tied to this contract and the companion `prediction_schema_version`. An incompatible change requires a new documented version, compatible reader/export tooling or an explicit conversion, and preserved source artifacts. Clarifications that do not change accepted data semantics may remain in version 1. Unknown future versions MUST NOT be assumed equivalent to v1 for research acceptance.
 
-When maintaining this contract, run `python -m unittest discover -s tests -p "test_prediction*.py" -v` and `node --test tests/test_failure_case_viewer.cjs`. These checks cover the shared writer, validator, legacy AutoBackSwap adapter, documentation example and viewer download template.
+When maintaining this contract, run `python -m unittest discover -s tests -p "test_prediction*.py" -v` and `node --test tests/test_viewer.cjs`. These checks cover the shared writer, validator, legacy AutoBackSwap adapter, documentation example and viewer download template.

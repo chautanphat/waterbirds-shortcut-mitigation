@@ -49,7 +49,7 @@ waterbirds-shortcut-mitigation/
 | [`experiment_log.md`](experiment_log.md) | Traceable index of meaningful runs. |
 | [DPE H2 experiment report](../src/methods/dpe_head_reweighting/reports/h2.md) | Summary of head-weighting experiments, results, interpretation and follow-up hypotheses. |
 | [Shared ERM](../src/methods/erm/README.md) | DPE-aligned repository-wide fine-tuning, evaluation, and reusable features. |
-| [Failure case viewer](failure_case_viewer.md) | Local image inspection and comparison of saved per-example predictions across approaches. |
+| [Waterbirds Prediction Viewer](viewer.md) | Local image inspection and comparison of saved per-example predictions across approaches. |
 | [Export predictions](export_predictions.md) | Viewer CSV recovery and export for POTER, original DPE, AutoBackSwap, and ERM. |
 | [Prediction CSV protocol](prediction_protocol.md) | Required version-1 per-example export contract and validator for all methods. |
 | [Model artifacts and inference contract](model_artifact_contract.md) | Frozen-predictor description, native loading/preprocessing, selection and inference verification. |

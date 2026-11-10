@@ -1,0 +1,183 @@
+{
+  "record_contract_version": 1,
+  "experiment_id": "dpe_seed0",
+  "method": "original DPE (15-head IsoMax+ prototype ensemble with covariance regularization, equal probability averaging)",
+  "seed": 0,
+  "purpose": "Original DPE Stage 1+ head training on saved Stage-0 backbone and canonical v1 test prediction export for multi-method failure-case comparison",
+  "execution": {
+    "status": "completed",
+    "execution_date": "2026-11-10",
+    "timezone": "+07:00",
+    "invocation": "Executed Stage 1+ 15-head prototype training from notebooks/dpe_waterbirds_end_to_end.ipynb with capture_notebook_heads, saved heads via save_dpe_heads, packaged features via package_notebook_features, and exported predictions via export_dpe_heads",
+    "effective_overrides": {
+      "seed": 0,
+      "num_stages": 15,
+      "epochs_per_stage": 20,
+      "lr": 0.001,
+      "momentum": 0.9,
+      "entropic_scale": 30,
+      "wd_weight": 10,
+      "cov_reg_initial": 500000.0,
+      "cov_reg_schedule": "[5e5] + [5e5 / (1 + 0.05 * i) for i in range(15)]",
+      "train_attr": "yes",
+      "subsample_type": "group",
+      "normalize_embeddings": true
+    },
+    "attempts": [
+      {
+        "attempt": 1,
+        "role": "local_cpu_stage1_training_and_export",
+        "status": "completed",
+        "note": "Trained all 15 prototype heads on pre-extracted validation embeddings (seed=0), saved outputs/dpe_seed0_heads.pt, and exported test predictions."
+      }
+    ]
+  },
+  "source": {
+    "repository_commit": "423a9d15bdbcb915f96f8caf0af627050bb9b44a",
+    "git_dirty": false,
+    "notebook_reference": "notebooks/dpe_waterbirds_end_to_end.ipynb",
+    "notebook_sha256": "575fca889dfac68465383801061fc63bcfd7230bee4a9bffbaad5723ae27182d"
+  },
+  "configuration": {
+    "tracked_stage0_config": "configs/dpe4subpop/waterbirds_stage0_erm.yaml",
+    "tracked_stage0_config_sha256": "280ce42df07e20023ed90b1089fe0ed06b3abea281111c6fe3e7d5b6b25b6371",
+    "tracked_stage1_config": "configs/dpe4subpop/waterbirds_stage1_dpe.yaml",
+    "tracked_stage1_config_sha256": "7040d0ab53475b2246367f4129de0fda5cec96fcb339c1168859c9009c23fe87"
+  },
+  "dataset": {
+    "release": "waterbird_complete95_forest2water2",
+    "metadata_location": "data/waterbirds/metadata_waterbirds.csv",
+    "metadata_sha256": "7ec721db47c67599634db530625d4eaa4267ce78047701540e9812a1139d0878",
+    "official_splits": {
+      "train": 4795,
+      "val": 1199,
+      "test": 5794
+    },
+    "stage1_data_use": "Each of the 15 heads is trained on a freshly drawn group-balanced subset of the 1,199 validation embeddings (4 * min_group_size = 4 * 133 = 532 examples per stage) and selected by full-validation (1,199 examples) worst-group accuracy.",
+    "test_group_counts": {
+      "1": 2255,
+      "2": 2255,
+      "3": 642,
+      "4": 642
+    },
+    "group_mapping": "group = 1 + 2*y + a (1: Landbird on Land, 2: Landbird on Water, 3: Waterbird on Land, 4: Waterbird on Water)"
+  },
+  "randomness": {
+    "main_seed": 0,
+    "seed_initialization": "utils.misc.fix_random_seed(0) called once before Stage 1; subsequent balanced-subset draws and DataLoader shuffles advance the RNG sequentially across stages 1..15."
+  },
+  "environment": {
+    "os": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.1",
+    "numpy": "2.2.1",
+    "torch": "2.5.1+cpu",
+    "torchvision": "0.20.1+cpu",
+    "device": "cpu",
+    "precision": "float32"
+  },
+  "selection": {
+    "model_description": "experiments/dpe_seed0/model.json",
+    "validation_use": "Group-annotated validation split (1,199 examples) used both for group-balanced head-training subsampling (532 examples/stage) and per-epoch head selection (1,199 examples), matching the upstream DPE codebase and notebook.",
+    "candidate_space": "20 epochs per stage across 15 stages",
+    "metric": "validation worst-group accuracy",
+    "direction": "maximize",
+    "tie_rule": "val_wga >= best_val_wga (last-epoch tie-breaker)",
+    "selected_head_epochs_1based": [
+      16,
+      20,
+      15,
+      19,
+      17,
+      12,
+      20,
+      15,
+      20,
+      11,
+      18,
+      16,
+      18,
+      13,
+      13
+    ]
+  },
+  "artifacts": {
+    "model_description": {
+      "location": "experiments/dpe_seed0/model.json",
+      "available": true
+    },
+    "backbone_checkpoint": {
+      "location": "checkpoints/dpe_ckpt_last.zip",
+      "sha256": "84cf80674d874f4a200d7474a9f8df79991071a93a3bad2b1909faa3f83f3572",
+      "available": true
+    },
+    "saved_heads": {
+      "location": "outputs/dpe_seed0_heads.pt",
+      "sha256": "ce955142f6f4ecde568647d8fb6d59dc9d947cf21718357598f3eab53037df05",
+      "available": true
+    },
+    "packaged_test_features": {
+      "location": "outputs/dpe_seed0_features.npz",
+      "sha256": "4ca0cb7ffb6175aab655859f32f5709bcc5870403c7ca11afa6ea109482550d8",
+      "available": true
+    },
+    "test_predictions_csv": {
+      "location": "experiments/dpe_seed0/predictions/test/predictions.csv",
+      "sha256": "75202dd52b1162671a0f044a9076482722a7f881c91f584a27fb226cebb7dc88",
+      "available": true
+    },
+    "test_predictions_provenance": {
+      "location": "experiments/dpe_seed0/predictions/test/provenance.json",
+      "available": true
+    }
+  },
+  "results": {
+    "units": "fractions in [0, 1]",
+    "test": {
+      "count": 5794,
+      "errors": 246,
+      "accuracy": 0.9575422851225406,
+      "worst_group_accuracy": 0.9392523364485982,
+      "per_group": {
+        "1": {
+          "name": "Landbird on Land",
+          "count": 2255,
+          "accuracy": 0.9773835920177384
+        },
+        "2": {
+          "name": "Landbird on Water",
+          "count": 2255,
+          "accuracy": 0.9445676274944568
+        },
+        "3": {
+          "name": "Waterbird on Land",
+          "count": 642,
+          "accuracy": 0.9392523364485982
+        },
+        "4": {
+          "name": "Waterbird on Water",
+          "count": 642,
+          "accuracy": 0.9517133956386293
+        }
+      }
+    }
+  },
+  "assessment": {
+    "reproduction_status": "partial reproduction",
+    "claim_scope": "Newly fitted 15-head DPE ensemble (seed 0) on the retained Stage-0 backbone checkpoint (checkpoints/dpe_ckpt_last.zip) for per-example failure-case comparison. Achieves 93.93% test WGA and 95.75% overall test accuracy (paper annotated ERM* DPE reference: 94.1 +/- 0.4% WGA).",
+    "limitations": [
+      "Historical Kaggle runs did not save Stage 1+ head weights; these 15 heads were newly trained on local CPU (seed 0) using the notebook Stage 1+ recipe.",
+      "Single seed only (seed 0)."
+    ],
+    "deviations": [],
+    "missing_evidence": [
+      "Original Kaggle Stage 1+ in-memory head weights from 2026-11-02 were not persisted."
+    ]
+  },
+  "relationships": {
+    "parent_backbone_experiment": "erm_stage0_seed0",
+    "historical_log_references": [
+      "exp-dpe-waterbirds-ermstar-001",
+      "exp-dpe-waterbirds-standard-002"
+    ]
+  }
+}

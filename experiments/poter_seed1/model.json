@@ -1,0 +1,103 @@
+{
+  "model_contract_version": 1,
+  "experiment_id": "poter_seed1",
+  "method": "poter (NeurIPS 2026 official baseline reproduction, Waterbirds standard recipe)",
+  "seed": 1,
+  "availability": "complete",
+  "implementation": {
+    "repository": "baselines/poter",
+    "export_adapter": "src/evaluation/prediction_export.py:load_image_model",
+    "exporter_sha256": "5bc11db865d1c1b195d3579fe220266ac4947620cb06612039646457c30f1efc",
+    "constructor": "torchvision.models.resnet50(weights=None) with fc=torch.nn.Linear(2048, 2)",
+    "training_source_sha256": {
+      "train.py": "776603ba16ff00cd27c9075cb2ef6703b41c062eda33c4443e6e4fe4b105431a",
+      "loss.py": "5640227087f82ad7234b8dc39a2b823a7590e4f24a39c3706bdfbc5fe80872d2",
+      "ot_reweight.py": "6b2925c33a12f01404e1a27bf471fb08f8177fb0e3e2068de47588e7785a6f0b",
+      "utils.py": "2299323bbe0c0e1e9c0afea725024d026922c37b3bb97caaa9dda577f8fcf0ba",
+      "run_expt.py": "f0b34fde7a0d26f5bf37604b2b139923d2b8de17e1a6d9dff91dd546054aa01b",
+      "scripts/kaggle_waterbirds.py": "b6e1af63a6a4f6635643c112e4a7c3a66e505775ac2acf2d512ac13dcd5e1dc2",
+      "scripts/training_checkpoint.py": "7a275546a6351e31a84a8b377f1280909964fd940125f19e4bd23e57815e2ecb",
+      "data/cub_dataset.py": "464f3a69e485100d614182d87bef19c9aad1eb4cf3fde8cbe61ea4958e2fea87"
+    }
+  },
+  "artifacts": [
+    {
+      "id": "poter_seed1_best_validation",
+      "role": "backbone_and_classifier_checkpoint",
+      "location": "checkpoints/poter-results-backup.zip#CUB/Clean/POTER_CUB_seed1_kaggle/best_validation.pt",
+      "archive_sha256": "83f927869fb2d2ce76a1db464af3b6d8ac0c3e3bca6ce3f13249f518b3293dd5",
+      "sha256": "4f405e0e9ec34420aeae5fc2452635c6bc700d714fd033c4c289bea9d2434a9e",
+      "format": "pytorch_dict_weights_only (keys: model state_dict, epoch=258, best_val_wga, config)",
+      "loader": "torch.load(..., map_location='cpu', weights_only=True) -> model.load_state_dict(value['model'], strict=True)"
+    },
+    {
+      "id": "poter_seed1_runtime_config",
+      "role": "resolved_training_configuration",
+      "location": "checkpoints/poter-results-backup.zip#CUB/Clean/POTER_CUB_seed1_kaggle/config.json",
+      "archive_sha256": "83f927869fb2d2ce76a1db464af3b6d8ac0c3e3bca6ce3f13249f518b3293dd5",
+      "sha256": "beb6b7bd3e5a60f03458fc4327b1c48c7c816cdb7abc4bf26064989317f8d3c0",
+      "format": "json",
+      "loader": "json.loads"
+    },
+    {
+      "id": "poter_waterbirds_standard_yaml",
+      "role": "tracked_experiment_config",
+      "location": "configs/poter/waterbirds_standard.yaml",
+      "sha256": "61175553e721fdbc2f6e1216cf9825fa0be517cf68b046700770442fabf3a952",
+      "format": "yaml",
+      "loader": "yaml.safe_load"
+    }
+  ],
+  "input": {
+    "dataset_release": "waterbird_complete95_forest2water2",
+    "metadata_location": "data/waterbirds/waterbird_complete95_forest2water2/metadata.csv",
+    "metadata_sha256": "2f023b9dc371f6fbb82c7cb810ff0f03e19c54c8055a2e37517ae7bb56644362",
+    "input_kind": "images",
+    "shape": [
+      3,
+      224,
+      224
+    ],
+    "dtype": "float32",
+    "preprocessing": [
+      "PIL.Image.open(path).convert('RGB')",
+      "torchvision.transforms.Resize((256, 256)) (bilinear)",
+      "torchvision.transforms.CenterCrop(224)",
+      "torchvision.transforms.ToTensor() (scales uint8 [0, 255] to float32 [0.0, 1.0])",
+      "torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])"
+    ]
+  },
+  "inference": {
+    "native_class_order": [
+      0,
+      1
+    ],
+    "canonical_class_mapping": {
+      "0": "landbird",
+      "1": "waterbird"
+    },
+    "evaluation_mode": "model.eval() with torch.inference_mode(), no test-time augmentation",
+    "precision": "float32",
+    "probability_conversion": "logits.float().softmax(dim=1) at temperature 1.0",
+    "aggregation": "single model (no ensemble)",
+    "decision_rule": "argmax over [p(landbird), p(waterbird)]; equal probabilities select index 0 (landbird)"
+  },
+  "selection": {
+    "procedure": "Best validation worst-group accuracy (WGA) across 300 training epochs (0..299)",
+    "selection_data": "Official Waterbirds validation split (1,199 examples) with group annotations",
+    "selected_epoch_0based": 258,
+    "metric": "validation worst-group accuracy",
+    "direction": "maximize",
+    "selected_val_wga": 0.901,
+    "evidence_location": "checkpoints/poter-results-backup.zip#CUB/Clean/POTER_CUB_seed1_kaggle/val.csv",
+    "evidence_sha256": "c9d4d4d17c7d31135381978f23272e898029d0ad25a41eed6120d6451c27ea13"
+  },
+  "verification": {
+    "status": "not_checked",
+    "scope": "Aggregate epoch-258 test accuracies compared against native training-time CUB/Clean/POTER_CUB_seed1_kaggle/test.csv (sha256: bdb7a052805ce28ecf74bbe3f3fe96d5d1af9ad0f8fcf55ba9f33cfb6b02b0df). Groups 2, 3, and 4 match to full precision (2053/2255, 594/642, 588/642); Group 1 differs by 1 boundary example out of 2,255 (2095/2255 on Windows CPU torch 2.5.1+cpu vs 2096/2255 on Kaggle CUDA torch 2.11.0+cu130). Per-example native probabilities were not saved during training, so full probability-level equivalence is recorded as not_checked."
+  },
+  "limitations": [
+    "Training ran on Kaggle Linux CUDA (torch 2.11.0+cu130) whereas per-example prediction export ran on local Windows CPU (torch 2.5.1+cpu), resulting in a 1-example boundary flip in Group 1 (overall test accuracy 91.9917% vs 92.0090% in test.csv; worst-group accuracy is identical at 91.0421%).",
+    "Only seed 1 is available in the backup archive; seeds 2 and 3 have not been run."
+  ]
+}
