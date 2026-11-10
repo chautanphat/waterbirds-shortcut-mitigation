@@ -1,0 +1,198 @@
+{
+  "record_contract_version": 1,
+  "experiment_id": "erm_stage0_seed0",
+  "method": "shared Stage-0 ERM ResNet-50 backbone and linear classifier (raw-feature evaluation)",
+  "seed": 0,
+  "purpose": "Baseline comparison and Stage-0 backbone evaluation for failure-case comparison across ERM, DPE, AutoBackSwap, and POTER",
+  "execution": {
+    "status": "completed",
+    "training_date": null,
+    "training_date_note": "Supplied checkpoint checkpoints/dpe_ckpt_last.zip does not embed a calendar training timestamp; historical Stage-0 runs were documented on 2026-11-02.",
+    "export_date": "2026-11-10",
+    "timezone": "+07:00",
+    "invocation": "Extracted raw validation/test embeddings from checkpoints/dpe_ckpt_last.zip using notebooks/dpe_waterbirds_end_to_end.ipynb Stage-0 ResNet-50 preprocessing and exported raw-feature linear head predictions via src.evaluation.prediction_export.write_predictions",
+    "effective_overrides": {
+      "seed": 0,
+      "device": "cpu",
+      "batch_size": 128,
+      "feature_normalization_for_erm": "none (raw 2048-D embeddings)"
+    },
+    "attempts": [
+      {
+        "attempt": 1,
+        "role": "local_cpu_feature_extraction_and_erm_export",
+        "status": "completed",
+        "note": "Extracted raw 2048-D features for val (1,199) and test (5,794) splits and exported canonical v1 predictions.csv."
+      }
+    ]
+  },
+  "source": {
+    "repository_commit": "423a9d15bdbcb915f96f8caf0af627050bb9b44a",
+    "git_dirty": false,
+    "notebook_reference": "notebooks/dpe_waterbirds_end_to_end.ipynb",
+    "notebook_sha256": "575fca889dfac68465383801061fc63bcfd7230bee4a9bffbaad5723ae27182d"
+  },
+  "configuration": {
+    "tracked_config": "configs/dpe4subpop/waterbirds_stage0_erm.yaml",
+    "tracked_config_sha256": "280ce42df07e20023ed90b1089fe0ed06b3abea281111c6fe3e7d5b6b25b6371",
+    "note": "Checkpoint checkpoints/dpe_ckpt_last.zip is a bare state_dict; empirical accuracy (92.35% overall, 76.64% WGA on raw test features) indicates it was trained with Stage-0 photometric augmentation enabled."
+  },
+  "dataset": {
+    "release": "waterbird_complete95_forest2water2",
+    "metadata_location": "data/waterbirds/metadata_waterbirds.csv",
+    "metadata_sha256": "7ec721db47c67599634db530625d4eaa4267ce78047701540e9812a1139d0878",
+    "official_splits": {
+      "train": 4795,
+      "val": 1199,
+      "test": 5794
+    },
+    "test_group_counts": {
+      "1": 2255,
+      "2": 2255,
+      "3": 642,
+      "4": 642
+    },
+    "group_mapping": "group = 1 + 2*y + a (1: Landbird on Land, 2: Landbird on Water, 3: Waterbird on Land, 4: Waterbird on Water)"
+  },
+  "randomness": {
+    "main_seed": 0,
+    "deterministic_export": "Deterministic Resize(256, 256) -> CenterCrop(224, 224) evaluation pipeline on CPU."
+  },
+  "environment": {
+    "export": {
+      "os": "Windows-10-10.0.26200-SP0",
+      "python": "3.11.1",
+      "numpy": "2.2.1",
+      "torch": "2.5.1+cpu",
+      "torchvision": "0.20.1+cpu",
+      "device": "cpu",
+      "precision": "float32"
+    }
+  },
+  "selection": {
+    "model_description": "experiments/erm_stage0_seed0/model.json",
+    "validation_use": "None for Stage-0 ERM checkpoint selection (uses fixed final epoch 100 checkpoint ckpt_last.pt).",
+    "candidate_space": "Fixed final epoch (epoch 100)",
+    "metric": null,
+    "direction": null,
+    "selected_checkpoint": "checkpoints/dpe_ckpt_last.zip"
+  },
+  "artifacts": {
+    "model_description": {
+      "location": "experiments/erm_stage0_seed0/model.json",
+      "available": true
+    },
+    "backbone_checkpoint": {
+      "location": "checkpoints/dpe_ckpt_last.zip",
+      "sha256": "84cf80674d874f4a200d7474a9f8df79991071a93a3bad2b1909faa3f83f3572",
+      "available": true
+    },
+    "val_features": {
+      "location": "checkpoints/waterbirds_stage0_standard_erm/feats_val.npy",
+      "sha256": "33e5cc350e0e68f7c7066522e350a4f13fcbbc0d590989db71cc55ea9b83e6cf",
+      "manifest_location": "checkpoints/waterbirds_stage0_standard_erm/feature_manifest_val.json",
+      "manifest_sha256": "b3ca51e5f6d28dd4df4c60f8a24228f118bd821712a73c9161085c6d59b718a3",
+      "available": true
+    },
+    "test_features": {
+      "location": "checkpoints/waterbirds_stage0_standard_erm/feats_test.npy",
+      "sha256": "8bb09522ccb2450ad731b7e01f8d945db5d13bc7429ae337a999cbb08d037612",
+      "manifest_location": "checkpoints/waterbirds_stage0_standard_erm/feature_manifest_test.json",
+      "manifest_sha256": "366417edc70468456a28d781eea83626ca15648bbf16d80d3405c9c9ae4a8560",
+      "available": true
+    },
+    "test_predictions_csv": {
+      "location": "experiments/erm_stage0_seed0/predictions/test/predictions.csv",
+      "sha256": "a50afc3cf676f920c3cfe371b2b0bd4241ec1ad546c083f351c2e42c9a41d53a",
+      "available": true
+    },
+    "test_predictions_provenance": {
+      "location": "experiments/erm_stage0_seed0/predictions/test/provenance.json",
+      "available": true
+    }
+  },
+  "results": {
+    "units": "fractions in [0, 1]",
+    "val": {
+      "count": 1199,
+      "errors": 83,
+      "accuracy": 0.9307756463719766,
+      "worst_group_accuracy": 0.7894736842105263,
+      "per_group": {
+        "1": {
+          "name": "Landbird on Land",
+          "count": 467,
+          "accuracy": 0.9978586723768736
+        },
+        "2": {
+          "name": "Landbird on Water",
+          "count": 466,
+          "accuracy": 0.8905579399141631
+        },
+        "3": {
+          "name": "Waterbird on Land",
+          "count": 133,
+          "accuracy": 0.7894736842105263
+        },
+        "4": {
+          "name": "Waterbird on Water",
+          "count": 133,
+          "accuracy": 0.9774436090225563
+        }
+      }
+    },
+    "test": {
+      "count": 5794,
+      "errors": 443,
+      "accuracy": 0.923541594753193,
+      "worst_group_accuracy": 0.7663551401869159,
+      "per_group": {
+        "1": {
+          "name": "Landbird on Land",
+          "count": 2255,
+          "accuracy": 0.9973392461197339
+        },
+        "2": {
+          "name": "Landbird on Water",
+          "count": 2255,
+          "accuracy": 0.8824833702882483
+        },
+        "3": {
+          "name": "Waterbird on Land",
+          "count": 642,
+          "accuracy": 0.7663551401869159
+        },
+        "4": {
+          "name": "Waterbird on Water",
+          "count": 642,
+          "accuracy": 0.9657320872274143
+        }
+      },
+      "legacy_standardized_feature_diagnostic": {
+        "accuracy": 0.9259578874697963,
+        "worst_group_accuracy": 0.7398753894080997,
+        "note": "Diagnostic only: shows the effect of the legacy notebook bug that fed row-standardized features into the raw-feature linear head."
+      }
+    }
+  },
+  "assessment": {
+    "reproduction_status": "partial reproduction",
+    "claim_scope": "Corrected raw-feature evaluation of the saved Stage-0 ERM checkpoint (checkpoints/dpe_ckpt_last.zip) on the official Waterbirds test split.",
+    "limitations": [
+      "The saved checkpoint is a bare PyTorch state_dict without an embedded training log or config; its empirical accuracy (92.35% overall, 76.64% WGA) aligns with the 100-epoch augmented ERM* Stage-0 recipe."
+    ],
+    "deviations": [],
+    "missing_evidence": [
+      "Exact Stage-0 Kaggle training log for checkpoint sha256 84cf80674d874f4a200d7474a9f8df79991071a93a3bad2b1909faa3f83f3572 was not bundled inside checkpoints/dpe_ckpt_last.zip."
+    ]
+  },
+  "relationships": {
+    "child_experiments": [
+      "dpe_seed0"
+    ],
+    "historical_log_references": [
+      "exp-dpe-waterbirds-ermstar-001",
+      "exp-dpe-waterbirds-standard-002"
+    ]
+  }
+}

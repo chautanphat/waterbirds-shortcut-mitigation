@@ -1,4 +1,4 @@
-/* Run with node --test tests/test_failure_case_viewer.cjs. No packages required. */
+/* Run with node --test tests/test_viewer.cjs. No packages required. */
 'use strict';
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
@@ -6,10 +6,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-const html = fs.readFileSync(path.join(__dirname, '../scripts/failure_case_viewer.html'), 'utf8');
+const html = fs.readFileSync(path.join(__dirname, '../scripts/viewer.html'), 'utf8');
 const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const sandbox = {};
-vm.runInNewContext(script, sandbox, { filename:'failure_case_viewer.html' });
+vm.runInNewContext(script, sandbox, { filename:'viewer.html' });
 const F = sandbox.FailureCases;
 const plain = value => JSON.parse(JSON.stringify(value));
 function row(path, truth, pred, background, extra = {}) {
@@ -36,8 +36,8 @@ test('malformed CSV fails explicitly instead of silently dropping columns or rec
 
 test('existing AutoBackSwap export is accepted with one-based groups and seeds', () => {
   const csv = 'image_path,true_label,predicted_label,correct,group,group_name,spurious_attribute,confidence,run_label,seed\n' +
-    '001.Albatross/a.jpg,waterbird,landbird,0,3,Waterbird on Land,land,0.96,ours_minority_false_seed0,0\n' +
-    '002.Sparrow/b.jpg,landbird,landbird,1,1,Landbird on Land,land,0.82,ours_minority_false_seed0,0\n';
+    '001.Albatross/a.jpg,waterbird,landbird,0,3,Waterbird on Land,land,0.96,autobackswap_seed0,0\n' +
+    '002.Sparrow/b.jpg,landbird,landbird,1,1,Landbird on Land,land,0.82,autobackswap_seed0,0\n';
   const result = F.normalizeRows(F.parseCSV(csv), { filename:'predictions.csv', split:'test' })[0];
   assert.equal(result.scope, 'predictions');
   assert.match(result.label, /seed 0/);
@@ -206,7 +206,7 @@ function mountViewer() {
   const blobs = [];
   const urls = { createObjectURL:blob => { blobs.push(blob); return `blob:local-test-${++nextURL}`; }, revokeObjectURL:() => {} };
   const context = { document, URL:urls, Blob, Uint8Array, atob, setTimeout:fn => fn() };
-  vm.runInNewContext(script, context, { filename:'failure_case_viewer.html' });
+  vm.runInNewContext(script, context, { filename:'viewer.html' });
   const lookup = id => document.getElementById(id);
   lookup.blobs = blobs;
   return lookup;
@@ -320,9 +320,9 @@ test('multi-method modes (common-wrong, active-disagree, any-active-wrong), spec
     row('002.Sparrow/c.jpg', 0, 0, 0, { run_label:'dpe_standard_seed0' }),
   ], 'dpe');
   const abs = run([
-    row('102.Western_Wood_Pewee/a.jpg', 1, 0, 1, { run_label:'ours_minority_false_seed0' }),
-    row('001.Albatross/b.jpg', 1, 0, 1, { run_label:'ours_minority_false_seed0' }),
-    row('002.Sparrow/c.jpg', 0, 0, 0, { run_label:'ours_minority_false_seed0' }),
+    row('102.Western_Wood_Pewee/a.jpg', 1, 0, 1, { run_label:'autobackswap_seed0' }),
+    row('001.Albatross/b.jpg', 1, 0, 1, { run_label:'autobackswap_seed0' }),
+    row('002.Sparrow/c.jpg', 0, 0, 0, { run_label:'autobackswap_seed0' }),
   ], 'abs');
   const poter = run([
     row('102.Western_Wood_Pewee/a.jpg', 1, 0, 1, { run_label:'poter_seed1' }),
@@ -351,11 +351,48 @@ test('multi-method modes (common-wrong, active-disagree, any-active-wrong), spec
 
 test('smart default active runs picks one representative per method family when >4 runs are loaded', () => {
   const runs = [
-    { id:'r1', label:'ours_minority_false_seed0 · seed 0' },
+    { id:'r1', label:'autobackswap_seed0 · seed 0' },
     { id:'r2', label:'ours_minority_false_seed1 · seed 1' },
     { id:'r3', label:'ours_minority_false_seed2 · seed 2' },
     { id:'r4', label:'dpe_standard_seed0 · seed 0' },
     { id:'r5', label:'poter_seed1 · seed 1' },
   ];
   assert.deepEqual(plain(F.defaultActiveRuns(runs)), ['r1', 'r4', 'r5']);
+  assert.equal(F.methodFamily('autobackswap_w_minority_seed0'), 'AutoBackSwap (w/ minority)');
+  assert.equal(F.methodFamily('erm_baseline_seed0'), 'ERM (Baseline)');
+  assert.equal(F.methodFamily('erm_w_minority_seed0'), 'ERM (w/ minority)');
+  assert.equal(F.methodFamily('groupdro_seed0'), 'GroupDRO');
+});
+
+test('multi-run folder load batches runs, picks primary A/B, syncs pill uncheck, and matches space-separated search', async () => {
+  const $ = mountViewer();
+  const makeFile = (folder, label, pred0) => ({
+    name:'predictions.csv',
+    webkitRelativePath:`experiments/${folder}/predictions/test/predictions.csv`,
+    text:async () => `image_path,true_label,predicted_label,spurious_attribute,run_label,seed\n102.Western_Wood_Pewee/a.jpg,0,${pred0},1,${label},0\n001.Albatross/b.jpg,1,1,1,${label},0`,
+  });
+  const files = [
+    makeFile('dpe_seed0', 'dpe_seed0', 1),
+    makeFile('erm_baseline_seed0', 'erm_baseline_seed0', 1),
+    makeFile('erm_baseline_seed1', 'erm_baseline_seed1', 1),
+    makeFile('erm_stage0_seed0', 'erm_stage0_seed0', 1),
+    makeFile('autobackswap_seed0', 'autobackswap_seed0', 0),
+    makeFile('poter_seed1', 'poter_seed1', 1),
+  ];
+  await $('experiment-folder').handlers.change({ target:{ files } });
+  assert.equal($('run-a').value, 'run-1');
+  assert.equal($('run-b').value, 'run-5');
+  assert.equal($('ab-bar').hidden, false);
+
+  $('search').value = 'western wood pewee';
+  $('search').oninput();
+  assert.equal($('gallery').children.length, 1);
+
+  const dpePill = $('active-runs').firstChild;
+  dpePill.click();
+  assert.notEqual($('run-a').value, 'run-1');
+
+  $('mode-pills').children[1].click();
+  assert.equal($('mode').value, 'common-wrong');
+  assert.equal($('ab-bar').hidden, true);
 });

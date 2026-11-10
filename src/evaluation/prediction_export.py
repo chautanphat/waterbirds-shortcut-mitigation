@@ -242,6 +242,20 @@ def export_checkpoint(method, checkpoint, metadata, data_dir, output, *, run_lab
     return write_predictions(output, rows, p, run_label=run_label, seed=seed, provenance=provenance)
 
 
+AUTOBACKSWAP_NAME_MAP = {
+    "ours_minority_false_seed0": "autobackswap_seed0",
+    "ours_minority_false_seed1": "autobackswap_seed1",
+    "ours_minority_false_seed2": "autobackswap_seed2",
+    "ours_minority_true_seed0": "autobackswap_w_minority_seed0",
+    "erm_minority_false_seed0": "erm_baseline_seed0",
+    "erm_minority_false_seed1": "erm_baseline_seed1",
+    "erm_minority_false_seed2": "erm_baseline_seed2",
+    "erm_minority_true_seed0": "erm_w_minority_seed0",
+    "erm_minority_true_seed1": "erm_w_minority_seed1",
+    "erm_minority_true_seed2": "erm_w_minority_seed2",
+}
+
+
 def recover_autobackswap(repo, metadata, output_root, ref="origin/method/autobackswap"):
     """Recover existing test exports from a local Git ref; no fetch or checkout."""
     repo = Path(repo)
@@ -261,6 +275,9 @@ def recover_autobackswap(repo, metadata, output_root, ref="origin/method/autobac
         if len(labels) != 1 or len(seeds) != 1:
             raise ValueError(f"Expected one run and seed in {path}")
         label, seed = next(iter(labels)), int(next(iter(seeds)))
+        raw_dir = PurePosixPath(path).parent.name
+        exp_id = AUTOBACKSWAP_NAME_MAP.get(raw_dir, raw_dir)
+        run_label = AUTOBACKSWAP_NAME_MAP.get(label, label)
         predictions, confidences = [], []
         for row, r in zip(rows, records):
             pred = LABELS.index(r["predicted_label"])
@@ -269,8 +286,8 @@ def recover_autobackswap(repo, metadata, output_root, ref="origin/method/autobac
                 raise ValueError(f"Saved predictions disagree with metadata in {path}")
             predictions.append(pred)
             confidences.append(float(r["confidence"]))
-        destination = Path(output_root) / PurePosixPath(path).parent.name / "predictions" / "test"
-        reports.append(write_predictions(destination, rows, None, run_label=label, seed=seed,
+        destination = Path(output_root) / exp_id / "predictions" / "test"
+        reports.append(write_predictions(destination, rows, None, run_label=run_label, seed=seed,
             predicted_labels=predictions, confidence=confidences,
             provenance=dict(method="erm-autobackswap" if label.startswith("erm_") else "autobackswap",
                 action="Recovered existing predictions; no inference or retraining", source_ref=ref,

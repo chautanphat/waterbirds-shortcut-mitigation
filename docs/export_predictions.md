@@ -1,6 +1,6 @@
-# Export predictions for failure-case inspection
+# Export predictions for multi-method inspection
 
-Use [`scripts/export_predictions.py`](../scripts/export_predictions.py) to write a **new run directory** containing `predictions.csv` and `provenance.json`. Exports contain every example in the requested split, including correct predictions. The [viewer](failure_case_viewer.md) can therefore compare failures without assuming that missing rows are correct.
+Use [`scripts/export_predictions.py`](../scripts/export_predictions.py) to write a **new run directory** containing `predictions.csv` and `provenance.json`. Exports contain every example in the requested split, including correct predictions. The [Waterbirds Prediction Viewer](viewer.md) can therefore compare predictions across methods without assuming that missing rows are correct.
 
 All future method exports follow the [shared predictions.csv v1 protocol](prediction_protocol.md). It is the source of truth for column order, labels, group mapping, confidence, completeness and validation requirements.
 
@@ -23,12 +23,12 @@ python scripts/export_predictions.py recover-autobackswap
 
 The earlier recovery was executed during viewer setup and its historical copies remain under `outputs/failure_cases/`. New recovery runs now write `experiments/<run>/predictions/test/`:
 
-| Export directories | Runs | What they represent |
-| --- | --- | --- |
-| `erm_minority_false_seed0`, `seed1`, `seed2` (same prefix) | 3 | AutoBackSwap implementation's ERM, excluding minority training groups |
-| `erm_minority_true_seed0`, `seed1`, `seed2` (same prefix) | 3 | AutoBackSwap implementation's ERM, including minority training groups |
-| `ours_minority_false_seed0`, `seed1`, `seed2` (same prefix) | 3 | AutoBackSwap, excluding minority training groups |
-| `ours_minority_true_seed0` | 1 | AutoBackSwap, including minority training groups |
+| Export directories | Legacy source directory (`origin/method/autobackswap`) | Runs | What they represent |
+| --- | --- | --- | --- |
+| `autobackswap_seed0`, `seed1`, `seed2` | `ours_minority_false_seed0..2` | 3 | AutoBackSwap, excluding minority training groups |
+| `autobackswap_w_minority_seed0` | `ours_minority_true_seed0` | 1 | AutoBackSwap, including minority training groups |
+| `erm_baseline_seed0`, `seed1`, `seed2` | `erm_minority_false_seed0..2` | 3 | AutoBackSwap implementation's ERM baseline, excluding minority training groups |
+| `erm_w_minority_seed0`, `seed1`, `seed2` | `erm_minority_true_seed0..2` | 3 | AutoBackSwap implementation's ERM baseline, including minority training groups |
 
 Each has 5,794 held-out test rows, with groups of 2,255 / 2,255 / 642 / 642 examples. Recovery checks image identities, target/background labels, group mapping, and correctness against metadata. Each provenance file records the local ref, immutable source commit, source path/hash, metadata hash, and recomputed metrics. Recovery is not a new model evaluation or a new reproduction claim.
 
@@ -42,16 +42,16 @@ All new exports use the general experiment artifact location, independently of t
 
 ```text
 experiments/
-├── erm_minority_true_seed0/predictions/test/
-│   ├── predictions.csv
-│   └── provenance.json
-├── ours_minority_false_seed0/predictions/test/
+├── dpe_seed0/predictions/test/
 │   ├── predictions.csv
 │   └── provenance.json
 ├── poter_seed1/predictions/test/
 │   ├── predictions.csv
 │   └── provenance.json
-└── dpe_original_standard_seed0/predictions/test/
+├── autobackswap_seed0/predictions/test/
+│   ├── predictions.csv
+│   └── provenance.json
+└── erm_stage0_seed0/predictions/test/
     ├── predictions.csv
     └── provenance.json
 
@@ -105,7 +105,7 @@ The older `scripts/autobackswap/dump_all_predictions.py` now also uses the share
 ### Shared ERM / DPE Stage-0 ERM
 
 ```sh
-python scripts/export_predictions.py erm --checkpoint checkpoints/erm/waterbirds_standard/seed0/ckpt_last.pt --metadata data/waterbirds/metadata_waterbirds.csv --data-dir data/waterbirds --run-label erm_shared_standard_seed0 --seed 0 --output experiments/erm_shared_standard_seed0/predictions/test
+python scripts/export_predictions.py erm --checkpoint checkpoints/erm/waterbirds_standard/seed0/ckpt_last.pt --metadata data/waterbirds/metadata_waterbirds.csv --data-dir data/waterbirds --run-label erm_stage0_seed0 --seed 0 --output experiments/erm_stage0_seed0/predictions/test
 ```
 
 This accepts the shared/DPE Stage-0 ResNet-50 state dict with `0.*` backbone and `2.*` classifier keys. It forwards the image through the backbone and CE head using **raw** embeddings, preserving the corrected ERM evaluation behavior. An AutoBackSwap ERM checkpoint instead uses the `autobackswap` command with that ERM run's saved config; do not pass it to this loader.
@@ -126,7 +126,7 @@ With the already-trained object named `dpe`, run this in that session:
 from src.evaluation.dpe_export import save_dpe_probabilities, export_dpe_probabilities
 
 metadata = "data/waterbirds/metadata_waterbirds.csv"
-artifact = "outputs/dpe_original_standard_seed0_probabilities.npz"
+artifact = "outputs/dpe_seed0_probabilities.npz"
 save_dpe_probabilities(
     artifact,
     dpe.predict_proba(target="test", avg=True),
@@ -136,15 +136,15 @@ save_dpe_probabilities(
     source="Original DPE standard-track run; retain its training configuration and log",
 )
 export_dpe_probabilities(
-    artifact, metadata, "experiments/dpe_original_standard_seed0/predictions/test",
-    run_label="dpe_original_standard_seed0", seed=0,
+    artifact, metadata, "experiments/dpe_seed0/predictions/test",
+    run_label="dpe_seed0", seed=0,
 )
 ```
 
 The helpers align image identities to metadata, record the seed and metadata hash, and write the viewer CSV. The object's `predict_proba` uses its original probability averaging. If you already saved identified probabilities as an NPZ with `ids` and `probabilities` (shape `[N,2]` or `[heads,N,2]`), the equivalent CLI is:
 
 ```sh
-python scripts/export_predictions.py dpe-probabilities --artifact outputs/dpe_original_standard_seed0_probabilities.npz --metadata data/waterbirds/metadata_waterbirds.csv --run-label dpe_original_standard_seed0 --seed 0 --output experiments/dpe_original_standard_seed0/predictions/test
+python scripts/export_predictions.py dpe-probabilities --artifact outputs/dpe_seed0_probabilities.npz --metadata data/waterbirds/metadata_waterbirds.csv --run-label dpe_seed0 --seed 0 --output experiments/dpe_seed0/predictions/test
 ```
 
 Columns must represent landbird `0`, waterbird `1`. A `[heads,N,2]` probability array is averaged equally. Do not supply logits or apply the training entropic scale of 30 at inference. Anonymous arrays without image IDs are rejected.
@@ -172,24 +172,24 @@ metadata = Path(data_dir) / "waterbirds/metadata_waterbirds.csv"
 backbone = Path(ckpt_dir) / "ckpt_last.pt"
 
 save_dpe_heads(
-    "outputs/dpe_original_standard_seed0_heads.pt",
+    "outputs/dpe_seed0_heads.pt",
     captured_heads,
     metadata=metadata, backbone=backbone, seed=0,
     source="Original reproduction notebook, standard track, original validation-selected heads",
     normalize_embeddings=True,
 )
 package_notebook_features(
-    "outputs/dpe_original_standard_seed0_features.npz",
+    "outputs/dpe_seed0_features.npz",
     Path(ckpt_dir) / "feats_test.npy",
     Path(ckpt_dir) / "feature_manifest_test.json",
     metadata, backbone,
 )
 export_dpe_heads(
-    "outputs/dpe_original_standard_seed0_heads.pt",
-    "outputs/dpe_original_standard_seed0_features.npz",
+    "outputs/dpe_seed0_heads.pt",
+    "outputs/dpe_seed0_features.npz",
     metadata,
-    "experiments/dpe_original_standard_seed0/predictions/test",
-    run_label="dpe_original_standard_seed0", seed=0,
+    "experiments/dpe_seed0/predictions/test",
+    run_label="dpe_seed0", seed=0,
 )
 ```
 
@@ -200,7 +200,7 @@ The feature packager verifies the corrected notebook's feature-file hash, metada
 For a later session, the equivalent head-export command is:
 
 ```sh
-python scripts/export_predictions.py dpe-heads --heads outputs/dpe_original_standard_seed0_heads.pt --features outputs/dpe_original_standard_seed0_features.npz --metadata data/waterbirds/metadata_waterbirds.csv --run-label dpe_original_standard_seed0 --seed 0 --output experiments/dpe_original_standard_seed0/predictions/test
+python scripts/export_predictions.py dpe-heads --heads outputs/dpe_seed0_heads.pt --features outputs/dpe_seed0_features.npz --metadata data/waterbirds/metadata_waterbirds.csv --run-label dpe_seed0 --seed 0 --output experiments/dpe_seed0/predictions/test
 ```
 
 ## Output contract and verification
@@ -219,7 +219,7 @@ Maintainers can run focused checks without downloads:
 
 ```sh
 python -m unittest discover -s tests -p test_prediction_export.py -v
-node --test tests/test_failure_case_viewer.cjs
+node --test tests/test_viewer.cjs
 ```
 
 Tests check metadata identity/order, probability validation, group metrics, checkpoint format adapters, no pretrained downloads, singleton batches, and original DPE inference against the preserved upstream IsoMax+ implementation. They are CPU smoke/regression checks, not a verified model reproduction. Keep this guide and the adapters consistent when checkpoint formats change.

@@ -35,6 +35,57 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 
 ---
 
+## dpe_seed0 — 2026-11-10
+
+- **Method / version:** Original DPE (`baselines/dpe4subpop/`), 15-head IsoMax+ prototype ensemble with covariance regularization and equal probability averaging at temperature 1.0.
+- **Purpose:** Original reproduction (Stage 1+ 15-head ensemble fitted on saved Stage-0 backbone features and exported to canonical v1 predictions for multi-method failure-case comparison).
+- **Branch or commit:** `feat/prediction-csv-protocol`, commit `423a9d15bdbcb915f96f8caf0af627050bb9b44a`.
+- **Configuration:** [`configs/dpe4subpop/waterbirds_stage1_dpe.yaml`](../configs/dpe4subpop/waterbirds_stage1_dpe.yaml), [`notebooks/dpe_waterbirds_end_to_end.ipynb`](../notebooks/dpe_waterbirds_end_to_end.ipynb).
+- **Run record / frozen predictor:** [`experiments/dpe_seed0/run.json`](../experiments/dpe_seed0/run.json); [`experiments/dpe_seed0/model.json`](../experiments/dpe_seed0/model.json).
+- **Dataset and split:** Official Waterbirds (`waterbird_complete95_forest2water2`), val=1,199 (group-balanced 532-sample draws per stage for fitting; full 1,199 for per-stage epoch selection), test=5,794 (`2,255 / 2,255 / 642 / 642`).
+- **Seed:** 0.
+- **Environment and hardware:** Local Windows 10 CPU, Python 3.11.1, NumPy 2.2.1, PyTorch 2.5.1+cpu, Torchvision 0.20.1+cpu.
+- **Command:** Stage 1+ `train_prototypes` loop wrapped with `capture_notebook_heads`, persisted via `save_dpe_heads` and `package_notebook_features`, and exported via `export_dpe_heads` to `experiments/dpe_seed0/predictions/test`.
+- **Output location:** `experiments/dpe_seed0/predictions/test/{predictions.csv,provenance.json}` and `outputs/dpe_seed0_heads.pt` (untracked).
+- **Results:** Held-out test overall accuracy: **95.7542%** (`0.957542`, 246 errors / 5,794); per-group accuracy `G1..G4`: **[97.7384%, 94.4568%, 93.9252%, 95.1713%]** (counts `2,255 / 2,255 / 642 / 642`); worst-group accuracy (WGA): **93.9252%** (`0.939252`).
+- **Paper comparison or expected behavior:** Annotated DPE $\text{ERM}^*$ paper reference is `94.1 ± 0.4%` test WGA; this single-seed ensemble achieves `93.93%` test WGA.
+- **Status:** completed execution; partial reproduction (single seed; Stage 1+ heads newly trained on CPU from the saved Stage-0 backbone checkpoint `checkpoints/dpe_ckpt_last.zip` because historical Kaggle sessions did not save head weights).
+- **Notes and follow-up:** Verified numerical equivalence between native `IsoMaxPlusLossFirstPart` and `src.evaluation.dpe_export.predict_heads` on all 1,199 validation examples (`max_abs_diff = 5.96e-8`, `label_agreement = 1.0`).
+
+## erm_stage0_seed0 — 2026-11-10
+
+- **Method / version:** Shared Stage-0 ERM ResNet-50 backbone and linear classifier (`src/models/resnet.py`, raw 2048-D feature evaluation).
+- **Purpose:** Corrected raw-feature Stage-0 ERM evaluation and canonical v1 test prediction export from `checkpoints/dpe_ckpt_last.zip`.
+- **Branch or commit:** `feat/prediction-csv-protocol`, commit `423a9d15bdbcb915f96f8caf0af627050bb9b44a`.
+- **Configuration:** [`configs/dpe4subpop/waterbirds_stage0_erm.yaml`](../configs/dpe4subpop/waterbirds_stage0_erm.yaml).
+- **Run record / frozen predictor:** [`experiments/erm_stage0_seed0/run.json`](../experiments/erm_stage0_seed0/run.json); [`experiments/erm_stage0_seed0/model.json`](../experiments/erm_stage0_seed0/model.json).
+- **Dataset and split:** Official Waterbirds (`waterbird_complete95_forest2water2`), val=1,199, test=5,794 (`2,255 / 2,255 / 642 / 642`).
+- **Seed:** 0.
+- **Environment and hardware:** Local Windows 10 CPU, Python 3.11.1, NumPy 2.2.1, PyTorch 2.5.1+cpu, Torchvision 0.20.1+cpu.
+- **Command:** Raw feature extraction (`Resize(256,256) -> CenterCrop(224) -> ImageNet normalize`) and linear head evaluation exported via `src.evaluation.prediction_export.write_predictions` to `experiments/erm_stage0_seed0/predictions/test`.
+- **Output location:** `experiments/erm_stage0_seed0/predictions/test/{predictions.csv,provenance.json}` (untracked).
+- **Results:** Held-out test overall accuracy: **92.3542%** (`0.923542`, 443 errors / 5,794); per-group accuracy `G1..G4`: **[99.7339%, 88.2483%, 76.6355%, 96.5732%]** (counts `2,255 / 2,255 / 642 / 642`); worst-group accuracy (WGA): **76.6355%** (`0.766355`). Validation overall/WGA: `93.0776%` / `78.9474%`.
+- **Paper comparison or expected behavior:** Empirical accuracy (`92.35%` overall, `76.64%` WGA) aligns with the 100-epoch augmented $\text{ERM}^*$ Stage-0 track (`exp-dpe-waterbirds-ermstar-001`).
+- **Status:** completed execution; partial reproduction.
+- **Notes and follow-up:** `checkpoints/dpe_ckpt_last.zip` (`sha256: 84cf8067...`) is a bare state dict without embedded training logs; its raw-feature evaluation resolves the legacy notebook standardization mismatch for this saved checkpoint.
+
+## poter_seed1 — 2026-11-10
+
+- **Method / version:** POTER (`baselines/poter/`, NeurIPS 2026 official baseline reproduction).
+- **Purpose:** Evaluate validation-selected checkpoint `best_validation.pt` (epoch 258, 0-based) on the official Waterbirds test split and export canonical v1 per-example predictions.
+- **Branch or commit:** `feat/prediction-csv-protocol`, commit `423a9d15bdbcb915f96f8caf0af627050bb9b44a` (trained on `phat/poter-windows-cmnist`).
+- **Configuration:** [`configs/poter/waterbirds_standard.yaml`](../configs/poter/waterbirds_standard.yaml) and `checkpoints/poter-results-backup.zip#CUB/Clean/POTER_CUB_seed1_kaggle/config.json`.
+- **Run record / frozen predictor:** [`experiments/poter_seed1/run.json`](../experiments/poter_seed1/run.json); [`experiments/poter_seed1/model.json`](../experiments/poter_seed1/model.json).
+- **Dataset and split:** Official Waterbirds (`waterbird_complete95_forest2water2`), test=5,794 (`2,255 / 2,255 / 642 / 642`).
+- **Seed:** 1.
+- **Environment and hardware:** Trained on Kaggle Linux 1× Tesla T4 (`torch 2.11.0+cu130`); exported on local Windows 10 CPU (`torch 2.5.1+cpu`).
+- **Command:** `python scripts/export_predictions.py poter --checkpoint checkpoints/poter_extracted/CUB/Clean/POTER_CUB_seed1_kaggle/best_validation.pt --metadata dataset/waterbird_complete95_forest2water2/metadata.csv --data-dir dataset --run-label poter_seed1 --seed 1 --output experiments/poter_seed1/predictions/test --batch-size 128`
+- **Output location:** `experiments/poter_seed1/predictions/test/{predictions.csv,provenance.json}` (untracked).
+- **Results:** Held-out test overall accuracy: **91.9917%** (`0.919917`, 464 errors / 5,794); per-group accuracy `G1..G4`: **[92.9047%, 91.0421%, 92.5234%, 91.5888%]** (counts `2,255 / 2,255 / 642 / 642`); worst-group accuracy (WGA): **91.0421%** (`0.910421`).
+- **Paper comparison or expected behavior:** Paper reports `90.9 ± 0.3%` test WGA across 3 seeds; seed 1 achieves `91.04%` test WGA.
+- **Status:** completed execution; partial reproduction (single seed; seeds 2 and 3 pending).
+- **Notes and follow-up:** Follows up [`exp-poter-waterbirds-standard-seed1-001`](#exp-poter-waterbirds-standard-seed1-001--2026-11-04) by recovering `best_validation.pt` and `test.csv` from `checkpoints/poter-results-backup.zip` and exporting full per-example test predictions.
+
 ## exp-dpe-h2-rules-waterbirds-standard-seeds012-003 — 2026-11-09
 
 The date is the documentation date; the supplied log records elapsed times only.
