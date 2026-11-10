@@ -118,7 +118,7 @@ python baselines/dpe4subpop/main.py \
 
 The shared default handoff uses `ckpt_last.pt`, as in the DPE notebook. `ckpt_best_wga.pt` is an additional option for experiments that explicitly use validation selection; export its features to a separate directory to avoid mixing caches. Training only evaluates validation, with held-out test evaluation in a separate script. The original DPE loop also evaluates test each epoch; this reporting is not needed for the last-checkpoint handoff. Record which checkpoint and feature source each downstream run uses.
 
-The [DPE head-reweighting notebook](../../../notebooks/dpe_head_reweighting.ipynb) reuses this trainer end to end. Its [Stage-0 adapter](../dpe_head_reweighting/stage0.py) can train or reuse a completed matching shared run, then generate ordered feature NPZ files and provenance for H2 automatically. The adapter requires the declared 100-epoch recipe and final checkpoint; shortened smoke runs and best-validation checkpoints are excluded from that handoff.
+The [DPE head-reweighting notebook](../../../notebooks/dpe_head_aggregation.ipynb) reuses this trainer end to end. Its [Stage-0 adapter](../dpe_head_reweighting/stage0.py) can train or reuse a completed matching shared run, then generate ordered feature NPZ files and provenance for H2 automatically. The adapter requires the declared 100-epoch recipe and final checkpoint; shortened smoke runs and best-validation checkpoints are excluded from that handoff.
 
 ## Validation and limitations
 

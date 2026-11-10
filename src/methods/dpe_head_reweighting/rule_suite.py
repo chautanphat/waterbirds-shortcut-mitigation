@@ -49,7 +49,7 @@ def load_cache(source, role, manifest, head_ids, ensemble_hash):
 
 def validation_context(source, config_path, config_validator=validate_config, *,
                        script_path='scripts/dpe_weighting_rules.py',
-                       notebook_path='notebooks/dpe_weighting_rules.ipynb'):
+                       notebook_path='notebooks/archive/dpe_weighting_rules.ipynb'):
     source = Path(source).resolve()
     required = ['experiment/manifest.json', 'experiment/selection.json',
                 'checkpoints/ensemble.pt', 'experiment/predictions/B.npz',

@@ -43,7 +43,7 @@ def test_rejects_unsafe_archive_paths_and_incomplete_bundles(tmp_path):
     incomplete = tmp_path / 'incomplete.zip'
     with zipfile.ZipFile(incomplete, 'w') as zipped:
         zipped.writestr(REQUIRED[0], '{}')
-    with pytest.raises(ValueError, match='complete H2 results ZIP'):
+    with pytest.raises(ValueError, match='complete source ZIP'):
         extract_source(incomplete, tmp_path / 'cache')
 
 

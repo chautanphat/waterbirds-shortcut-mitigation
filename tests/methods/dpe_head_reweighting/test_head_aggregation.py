@@ -1,0 +1,574 @@
+"""Synthetic functional checks; no Waterbirds accuracy is established here."""
+import json
+from pathlib import Path
+import zipfile
+
+import numpy as np
+import pytest
+import torch
+import yaml
+
+from src.methods.dpe_head_reweighting import neural_combiner as neural
+from src.methods.dpe_head_reweighting import aggregation_suite as suite
+from src.methods.dpe_head_reweighting import aggregation_study as study
+from src.methods.dpe_head_reweighting.ensemble import PREPROCESSING
+from src.methods.dpe_head_reweighting.experiment import digest, object_hash, write_json
+from src.methods.dpe_head_reweighting import aggregation_source as sources
+
+ROOT = Path(__file__).resolve().parents[3]
+CONFIG = ROOT / suite.DEFAULT_CONFIG
+
+
+def config():
+    c = yaml.safe_load(CONFIG.read_text())
+    c.pop('weighting_rules')
+    return c
+
+
+def routing_problem():
+    # Expert 0 works on background 0; expert 1 on background 1.
+    # Head 2 reveals background, not class. The task is XOR-like for a stacker.
+    g = np.repeat(['00', '01', '10', '11'], 8)
+    y = np.array([int(v[0]) for v in g])
+    a = np.array([int(v[1]) for v in g])
+    q = np.full((15, len(y)), .5)
+    q[0] = np.where(y == a, .1, .9)
+    q[1] = 1 - q[0]
+    q[2] = np.where(a == 0, .6, .4)
+    return np.stack([1 - q, q], axis=-1), y, g
+
+
+def make_bundle(tmp_path, seed=0):
+    source = tmp_path / f'original-{seed}'
+    p, y, g = routing_problem()
+    validation = [dict(id=f'validation-{group}-{i}', y=int(group[0]), group=group, split=1)
+                  for group in neural.GROUPS for i in range(20)]
+    manifest = dict(version=2, protocol=sources.PROTOCOL, validation=validation,
+                    parts=sources.partition(validation), split_seed=0, ratios=[.6, .4],
+                    provenance=dict(track='standard', seed=seed))
+    write_json(source / 'experiment/manifest.json', manifest)
+    model = source / 'checkpoints/ensemble.pt'
+    model.parent.mkdir(parents=True)
+    model.write_bytes(b'Identity only. Prediction-cache suite never loads a head.')
+    write_json(source / 'experiment/heads.json', dict(head_ids=[f'h{i}' for i in range(15)],
+               lock=dict(ensemble=digest(model), manifest=digest(source / 'experiment/manifest.json'))))
+
+    def cache(role):
+        path = source / f'experiment/predictions/{role}.npz'
+        path.parent.mkdir(exist_ok=True)
+        ids = ([row['id'] for row in manifest['parts'][sources.COMBINER_TRAINING]]
+               if role == sources.COMBINER_TRAINING else [f'test-{i}' for i in range(len(y))])
+        np.savez(path, probabilities=p, labels=y, groups=g, ids=ids,
+                 role=role, ensemble_hash=digest(model), preprocessing=PREPROCESSING)
+    cache(sources.COMBINER_TRAINING)
+    return source, cache
+
+
+@pytest.fixture
+def small_config(tmp_path):
+    c = config()
+    c.update(steps=4, weight_decays=[.01])
+    path = tmp_path / 'small.yaml'
+    path.write_text(yaml.safe_dump(c))
+    return path
+
+
+@pytest.mark.parametrize('kind', ['mlp', 'gate'])
+def test_learns_complementary_experts_and_roundtrips(kind):
+    p, y, g = routing_problem()
+    c = config()
+    record, history = neural.fit(p, y, g, c, kind, .001, .25, 10000)
+    prediction, w = neural.predict(json.loads(json.dumps(record)), p)
+    assert neural.metrics(prediction, y, g)['wga'] == 1.
+    assert history['history'][-1]['training_group_balanced_bce'] < history['history'][0]['training_group_balanced_bce']
+    if kind == 'gate':
+        assert (w >= 0).all()
+        np.testing.assert_allclose(w.sum(axis=1), 1, atol=1e-12)
+        assert np.max(np.ptp(w, axis=0)) > .1  # Learned input-dependent routing.
+        assert (prediction[:, 1] >= p[:, :, 1].min(axis=0)).all()
+        assert (prediction[:, 1] <= p[:, :, 1].max(axis=0)).all()
+    else:
+        assert w is None  # Stacking coefficients are not convex head weights.
+    again, _ = neural.predict(record, p)
+    np.testing.assert_array_equal(prediction, again)
+
+
+def test_logistic_learns_reversed_signal():
+    p, y, g = routing_problem()
+    q = np.tile(np.where(y == 0, .9, .1), (15, 1))
+    p = np.stack([1 - q, q], axis=-1)
+    model, _ = neural.fit(p, y, g, config(), 'logistic', .01, 0., 10000)
+    prediction, _ = neural.predict(model, p)
+    assert neural.metrics(prediction, y, g)['wga'] == 1.
+
+
+def test_whole_prediction_dropout_and_inference():
+    q = torch.full((200, 15), .7, dtype=torch.float64)
+    keep = neural.prediction_mask(q, 1., torch.Generator().manual_seed(0))
+    assert (keep.sum(dim=1) == 1).all()
+    with neural.cpu_randomness(1):
+        gate = neural.Combiner('gate', 15, 8)
+        q[:, 0] = .2
+        prediction, w = gate(q, keep)
+        assert (w[~keep] == 0).all()
+        torch.testing.assert_close(w.sum(dim=1), torch.ones(200, dtype=torch.float64))
+        torch.testing.assert_close(prediction, q[keep])
+        inference, weights = gate(q)
+        torch.testing.assert_close(inference, q.mean(dim=1))
+        torch.testing.assert_close(weights, torch.full_like(q, 1 / 15))
+
+
+def test_fits_are_deterministic_and_preserve_global_rng():
+    p, y, g = routing_problem()
+    c = config()
+    c.update(steps=8, weight_decays=[.01])
+    torch.manual_seed(99)
+    rng = torch.get_rng_state().clone()
+    first = neural.fit_all(p, y, g, c, 0)
+    torch.testing.assert_close(torch.get_rng_state(), rng)
+    assert first == neural.fit_all(p, y, g, c, 0)
+    assert 'selected' not in first and 'per_family_selected' not in first
+
+
+def test_all_candidates_retained_even_on_complete_accuracy_ties():
+    p, y, g = routing_problem()
+    q = np.tile(np.where(y == 0, .1, .9), (15, 1))
+    p = np.stack([1 - q, q], axis=-1)
+    c = config()
+    c.update(steps=20, weight_decays=[.01])
+    result = neural.fit_all(p, y, g, c, 0)
+    assert len(result['candidates']) == 6
+    assert 'selected' not in result
+    assert result['complementarity']['combiner_training']['uniform_errors_with_correct_head'] == 0
+
+
+def test_select_without_test_and_frozen_lifecycle(tmp_path, small_config, monkeypatch):
+    source, cache = make_bundle(tmp_path)
+    before = {str(p): p.read_bytes() for p in source.rglob('*') if p.is_file()}
+    output = tmp_path / 'neural'
+    roles = []
+    original_loader = sources.context.__globals__['load_cache']
+    def spy(root, role, *args):
+        roles.append(role)
+        return original_loader(root, role, *args)
+    monkeypatch.setitem(sources.context.__globals__, 'load_cache', spy)
+    decision = suite.fit(source, small_config, output)
+    assert set(roles) == {'combiner_training'}
+    assert not (source / 'experiment/predictions/test.npz').exists()
+    (output / 'candidate_comparison.csv').unlink()
+    assert suite.fit(source, small_config, output) == decision
+    assert (output / 'candidate_comparison.csv').exists()
+    cache('test')
+    result = suite.evaluate(source, small_config, output)
+    assert len(result['results']) == 6
+    assert suite.evaluate(source, small_config, output) == result
+    for path, content in before.items():
+        assert Path(path).read_bytes() == content
+    edited = json.loads((output / 'metrics.json').read_text())
+    edited['results']['uniform']['metrics']['wga'] = -1
+    write_json(output / 'metrics.json', edited)
+    with pytest.raises(ValueError, match='Existing neural test result'):
+        suite.evaluate(source, small_config, output)
+    decision['candidates'][1]['model']['state']['network.bias'][0] += .1
+    write_json(output / 'models.json', decision)
+    with pytest.raises(ValueError, match='Frozen combiner models'):
+        suite.fit(source, small_config, output)
+
+
+def test_source_protection_changed_inputs_and_bad_cache(tmp_path, small_config):
+    source, cache = make_bundle(tmp_path)
+    output = tmp_path / 'neural'
+    suite.fit(source, small_config, output)
+    with pytest.raises(ValueError, match='separate output'):
+        suite.fit(source, small_config, source / 'new')
+    c = yaml.safe_load(small_config.read_text())
+    c['steps'] += 1
+    small_config.write_text(yaml.safe_dump(c))
+    with pytest.raises(ValueError, match='Frozen combiner models'):
+        suite.evaluate(source, small_config, output)
+    cache('test')
+    path = source / 'experiment/predictions/test.npz'
+    with np.load(path) as f:
+        data = dict(f)
+    data['ids'] = data['ids'].astype('U100')
+    data['ids'][0] = json.loads((source / 'experiment/manifest.json').read_text())['validation'][0]['id']
+    np.savez(path, **data)
+    new = tmp_path / 'changed-config'
+    suite.fit(source, small_config, new)
+    with pytest.raises(ValueError, match='overlaps training data'):
+        suite.evaluate(source, small_config, new)
+
+
+def test_prior_study_zip_freezes_all_seeds_before_test(tmp_path, small_config, monkeypatch):
+    outer = tmp_path / 'previous-study.zip'
+    with zipfile.ZipFile(outer, 'w') as archive:
+        for seed in (0, 1):
+            source, cache = make_bundle(tmp_path, seed)
+            cache('test')
+            nested = tmp_path / f'seed{seed}.zip'
+            with zipfile.ZipFile(nested, 'w') as z:
+                for path in source.rglob('*'):
+                    if path.is_file():
+                        z.write(path, str(path.relative_to(source)))
+            archive.write(nested, f'source_archives/heads-standard-seed{seed}.zip')
+    before = outer.read_bytes()
+    stages = []
+    select, evaluate = suite.fit, suite.evaluate
+    def freeze(*args):
+        stages.append('select')
+        return select(*args)
+    def score(*args):
+        stages.append('test')
+        return evaluate(*args)
+    monkeypatch.setattr(suite, 'fit', freeze)
+    monkeypatch.setattr(suite, 'evaluate', score)
+    result = study.run_study(tmp_path / 'work', source=outer, seeds=[0, 1], config_path=small_config)
+    assert stages == ['select', 'select'] and result['summary'] is None
+    stages.clear()
+    result = study.run_study(tmp_path / 'work', source=outer, seeds=[0, 1], config_path=small_config, evaluate_test=True)
+    assert stages == ['select', 'select', 'test', 'test']
+    assert result['summary']['status'] == 'complete'
+    assert result['summary']['results']['uniform']['wga']['sample_std'] == 0
+    assert outer.read_bytes() == before and Path(result['archive']).is_file()
+    with pytest.raises(ValueError, match='Missing frozen head bundles'):
+        study.run_study(tmp_path / 'other', source=outer, seeds=[2], config_path=small_config, mode='cached')
+
+
+def test_auto_download_build_freeze_test_and_reuse(tmp_path, small_config, monkeypatch):
+    work = tmp_path / 'work'
+    downloads, built, inferred, caches = [], [], [], {}
+    def dataset(work_dir, roots, explicit, download):
+        assert download and explicit is None
+        downloads.append(True)
+        return tmp_path / 'dataset'
+    def build(work_dir, data, track, seed, device, workers, resume):
+        assert track == 'standard' and device == 'cpu' and workers == 2 and resume
+        built.append(seed)
+        root, caches[seed] = make_bundle(work_dir / 'head_sources', seed)
+        return root, dict(seed=seed)
+    def infer(c):
+        # All three decisions must exist before ANY test predictions are made.
+        choices = list((work / 'studies').glob('*/comparisons/seed*/models.json'))
+        assert len(choices) == 3
+        assert not (work / 'head_sources' / f"original-{c['seed']}" / 'experiment/predictions/test.npz').exists()
+        inferred.append(c['seed'])
+        caches[c['seed']]('test')
+    monkeypatch.setattr(study, 'ensure_dataset', dataset)
+    monkeypatch.setattr(study, 'build_source', build)
+    monkeypatch.setattr(study, 'ensure_test_cache', infer)
+    run = study.run_study(work, device='cpu', config_path=small_config, evaluate_test=True)
+    assert downloads == [True] and built == inferred == [0, 1, 2]
+    assert run['summary']['status'] == 'complete'
+    assert len(list((Path(run['output_dir']) / 'source_archives').glob('*.zip'))) == 3
+    again = study.run_study(work, device='cpu', config_path=small_config, evaluate_test=True)
+    assert again == run  # Same plan, frozen states and results after managed-source discovery.
+    assert downloads == [True] and built == inferred == [0, 1, 2]
+
+
+def test_auto_mixed_sources_and_interruption_preserve_progress(tmp_path, small_config, monkeypatch):
+    source, _ = make_bundle(tmp_path)
+    original = {str(p): p.read_bytes() for p in source.rglob('*') if p.is_file()}
+    work = tmp_path / 'work'
+    built, interrupted = [], [True]
+    monkeypatch.setattr(study, 'ensure_dataset', lambda *a: tmp_path / 'dataset')
+    monkeypatch.setattr(study, 'ensure_test_cache', lambda *a: pytest.fail('Selection-only must not infer test'))
+    def build(work_dir, data, track, seed, device, workers, resume):
+        built.append(seed)
+        if seed == 2 and interrupted[0]:
+            raise RuntimeError('Interrupted backbone')
+        root, _ = make_bundle(work_dir / 'head_sources', seed)
+        return root, dict(seed=seed)
+    monkeypatch.setattr(study, 'build_source', build)
+    with pytest.raises(RuntimeError, match='Interrupted backbone'):
+        study.run_study(work, source=source, device='cpu', config_path=small_config)
+    output, = [p for p in (work / 'studies').iterdir() if p.is_dir()]
+    assert (output / 'comparisons/seed1/models.json').is_file()
+    with zipfile.ZipFile(output.with_suffix('.zip')) as archive:
+        assert 'source_archives/heads-standard-seed1.zip' in archive.namelist()
+    interrupted[0] = False
+    run = study.run_study(work, source=source, device='cpu', config_path=small_config)
+    assert built == [1, 2, 2] and run['output_dir'] == str(output)
+    assert run['summary'] is None
+    assert json.loads((output / 'progress.json').read_text())['frozen_seeds'] == [0, 1, 2]
+    for path, content in original.items():
+        assert Path(path).read_bytes() == content
+
+
+def test_invalid_grid_and_cached_mode_fail_before_training(tmp_path, small_config, monkeypatch):
+    monkeypatch.setattr(study, 'ensure_dataset', lambda *a: pytest.fail('Must fail before download'))
+    monkeypatch.setattr(study, 'build_source', lambda *a: pytest.fail('Must fail before training'))
+    with pytest.raises(ValueError, match='Missing frozen head bundles'):
+        study.run_study(tmp_path / 'cached', mode='cached', config_path=small_config)
+    c = yaml.safe_load(small_config.read_text())
+    c['steps'] = 0
+    small_config.write_text(yaml.safe_dump(c))
+    with pytest.raises(ValueError, match='neural-combiner contract'):
+        study.run_study(tmp_path / 'invalid', config_path=small_config)
+
+
+@pytest.mark.parametrize('name,value', [('steps', True), ('hidden_units', 0), ('prediction_dropout', 1),
+                                      ('weight_decays', [float('nan')]), ('heads', 14), ('loss', 'test_accuracy')])
+def test_invalid_config(name, value):
+    c = config()
+    c[name] = value
+    with pytest.raises(ValueError):
+        neural.validate_config(c, 15)
+
+
+def test_summary_rejects_different_test_sets(tmp_path):
+    with pytest.raises(ValueError, match='identical test'):
+        suite.summarize(tmp_path, {0: dict(test_identity='a'), 1: dict(test_identity='b')}, [0, 1], 'standard')
+
+
+@pytest.mark.parametrize('hosted', [False, True])
+def test_notebook_runs_and_reuses_saved_models(tmp_path, small_config, monkeypatch, hosted):
+    import shutil
+    import subprocess
+    import sys
+    nbformat = pytest.importorskip('nbformat')
+    nbclient = pytest.importorskip('nbclient')
+    source, cache = make_bundle(tmp_path)
+    cache('test')
+    repo = tmp_path / 'checkout'
+    for folder in ('src', 'scripts', 'configs'):
+        shutil.copytree(ROOT / folder, repo / folder)
+    notebook_path = repo / 'notebooks/dpe_head_aggregation.ipynb'
+    notebook_path.parent.mkdir()
+    notebook = nbformat.read(ROOT / 'notebooks/dpe_head_aggregation.ipynb', as_version=4)
+    work = tmp_path / 'work'
+    for cell in notebook.cells:
+        if cell.cell_type == 'code' and 'SOURCE = None' in cell.source:
+            cell.source = cell.source.replace('SOURCE = None', f'SOURCE = {str(source)!r}')
+            cell.source = cell.source.replace('SEEDS = [0, 1, 2]', 'SEEDS = [0]')
+            cell.source = cell.source.replace('EVALUATE_TEST = False', 'EVALUATE_TEST = True')
+            cell.source = cell.source.replace('WORK_DIR = None', f'WORK_DIR = {str(work)!r}')
+            cell.source = cell.source.replace('CONFIG_PATH = "configs/dpe_head_reweighting/aggregation_comparison.yaml"',
+                                              f'CONFIG_PATH = {str(small_config)!r}')
+            if hosted:
+                cell.source = cell.source.replace('REPO_URL = "https://github.com/chautanphat/waterbirds-shortcut-mitigation.git"',
+                                                  f'REPO_URL = {str(repo)!r}')
+                cell.source = cell.source.replace('REPO_REF = "experiment/dpe-neural-combiner"', 'REPO_REF = "fixture"')
+            else:
+                cell.source = cell.source.replace('REPO_PATH = None', f'REPO_PATH = {str(repo)!r}')
+    nbformat.write(notebook, notebook_path)
+    if hosted:
+        subprocess.run(['git', 'init', '-q', '-b', 'fixture', str(repo)], check=True)
+        subprocess.run(['git', '-C', str(repo), 'add', '.'], check=True)
+        subprocess.run(['git', '-C', str(repo), '-c', 'user.name=Notebook Test', '-c',
+                        'user.email=notebook-test@example.invalid', 'commit', '-qm', 'Synthetic fixture'], check=True)
+    kernels = tmp_path / 'jupyter/kernels/neural-test'
+    kernels.mkdir(parents=True)
+    (kernels / 'kernel.json').write_text(json.dumps(dict(
+        argv=[sys.executable, '-m', 'ipykernel_launcher', '-f', '{connection_file}'],
+        display_name='Neural combiner test', language='python',
+        env=dict(OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', IPYTHONDIR=str(tmp_path / 'ipython'),
+                 JUPYTER_RUNTIME_DIR=str(tmp_path / 'jupyter-runtime')))))
+    monkeypatch.setenv('JUPYTER_PATH', str(tmp_path / 'jupyter'))
+    working = tmp_path / 'empty-session'
+    working.mkdir()
+    active_notebook = working / 'run.ipynb' if hosted else notebook_path
+    nbformat.write(notebook, active_notebook)
+    frozen = None
+    for _ in range(2):
+        actual = nbformat.read(active_notebook, as_version=4)
+        nbclient.NotebookClient(actual, timeout=120, kernel_name='neural-test',
+                                resources={'metadata': {'path': str(working)}},
+                                on_cell_executed=lambda **kwargs: nbformat.write(actual, active_notebook)).execute()
+        out, = [p for p in (work / 'studies').iterdir() if p.is_dir()]
+        model = (out / 'comparisons/seed0/models.json').read_bytes()
+        if frozen is not None:
+            assert model == frozen
+        frozen = model
+        assert json.loads((out / 'summary.json').read_text())['status'] == 'complete'
+        assert (out / 'report.md').is_file() and out.with_suffix('.zip').is_file()
+
+
+def test_default_notebook_without_attachments_downloads_trains_and_reuses(tmp_path, monkeypatch):
+    """Default user cells unchanged; replace only network/image/model dependencies."""
+    import importlib.util
+    import shutil
+    import subprocess
+    import sys
+    nbformat = pytest.importorskip('nbformat')
+    nbclient = pytest.importorskip('nbclient')
+    repo = tmp_path / 'checkout'
+    subprocess.run(['git', 'clone', '-q', '--no-hardlinks', str(ROOT), str(repo)], check=True)
+    for folder in ('src', 'scripts', 'configs'):
+        shutil.copytree(ROOT / folder, repo / folder, dirs_exist_ok=True)
+    previous_spec = importlib.util.spec_from_file_location('backbone_fixture', Path(__file__).with_name('test_notebook.py'))
+    previous = importlib.util.module_from_spec(previous_spec)
+    previous_spec.loader.exec_module(previous)
+    fixture_code = previous.SYNTHETIC_BACKBONE + '''
+import csv
+import src.datasets.loaders as loader_module
+import src.methods.dpe_head_reweighting.aggregation_study as neural_runner
+torch.set_num_threads(1)
+# Preserve the notebook's workers setting while avoiding multiprocessing in this fixture.
+RealDataLoader = loader_module.DataLoader
+def tiny_loader(*args, **kwargs):
+    kwargs['num_workers'] = 0
+    return RealDataLoader(*args, **kwargs)
+loader_module.DataLoader = tiny_loader
+real_run = subprocess.run
+def fixture_download(command, *args, **kwargs):
+    if len(command) > 1 and command[1] == 'scripts/prepare_waterbirds.py':
+        target = Path(command[-1]) / 'waterbirds'
+        target.mkdir(parents=True)
+        (target / 'image.jpg').write_bytes(b'Synthetic fixture only')
+        rows = []
+        for split, counts in enumerate(([3498,184,56,1057], [467,466,133,133], [2255,2255,642,642])):
+            for group, count in zip(('00','01','10','11'), counts):
+                for i in range(count):
+                    name = f'{split}_{group}_{i}.jpg'
+                    (target / name).symlink_to('image.jpg')
+                    rows.append(dict(img_filename=name,y=int(group[0]),place=int(group[1]),split=split))
+        with (target / 'metadata.csv').open('w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+            writer.writeheader()
+            writer.writerows(rows)
+        return subprocess.CompletedProcess(command, 0)
+    return real_run(command, *args, **kwargs)
+subprocess.run = fixture_download
+if (WORK_DIR / 'backbones/standard/seed2/summary.json').exists():
+    def forbidden_training(*args, **kwargs):
+        raise AssertionError('Completed backbones must not retrain')
+    stage0_module.run_training = forbidden_training
+'''
+    notebook = nbformat.read(ROOT / 'notebooks/dpe_head_aggregation.ipynb', as_version=4)
+    assert 'MODE = "auto"' in notebook.cells[1].source and 'SOURCE = None' in notebook.cells[1].source
+    assert 'EVALUATE_TEST = True' in notebook.cells[1].source
+    notebook.cells.insert(3, nbformat.v4.new_code_cell(fixture_code))
+    path = repo / 'notebooks/dpe_head_aggregation.ipynb'
+    nbformat.write(notebook, path)
+    kernels = tmp_path / 'jupyter/kernels/neural-default'
+    kernels.mkdir(parents=True)
+    (kernels / 'kernel.json').write_text(json.dumps(dict(
+        argv=[sys.executable, '-m', 'ipykernel_launcher', '-f', '{connection_file}'],
+        display_name='Default neural study fixture', language='python',
+        env=dict(OMP_NUM_THREADS='1', MKL_NUM_THREADS='1', IPYTHONDIR=str(tmp_path / 'ipython')))))
+    monkeypatch.setenv('JUPYTER_PATH', str(tmp_path / 'jupyter'))
+    frozen = None
+    work = repo / 'outputs/dpe_head_aggregation_session'
+    for _ in range(2):
+        actual = nbformat.read(path, as_version=4)
+        nbclient.NotebookClient(actual, timeout=300, kernel_name='neural-default',
+                                resources={'metadata': {'path': str(repo / 'notebooks')}},
+                                on_cell_executed=lambda **kw: nbformat.write(actual, path)).execute()
+        out, = [p for p in (work / 'studies').iterdir() if p.is_dir()]
+        progress = json.loads((out / 'progress.json').read_text())
+        assert progress['frozen_seeds'] == [0, 1, 2] and progress['stage'] == 'complete'
+        assert progress['evaluated_seeds'] == [0, 1, 2]
+        assert len(json.loads((out / 'summary.json').read_text())['results']) == 30
+        checkpoints, models = [], []
+        for seed in (0, 1, 2):
+            backbone = work / 'backbones/standard' / f'seed{seed}'
+            assert json.loads((backbone / 'summary.json').read_text())['updates'] == 3700
+            checkpoints.append(digest(backbone / 'ckpt_last.pt'))
+            model_bytes = (out / 'comparisons' / f'seed{seed}/models.json').read_bytes()
+            decision = json.loads(model_bytes)
+            assert decision['protocol'] == 'independent_comparison' and decision['training_count'] == 479
+            assert len(decision['candidates']) == 30 and 'selected' not in decision
+            models.append(model_bytes)
+            with zipfile.ZipFile(out / 'source_archives' / f'heads-standard-seed{seed}.zip') as archive:
+                assert 'experiment/predictions/combiner_training.npz' in archive.namelist()
+                manifest = json.loads(archive.read('experiment/manifest.json'))
+                assert {k: len(v) for k, v in manifest['parts'].items()} == {'head_training': 720, 'combiner_training': 479}
+                assert 'experiment/selection.json' not in archive.namelist()
+                assert 'experiment/predictions/C.npz' not in archive.namelist()
+                assert 'experiment/predictions/B.npz' not in archive.namelist()
+                assert 'experiment/predictions/test.npz' in archive.namelist()
+        if frozen is not None:
+            assert frozen == (checkpoints, models)
+        frozen = (checkpoints, models)
+        assert out.with_suffix('.zip').is_file()
+
+
+def test_two_splits_are_direct_disjoint_and_cover_validation():
+    validation = [dict(id=f'{group}-{i}', y=int(group[0]), group=group, split=1)
+                  for group, count in zip(neural.GROUPS, [467, 466, 133, 133]) for i in range(count)]
+    parts = sources.partition(validation)
+    assert {role: len(rows) for role, rows in parts.items()} == {'head_training': 720, 'combiner_training': 479}
+    head_ids = {r['id'] for r in parts['head_training']}
+    combiner_ids = {r['id'] for r in parts['combiner_training']}
+    assert not head_ids & combiner_ids
+    assert head_ids | combiner_ids == {r['id'] for r in validation}
+    assert parts == sources.partition(validation[::-1]) or all(
+        {r['id'] for r in parts[role]} == {r['id'] for r in sources.partition(validation[::-1])[role]}
+        for role in parts)
+
+
+def test_combiner_training_only_and_all_configurations_reach_test(tmp_path, monkeypatch):
+    c = yaml.safe_load(CONFIG.read_text())
+    c['steps'] = 4
+    path = tmp_path / 'combined.yaml'
+    path.write_text(yaml.safe_dump(c))
+    source, cache = make_bundle(tmp_path)
+    p, y, g = routing_problem()
+    calls = []
+    real_fit = neural.fit
+    def spy(p_train, y_train, g_train, *args):
+        calls.append(len(y_train))
+        np.testing.assert_array_equal(p_train, p)
+        return real_fit(p_train, y_train, g_train, *args)
+    monkeypatch.setattr(neural, 'fit', spy)
+    output = tmp_path / 'combined-output'
+    decision = suite.fit(source, path, output)
+    assert calls == [32] * 10
+    assert decision['training_role'] == 'combiner_training'
+    assert len(decision['candidates']) == 30
+    assert 'selected' not in decision
+    scores = np.array([neural.metrics(head, y, g)['wga'] for head in p])
+    from src.methods.dpe_head_reweighting.reweighting import weights
+    actual = {row['id']: row for row in decision['candidates']}
+    for alpha in (.25, .5, .75, 1):
+        for gamma in (1, 2, 4):
+            expected, _ = weights(scores, alpha, gamma)
+            np.testing.assert_allclose(actual[f'power-a{alpha}-g{gamma}']['weights'], expected)
+    cache('test')
+    result = suite.evaluate(source, path, output)
+    assert set(result['results']) == set(actual)
+    summary = suite.summarize(tmp_path / 'aggregate', {0: result}, [0], 'standard')
+    assert len(summary['results']) == 30
+    assert suite.evaluate(source, path, output) == result
+    decision['candidates'][1]['model']['state']['network.weight'][0][0] += .1
+    write_json(output / 'models.json', decision)
+    with pytest.raises(ValueError, match='Frozen combiner models'):
+        suite.evaluate(source, path, output)
+
+
+def test_native_test_recovery_uses_verified_features_and_preserves_input(tmp_path, monkeypatch):
+    source, _ = make_bundle(tmp_path)
+    features = tmp_path / 'features'
+    features.mkdir()
+    (features / 'metadata.csv').write_text('metadata identity only')
+    (features / 'val_raw.npz').write_bytes(b'validation features identity')
+    (features / 'test_raw.npz').write_bytes(b'test features identity')
+    manifest_path = source / 'experiment/manifest.json'
+    manifest = json.loads(manifest_path.read_text())
+    manifest.update(backbone_hash='backbone-identity', metadata_hash=digest(features / 'metadata.csv'),
+                    val_features_hash=digest(features / 'val_raw.npz'))
+    write_json(manifest_path, manifest)
+    write_json(features / 'provenance.json', manifest['provenance'])
+    artifacts = {name: digest(features / name) for name in ('metadata.csv', 'val_raw.npz', 'test_raw.npz', 'provenance.json')}
+    write_json(features / 'handoff.json', dict(identity=dict(checkpoint_sha256='backbone-identity'), artifacts=artifacts))
+    head_record = json.loads((source / 'experiment/heads.json').read_text())
+    head_record['lock']['manifest'] = digest(manifest_path)
+    write_json(source / 'experiment/heads.json', head_record)
+    p, y, groups = routing_problem()
+    metadata = [*manifest['validation'], *[dict(id=f'test-{i}', y=int(yy), group=gg, split=2)
+                                          for i, (yy, gg) in enumerate(zip(y, groups))]]
+    monkeypatch.setattr(sources.ex, 'metadata', lambda path: metadata)
+    monkeypatch.setattr(sources.ex, 'feature_file', lambda *args: np.ones((len(y), 2048)))
+    monkeypatch.setattr(sources.ensemble, 'load', lambda *args: dict(
+        provenance=dict(manifest=digest(manifest_path)), preprocessing=PREPROCESSING))
+    monkeypatch.setattr(sources.ensemble, 'predict', lambda *args, **kwargs: p)
+    original = {str(path): path.read_bytes() for path in source.rglob('*') if path.is_file()}
+    recovered = sources.recover_test_cache(source, [features], tmp_path / 'work')
+    assert recovered != source and (recovered / 'experiment/predictions/test.npz').exists()
+    assert not (source / 'experiment/predictions/test.npz').exists()
+    assert sources.recover_test_cache(source, [features], tmp_path / 'work') == recovered
+    for path, contents in original.items():
+        assert Path(path).read_bytes() == contents
+    (features / 'test_raw.npz').write_bytes(b'changed features')
+    with pytest.raises(ValueError, match='handoff changed'):
+        sources.verified_test_features(source, [features])

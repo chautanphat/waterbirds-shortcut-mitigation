@@ -169,7 +169,7 @@ def test_full_study_notebook_without_any_h2_zip(tmp_path, monkeypatch):
         writer=csv.DictWriter(f,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
     previous_spec=importlib.util.spec_from_file_location('original_notebook_fixture',Path(__file__).with_name('test_notebook.py'))
     previous=importlib.util.module_from_spec(previous_spec);previous_spec.loader.exec_module(previous)
-    notebook=nbformat.read(ROOT/'notebooks/dpe_weighting_rules.ipynb',as_version=4)
+    notebook=nbformat.read(ROOT/'notebooks/archive/dpe_weighting_rules.ipynb',as_version=4)
     work=tmp_path/'work'
     for cell in notebook.cells:
         if cell.cell_type=='code' and 'MODE = "auto"' in cell.source:
@@ -180,7 +180,8 @@ def test_full_study_notebook_without_any_h2_zip(tmp_path, monkeypatch):
                 cell.source=cell.source.replace(old,new)
     notebook.cells.insert(3,nbformat.v4.new_code_cell(previous.SYNTHETIC_BACKBONE+'\ntorch.set_num_threads(1)\n'))
     notebook.cells[3].pop('id',None)
-    path=repo/'notebooks/dpe_weighting_rules.ipynb'
+    path=repo/'notebooks/archive/dpe_weighting_rules.ipynb'
+    path.parent.mkdir(parents=True, exist_ok=True)
     nbformat.write(notebook,path)
     kernels=tmp_path/'jupyter/kernels/full-study';kernels.mkdir(parents=True)
     (kernels/'kernel.json').write_text(json.dumps(dict(argv=[sys.executable,'-m','ipykernel_launcher','-f','{connection_file}'],

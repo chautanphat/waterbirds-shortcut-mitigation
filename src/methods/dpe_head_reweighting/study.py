@@ -210,7 +210,7 @@ def run_study(work_dir, *, track=None, seeds=None, source=None, search_roots=(),
                 settings=settings, rules=rules,
                 cached_sources={str(s): cached[s][1] for s in seeds if s in cached and not managed[s]},
                 implementation=ex.runtime()['implementation'],
-                notebook=rule_suite.notebook_code_hash('notebooks/dpe_weighting_rules.ipynb'))
+                notebook=rule_suite.notebook_code_hash('notebooks/archive/dpe_weighting_rules.ipynb'))
     study_dir = work / 'studies' / f"{track}-seeds{''.join(map(str,seeds))}-{ex.object_hash(plan)[:10]}"
     study_dir.mkdir(parents=True, exist_ok=True)
     ex.write_json(study_dir / 'plan.json', plan)

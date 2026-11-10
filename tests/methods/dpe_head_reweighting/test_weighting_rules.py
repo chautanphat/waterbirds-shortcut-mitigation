@@ -271,9 +271,9 @@ def test_rules_notebook_execution_and_reuse(tmp_path, monkeypatch, mode):
     repo = tmp_path / 'checkout'
     for folder in ('src', 'scripts', 'configs'):
         shutil.copytree(ROOT / folder, repo / folder)
-    notebook_path = repo / 'notebooks/dpe_weighting_rules.ipynb'
-    notebook_path.parent.mkdir()
-    template = nbformat.read(ROOT / 'notebooks/dpe_weighting_rules.ipynb', as_version=4)
+    notebook_path = repo / 'notebooks/archive/dpe_weighting_rules.ipynb'
+    notebook_path.parent.mkdir(parents=True)
+    template = nbformat.read(ROOT / 'notebooks/archive/dpe_weighting_rules.ipynb', as_version=4)
     work = tmp_path / 'session'
     mount = tmp_path / 'attached-input'
     mount.mkdir()
@@ -320,7 +320,7 @@ sys.modules["google.colab"] = mock_colab
 '''
     nbformat.write(template, notebook_path)
     if mode != 'existing':
-        subprocess.run(['git', '-C', str(repo), 'add', 'notebooks/dpe_weighting_rules.ipynb'], check=True)
+        subprocess.run(['git', '-C', str(repo), 'add', 'notebooks/archive/dpe_weighting_rules.ipynb'], check=True)
         subprocess.run(['git', '-C', str(repo), '-c', 'user.name=Notebook Test',
                         '-c', 'user.email=notebook-test@example.invalid', 'commit', '-qm', 'Configure fixture'], check=True)
     kernels = tmp_path / 'jupyter/kernels/h2-rules'
@@ -364,7 +364,7 @@ sys.modules["google.colab"] = mock_colab
 
 def test_notebook_hash_ignores_execution_but_detects_code_edits(tmp_path):
     path = tmp_path / 'notebook.ipynb'
-    notebook = json.loads((ROOT / 'notebooks/dpe_weighting_rules.ipynb').read_text())
+    notebook = json.loads((ROOT / 'notebooks/archive/dpe_weighting_rules.ipynb').read_text())
     path.write_text(json.dumps(notebook))
     original = suite.notebook_code_hash(path)
     code = next(c for c in notebook['cells'] if c['cell_type'] == 'code')
