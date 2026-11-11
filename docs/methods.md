@@ -184,3 +184,53 @@ Mean over seeds (paper: mean ± std over 5 seeds). Per-run and per-group numbers
 - fp32 instead of the default bf16 + `torch.compile`; chunked generation to fit a 15 GB GPU; WILDS copy of the data. All deviations are listed in `baselines/autobackswap/README.md`.
 - The upstream `test_accuracies.txt` swaps the labels of the two middle groups. Worst group is Landbird on Water without minority (ERM and AutoBackSwap) and Waterbird on Land for ERM with minority.
 - The upstream repository has no licence file at the pinned commit.
+
+## XRM Waterbirds ERM linear probe
+
+### Overview
+- **Full name:** Empirical Risk Minimization on frozen XRM Waterbirds features.
+- **Paper:** Pezeshki et al., [Discovering Environments with XRM](https://proceedings.mlr.press/v235/pezeshki24a.html), ICML 2024.
+- **Source:** [facebookresearch/XRM](https://github.com/facebookresearch/XRM), commit `5e90815250aedea546b9e17ffd5d7e0a7c34c20f`, CC BY-NC; preserved in [`baselines/xrm/`](../baselines/xrm/).
+- **Year:** 2024.
+- **Implementation location:** Upstream `baselines/xrm/`; project adapter [`src/methods/erm/xrm.py`](../src/methods/erm/xrm.py), with setup and commands in [`src/methods/erm/README.md`](../src/methods/erm/README.md).
+
+### Mechanism and implementation
+- **Backbone:** ImageNet ResNet-50 features are precomputed and frozen; upstream trains a linear classification head.
+- **Loss:** Cross-entropy over the class label. Group labels are not used in the training objective.
+- **Training procedure:** 5,001 updates, SGD, selected upstream hyperparameter combination 4. Validation WGA selects the checkpoint; the last checkpoint on a tie matches upstream.
+- **Configuration:** [`configs/erm/waterbirds_xrm.yaml`](../configs/erm/waterbirds_xrm.yaml).
+
+### Experimental settings and evaluation
+- **Dataset and split:** Official Waterbirds split (4,795/1,199/5,794); group labels are available for validation selection and reporting.
+- **Settings:** LR 0.0008591316, batch size 68, weight decay 0.0008280434, checkpoint interval 50, 4 data-loader workers, CPU.
+- **Seeds:** Seven complete archived seeds (0–6); seed 7 ended at step 0 and is excluded. Seeds 8–9 are absent.
+- **Results:** Recomputed from archived JSON histories in [`results/erm/summary.md`](../results/erm/summary.md); only overall accuracy and WGA are in the logs. Per-group accuracy cannot be reconstructed from the retained logs.
+- **Status:** Partial reproduction. The code follows the selected upstream Waterbirds configuration; the historical run command/commit and per-seed software versions were not captured.
+
+### Notes
+This frozen-feature XRM ERM baseline is distinct from the project's shared DPE-aligned full-backbone ERM in [`src/methods/erm/README.md`](../src/methods/erm/README.md). Local upstream compatibility modifications are listed in [`baselines/xrm/ORIGINAL_SOURCE.md`](../baselines/xrm/ORIGINAL_SOURCE.md).
+
+## XRM Waterbirds GroupDRO
+
+### Overview
+- **Full name:** Group Distributionally Robust Optimization using XRM's Waterbirds implementation.
+- **Paper:** Pezeshki et al., [Discovering Environments with XRM](https://proceedings.mlr.press/v235/pezeshki24a.html), ICML 2024; the GroupDRO objective follows the authors' implementation.
+- **Source:** [facebookresearch/XRM](https://github.com/facebookresearch/XRM), commit `5e90815250aedea546b9e17ffd5d7e0a7c34c20f`, CC BY-NC; preserved in [`baselines/xrm/`](../baselines/xrm/).
+- **Year:** 2024.
+- **Implementation location:** Upstream [`baselines/xrm/algorithms.py`](../baselines/xrm/algorithms.py); project adapter and guide in [`src/methods/groupdro/`](../src/methods/groupdro/).
+
+### Mechanism and implementation
+- **Backbone:** Frozen ImageNet ResNet-50 features and a trained linear head.
+- **Loss:** Exponentially reweighted average of observed group losses using the upstream GroupDRO `eta` update.
+- **Training procedure:** Human-provided Waterbirds groups are used in the objective. The selected upstream hyperparameter combination is 8; validation WGA selects the checkpoint, with the last checkpoint on ties.
+- **Configuration:** [`configs/groupdro/waterbirds_xrm.yaml`](../configs/groupdro/waterbirds_xrm.yaml).
+
+### Experimental settings and evaluation
+- **Dataset and split:** Official Waterbirds split (4,795/1,199/5,794); four target/background groups.
+- **Settings:** LR 0.0005582887, batch size 122, weight decay 0.0004051199, `eta=0.01152687`, 5,001 updates, checkpoint interval 50, 4 workers, CPU.
+- **Seeds:** Six complete archived seeds (0–5); seed 6 stopped at step 3,150 and is excluded. Seeds 7–9 are absent.
+- **Results:** Recomputed from archived JSON histories in [`results/groupdro/summary.md`](../results/groupdro/summary.md); historical logs do not contain per-group accuracy.
+- **Status:** Partial reproduction; the incomplete seed is explicitly excluded from the aggregate.
+
+### Notes
+This method uses oracle groups during training, unlike the XRM ERM baseline. Device-safe GroupDRO weights and checkpoint persistence for its `q` vector are documented as project modifications in the upstream provenance record. Setup and commands are in [`src/methods/groupdro/README.md`](../src/methods/groupdro/README.md).

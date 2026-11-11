@@ -1,0 +1,17 @@
+{
+  "experiment_id": "exp-xrm-waterbirds-erm-selected",
+  "status": "partial_reproduction",
+  "upstream_repository": "https://github.com/facebookresearch/XRM",
+  "upstream_commit": "5e90815250aedea546b9e17ffd5d7e0a7c34c20f",
+  "run_commit": null,
+  "run_commit_note": "The historical XRM result files do not record the executed code commit.",
+  "config": "configs/erm/waterbirds_xrm.yaml",
+  "raw_artifact_directory": "results/archive/xrm_waterbirds_initial/erm",
+  "completed_seeds": [0, 1, 2, 3, 4, 5, 6],
+  "incomplete_seeds": {"7": "stopped at step 0 of 5001"},
+  "missing_seeds": [8, 9],
+  "selection_metric": "va_wga",
+  "selection_rule": "last occurrence of maximum validation WGA",
+  "environment_from_handoff": {"os": "Windows", "python": "3.9", "torch": "1.13.0", "torchvision": "0.14.0", "device": "cpu", "processor": "11th Gen Intel Core i7-11390H"},
+  "per_run_environment_recorded": false
+}

@@ -295,3 +295,45 @@ The date is the documentation date; the supplied execution log contains elapsed 
 - **Paper comparison or expected behavior:** paper 74.9 ± 3.3 / 93.6 ± 0.4, both within 2σ (seed 1 worst-group is 1.85σ above the paper mean)
 - **Status:** partial reproduction
 - **Notes and follow-up:** the first seed 0 attempt stopped at epoch 42 of 50 (most likely a notebook kernel restart, not verified) and was rerun with the same seed.
+
+## exp-xrm-waterbirds-erm-selected — historical archive
+
+- **Method / version:** Authors' ERM from [`baselines/xrm/`](../baselines/xrm/), upstream commit `5e90815250aedea546b9e17ffd5d7e0a7c34c20f`.
+- **Purpose:** Historical Waterbirds baseline with human group labels reserved for validation model selection/evaluation.
+- **Branch or commit:** The original run commit was not recorded.
+- **Configuration:** [`configs/erm/waterbirds_xrm.yaml`](../configs/erm/waterbirds_xrm.yaml); selected combination 4, 5,001 updates, validation-WGA checkpoint selection.
+- **Dataset and split:** Official Waterbirds train/validation/test split, 4,795/1,199/5,794.
+- **Seeds:** 0–6 complete; seed 7 stopped at step 0 and is excluded; seeds 8–9 are missing.
+- **Environment and hardware:** Handoff records Windows CPU, Python 3.9, PyTorch 1.13.0, torchvision 0.14.0, 11th Gen Intel Core i7-11390H. Per-run package versions were not logged.
+- **Command:** Historical exact command not retained. Current reproduction command is in [`src/methods/erm/README.md`](../src/methods/erm/README.md).
+- **Output location:** Raw JSON in [`results/archive/xrm_waterbirds_initial/erm/`](../results/archive/xrm_waterbirds_initial/erm/); generated report at [`results/erm/summary.md`](../results/erm/summary.md).
+- **Results:** Aggregated from each JSON history at the last occurrence of maximum validation WGA. See the generated summary; incomplete/missing seeds are identified and excluded.
+- **Status:** Partial reproduction; historical per-group accuracy and selected checkpoint weights are unavailable.
+
+## exp-xrm-waterbirds-groupdro-selected — historical archive
+
+- **Method / version:** Authors' GroupDRO from [`baselines/xrm/`](../baselines/xrm/), upstream commit `5e90815250aedea546b9e17ffd5d7e0a7c34c20f`.
+- **Purpose:** Historical Waterbirds baseline using human-annotated groups in the GroupDRO objective.
+- **Branch or commit:** The original run commit was not recorded.
+- **Configuration:** [`configs/groupdro/waterbirds_xrm.yaml`](../configs/groupdro/waterbirds_xrm.yaml); selected combination 8, `eta=0.01152687`, 5,001 updates, validation-WGA checkpoint selection.
+- **Dataset and split:** Official Waterbirds train/validation/test split, 4,795/1,199/5,794.
+- **Seeds:** 0–5 complete; seed 6 stopped at step 3,150 and is excluded; seeds 7–9 are missing.
+- **Environment and hardware:** Handoff records Windows CPU, Python 3.9, PyTorch 1.13.0, torchvision 0.14.0, 11th Gen Intel Core i7-11390H. Per-run package versions were not logged.
+- **Command:** Historical exact command not retained. Current reproduction command is in [`src/methods/groupdro/README.md`](../src/methods/groupdro/README.md).
+- **Output location:** Raw JSON in [`results/archive/xrm_waterbirds_initial/groupdro/`](../results/archive/xrm_waterbirds_initial/groupdro/); generated report at [`results/groupdro/summary.md`](../results/groupdro/summary.md).
+- **Results:** Aggregated from each JSON history at the last occurrence of maximum validation WGA. See the generated summary; incomplete/missing seeds are identified and excluded.
+- **Status:** Partial reproduction; historical per-group accuracy and selected checkpoint weights are unavailable.
+
+## exp-xrm-waterbirds-smoke — 2026-11-08
+
+- **Method / version:** Project adapters over the authors' ERM and GroupDRO implementations in [`baselines/xrm/`](../baselines/xrm/), source commit `5e90815250aedea546b9e17ffd5d7e0a7c34c20f`.
+- **Purpose:** Two-update CPU smoke runs for each method, followed by selected-checkpoint evaluation through the project evaluator; these are pipeline checks, not benchmark runs.
+- **Branch or commit:** `method/erm+groupdro`; local source commit is not recorded as a run artifact.
+- **Configuration:** [`configs/erm/waterbirds_xrm.yaml`](../configs/erm/waterbirds_xrm.yaml) and [`configs/groupdro/waterbirds_xrm.yaml`](../configs/groupdro/waterbirds_xrm.yaml); seed 0; two updates; checkpoint frequency 1; zero workers.
+- **Dataset and split:** Existing prepared Waterbirds features; official test split, 5,794 examples.
+- **Environment and hardware:** Windows CPU; Python 3.9, PyTorch 1.13.0, torchvision 0.14.0.
+- **Command:** Run `python scripts/run_xrm_baseline.py --method <erm|groupdro> --seed 0 --max-steps 2 --checkpoint-frequency 1 --workers 0 --output-root outputs/xrm_<method>_smoke`, then evaluate the generated `*_best_wga.pt` checkpoint with `scripts/evaluate_xrm_checkpoint.py`.
+- **Output location:** Local ignored `outputs/xrm_erm_smoke/` and `outputs/xrm_groupdro_smoke/`.
+- **Results:** Both methods completed two updates and checkpoint evaluation reported all four groups with counts 2,255/2,255/642/642. Accuracy from a two-update run is not meaningful and is not included as a method result.
+- **Status:** Smoke tests passed. The focused XRM test module also passes five checks for objectives, metrics, checkpoint resume, Windows filename parsing, and incomplete-run aggregation.
+- **Notes and follow-up:** The historical run summaries are generated by [`scripts/summarize_xrm_baselines.py`](../scripts/summarize_xrm_baselines.py); incomplete seeds remain excluded.
