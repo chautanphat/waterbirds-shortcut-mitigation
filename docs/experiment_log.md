@@ -35,6 +35,22 @@ Use repository-relative paths in every entry. Link implementation changes to `ba
 
 ---
 
+## exp-dpe-waterbirds-reweighting-003 — 2026-11-10
+
+- **Method / version:** DPE head aggregation, Kaggle version 4 / script version `367976457`; project aggregation runtime 6.
+- **Purpose:** Exploratory comparison of uniform averaging, 19 nonuniform global weighting configurations and 10 neural combiners on the same frozen heads. Follow-up to H2 in the historical `report/main.tex`.
+- **Branch or commit:** Executed branch `experiment/dpe-neural-combiner`, clean commit `8e14249f4b3510363be06f627182e2daa9926179`. Review completed 2026-11-12 on `docs/dpe-reweighting-review`.
+- **Configuration:** [Tracked actual settings and provenance](../experiments/exp-dpe-waterbirds-reweighting-003/record.json). Executed implementation uses `configs/dpe_head_reweighting/aggregation_comparison.yaml` at the run commit. Backbone: ImageNet-1K V2 ResNet-50, 100 epochs, SGD LR 0.001, momentum 0.9, weight decay 0, class-balanced sampling, deterministic preprocessing. Heads: 15 × 20 epochs; combiner fits: 400 fixed steps.
+- **Dataset and split:** Official Waterbirds 4,795 / 1,199 / 5,794. Validation is partitioned with fixed split seed 0 into disjoint head-training (720) and combiner-training (479) sets. Head fitting and epoch selection use only head-training; all weighting/combiner fitting uses only combiner-training. All configurations freeze before test evaluation. No separate candidate-selection split.
+- **Seed:** 0, 1, 2; same validation partition and test identities across seeds.
+- **Environment and hardware:** Kaggle `NvidiaTeslaT4` machine shape, CUDA for backbone/heads; CPU float64 neural combiners. Python 3.13.16, torch 2.11.0+cu130, torchvision 0.26.0+cu130, CUDA 13.0, NumPy 2.1.3, SciPy 1.16.3. GPU count not recorded. Papermill runtime 4 h 51 min 20 s, 2026-11-10 15:01:38–19:52:58 Asia/Saigon.
+- **Command:** Run All in the [executed notebook](https://www.kaggle.com/kernels/scriptcontent/367976457/download), using `MODE="auto"`, `SEEDS=[0,1,2]`, `TRACK="standard"`, `EVALUATE_TEST=True`, `DEVICE="auto"`; `run_study` uses the recorded aggregation configuration. No model training was rerun during review.
+- **Output location:** [Immutable Kaggle version](https://www.kaggle.com/code/noerula/dpe-reweighting?scriptVersionId=367976457); study `aggregation-standard-seeds012-0dcf563966c5`. Raw review evidence in `outputs/dpe-kaggle-v4/` (untracked). Historical tables and figures in [supporting-evidence archive](../results/dpe/supporting_evidence.zip) under `results/dpe/head_aggregation_kaggle_v4/`.
+- **Results:** Mean ± sample SD over three seeds: uniform test WGA **89.5196 ± 0.6538%**, overall **91.2668 ± 0.3293%**. Dropout MLP (either weight decay): WGA **89.9926 ± 0.0923%**, overall **91.4049 ± 0.1726%**, paired WGA change **+0.4730 ± 0.6672 pp**. Per-seed WGA gains **+0.1330 / +0.0443 / +1.2417 pp**. Ordinary gate WGA **86.5780 ± 2.5189%**, change **−2.9416 pp**. No global weighting configuration improves mean WGA (one tie, 18 lower). All per-group accuracies and counts in the supporting archive, in order `00/01/10/11`, test counts `2255/2255/642/642`.
+- **Paper comparison or expected behavior:** The simple global-weighting H2 mechanism is unsupported by this run. A small neural-stacker signal merits a prespecified calibration control. Compare with this run's matched uniform reference, not the earlier 89.00% single-seed reproduction; training profile and data allocation differ.
+- **Status:** Completed exploratory Waterbirds adaptation; not a paper reproduction or final selected-method benchmark. The test set previously informed project research, and all 30 configurations are independently reported rather than selected by test.
+- **Notes and follow-up:** Detailed findings and log audit in the supporting archive. Independent NumPy inference reproduced all 90 test results and training metric records, group counts, NLL, paired error IDs and summary statistics. Seed 0's joint lambda-0.01 solver fallback passed its saved numerical certificate. Gates concentrated on roughly one effective head. The user-run Kaggle verification, documented in the supporting archive, subsequently reproduced all 90 results, saved states and full test-image inference on all three original source seeds. Additional combiner runs do not establish dropout superiority over plain MLP. The subsequent five-seed verification is recorded below. Each configuration remains independently evaluated without a required selection split.
+
 ## dpe_seed0 — 2026-11-10
 
 - **Method / version:** Original DPE (`baselines/dpe4subpop/`), 15-head IsoMax+ prototype ensemble with covariance regularization and equal probability averaging at temperature 1.0.
@@ -295,3 +311,13 @@ The date is the documentation date; the supplied execution log contains elapsed 
 - **Paper comparison or expected behavior:** paper 74.9 ± 3.3 / 93.6 ± 0.4, both within 2σ (seed 1 worst-group is 1.85σ above the paper mean)
 - **Status:** partial reproduction
 - **Notes and follow-up:** the first seed 0 attempt stopped at epoch 42 of 50 (most likely a notebook kernel restart, not verified) and was rerun with the same seed.
+
+## exp-dpe-waterbirds-five-seed-verification-004 — analyzed 2026-11-12
+
+- **Method:** learned prediction aggregation of frozen DPE-style heads; Waterbirds / ResNet-50 fixed.
+- **Sources:** seeds 0–4, with 0–2 reused and 3–4 newly trained; 30 configurations each; primary validation partition 0.
+- **Source:** commit `8e14249f4b3510363be06f627182e2daa9926179`; original saved Kaggle version 368677926; final recovery version not identified in uploaded evidence.
+- **Status:** completed after documented auxiliary solver recovery. Both new backbones were retained.
+- **Results:** uniform WGA 89.2337%; dropout MLP 89.8537/89.8625% (wd 0.01/0.001); plain MLP 89.9578/89.9667%. Dropout improves over uniform on each primary source but the source-level 95% intervals include zero. Dropout mean gains reverse on alternative partition 2.
+- **Evidence:** [scientific report](../results/dpe/five_seed_verification_20261112/README.md), [experiment record](../experiments/exp-dpe-waterbirds-five-seed-verification-004/record.json), and [audit script](../scripts/analysis/audit_dpe_five_seed.py).
+- **Claims:** promising primary-partition aggregation gain; neither dropout-specific superiority nor partition-independent improvement established. 200 initialization fits and alternative partitions are nested within five sources.

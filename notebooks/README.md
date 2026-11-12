@@ -14,3 +14,5 @@ Kaggle, and Run All. No attachments or code edits are required.
 preserve the earlier historical power-only and global-rule selection experiments. They are historical
 reproduction interfaces, superseded by the current head-aggregation notebook.
 Recorded reports retain the filenames used at the executed Git commits.
+
+The completed [five-seed scientific report](../results/dpe/five_seed_verification_20261112/README.md) and its [lightweight audit](../scripts/analysis/audit_dpe_five_seed.py) do not require a GPU run. Historical verification artifacts are in the DPE supporting-evidence archive linked from the report.

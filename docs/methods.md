@@ -116,6 +116,12 @@ DPE addresses subpopulation shifts and shortcut learning without requiring subgr
 - Standard ERM requires passing `--no_augmentation` to match canonical SubpopBench deterministic transforms (`Resize(256) -> CenterCrop(224)`). Omitting `--no_augmentation` enables `RandomPhotometricDistort(p=0.5)` (Enhanced $\text{ERM}^*$ track).
 - Covariance regularization provides a clear +0.8% WGA boost over unregularized ensembles when trained on standard shortcut-susceptible representations.
 
+### Head aggregation follow-up
+
+The Kaggle version-4 review (in the [supporting-evidence archive](../results/dpe/supporting_evidence.zip)) records a completed exploratory adaptation on seeds 0–2 (`exp-dpe-waterbirds-reweighting-003`). It trains heads on 720 validation examples and weighting rules/neural combiners on a disjoint 479-example partition. All 30 configurations are reported independently on test; there is no separate candidate-selection split. Its Stage-0 profile and data allocation differ from the earlier reproduction above.
+
+The matched uniform ensemble achieves 89.5196 ± 0.6538% test WGA. None of the 19 nonuniform global weighting configurations improves mean WGA. Dropout MLP stackers achieve 89.9926 ± 0.0923%, a paired change of +0.4730 ± 0.6672 percentage points, concentrated mainly in seed 2. Gates collapse toward one effective head and lose about 2.94 WGA points. These are exploratory observations, not a test-selected winning method or a verified paper reproduction. [Actual settings and provenance](../experiments/exp-dpe-waterbirds-reweighting-003/record.json) and all per-group results in that archive accompany the review.
+
 ## Optimal Transport Reweighting (POTER)
 
 ### Overview
@@ -184,3 +190,7 @@ Mean over seeds (paper: mean ± std over 5 seeds). Per-run and per-group numbers
 - fp32 instead of the default bf16 + `torch.compile`; chunked generation to fit a 15 GB GPU; WILDS copy of the data. All deviations are listed in `baselines/autobackswap/README.md`.
 - The upstream `test_accuracies.txt` swaps the labels of the two middle groups. Worst group is Landbird on Water without minority (ERM and AutoBackSwap) and Waterbird on Land for ERM with minority.
 - The upstream repository has no licence file at the pinned commit.
+
+## DPE prediction-aggregation verification: five-source evidence
+
+The [completed five-seed report](../results/dpe/five_seed_verification_20261112/README.md) is the current evidence for this extension. Dropout MLP gains about 0.62–0.63 percentage points over uniform on the primary partition, while plain MLP has the higher mean. Gains are partition-sensitive and dropout-specific superiority is not established. This comparison concerns the preserved implementation's uniform head aggregator, not every published DPE result. Historical three-source reports remain available through the [results index](../results/dpe/README.md).

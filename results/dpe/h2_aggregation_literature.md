@@ -1,0 +1,13 @@
+# Literature context: DPE head aggregation
+
+Research review, 2026-11-12. The project hypotheses are defined in [`report/main.tex`](../../report/main.tex): H1 re-pairs prototypes from different heads, H2 changes how the 15 trained heads are weighted or aggregated, and H3 jointly computes probabilities from multiple prototypes. This note concerns H2. No new experiments were run as part of this literature search.
+
+| Study | Relevant finding | Limits for this project |
+| --- | --- | --- |
+| [Generalized-mean aggregation (2026)](https://scispace.com/papers/beyond-mixtures-and-products-for-ensemble-aggregation-a-akq9gsqi4r08) | Studies a family connecting arithmetic and geometric pooling of predictive distributions, evaluated for likelihood in image and text ensembles. | Its likelihood results do not imply better Waterbirds worst-group accuracy (WGA). |
+| [Efficient pooling via kernel embeddings (2024)](https://scispace.com/papers/efficient-pooling-of-predictions-via-kernel-embeddings-5z1z0wqwtr2t) | Studies proper-scoring-rule weighting and convex quadratic optimization for probability forecasts. | Its empirical setting is wind-speed forecasting, not DPE heads or Waterbirds WGA. A group-balanced Brier-weighted pool would be our adaptation. |
+| [JUCAL (2026)](https://scispace.com/papers/jucal-jointly-calibrating-aleatoric-and-epistemic-v85lbkmdj5ct) | Studies post-calibration of trained classifier ensembles using two uncertainty-related parameters. | The cited experiments are text classification; the exact JUCAL formula needs independent verification before implementation or reproduction claims. Calibration improvements do not establish a WGA improvement. |
+| [Bayesian stacking (2025)](https://scispace.com/papers/bayesian-stacking-via-proper-scoring-rule-optimization-using-cbohfbbu0klj) | Studies a Gibbs posterior over pooling weights, including the possibility of a prior toward equal weights. | Forecasting results do not establish performance on DPE. Posterior averaging is distinct from merely repeating previously tested regularized point estimates. |
+| [Ensemble Diversity Optimization (2026)](https://scispace.com/papers/ensemble-diversity-optimization-for-subjective-supervision-9gstddplv84z) | Studies prediction-space ensemble weighting and diversity regularization. | Its benchmarks involve subjective NLP and calibration; no Waterbirds or WGA claim follows. |
+
+Sources were inspected through SciSpace records and extracted context, not a complete independent audit of every paper or implementation. None of the proposed applications is an established result in this project. The existing [five-seed report](five_seed_verification_20261112/README.md) remains the source of current numerical claims.

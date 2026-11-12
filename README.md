@@ -84,3 +84,7 @@ For a project-owned or integrated implementation, add it under `src/methods/<met
 Record the dataset, split, seed, model, main hyperparameters, environment, and metrics for meaningful experiments. Store tracked configurations in `configs/` or `experiments/`, and record the exact command in the method README and experiment log. Clearly distinguish exploratory results, smoke tests, and verified benchmark results.
 
 See [`docs/`](docs/) and [`CONTRIBUTING.md`](CONTRIBUTING.md) for detailed project guidance and the existing method directories for implementation-specific documentation.
+
+## DPE experiment evidence
+
+The [five-seed verification report](results/dpe/five_seed_verification_20261112/README.md) gives the current results, uncertainty and supported claims. The [results index](results/dpe/README.md) separates current evidence from historical checks; [notebook notes](notebooks/README.md) describe available workflows.

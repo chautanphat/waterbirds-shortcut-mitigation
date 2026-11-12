@@ -1,0 +1,293 @@
+{
+  "method": "paired source-seed t intervals and paired group-stratified empirical bootstrap",
+  "replicates": 10000,
+  "interpretation": "Pointwise intervals, not simultaneous grid-wide claims. Test-example intervals condition on fitted models. Crossed intervals additionally resample source seeds; only five independent source seeds, fixed benchmark and primary split. No claim of a new test set.",
+  "cohorts": {
+    "original_0_1_2": [
+      {
+        "method": "mlp_dropout-wd0.01",
+        "reference": "uniform",
+        "n_source_seeds": 3,
+        "mean_delta_pp": 0.47302291204730135,
+        "per_source_delta_pp": [
+          0.1330376940133049,
+          0.044345898004427564,
+          1.2416851441241716
+        ],
+        "source_seed_t95_pp": [
+          -1.1842856783979165,
+          2.130331502492519
+        ],
+        "conditional_test_example_95_pp": [
+          0.20694752402069158,
+          0.8898939244277793
+        ],
+        "crossed_source_and_test_95_pp": [
+          -0.11825572801182534,
+          1.2860310421285992
+        ]
+      },
+      {
+        "method": "mlp_dropout-wd0.01",
+        "reference": "mlp-wd0.01",
+        "n_source_seeds": 3,
+        "mean_delta_pp": 0.02956393200296281,
+        "per_source_delta_pp": [
+          0.5764966740576583,
+          0.1330376940133049,
+          -0.6208425720620747
+        ],
+        "source_seed_t95_pp": [
+          -1.4741817673130686,
+          1.5333096313189942
+        ],
+        "conditional_test_example_95_pp": [
+          -0.4672897196261701,
+          0.20694752402069158
+        ],
+        "crossed_source_and_test_95_pp": [
+          -0.6749740394600153,
+          0.5764966740576472
+        ]
+      },
+      {
+        "method": "mlp_dropout-wd0.001",
+        "reference": "uniform",
+        "n_source_seeds": 3,
+        "mean_delta_pp": 0.47302291204730135,
+        "per_source_delta_pp": [
+          0.1330376940133049,
+          0.044345898004427564,
+          1.2416851441241716
+        ],
+        "source_seed_t95_pp": [
+          -1.1842856783979165,
+          2.130331502492519
+        ],
+        "conditional_test_example_95_pp": [
+          0.20694752402069158,
+          0.8898939244277793
+        ],
+        "crossed_source_and_test_95_pp": [
+          -0.11825572801182534,
+          1.2860310421285992
+        ]
+      },
+      {
+        "method": "mlp_dropout-wd0.001",
+        "reference": "mlp-wd0.001",
+        "n_source_seeds": 3,
+        "mean_delta_pp": 0.044345898004438666,
+        "per_source_delta_pp": [
+          0.5764966740576583,
+          0.1330376940133049,
+          -0.5764966740576472
+        ],
+        "source_seed_t95_pp": [
+          -1.4004062377384656,
+          1.489098033747343
+        ],
+        "conditional_test_example_95_pp": [
+          -0.4672897196261701,
+          0.22172949002217113
+        ],
+        "crossed_source_and_test_95_pp": [
+          -0.6536679767817272,
+          0.5764966740576472
+        ]
+      }
+    ],
+    "new_3_4": [
+      {
+        "method": "mlp_dropout-wd0.01",
+        "reference": "uniform",
+        "n_source_seeds": 2,
+        "mean_delta_pp": 0.8402926000373012,
+        "per_source_delta_pp": [
+          0.7493213419814793,
+          0.9312638580931232
+        ],
+        "source_seed_t95_pp": [
+          -0.31560682995077016,
+          1.9961920300253726
+        ],
+        "conditional_test_example_95_pp": [
+          -0.05964592356204071,
+          1.311548928998212
+        ],
+        "crossed_source_and_test_95_pp": [
+          -0.6208425720620858,
+          1.4553812572960023
+        ]
+      },
+      {
+        "method": "mlp_dropout-wd0.01",
+        "reference": "mlp-wd0.01",
+        "n_source_seeds": 2,
+        "mean_delta_pp": -0.304653556306167,
+        "per_source_delta_pp": [
+          0.1330376940133049,
+          -0.7423448066256388
+        ],
+        "source_seed_t95_pp": [
+          -5.866048194210327,
+          5.256741081597992
+        ],
+        "conditional_test_example_95_pp": [
+          -0.7788161993769471,
+          0.38940809968847634
+        ],
+        "crossed_source_and_test_95_pp": [
+          -1.2860310421285994,
+          0.532164590974716
+        ]
+      },
+      {
+        "method": "mlp_dropout-wd0.001",
+        "reference": "uniform",
+        "n_source_seeds": 2,
+        "mean_delta_pp": 0.862465549039515,
+        "per_source_delta_pp": [
+          0.7493213419814793,
+          0.9756097560975507
+        ],
+        "source_seed_t95_pp": [
+          -0.5751679105811522,
+          2.3000990086601822
+        ],
+        "conditional_test_example_95_pp": [
+          -0.03638159576158219,
+          1.3331399244323805
+        ],
+        "crossed_source_and_test_95_pp": [
+          -0.6208425720620858,
+          1.477001609438356
+        ]
+      },
+      {
+        "method": "mlp_dropout-wd0.001",
+        "reference": "mlp-wd0.001",
+        "n_source_seeds": 2,
+        "mean_delta_pp": -0.3268265053083863,
+        "per_source_delta_pp": [
+          0.044345898004438666,
+          -0.6979989086212113
+        ],
+        "source_seed_t95_pp": [
+          -5.043019054314687,
+          4.389366043697914
+        ],
+        "conditional_test_example_95_pp": [
+          -0.797081252460779,
+          0.4672897196261683
+        ],
+        "crossed_source_and_test_95_pp": [
+          -1.2461059190031154,
+          0.6230529595015577
+        ]
+      }
+    ],
+    "combined_five": [
+      {
+        "method": "mlp_dropout-wd0.01",
+        "reference": "uniform",
+        "n_source_seeds": 5,
+        "mean_delta_pp": 0.6199307872433013,
+        "per_source_delta_pp": [
+          0.1330376940133049,
+          0.044345898004427564,
+          1.2416851441241716,
+          0.7493213419814793,
+          0.9312638580931232
+        ],
+        "source_seed_t95_pp": [
+          -0.02184602304821659,
+          1.2617075975348193
+        ],
+        "conditional_test_example_95_pp": [
+          0.20014816503305208,
+          0.9577746924453102
+        ],
+        "crossed_source_and_test_95_pp": [
+          -0.0709534368070952,
+          1.1894022283468366
+        ]
+      },
+      {
+        "method": "mlp_dropout-wd0.01",
+        "reference": "mlp-wd0.01",
+        "n_source_seeds": 5,
+        "mean_delta_pp": -0.1041230633206891,
+        "per_source_delta_pp": [
+          0.5764966740576583,
+          0.1330376940133049,
+          -0.6208425720620747,
+          0.1330376940133049,
+          -0.7423448066256388
+        ],
+        "source_seed_t95_pp": [
+          -0.798250920598974,
+          0.5900047939575958
+        ],
+        "conditional_test_example_95_pp": [
+          -0.4361370716510926,
+          0.16262096690635533
+        ],
+        "crossed_source_and_test_95_pp": [
+          -0.709534368070952,
+          0.3813747228381392
+        ]
+      },
+      {
+        "method": "mlp_dropout-wd0.001",
+        "reference": "uniform",
+        "n_source_seeds": 5,
+        "mean_delta_pp": 0.6287999668441868,
+        "per_source_delta_pp": [
+          0.1330376940133049,
+          0.044345898004427564,
+          1.2416851441241716,
+          0.7493213419814793,
+          0.9756097560975507
+        ],
+        "source_seed_t95_pp": [
+          -0.021681915147866326,
+          1.27928184883624
+        ],
+        "conditional_test_example_95_pp": [
+          0.2039911308204001,
+          0.9626099149691569
+        ],
+        "crossed_source_and_test_95_pp": [
+          -0.06230529595015577,
+          1.2009459767494828
+        ]
+      },
+      {
+        "method": "mlp_dropout-wd0.001",
+        "reference": "mlp-wd0.001",
+        "n_source_seeds": 5,
+        "mean_delta_pp": -0.10412306332069132,
+        "per_source_delta_pp": [
+          0.5764966740576583,
+          0.1330376940133049,
+          -0.5764966740576472,
+          0.044345898004438666,
+          -0.6979989086212113
+        ],
+        "source_seed_t95_pp": [
+          -0.7603741533128867,
+          0.5521280266715041
+        ],
+        "conditional_test_example_95_pp": [
+          -0.43613707165109045,
+          0.19282211216334771
+        ],
+        "crossed_source_and_test_95_pp": [
+          -0.6917960088691787,
+          0.3927941369473156
+        ]
+      }
+    ]
+  }
+}
