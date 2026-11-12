@@ -19,7 +19,7 @@ from src.datasets.loaders import evaluation_loader, training_loader
 from src.datasets.waterbirds import Waterbirds, waterbirds_training_transform
 from src.evaluation.classification import evaluate
 from src.models.resnet import ResNetClassifier
-from src.utils.reproducibility import file_sha256, seed_everything
+from src.utils.reproducibility import seed_everything
 
 
 def train_epoch(model, loader, optimizer, device):
@@ -79,7 +79,7 @@ def _training_sources():
     paths = [Path(__file__), root / 'datasets/waterbirds.py', root / 'datasets/loaders.py',
              root / 'models/resnet.py', root / 'utils/reproducibility.py',
              root / 'evaluation/classification.py', Path(__file__).with_name('config.py')]
-    return {str(p.relative_to(root)): file_sha256(p) for p in paths}
+    return [str(p.relative_to(root)) for p in paths]
 
 
 def run_training(config, *, resume=False):
@@ -132,18 +132,19 @@ def run_training(config, *, resume=False):
                 "git_commit": commit, "git_dirty": dirty,
                 "python": platform.python_version(), "torch": torch.__version__,
                 "torchvision": torchvision.__version__, "device": str(device),
-                "metadata_sha256": file_sha256(train_data.metadata_path),
                 "split_counts": {"train": len(train_data), "val": len(val_data)},
                 "selection": "last checkpoint, matching the DPE stage-0 handoff",
                 "best_checkpoint_selection": "validation worst-group accuracy; ties choose the latest checkpoint"}
+    metadata['dataset_rows'] = dict(filenames=list(train_data.filenames), labels=train_data.y.tolist(),
+                                    attributes=train_data.a.tolist())
     best_score, best_position = -1.0, None
     updates = 0
     start_epoch, history, best_state = 0, [], None
     if saved is not None:
         original = json.loads((out / 'run.json').read_text())
         if (original['config'] != saved['config'] or
-                original['metadata_sha256'] != metadata['metadata_sha256'] or
-                saved['metadata_sha256'] != metadata['metadata_sha256'] or
+                original.get('dataset_rows') != metadata['dataset_rows'] or
+                saved.get('dataset_rows') != metadata['dataset_rows'] or
                 saved['config'] != yaml.safe_load((out / 'config.yaml').read_text())):
             raise ValueError('Resume data or saved configuration changed')
         metadata = original
@@ -182,7 +183,7 @@ def run_training(config, *, resume=False):
                     "numpy_rng_state": (nr[0], nr[1].tolist(), nr[2], nr[3], nr[4]),
                     "torch_rng_state": torch.get_rng_state(),
                     "cuda_rng_state": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else [],
-                    "metadata_sha256": metadata['metadata_sha256'], "implementation": _training_sources(),
+                    'dataset_rows': metadata['dataset_rows'], "implementation": _training_sources(),
                     "config": metadata['config']}, out / "training_state.pt")
 
     def validate_and_save(position, train_metrics):

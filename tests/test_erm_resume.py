@@ -81,6 +81,8 @@ def test_resume_rejects_recipe_or_metadata_change(tmp_path, monkeypatch):
         training.run_training(c, resume=True)
     c.training.lr = .001
     metadata = Path(c.dataset.data_dir) / 'metadata.csv'
-    metadata.write_text(metadata.read_text()+'\n')
+    frame = pd.read_csv(metadata)
+    frame.iloc[[0, 1]] = frame.iloc[[1, 0]].to_numpy()
+    frame.to_csv(metadata, index=False)
     with pytest.raises(ValueError, match='Resume data'):
         training.run_training(c, resume=True)

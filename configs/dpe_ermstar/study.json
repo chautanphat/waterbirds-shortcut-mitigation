@@ -1,0 +1,30 @@
+{
+  "backbone_epochs": 400,
+  "workers": 1,
+  "cpu_threads": 1,
+  "head_training": {
+    "heads": 15,
+    "epochs": 20,
+    "batch_size": 256,
+    "lr": 0.001,
+    "momentum": 0.9,
+    "entropic_scale": 30.0,
+    "cov_reg": 500000.0,
+    "wd_weight": 10.0
+  },
+  "neural": {
+    "version": 1,
+    "protocol": "independent_comparison",
+    "heads": 15,
+    "hidden_units": 8,
+    "steps": 400,
+    "learning_rate": 0.01,
+    "weight_decays": [
+      0.01,
+      0.001
+    ],
+    "prediction_dropout": 0.25,
+    "seed_offset": 10000,
+    "loss": "group_balanced_bce"
+  }
+}
