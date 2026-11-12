@@ -1,0 +1,19 @@
+{
+  "status": "prepared_no_benchmark_training",
+  "source_seeds": [
+    0,
+    1
+  ],
+  "backbone_epochs": 400,
+  "protocols": [
+    "full_validation_annotated_dpe_uniform",
+    "720_479_neural_with_matched_uniform"
+  ],
+  "configuration": "configs/dpe_ermstar/study.json",
+  "notebook": "notebooks/dpe_ermstar_neural_two_gpu_kaggle.ipynb",
+  "methods": "src/methods/dpe_ermstar/README.md",
+  "validation": "13 synthetic tests including plain notebook execution, original routine comparison and recovery",
+  "limits": "No real T4 throughput, live downloads or 400-epoch benchmark tested locally",
+  "provenance": "Readable configurations, dataset rows, source paths, software versions and retained notebook/checkout; no experiment file checksums",
+  "publication": "experiment/dpe-ermstar-neural branch"
+}

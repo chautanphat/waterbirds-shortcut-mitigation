@@ -321,3 +321,24 @@ The date is the documentation date; the supplied execution log contains elapsed 
 - **Results:** uniform WGA 89.2337%; dropout MLP 89.8537/89.8625% (wd 0.01/0.001); plain MLP 89.9578/89.9667%. Dropout improves over uniform on each primary source but the source-level 95% intervals include zero. Dropout mean gains reverse on alternative partition 2.
 - **Evidence:** [scientific report](../results/dpe/five_seed_verification_20261112/README.md), [experiment record](../experiments/exp-dpe-waterbirds-five-seed-verification-004/record.json), and [audit script](../scripts/analysis/audit_dpe_five_seed.py).
 - **Claims:** promising primary-partition aggregation gain; neither dropout-specific superiority nor partition-independent improvement established. 200 initialization fits and alternative partitions are nested within five sources.
+
+## exp-dpe-ermstar-neural — prepared, no benchmark run
+
+400-epoch ERM* configuration from upstream Waterbirds launcher; original prototype
+loss/training/subsampling definitions reused. User-approved comparison includes
+full-validation annotated DPE uniform and a separate720/479 neural arm with its own
+uniform baseline. Seeds0/1 run independently on two T4s; epoch/head recovery retained.
+[Methods and limitations](../src/methods/dpe_ermstar/README.md),
+[notebook](../notebooks/dpe_ermstar_neural_two_gpu_kaggle.ipynb),
+[settings](../configs/dpe_ermstar/study.json). Synthetic logic checks only; no heavy
+training or paper-reproduction/superiority claim made in this preparation.
+
+The ERM* notebook was simplified at the researcher’s request: ordinary repository
+imports, visible experiment code/configuration, stable readable directories, and
+configuration/row-based recovery replace file checksums and encoded code bundles.
+The shared ERM trainer now uses readable configuration and dataset-row records for recovery.
+
+The ERM* interface now uses a conventional repository layout: a short notebook
+launcher, an ordinary CLI, Python modules and a configuration file. Module strings,
+notebook file-writing cells and runtime source extraction were removed. Changes are
+published on `experiment/dpe-ermstar-neural`, the notebook’s default Kaggle checkout.
