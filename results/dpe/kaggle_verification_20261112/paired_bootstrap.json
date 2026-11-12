@@ -1,0 +1,63 @@
+{
+  "replicates": 10000,
+  "seed": 20261112,
+  "interpretation": "Pointwise paired group-stratified test-example intervals conditional on these fitted models; not uncertainty across newly trained backbones. Same resamples across source seeds; minimum group recomputed each replicate.",
+  "results": [
+    {
+      "method": "mlp_dropout-wd0.01",
+      "reference": "uniform",
+      "mean_delta_pp": 0.47302291204730135,
+      "per_seed_delta_pp": [
+        0.1330376940133049,
+        0.044345898004427564,
+        1.2416851441241716
+      ],
+      "conditional_95_percentile_pp": [
+        0.20694752402069158,
+        0.8898939244277793
+      ]
+    },
+    {
+      "method": "mlp_dropout-wd0.01",
+      "reference": "mlp-wd0.01",
+      "mean_delta_pp": 0.02956393200296281,
+      "per_seed_delta_pp": [
+        0.5764966740576583,
+        0.1330376940133049,
+        -0.6208425720620747
+      ],
+      "conditional_95_percentile_pp": [
+        -0.4672897196261701,
+        0.20694752402069158
+      ]
+    },
+    {
+      "method": "mlp_dropout-wd0.001",
+      "reference": "uniform",
+      "mean_delta_pp": 0.47302291204730135,
+      "per_seed_delta_pp": [
+        0.1330376940133049,
+        0.044345898004427564,
+        1.2416851441241716
+      ],
+      "conditional_95_percentile_pp": [
+        0.20694752402069158,
+        0.8898939244277793
+      ]
+    },
+    {
+      "method": "mlp_dropout-wd0.001",
+      "reference": "mlp-wd0.001",
+      "mean_delta_pp": 0.044345898004438666,
+      "per_seed_delta_pp": [
+        0.5764966740576583,
+        0.1330376940133049,
+        -0.5764966740576472
+      ],
+      "conditional_95_percentile_pp": [
+        -0.4672897196261701,
+        0.22172949002217113
+      ]
+    }
+  ]
+}

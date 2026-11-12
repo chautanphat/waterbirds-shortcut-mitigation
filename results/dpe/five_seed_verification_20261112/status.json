@@ -1,0 +1,25 @@
+{
+  "status": "complete",
+  "mode": "five_seed_verification",
+  "new_backbone_seeds": [
+    3,
+    4
+  ],
+  "reused_source_seeds": [
+    0,
+    1,
+    2
+  ],
+  "source_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "source_seed_count": 5,
+  "primary_rows": 150,
+  "combiner_randomness_rows": 200,
+  "partition_rows": 300,
+  "controls": 45
+}

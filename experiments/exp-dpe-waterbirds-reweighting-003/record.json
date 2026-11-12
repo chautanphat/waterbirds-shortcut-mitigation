@@ -1,0 +1,347 @@
+{
+  "experiment_id": "exp-dpe-waterbirds-reweighting-003",
+  "review_date": "2026-11-12",
+  "review_timezone": "Asia/Saigon",
+  "status": "completed exploratory project adaptation",
+  "source": {
+    "kaggle_url": "https://www.kaggle.com/code/noerula/dpe-reweighting?scriptVersionId=367976457",
+    "version_number": 4,
+    "script_version_id": 367976457,
+    "notebook_id": 143255000,
+    "executed_notebook_url": "https://www.kaggle.com/kernels/scriptcontent/367976457/download",
+    "executed_notebook_sha256": "219efebca0eae14bc9e1d00049609dd4c117ee9eb092cd3dc6bc46880926205e",
+    "repository": "https://github.com/chautanphat/waterbirds-shortcut-mitigation",
+    "branch": "experiment/dpe-neural-combiner",
+    "commit": "8e14249f4b3510363be06f627182e2daa9926179",
+    "git_dirty": false,
+    "study_id": "aggregation-standard-seeds012-0dcf563966c5"
+  },
+  "execution": {
+    "start_utc": "2026-11-10T08:01:38.452444+00:00",
+    "end_utc": "2026-11-10T12:52:58.233228+00:00",
+    "duration_seconds": 17479.780784,
+    "papermill_exception": null,
+    "executed_code_cells": 4,
+    "device": "cuda",
+    "accelerator": "NvidiaTeslaT4 (Kaggle API machine shape; GPU count not recorded)",
+    "software": {
+      "numpy": "2.1.3",
+      "python": "3.13.16",
+      "scipy": "1.16.3",
+      "torch": "2.11.0+cu130",
+      "torchvision": "0.26.0+cu130",
+      "cuda": "13.0"
+    }
+  },
+  "protocol": {
+    "name": "independent_comparison",
+    "track": "standard",
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "split_seed": 0,
+    "split_counts": {
+      "train": 4795,
+      "validation": 1199,
+      "test": 5794,
+      "head_training": 720,
+      "combiner_training": 479
+    },
+    "head_training_group_counts": {
+      "00": 280,
+      "01": 280,
+      "10": 80,
+      "11": 80
+    },
+    "combiner_training_group_counts": {
+      "00": 187,
+      "01": 186,
+      "10": 53,
+      "11": 53
+    },
+    "test_group_counts": {
+      "00": 2255,
+      "01": 2255,
+      "10": 642,
+      "11": 642
+    },
+    "groups": {
+      "00": "landbird on land",
+      "01": "landbird on water",
+      "10": "waterbird on land",
+      "11": "waterbird on water"
+    },
+    "candidate_selection": "none; each of 30 declared configurations evaluated independently",
+    "test_prior_use": "test set previously informed project research; exploratory comparison",
+    "preprocessing": "raw-resnet50;row-zscore-ddof0;isomax-l2;temperature1"
+  },
+  "backbone_settings": {
+    "profile": "dpe_standard_erm",
+    "dataset": {
+      "batch_size": 128,
+      "batch_size_eval": 256,
+      "workers": 2,
+      "augmentation": false
+    },
+    "model": {
+      "weights": "IMAGENET1K_V2",
+      "freeze_bn": false
+    },
+    "training": {
+      "steps": null,
+      "epochs": 100,
+      "lr": 0.001,
+      "momentum": 0.9,
+      "weight_decay": 0.0,
+      "sampling": "class_balanced",
+      "eval_every": 300,
+      "device": "cuda",
+      "seed_values": [
+        0,
+        1,
+        2
+      ]
+    }
+  },
+  "head_settings": {
+    "batch_size": 256,
+    "cov_reg": 500000.0,
+    "entropic_scale": 30.0,
+    "epochs": 20,
+    "heads": 15,
+    "lr": 0.001,
+    "momentum": 0.9,
+    "wd_weight": 10.0
+  },
+  "aggregation_settings": {
+    "heads": 15,
+    "hidden_units": 8,
+    "learning_rate": 0.01,
+    "loss": "group_balanced_bce",
+    "prediction_dropout": 0.25,
+    "protocol": "independent_comparison",
+    "seed_offset": 10000,
+    "steps": 400,
+    "version": 1,
+    "weight_decays": [
+      0.01,
+      0.001
+    ],
+    "weighting_rules": {
+      "joint_lambdas": [
+        1.0,
+        0.1,
+        0.01
+      ],
+      "softmax_betas": [
+        10.0,
+        30.0
+      ],
+      "solver": {
+        "feasibility_tolerance": 1e-07,
+        "ftol": 1e-10,
+        "maxiter": 1000,
+        "probability_floor": 1e-12
+      },
+      "top_k": [
+        10,
+        5
+      ],
+      "version": 1
+    }
+  },
+  "implementation_hashes": {
+    "notebooks/dpe_head_aggregation.ipynb": "d6eee8c6b5095ad01a818c318b53f163e7a3f3edf8cac81ff6b7c1e297bf7873",
+    "scripts/dpe_head_aggregation.py": "a2c42b93726138731c0d71f86e89426cb742d75b34ce8c7ebc76a4eb7d5d4777",
+    "scripts/dpe_head_reweighting.py": "d67779a35d9abdfd79d54bc18e0011b1d2ef7a1fd30081d3f743ae438bd531df",
+    "src/methods/dpe_head_reweighting/aggregation_source.py": "fb1cda7dcb52f6d3e6cf0bd3ec135b47734549f8166221c0387646831aa0d0bd",
+    "src/methods/dpe_head_reweighting/aggregation_study.py": "a300f4577b87a7cba45291d40974061c9663531d6ff18ee15b632eb93d39ab8f",
+    "src/methods/dpe_head_reweighting/aggregation_suite.py": "108b16db4fc7ef894ae6526a7906a60d6012e84b0e4dab998a283adfa6a53f1e",
+    "src/methods/dpe_head_reweighting/ensemble.py": "ecc109502eacefb1b42d3f9ef006fd8dd03b5da675092e529910baacb5aa6186",
+    "src/methods/dpe_head_reweighting/experiment.py": "0d679757213f43db735dd3825f9cb8f42e09344db16f66235014314da89d6169",
+    "src/methods/dpe_head_reweighting/neural_combiner.py": "198d5b19815110349c470d79a7db31d50a8b14ed7ab4a64760b33b54a7c91b6b",
+    "src/methods/dpe_head_reweighting/notebook_setup.py": "05ea7094efe6d1744bdb1d8bc188ba1b33388eaf6d65194a94ac7a20b73205ee",
+    "src/methods/dpe_head_reweighting/recovery.py": "94edfc8c7668224801abe58347a3dcf8a946bd219083f82e837e25d8e7e88b09",
+    "src/methods/dpe_head_reweighting/reweighting.py": "7e81fb815214960ede76898a08866066f0564eecf613ec8293fa98162c688d78",
+    "src/methods/dpe_head_reweighting/rule_suite.py": "c61e24d35f22439ed4300453ea49f1050ea560efe049792ccc996b5716ef6eba",
+    "src/methods/dpe_head_reweighting/stage0.py": "91c716b1f61831618083fbc7a38997a130bb97e2c9ffd1a27cd56a5b9e613730",
+    "src/methods/dpe_head_reweighting/study.py": "c28e3911b0270aba6fe63e8da156c32088e814a9d785f799ae7088a956c512f5",
+    "src/methods/dpe_head_reweighting/train_heads.py": "bce98c56206876ab2937490689273f84ff3511f06675d832233b949adbf74d76",
+    "src/methods/dpe_head_reweighting/weighting_rules.py": "024a2c421405af1ded2c28969340bce74184de9705ea8606d2152af3d8ccfb7e"
+  },
+  "verification": {
+    "method": "independent NumPy inference from cached probabilities and JSON model states; no training rerun or raw-image re-extraction",
+    "test_configurations_verified": 90,
+    "training_configurations_verified": 90,
+    "checks": [
+      "exact per-group correct counts, sample-level accuracy and WGA",
+      "paired fixed/new-error identifiers and changed-prediction counts",
+      "per-group negative log likelihood",
+      "summary means and sample standard deviations",
+      "disjoint head/combiner/test identities and metadata order/labels",
+      "prediction-cache and saved model hashes",
+      "available source Python hashes against locked implementation hashes"
+    ],
+    "shared_test_identity": "8658897d8032f83fc125f728c506eecea1f23b1e53472640062a21ac9fb08112"
+  },
+  "artifacts": [
+    {
+      "path": "results/dpe/head_aggregation_kaggle_v4/joint_solver.csv",
+      "sha256": "4fa9ffdb12e2d3c775ef2557a8b4d81260f6ac1496ca4a942d38f044815e7c89"
+    },
+    {
+      "path": "results/dpe/head_aggregation_kaggle_v4/neural_training.csv",
+      "sha256": "0f7a5ebbbfec29b6ab7024d5397510d0ea86b71d4e1454ae2191625b6e52b62c"
+    },
+    {
+      "path": "results/dpe/head_aggregation_kaggle_v4/per_group.csv",
+      "sha256": "fd26326d0ce91092cd181212c1b88d68e970e65bfaaf922596736a4993a4e211"
+    },
+    {
+      "path": "results/dpe/head_aggregation_kaggle_v4/per_head.csv",
+      "sha256": "ce8376c729864799ba8b4b6f6c50d8c8e4638b78c0d1324c3f17cdad287b466f"
+    },
+    {
+      "path": "results/dpe/head_aggregation_kaggle_v4/per_seed.csv",
+      "sha256": "a5f14e6e3b6785eea896ba2e3211bf94f7948105a5910f3ad604b515d2f30196"
+    },
+    {
+      "path": "results/dpe/head_aggregation_kaggle_v4/summary.csv",
+      "sha256": "badc7aad80c7e685f5bca3c73744f4f3b50bc87d322930c59f87fe945621c122"
+    },
+    {
+      "path": "results/dpe/head_aggregation_kaggle_v4/wga_changes.png",
+      "sha256": "6633261cbff7171d639bd9de7ccb916b238930f9eadd5705a610ca2b0674315c"
+    },
+    {
+      "path": "results/dpe/head_aggregation_kaggle_v4/wga_changes.svg",
+      "sha256": "daa9496e38b84fec83449ef2be9f2bdbc2e73a9987c9a64a7744c202ebf3c203"
+    }
+  ],
+  "sources_by_seed": [
+    {
+      "seed": 0,
+      "head_source": "standard-seed0-9cc47ca7edd5",
+      "split_counts": {
+        "combiner_training": {
+          "00": 187,
+          "01": 186,
+          "10": 53,
+          "11": 53
+        },
+        "head_training": {
+          "00": 280,
+          "01": 280,
+          "10": 80,
+          "11": 80
+        }
+      },
+      "source_commit": "8e14249f4b3510363be06f627182e2daa9926179",
+      "head_ids": [
+        "head-00",
+        "head-01",
+        "head-02",
+        "head-03",
+        "head-04",
+        "head-05",
+        "head-06",
+        "head-07",
+        "head-08",
+        "head-09",
+        "head-10",
+        "head-11",
+        "head-12",
+        "head-13",
+        "head-14"
+      ],
+      "test_identity": "8658897d8032f83fc125f728c506eecea1f23b1e53472640062a21ac9fb08112",
+      "checks": "prediction metrics, paired error identifiers, metadata alignment, disjoint splits, available source hashes and cache/model hashes verified"
+    },
+    {
+      "seed": 1,
+      "head_source": "standard-seed1-17f8d3508acb",
+      "split_counts": {
+        "combiner_training": {
+          "00": 187,
+          "01": 186,
+          "10": 53,
+          "11": 53
+        },
+        "head_training": {
+          "00": 280,
+          "01": 280,
+          "10": 80,
+          "11": 80
+        }
+      },
+      "source_commit": "8e14249f4b3510363be06f627182e2daa9926179",
+      "head_ids": [
+        "head-00",
+        "head-01",
+        "head-02",
+        "head-03",
+        "head-04",
+        "head-05",
+        "head-06",
+        "head-07",
+        "head-08",
+        "head-09",
+        "head-10",
+        "head-11",
+        "head-12",
+        "head-13",
+        "head-14"
+      ],
+      "test_identity": "8658897d8032f83fc125f728c506eecea1f23b1e53472640062a21ac9fb08112",
+      "checks": "prediction metrics, paired error identifiers, metadata alignment, disjoint splits, available source hashes and cache/model hashes verified"
+    },
+    {
+      "seed": 2,
+      "head_source": "standard-seed2-6db48c0a78b8",
+      "split_counts": {
+        "combiner_training": {
+          "00": 187,
+          "01": 186,
+          "10": 53,
+          "11": 53
+        },
+        "head_training": {
+          "00": 280,
+          "01": 280,
+          "10": 80,
+          "11": 80
+        }
+      },
+      "source_commit": "8e14249f4b3510363be06f627182e2daa9926179",
+      "head_ids": [
+        "head-00",
+        "head-01",
+        "head-02",
+        "head-03",
+        "head-04",
+        "head-05",
+        "head-06",
+        "head-07",
+        "head-08",
+        "head-09",
+        "head-10",
+        "head-11",
+        "head-12",
+        "head-13",
+        "head-14"
+      ],
+      "test_identity": "8658897d8032f83fc125f728c506eecea1f23b1e53472640062a21ac9fb08112",
+      "checks": "prediction metrics, paired error identifiers, metadata alignment, disjoint splits, available source hashes and cache/model hashes verified"
+    }
+  ],
+  "raw_evidence_location": "outputs/dpe-kaggle-v4/ (untracked; no model training rerun)",
+  "csv_units": {
+    "accuracy_overall_wga_confidence": "fractions in [0,1]",
+    "delta_pp": "percentage points",
+    "count_correct_fixed_new_errors_changed": "integer example counts",
+    "nll": "natural logarithm loss",
+    "sample_std": "same units as corresponding metric; ddof=1"
+  }
+}

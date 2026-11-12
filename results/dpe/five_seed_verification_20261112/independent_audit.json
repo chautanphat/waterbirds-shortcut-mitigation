@@ -1,0 +1,109 @@
+{
+  "status": "passed",
+  "independent_primary_forward_and_counts": 150,
+  "independent_partition_forward_and_metrics": 300,
+  "source_bundle_hashes_verified": 5,
+  "raw_image_replays_exact": 5,
+  "groups": [
+    2255,
+    2255,
+    642,
+    642
+  ],
+  "independent_nested_combiner_forward_and_metrics": 200,
+  "control_rows": 45,
+  "intervals": [
+    {
+      "method": "mlp-wd0.01",
+      "reference": "uniform",
+      "mean_delta_pp": 0.7240538505639904,
+      "source_t95_lower_pp": -0.5532667917432952,
+      "source_t95_upper_pp": 2.001374492871276,
+      "wins": 3,
+      "per_source_delta_pp": [
+        -0.44345898004435336,
+        -0.08869179600887733,
+        1.8625277161862464,
+        0.6162836479681744,
+        1.673608664718762
+      ]
+    },
+    {
+      "method": "mlp-wd0.001",
+      "reference": "uniform",
+      "mean_delta_pp": 0.7329230301648781,
+      "source_t95_lower_pp": -0.5275926373218969,
+      "source_t95_upper_pp": 1.9934386976516532,
+      "wins": 3,
+      "per_source_delta_pp": [
+        -0.44345898004435336,
+        -0.08869179600887733,
+        1.8181818181818188,
+        0.7049754439770406,
+        1.673608664718762
+      ]
+    },
+    {
+      "method": "mlp_dropout-wd0.01",
+      "reference": "uniform",
+      "mean_delta_pp": 0.6199307872433013,
+      "source_t95_lower_pp": -0.02184602304821659,
+      "source_t95_upper_pp": 1.2617075975348193,
+      "wins": 5,
+      "per_source_delta_pp": [
+        0.1330376940133049,
+        0.044345898004427564,
+        1.2416851441241716,
+        0.7493213419814793,
+        0.9312638580931232
+      ]
+    },
+    {
+      "method": "mlp_dropout-wd0.001",
+      "reference": "uniform",
+      "mean_delta_pp": 0.6287999668441868,
+      "source_t95_lower_pp": -0.021681915147866326,
+      "source_t95_upper_pp": 1.27928184883624,
+      "wins": 5,
+      "per_source_delta_pp": [
+        0.1330376940133049,
+        0.044345898004427564,
+        1.2416851441241716,
+        0.7493213419814793,
+        0.9756097560975507
+      ]
+    },
+    {
+      "method": "mlp_dropout-wd0.01",
+      "reference": "mlp-wd0.01",
+      "mean_delta_pp": -0.1041230633206891,
+      "source_t95_lower_pp": -0.798250920598974,
+      "source_t95_upper_pp": 0.5900047939575958,
+      "wins": 3,
+      "per_source_delta_pp": [
+        0.5764966740576583,
+        0.1330376940133049,
+        -0.6208425720620747,
+        0.1330376940133049,
+        -0.7423448066256388
+      ]
+    },
+    {
+      "method": "mlp_dropout-wd0.001",
+      "reference": "mlp-wd0.001",
+      "mean_delta_pp": -0.10412306332069132,
+      "source_t95_lower_pp": -0.7603741533128867,
+      "source_t95_upper_pp": 0.5521280266715041,
+      "wins": 3,
+      "per_source_delta_pp": [
+        0.5764966740576583,
+        0.1330376940133049,
+        -0.5764966740576472,
+        0.044345898004438666,
+        -0.6979989086212113
+      ]
+    }
+  ],
+  "uploaded_zip_sha256": "92ef12b1b434f39827541b9f0877cf62dafc644a559ddb5cab9f50b007453c72",
+  "limits": "No backbone retraining, raw-image replay or control-head inference performed locally; image and control evidence supplied by Kaggle. Numerical forward checks on saved predictions only."
+}

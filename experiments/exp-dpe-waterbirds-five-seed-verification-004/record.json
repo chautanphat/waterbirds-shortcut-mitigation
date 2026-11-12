@@ -1,0 +1,38 @@
+{
+  "id": "exp-dpe-waterbirds-five-seed-verification-004",
+  "analysis_date": "2026-11-12",
+  "status": "completed_with_documented_solver_recovery",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "new_seeds": [
+    3,
+    4
+  ],
+  "reused_seeds": [
+    0,
+    1,
+    2
+  ],
+  "source_commit": "8e14249f4b3510363be06f627182e2daa9926179",
+  "source_kaggle_version": 368677926,
+  "archive_sha256": "92ef12b1b434f39827541b9f0877cf62dafc644a559ddb5cab9f50b007453c72",
+  "result_context": "five_seed_verification-f01228278c",
+  "head_training": {
+    "batch_size": 256,
+    "cov_reg": 500000.0,
+    "entropic_scale": 30.0,
+    "epochs": 20,
+    "heads": 15,
+    "lr": 0.001,
+    "momentum": 0.9,
+    "wd_weight": 10.0
+  },
+  "result_report": "results/dpe/five_seed_verification_20261112/README.md",
+  "claim": "Promising primary-partition aggregation gain; dropout-specific superiority and partition-independent gain not established",
+  "scope": "Waterbirds/ResNet50; fixed primary partition0; each procedure independent; no candidate-selection split"
+}
