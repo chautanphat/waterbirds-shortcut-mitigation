@@ -1,0 +1,134 @@
+{
+  "artifact_retention": {
+    "excluded_from_git": [
+      "raw log",
+      "archive",
+      "backbone checkpoint",
+      "ensemble checkpoint",
+      "raw features",
+      "sample-level prediction caches"
+    ],
+    "missing_from_archive": [
+      "raw dataset images",
+      "backbone checkpoint",
+      "raw feature arrays"
+    ],
+    "original_inputs": "External, untracked; supplied through uploaded log and archive."
+  },
+  "documentation_date": "2026-11-08",
+  "environment": {
+    "accelerator": "Tesla T4",
+    "cuda": "13.0",
+    "device": "cuda",
+    "hosting_service": "Kaggle",
+    "numpy": "2.1.3",
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130",
+    "torchvision": "0.26.0+cu130"
+  },
+  "execution": {
+    "interface": "notebook",
+    "note": "Training was called within the notebook; archived command metadata is a kernel launcher, not a shell training command.",
+    "notebook": "notebooks/dpe_head_reweighting.ipynb",
+    "settings": {
+      "RUN_NAME": "h2-standard-seed0",
+      "SEED": 0,
+      "TRACK": "standard",
+      "WORKERS": 2
+    },
+    "total_elapsed_seconds": 6255.1
+  },
+  "execution_date": null,
+  "execution_date_note": "Source log contains elapsed times, not a calendar timestamp.",
+  "experiment_id": "exp-dpe-h2-waterbirds-standard-seed0-001",
+  "input_hashes": {
+    "backbone": "e353bfe4071c848ad49d9c8c004dc0bb6a57ce0944da86107436d3b66eed8f65",
+    "metadata": "a826edcd1f193fe72cd775cd61739ae78675cc48f73b76ad600db4d85b41a323",
+    "test_features": "85be6fb7657fb940777a958110668436c9fa49bea61bac36195ffbdb08564b3d",
+    "val_features": "542c61513bcc9e73c36d42df678859f170767145e0f9de670777f5ee566bbe5c"
+  },
+  "original_archive": {
+    "config_hash": "64a63860b61a101741156b2430c427776c279858c62de3f6afb547b3de3d079f",
+    "ensemble_hash": "111268e36b43cfa9112f0def79242e93ccae05de80b4fe6dabde465518f351be",
+    "manifest_hash": "ac10340593fd09b926895273bdbfa2905cc114dc49b5acb1b34d0e694ca78f08",
+    "selection_hash": "871b6fd005356fecc965260e787eedd9e67e44b85545f6313b6eadb60aaa6c0e"
+  },
+  "portable_paths_note": "Tracked YAML files replace the machine-specific checkout prefix with repository-relative paths. Their hashes differ from the original resolved configuration; original identities remain recorded above.",
+  "seed": 0,
+  "selected_head_epochs": [
+    18,
+    17,
+    20,
+    18,
+    19,
+    17,
+    20,
+    20,
+    17,
+    19,
+    18,
+    19,
+    19,
+    18,
+    19
+  ],
+  "source_commit": "5ebb1128fe84200938e73c1fe85e317ecb39f09d",
+  "source_git_dirty": false,
+  "sources": {
+    "archive": {
+      "filename": "h2-standard-seed0.zip",
+      "sha256": "c6dcbaa29bc11390e2006472be16850f65bdf320bc794bfa4a78b6bbd2877eaa"
+    },
+    "log": {
+      "filename": "download.txt",
+      "sha256": "30032eb6e91ade9cca9366b861a3493743694120f3a1c357a4a7b47cf1dea155"
+    }
+  },
+  "stage0_summary": {
+    "best_checkpoint": "ckpt_best_wga.pt",
+    "best_position": {
+      "epoch": 50
+    },
+    "best_val_wga": 0.6240601539611816,
+    "last_checkpoint": "ckpt_last.pt",
+    "selected_checkpoint": "ckpt_last.pt",
+    "updates": 3700
+  },
+  "status": "exploratory; completed single-seed Waterbirds adaptation",
+  "track": "standard",
+  "validation": {
+    "annotation_use": "group-stratified partition; group-balanced A fitting; A epoch WGA; B head WGA; C selection WGA",
+    "counts": {
+      "A": 720,
+      "B": 241,
+      "C": 238
+    },
+    "groups": {
+      "A": {
+        "00": 280,
+        "01": 280,
+        "10": 80,
+        "11": 80
+      },
+      "B": {
+        "00": 94,
+        "01": 93,
+        "10": 27,
+        "11": 27
+      },
+      "C": {
+        "00": 93,
+        "01": 93,
+        "10": 26,
+        "11": 26
+      }
+    },
+    "ratios": [
+      0.6,
+      0.2,
+      0.2
+    ],
+    "split_seed": 0
+  }
+}

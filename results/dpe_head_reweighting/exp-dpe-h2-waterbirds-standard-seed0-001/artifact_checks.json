@@ -1,0 +1,410 @@
+{
+  "B": {
+    "examples_with_head_disagreement": 88,
+    "head_class1_probability_range": [
+      0.41576772928237915,
+      0.6235408186912537
+    ],
+    "mean_pairwise_class_disagreement": 0.09760916814858722,
+    "pairwise_class_disagreement_range": [
+      0.04149377593360996,
+      0.14937759336099585
+    ],
+    "shape": [
+      15,
+      241,
+      2
+    ],
+    "unique_probability_heads": 15
+  },
+  "C": {
+    "examples_with_head_disagreement": 96,
+    "head_class1_probability_range": [
+      0.4103047847747803,
+      0.6158982515335083
+    ],
+    "mean_pairwise_class_disagreement": 0.12284913965586233,
+    "pairwise_class_disagreement_range": [
+      0.0546218487394958,
+      0.21008403361344538
+    ],
+    "shape": [
+      15,
+      238,
+      2
+    ],
+    "unique_probability_heads": 15
+  },
+  "candidates": [
+    {
+      "alpha": 0,
+      "c_overall": 0.907563025210084,
+      "c_wga": 0.8924731182795699,
+      "changed_predictions": 0,
+      "correct": 216,
+      "count": 238,
+      "effective_heads": 15.0,
+      "gamma": 1,
+      "max_probability_change": 1.1102230246251565e-16,
+      "min_abs_decision_margin": 0.0002391954263051832,
+      "w_max": 0.06666666666666667,
+      "w_min": 0.06666666666666667
+    },
+    {
+      "alpha": 0.25,
+      "c_overall": 0.907563025210084,
+      "c_wga": 0.8924731182795699,
+      "changed_predictions": 0,
+      "correct": 216,
+      "count": 238,
+      "effective_heads": 14.997521735269663,
+      "gamma": 1,
+      "max_probability_change": 0.00018242508033278204,
+      "min_abs_decision_margin": 0.00029084307448845603,
+      "w_max": 0.06842131326136476,
+      "w_min": 0.06535109438447063
+    },
+    {
+      "alpha": 0.25,
+      "c_overall": 0.907563025210084,
+      "c_wga": 0.8924731182795699,
+      "changed_predictions": 0,
+      "correct": 216,
+      "count": 238,
+      "effective_heads": 14.989985073913187,
+      "gamma": 2,
+      "max_probability_change": 0.00036357273361142806,
+      "min_abs_decision_margin": 0.00034152653192398574,
+      "w_max": 0.07030699687743824,
+      "w_min": 0.06410208116488768
+    },
+    {
+      "alpha": 0.25,
+      "c_overall": 0.907563025210084,
+      "c_wga": 0.8924731182795699,
+      "changed_predictions": 0,
+      "correct": 216,
+      "count": 238,
+      "effective_heads": 14.959143125619878,
+      "gamma": 4,
+      "max_probability_change": 0.0007188137728194044,
+      "min_abs_decision_margin": 0.00043862367194930085,
+      "w_max": 0.07448075479557516,
+      "w_min": 0.061805919558051294
+    },
+    {
+      "alpha": 0.5,
+      "c_overall": 0.907563025210084,
+      "c_wga": 0.8924731182795699,
+      "changed_predictions": 0,
+      "correct": 216,
+      "count": 238,
+      "effective_heads": 14.990091852081356,
+      "gamma": 1,
+      "max_probability_change": 0.0003648501606656196,
+      "min_abs_decision_margin": 0.00034249072267172886,
+      "w_max": 0.07017595985606286,
+      "w_min": 0.0640355221022746
+    },
+    {
+      "alpha": 0.5,
+      "c_overall": 0.907563025210084,
+      "c_wga": 0.8924731182795699,
+      "changed_predictions": 0,
+      "correct": 216,
+      "count": 238,
+      "effective_heads": 14.96002037425212,
+      "gamma": 2,
+      "max_probability_change": 0.0007271454672227451,
+      "min_abs_decision_margin": 0.00044385763754317686,
+      "w_max": 0.07394732708820981,
+      "w_min": 0.06153749566310868
+    },
+    {
+      "alpha": 0.5,
+      "c_overall": 0.907563025210084,
+      "c_wga": 0.8924731182795699,
+      "changed_predictions": 0,
+      "correct": 216,
+      "count": 238,
+      "effective_heads": 14.837897105994918,
+      "gamma": 4,
+      "max_probability_change": 0.0014376275456388643,
+      "min_abs_decision_margin": 0.0005845159693583235,
+      "w_max": 0.08229484292448364,
+      "w_min": 0.05694517244943592
+    },
+    {
+      "alpha": 0.75,
+      "c_overall": 0.907563025210084,
+      "c_wga": 0.8924731182795699,
+      "changed_predictions": 0,
+      "correct": 216,
+      "count": 238,
+      "effective_heads": 14.977725059133803,
+      "gamma": 1,
+      "max_probability_change": 0.0005472752409984571,
+      "min_abs_decision_margin": 0.00039413837085516823,
+      "w_max": 0.07193060645076095,
+      "w_min": 0.06271994982007857
+    },
+    {
+      "alpha": 0.75,
+      "c_overall": 0.907563025210084,
+      "c_wga": 0.8924731182795699,
+      "changed_predictions": 0,
+      "correct": 216,
+      "count": 238,
+      "effective_heads": 14.910344541374117,
+      "gamma": 2,
+      "max_probability_change": 0.0010907182008343397,
+      "min_abs_decision_margin": 0.0005461887431622015,
+      "w_max": 0.07758765729898139,
+      "w_min": 0.058972910161329675
+    },
+    {
+      "alpha": 0.75,
+      "c_overall": 0.907563025210084,
+      "c_wga": 0.8924731182795699,
+      "changed_predictions": 0,
+      "correct": 216,
+      "count": 238,
+      "effective_heads": 14.640129821603907,
+      "gamma": 4,
+      "max_probability_change": 0.0021564413184583797,
+      "min_abs_decision_margin": 0.0006050592269536414,
+      "w_max": 0.09010893105339213,
+      "w_min": 0.05208442534082054
+    },
+    {
+      "alpha": 1,
+      "c_overall": 0.907563025210084,
+      "c_wga": 0.8924731182795699,
+      "changed_predictions": 0,
+      "correct": 216,
+      "count": 238,
+      "effective_heads": 14.960445790117888,
+      "gamma": 1,
+      "max_probability_change": 0.0007297003213311837,
+      "min_abs_decision_margin": 0.0004457860190385521,
+      "w_max": 0.07368525304545905,
+      "w_min": 0.06140437753788254
+    },
+    {
+      "alpha": 1,
+      "c_overall": 0.907563025210084,
+      "c_wga": 0.8924731182795699,
+      "changed_predictions": 0,
+      "correct": 216,
+      "count": 238,
+      "effective_heads": 14.841350050132615,
+      "gamma": 2,
+      "max_probability_change": 0.0014542909344456567,
+      "min_abs_decision_margin": 0.0006026050837912855,
+      "w_max": 0.08122798750975296,
+      "w_min": 0.05640832465955068
+    },
+    {
+      "alpha": 1,
+      "c_overall": 0.907563025210084,
+      "c_wga": 0.8924731182795699,
+      "changed_predictions": 0,
+      "correct": 216,
+      "count": 238,
+      "effective_heads": 14.371950163204469,
+      "gamma": 4,
+      "max_probability_change": 0.0028752550912778396,
+      "min_abs_decision_margin": 0.0006256024845489039,
+      "w_max": 0.09792301918230062,
+      "w_min": 0.04722367823220517
+    }
+  ],
+  "distance_scales": [
+    1.0019508600234985,
+    1.0010180473327637,
+    1.0019654035568237,
+    1.0021779537200928,
+    0.9970119595527649,
+    1.0049585103988647,
+    1.0064477920532227,
+    0.9983239769935608,
+    1.000088095664978,
+    1.0041391849517822,
+    1.0046318769454956,
+    1.007344126701355,
+    1.0064802169799805,
+    1.0068897008895874,
+    1.0067099332809448
+  ],
+  "historical_source_hashes": {
+    "scripts/dpe_head_reweighting.py": true,
+    "src/methods/dpe_head_reweighting/ensemble.py": true,
+    "src/methods/dpe_head_reweighting/experiment.py": true,
+    "src/methods/dpe_head_reweighting/reweighting.py": true,
+    "src/methods/dpe_head_reweighting/stage0.py": true,
+    "src/methods/dpe_head_reweighting/train_heads.py": true
+  },
+  "partition_groups": {
+    "A": {
+      "00": 280,
+      "01": 280,
+      "10": 80,
+      "11": 80
+    },
+    "B": {
+      "00": 94,
+      "01": 93,
+      "10": 27,
+      "11": 27
+    },
+    "C": {
+      "00": 93,
+      "01": 93,
+      "10": 26,
+      "11": 26
+    }
+  },
+  "per_head_csv_checked_rows": 45,
+  "prototype_norms": [
+    [
+      0.14257457852363586,
+      0.14399877190589905
+    ],
+    [
+      0.16541096568107605,
+      0.15481124818325043
+    ],
+    [
+      0.11945226788520813,
+      0.11041174829006195
+    ],
+    [
+      0.1269909143447876,
+      0.12072877585887909
+    ],
+    [
+      0.12791520357131958,
+      0.12659409642219543
+    ],
+    [
+      0.12568029761314392,
+      0.1249484196305275
+    ],
+    [
+      0.11040159314870834,
+      0.10758493095636368
+    ],
+    [
+      0.10004373639822006,
+      0.09686683118343353
+    ],
+    [
+      0.12713080644607544,
+      0.13439063727855682
+    ],
+    [
+      0.11123261600732803,
+      0.11601004004478455
+    ],
+    [
+      0.10851030796766281,
+      0.10815831273794174
+    ],
+    [
+      0.09081007540225983,
+      0.09395383298397064
+    ],
+    [
+      0.07748503237962723,
+      0.09198570996522903
+    ],
+    [
+      0.10212511569261551,
+      0.09221846610307693
+    ],
+    [
+      0.08635862171649933,
+      0.08667360991239548
+    ]
+  ],
+  "prototype_shape": [
+    15,
+    2,
+    2048
+  ],
+  "record_cross_checks": "all passed",
+  "selected_epochs": [
+    18,
+    17,
+    20,
+    18,
+    19,
+    17,
+    20,
+    20,
+    17,
+    19,
+    18,
+    19,
+    19,
+    18,
+    19
+  ],
+  "status": "passed",
+  "test": {
+    "examples_with_head_disagreement": 2216,
+    "head_class1_probability_range": [
+      0.40444254875183105,
+      0.6465376019477844
+    ],
+    "mean_pairwise_class_disagreement": 0.11491033417163898,
+    "pairwise_class_disagreement_range": [
+      0.05885398688298239,
+      0.17690714532274768
+    ],
+    "shape": [
+      15,
+      5794,
+      2
+    ],
+    "unique_probability_heads": 15
+  },
+  "test_correct": 5286,
+  "test_correct_counts": {
+    "00": {
+      "correct": 2091,
+      "count": 2255
+    },
+    "01": {
+      "correct": 2024,
+      "count": 2255
+    },
+    "10": {
+      "correct": 585,
+      "count": 642
+    },
+    "11": {
+      "correct": 586,
+      "count": 642
+    }
+  },
+  "uniform_C_correct_counts": {
+    "00": {
+      "correct": 84,
+      "count": 93
+    },
+    "01": {
+      "correct": 83,
+      "count": 93
+    },
+    "10": {
+      "correct": 24,
+      "count": 26
+    },
+    "11": {
+      "correct": 25,
+      "count": 26
+    }
+  },
+  "unique_prototype_heads": 15
+}

@@ -1,0 +1,125 @@
+{
+  "model_contract_version": 1,
+  "experiment_id": "dpe_seed0",
+  "method": "original DPE (15-head IsoMax+ prototype ensemble with covariance regularization, equal probability averaging at temperature 1.0)",
+  "seed": 0,
+  "availability": "complete",
+  "implementation": {
+    "repository": "baselines/dpe4subpop",
+    "notebook": "notebooks/dpe_waterbirds_end_to_end.ipynb",
+    "notebook_sha256": "575fca889dfac68465383801061fc63bcfd7230bee4a9bffbaad5723ae27182d",
+    "head_constructor": "utils.isomaxplus.IsoMaxPlusLossFirstPart(2048, 2)",
+    "export_adapter": "src/evaluation/dpe_export.py:export_dpe_heads",
+    "exporter_sha256": "f67d47743d15a861791e6d86414013afd335017de0630c74788d0a40e1e0036c"
+  },
+  "artifacts": [
+    {
+      "id": "dpe_stage0_backbone",
+      "role": "frozen_stage0_resnet50_backbone",
+      "location": "checkpoints/dpe_ckpt_last.zip",
+      "working_copy_location": "checkpoints/waterbirds_stage0_standard_erm/ckpt_last.pt",
+      "sha256": "84cf80674d874f4a200d7474a9f8df79991071a93a3bad2b1909faa3f83f3572",
+      "format": "pytorch_state_dict_weights_only",
+      "loader": "torch.load(..., map_location='cpu', weights_only=True)"
+    },
+    {
+      "id": "dpe_15_selected_heads",
+      "role": "prototype_ensemble_heads_and_distance_scales",
+      "location": "outputs/dpe_seed0_heads.pt",
+      "sha256": "ce955142f6f4ecde568647d8fb6d59dc9d947cf21718357598f3eab53037df05",
+      "format": "pytorch_dict_v1 (prototypes [15, 2, 2048], distance_scales [15], temperature=1.0, normalize_embeddings=True)",
+      "loader": "torch.load(..., map_location='cpu', weights_only=True) -> src.evaluation.dpe_export.predict_heads"
+    },
+    {
+      "id": "dpe_packaged_test_features",
+      "role": "identified_raw_test_features_npz",
+      "location": "outputs/dpe_seed0_features.npz",
+      "sha256": "4ca0cb7ffb6175aab655859f32f5709bcc5870403c7ca11afa6ea109482550d8",
+      "format": "numpy_npz_compressed (ids [5794], features [5794, 2048], backbone_sha256)",
+      "loader": "numpy.load(..., allow_pickle=False)"
+    }
+  ],
+  "input": {
+    "dataset_release": "waterbird_complete95_forest2water2",
+    "metadata_location": "data/waterbirds/metadata_waterbirds.csv",
+    "metadata_sha256": "7ec721db47c67599634db530625d4eaa4267ce78047701540e9812a1139d0878",
+    "input_kind": "features",
+    "producing_backbone_artifact_id": "dpe_stage0_backbone",
+    "shape": [
+      2048
+    ],
+    "dtype": "float32",
+    "preprocessing": [
+      "Image decoding via PIL.Image.open(path).convert('RGB')",
+      "torchvision.transforms.Resize((256, 256)) -> CenterCrop((224, 224)) -> ToTensor() -> ImageNet Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])",
+      "Forward through Stage-0 ResNet-50 trunk + Flatten to raw 2048-D embedding x",
+      "Per-sample row standardization across the 2048 feature dimensions: x_std = (x - mean(x, axis=1, keepdims=True)) / std(x, axis=1, ddof=0, keepdims=True)",
+      "L2 normalization of x_std and each class prototype vector along feature dimension (dim=1) inside IsoMax+ distance calculation"
+    ]
+  },
+  "inference": {
+    "native_class_order": [
+      0,
+      1
+    ],
+    "canonical_class_mapping": {
+      "0": "landbird",
+      "1": "waterbird"
+    },
+    "evaluation_mode": "torch.inference_mode(), temperature=1.0 (training entropic scale 30 is NOT applied at inference)",
+    "precision": "float32",
+    "probability_conversion": "For each head m in 1..15: logits_m = -|distance_scale_m| * ||normalize(x_std) - normalize(prototypes_m)||_2; p_m = softmax(logits_m, dim=1)",
+    "aggregation": "Equal arithmetic mean of the 15 head probability vectors: p = (1/15) * sum_{m=1}^{15} p_m",
+    "decision_rule": "argmax over averaged [p(landbird), p(waterbird)]; equal probabilities select index 0 (landbird)"
+  },
+  "selection": {
+    "procedure": "Per-head validation worst-group accuracy (WGA) selection over 20 training epochs per stage (stages 1..15), using >= tie-breaking (latest epoch achieving the maximum validation WGA is retained, matching notebooks/dpe_waterbirds_end_to_end.ipynb)",
+    "selection_data": "Full official Waterbirds validation split (1,199 examples) with group annotations",
+    "selected_head_epochs_1based": [
+      16,
+      20,
+      15,
+      19,
+      17,
+      12,
+      20,
+      15,
+      20,
+      11,
+      18,
+      16,
+      18,
+      13,
+      13
+    ],
+    "selected_head_val_wga": [
+      0.9624060150375939,
+      0.9624060150375939,
+      0.924892703862661,
+      0.944206008583691,
+      0.9377682403433476,
+      0.924812030075188,
+      0.907725321888412,
+      0.9250535331905781,
+      0.9377682403433476,
+      0.9207708779443254,
+      0.9313304721030042,
+      0.9548872180451128,
+      0.9313304721030042,
+      0.9377682403433476,
+      0.9398496240601504
+    ],
+    "metric": "validation worst-group accuracy",
+    "direction": "maximize",
+    "tie_rule": "val_wga >= best_val_wga (last-epoch tie-breaker)",
+    "evidence_location": "checkpoints/waterbirds_stage0_standard_erm/dpe_selected_epochs.json"
+  },
+  "verification": {
+    "status": "passed",
+    "scope": "Verified numerical equivalence between native utils.isomaxplus.IsoMaxPlusLossFirstPart head ensemble inference and src.evaluation.dpe_export.predict_heads across all 1,199 validation examples (label_agreement: 1.0, max_abs_prob_diff: 5.960464477539063e-08 vs predeclared float32 tolerance 1e-5)."
+  },
+  "limitations": [
+    "The historical Kaggle notebook sessions (exp-dpe-waterbirds-ermstar-001 and exp-dpe-waterbirds-standard-002) discarded their in-memory Stage 1+ prototype lists after printing aggregate metrics. This ensemble was newly trained on local CPU (seed=0) using the exact notebook Stage 1+ recipe on the saved Stage-0 backbone checkpoint checkpoints/dpe_ckpt_last.zip.",
+    "As documented in erm_stage0_seed0, the Stage-0 backbone checkpoint checkpoints/dpe_ckpt_last.zip achieves 76.64% ERM test WGA and 93.93% DPE test WGA, matching the 100-epoch augmented ERM* track rather than the unaugmented --no_augmentation track."
+  ]
+}

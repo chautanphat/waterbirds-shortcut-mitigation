@@ -1,4 +1,0 @@
-source_seed,selected_epochs_equal,prototype_max_abs_diff,scale_max_abs_diff,test_probabilities_max_abs_diff,changed_head_test_decisions,changed_uniform_test_decisions
-0,True,3.934837877750397e-08,1.7881393432617188e-07,7.748603820800781e-07,0,0
-1,True,5.3551048040390015e-08,1.1920928955078125e-07,8.046627044677734e-07,0,0
-2,True,3.9406586438417435e-08,2.384185791015625e-07,7.152557373046875e-07,0,0

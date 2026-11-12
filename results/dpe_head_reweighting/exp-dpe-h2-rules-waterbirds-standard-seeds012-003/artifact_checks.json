@@ -1,0 +1,101 @@
+{
+  "backbone_log_epoch_records_checked": 200,
+  "candidate_count": 60,
+  "csv_line_ending_normalization_preserves_fields": true,
+  "identical_test_ids_labels_groups_across_seeds": true,
+  "independent_numpy_aggregation_and_metric_checks": {
+    "c_candidates": 60,
+    "production_metric_functions_used": false,
+    "selected_family_test_records": 18,
+    "status": "passed"
+  },
+  "limitations": [
+    "Raw images, backbone weights and raw feature bundles are absent from the combined ZIP.",
+    "The original failed-version checkpoints were not supplied; matching logged metrics do not prove checkpoint identity.",
+    "All three training seeds share one validation partition and one test set."
+  ],
+  "per_seed_csv_matches": true,
+  "review_runtime": {
+    "numpy": "2.1.3",
+    "python": "3.12.14",
+    "scipy": "1.16.3"
+  },
+  "scope": "prediction-cache recomputation and B/C solver refits; no raw-image or backbone inference",
+  "seed1_logged_epochs_match_prior_failed_run": true,
+  "seeds": [
+    {
+      "b_c_wga_rank_correlation": -0.027603113100066887,
+      "candidate_refit_count": 20,
+      "implementation_files_match": true,
+      "max_candidate_weight_error": 0.0,
+      "max_test_head_pair_disagreement": 0.17690714532274768,
+      "mean_test_head_pair_disagreement": 0.11491033417163897,
+      "min_test_head_pair_disagreement": 0.05885398688298239,
+      "seed": 0,
+      "selected_test_metrics_match": true,
+      "source_artifact_hashes_match": true,
+      "test_count": 5794,
+      "test_groups": {
+        "00": 2255,
+        "01": 2255,
+        "10": 642,
+        "11": 642
+      },
+      "validation_counts": {
+        "A": 720,
+        "B": 241,
+        "C": 238
+      }
+    },
+    {
+      "b_c_wga_rank_correlation": 0.49539160674833527,
+      "candidate_refit_count": 20,
+      "implementation_files_match": true,
+      "max_candidate_weight_error": 0.0,
+      "max_test_head_pair_disagreement": 0.1815671384190542,
+      "mean_test_head_pair_disagreement": 0.11463089895951477,
+      "min_test_head_pair_disagreement": 0.06679323438039352,
+      "seed": 1,
+      "selected_test_metrics_match": true,
+      "source_artifact_hashes_match": true,
+      "test_count": 5794,
+      "test_groups": {
+        "00": 2255,
+        "01": 2255,
+        "10": 642,
+        "11": 642
+      },
+      "validation_counts": {
+        "A": 720,
+        "B": 241,
+        "C": 238
+      }
+    },
+    {
+      "b_c_wga_rank_correlation": 0.7796199649055389,
+      "candidate_refit_count": 20,
+      "implementation_files_match": true,
+      "max_candidate_weight_error": 0.0,
+      "max_test_head_pair_disagreement": 0.17362789092164307,
+      "mean_test_head_pair_disagreement": 0.10708943570524516,
+      "min_test_head_pair_disagreement": 0.04401104590956161,
+      "seed": 2,
+      "selected_test_metrics_match": true,
+      "source_artifact_hashes_match": true,
+      "test_count": 5794,
+      "test_groups": {
+        "00": 2255,
+        "01": 2255,
+        "10": 642,
+        "11": 642
+      },
+      "validation_counts": {
+        "A": 720,
+        "B": 241,
+        "C": 238
+      }
+    }
+  ],
+  "status": "passed",
+  "summary_mean_sample_sd_and_paired_deltas_match": true
+}

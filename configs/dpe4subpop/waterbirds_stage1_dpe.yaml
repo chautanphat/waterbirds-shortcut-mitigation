@@ -1,15 +1,16 @@
+# Descriptive settings for the annotated reproduction; upstream CLI does not load this nested YAML automatically.
 # Waterbirds Stage-1+ Diverse Prototypical Ensemble (DPE) Training
 method: dpe
 stage: 1
 
 dataset:
   dataset_name: Waterbirds
-  data_dir: data/waterbirds
+  data_dir: data
   batch_size: 256
-  batch_size_eval: 512
+  batch_size_eval: 256
   workers: 4
-  train_attr: 'no'            # 'no' for attribute-agnostic benchmark; 'yes' for group-annotated val
-  subsample_type: group       # 'group' if train_attr=yes, 'class' if train_attr=no
+  train_attr: 'yes'            # 'no' for attribute-agnostic benchmark; 'yes' for group-annotated val
+  subsample_type: group       # parser token; target is groups with train_attr=yes, classes with train_attr=no
   norm_emb: 'yes'
   shuffle_in_training: true
   no_class_balanced_training: true
@@ -33,6 +34,6 @@ training:
   seed: 0
 
 checkpoint:
-  pretrained_path: checkpoints/waterbirds_erm/ckpt_last.pt
+  pretrained_path: checkpoints/waterbirds_stage0_standard_erm/ckpt_last.pt
   ckpt_dir: checkpoints/waterbirds_dpe
 

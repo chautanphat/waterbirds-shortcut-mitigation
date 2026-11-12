@@ -11,6 +11,7 @@ Add a method only after the team agrees to investigate it. Then:
 3. Add a method-specific README with source, paper, license, setup, commands, and Waterbirds-specific changes.
 4. Add one entry here using the template in [`README.md`](README.md).
 5. Link a tracked configuration and experiment-log entry.
+6. Document the method's [canonical prediction export](prediction_protocol.md), its reference metadata, and the validation command. Apply this to all future methods and exports.
 
 Do not claim an original reproduction when the work is only a smoke test or an adaptation.
 
@@ -28,6 +29,49 @@ The initial comparison is expected to include ERM, GroupDRO, JTT, and other agre
 ## Method entries
 
 Add approved methods below this heading using the shared template.
+
+## Shared empirical risk minimization (ERM)
+
+- **Implementation:** [`src/methods/erm/`](../src/methods/erm/README.md), project-owned extraction of DPE's standard stage-0 training recipe; shared data/model/evaluation utilities are available to future methods.
+- **Source:** [DPE](https://github.com/minhto2802/dpe4subpop) (MIT); deterministic Waterbirds preprocessing inherited from [SubpopBench](https://github.com/YyzHarry/SubpopBench) (MIT). Citations and source details are in the [method README](../src/methods/erm/README.md).
+- **Mechanism:** Full-backbone ResNet-50 fine-tuning with mean cross entropy and class-balanced replacement sampling. Training group labels are unused.
+- **Settings:** [`configs/erm/waterbirds_standard.yaml`](../configs/erm/waterbirds_standard.yaml): ImageNet V2 weights, updated BatchNorm statistics, 100 epochs, train/eval batch sizes 128/256, SGD LR 0.001, momentum 0.9, weight decay 0, no scheduler or augmentation. These match the effective stage-0 command in the existing DPE notebook, including CLI defaults.
+- **Evaluation:** `ckpt_last.pt` is the default, matching DPE's last-epoch handoff. An additional `ckpt_best_wga.pt` tracks validation WGA for experiments using validation selection. Held-out test evaluation is a separate command. Reports include overall/per-group accuracy, WGA and counts.
+- **Status:** Standard-track seeds 0/1/2 are recorded in the [H2 study](../src/methods/dpe_head_reweighting/reports/h2.md); seed 0 was reused and seeds 1/2 trained in the completed study. Backbone validation logs are available. ERM-only test performance and an independent raw-image inference reproduction are not established by these artifacts.
+- **Reuse:** Project-level train/evaluate/export scripts operate independently of all preserved baselines. Checkpoints and raw ordered feature caches can be consumed by DPE; historical DPE runs remain unchanged.
+
+## DPE head aggregation
+
+### Overview
+
+- **Full name:** Independent comparison of global weighting rules and neural combiners over frozen Diverse Prototypical Ensemble heads.
+- **Source:** Project-owned adaptation of [DPE](https://arxiv.org/abs/2505.23027), ICML 2025. Neural combination and prediction dropout are motivated by [Regularized Neural Ensemblers](https://proceedings.mlr.press/v293/arango25a.html), AutoML 2025; this is not an exact reproduction of either experiment.
+- **Implementation:** [Method guide](../src/methods/dpe_head_reweighting/HEAD_AGGREGATION.md), [Run All notebook](../notebooks/dpe_head_aggregation.ipynb).
+
+### Mechanism and protocol
+
+Train an ImageNet-initialized ResNet-50 on the official 4,795 training images
+for 100 epochs, retaining the final checkpoint. Divide validation directly into
+a head-training split (720 images) and a combiner-training split (479 images),
+using group-stratified 60/40 allocation with fixed split seed 0. Train 15 heads
+for 20 epochs on balanced head-training subsamples. Fit every weighting rule and
+neural combiner only on combiner-training predictions.
+
+The 30 configurations are uniform, 12 power rules, 2 softmax rules, 2 top-k
+rules, 3 joint fits and 10 neural configurations. Evaluate each independently
+on the same official 5,794 test images across seeds 0/1/2, after all model fits
+are frozen. Report overall/group accuracy, WGA, counts and paired changes
+against uniform. Do not use test results to choose hyperparameters.
+
+### Status and historical evidence
+
+The two-split comparison is implemented with synthetic software checks; real
+Waterbirds evaluation of this protocol is pending. Results remain exploratory
+because the common test set has previously informed project research.
+Earlier weighting experiments used a different selection protocol. Their
+records and interpretations are preserved in the [historical H2 report](../src/methods/dpe_head_reweighting/reports/h2.md)
+and [experiment index](experiment_log.md). Those results are not measurements
+of every independently evaluated configuration in the current protocol.
 
 ## Diverse Prototypical Ensembles (DPE)
 
@@ -74,9 +118,9 @@ DPE addresses subpopulation shifts and shortcut learning without requiring subgr
 
 ### Head aggregation follow-up
 
-The [Kaggle version-4 review](../results/dpe/reweighting_review.md) records a completed exploratory adaptation on seeds 0–2 (`exp-dpe-waterbirds-reweighting-003`). It trains heads on 720 validation examples and weighting rules/neural combiners on a disjoint 479-example partition. All 30 configurations are reported independently on test; there is no separate candidate-selection split. Its Stage-0 profile and data allocation differ from the earlier reproduction above.
+The Kaggle version-4 review (in the [supporting-evidence archive](../results/dpe/supporting_evidence.zip)) records a completed exploratory adaptation on seeds 0–2 (`exp-dpe-waterbirds-reweighting-003`). It trains heads on 720 validation examples and weighting rules/neural combiners on a disjoint 479-example partition. All 30 configurations are reported independently on test; there is no separate candidate-selection split. Its Stage-0 profile and data allocation differ from the earlier reproduction above.
 
-The matched uniform ensemble achieves 89.5196 ± 0.6538% test WGA. None of the 19 nonuniform global weighting configurations improves mean WGA. Dropout MLP stackers achieve 89.9926 ± 0.0923%, a paired change of +0.4730 ± 0.6672 percentage points, concentrated mainly in seed 2. Gates collapse toward one effective head and lose about 2.94 WGA points. These are exploratory observations, not a test-selected winning method or a verified paper reproduction. [Actual settings and provenance](../experiments/exp-dpe-waterbirds-reweighting-003/record.json) and [all per-group results](../results/dpe/head_aggregation_kaggle_v4/per_group.csv) accompany the review.
+The matched uniform ensemble achieves 89.5196 ± 0.6538% test WGA. None of the 19 nonuniform global weighting configurations improves mean WGA. Dropout MLP stackers achieve 89.9926 ± 0.0923%, a paired change of +0.4730 ± 0.6672 percentage points, concentrated mainly in seed 2. Gates collapse toward one effective head and lose about 2.94 WGA points. These are exploratory observations, not a test-selected winning method or a verified paper reproduction. [Actual settings and provenance](../experiments/exp-dpe-waterbirds-reweighting-003/record.json) and all per-group results in that archive accompany the review.
 
 ## Optimal Transport Reweighting (POTER)
 

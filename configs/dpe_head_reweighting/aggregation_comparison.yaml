@@ -1,0 +1,30 @@
+# Exploratory: independent comparison on the combiner-training split.
+version: 1
+protocol: independent_comparison
+heads: 15
+hidden_units: 8
+steps: 400
+learning_rate: 0.01
+weight_decays:
+- 0.01
+- 0.001
+prediction_dropout: 0.25
+seed_offset: 10000
+loss: group_balanced_bce
+weighting_rules:
+  version: 1
+  softmax_betas:
+  - 10.0
+  - 30.0
+  top_k:
+  - 10
+  - 5
+  joint_lambdas:
+  - 1.0
+  - 0.1
+  - 0.01
+  solver:
+    maxiter: 1000
+    ftol: 1.0e-10
+    feasibility_tolerance: 1.0e-07
+    probability_floor: 1.0e-12

@@ -1,0 +1,10 @@
+download_data: true
+resume_backbone: true
+rules: configs/dpe_head_reweighting/weighting_rules.yaml
+seeds:
+- 0
+- 1
+- 2
+track: standard
+version: 1
+workers: 2

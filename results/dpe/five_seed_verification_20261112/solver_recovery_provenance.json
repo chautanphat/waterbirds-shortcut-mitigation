@@ -1,8 +1,0 @@
-{
-  "worker_sha256": "d0274451f1c424f52ecd46a7f0b3f61bbd89f23c5a9aec5cde6fb4179c4fb2dc",
-  "config_sha256": "e3871b74df2a62e5e9bf69ce24543820620f116643040a46337e911f1f6a1502",
-  "adapter_sha256": "e634174af35d31a11c604a7b3753ae6618b7690e68250d18ed4151ac3cc2bcf8",
-  "cached_results_policy": "Keep original worker/config bytes, result context and successful fits; record solver-only fallback for rejected fits.",
-  "unchanged": "Backbones/heads/data/model/penalty/probability floor/objective/acceptance tolerance",
-  "changed": "Retry failed joint optimizer and independently certify its global objective gap; never use test performance"
-}

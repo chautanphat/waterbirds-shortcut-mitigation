@@ -47,6 +47,13 @@ waterbirds-shortcut-mitigation/
 | [`dataset.md`](dataset.md) | Waterbirds source, groups, splits, local-data expectations, and verification. |
 | [`methods.md`](methods.md) | Method inventory and the rule for documenting a baseline. |
 | [`experiment_log.md`](experiment_log.md) | Traceable index of meaningful runs. |
+| [DPE H2 experiment report](../src/methods/dpe_head_reweighting/reports/h2.md) | Summary of head-weighting experiments, results, interpretation and follow-up hypotheses. |
+| [Shared ERM](../src/methods/erm/README.md) | DPE-aligned repository-wide fine-tuning, evaluation, and reusable features. |
+| [Waterbirds Prediction Viewer](viewer.md) | Local image inspection and comparison of saved per-example predictions across approaches. |
+| [Export predictions](export_predictions.md) | Viewer CSV recovery and export for POTER, original DPE, AutoBackSwap, and ERM. |
+| [Prediction CSV protocol](prediction_protocol.md) | Required version-1 per-example export contract and validator for all methods. |
+| [Model artifacts and inference contract](model_artifact_contract.md) | Frozen-predictor description, native loading/preprocessing, selection and inference verification. |
+| [Experiment records contract](experiment_record_contract.md) | Version-1 run evidence, execution/claim status, attempts, artifact links and acceptance review. |
 
 ## Baseline contribution checklist
 
@@ -55,6 +62,8 @@ waterbirds-shortcut-mitigation/
 3. Use a tracked configuration in `configs/` or `experiments/`.
 4. Run a smoke test before claiming a reproduction.
 5. Add the method summary and experiment-log entry in the same pull request.
+6. Export full per-example predictions using the [shared CSV protocol](prediction_protocol.md), retain provenance, and validate against the reference split metadata.
+7. For new meaningful runs, retain `run.json` and the frozen predictor's `model.json` under `experiments/<experiment-id>/`, following the experiment and model contracts above. Record missing artifacts explicitly.
 
 ## Method-entry template
 
@@ -89,6 +98,9 @@ Briefly explain the method's central idea.
 - Overall accuracy:
 - Per-group accuracy:
 - Worst-group accuracy:
+- Prediction export command and CSV/provenance paths:
+- Canonical location: `experiments/<experiment-id>/predictions/<split>/`.
+- Reference metadata and CSV validation command:
 
 ### Status
 - Original reproduction:

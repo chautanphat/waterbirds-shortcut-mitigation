@@ -1,0 +1,11 @@
+# Exploratory, fixed in advance of new test evaluation. Fit only on B.
+version: 1
+heads: 15
+hidden_units: 8
+steps: 400
+learning_rate: 0.01
+# Declaration order prefers stronger regularization on complete C ties.
+weight_decays: [0.01, 0.001]
+prediction_dropout: 0.25
+seed_offset: 10000
+loss: group_balanced_bce

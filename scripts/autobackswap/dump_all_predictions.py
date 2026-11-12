@@ -1,13 +1,17 @@
 """Write predictions.csv for a Waterbirds checkpoint: every test example, correct and wrong.
 
+Emits the shared predictions.csv v1 format (docs/prediction_protocol.md).
 Standalone, does not touch run.py or method code. Images are never copied or uploaded;
 paths are relative to <repo>/data/waterbird_complete95_forest2water2/images.
 errors.csv for a run is the rows of predictions.csv with correct == 0.
 """
 import argparse
-import csv
 import os
 import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from src.evaluation.prediction_export import sha256, write_predictions
 
 GN = {1: "Landbird on Land", 2: "Landbird on Water", 3: "Waterbird on Land", 4: "Waterbird on Water"}
 CN = ("landbird", "waterbird")
@@ -21,7 +25,8 @@ p.add_argument("--out_dir", required=True)
 a = p.parse_args()
 out = os.path.abspath(os.path.join(a.out_dir, a.run_label))
 ckpt = os.path.abspath(a.checkpoint)
-os.makedirs(out, exist_ok=True)
+if os.path.exists(out):
+    raise FileExistsError(f"Preserve the existing export: {out}")
 os.chdir(a.repo)
 sys.path.insert(0, os.getcwd())
 import torch
@@ -48,17 +53,22 @@ with torch.no_grad():
         confs += c.tolist()
 assert len(preds) == len(meta)
 tot = {g: [0, 0] for g in GN}
-with open(os.path.join(out, "predictions.csv"), "w", newline="") as f:
-    w = csv.writer(f)
-    w.writerow(["image_path", "true_label", "predicted_label", "correct", "group", "group_name",
-                "spurious_attribute", "confidence", "run_label", "seed"])
-    for i, r in meta.iterrows():
-        g = int(r.group)
-        ok = preds[i] == int(r.y)
-        tot[g][0] += ok
-        tot[g][1] += 1
-        w.writerow([r.img_filename, CN[int(r.y)], CN[preds[i]], int(ok), g, GN[g],
-                    ("land", "water")[int(r.place)], round(confs[i], 4), a.run_label, a.seed])
+rows = []
+for i, r in meta.iterrows():
+    g = int(r.group)
+    tot[g][0] += preds[i] == int(r.y)
+    tot[g][1] += 1
+    rows.append(dict(image_path=r.img_filename, y=int(r.y), a=int(r.place), split="test"))
+write_predictions(out, rows, None, predicted_labels=preds, confidence=confs,
+    run_label=a.run_label, seed=a.seed,
+    provenance=dict(method="erm-autobackswap" if a.run_label.startswith("erm") else "autobackswap",
+        checkpoint=ckpt, checkpoint_sha256=sha256(ckpt),
+        metadata_sha256=sha256("./data/waterbird_complete95_forest2water2/metadata.csv"),
+        source_config="methods/ours/config_wb.yaml",
+        source_config_sha256=sha256("./methods/ours/config_wb.yaml"),
+        config_overrides=dict(device=a.device, random_seed=a.seed, cuda_optimizations=False),
+        limitation="Legacy helper uses the original default config plus export overrides; retain original training records",
+        selection="User-supplied checkpoint; no selection or fitting during export"))
 n = sum(v[1] for v in tot.values())
 right = sum(v[0] for v in tot.values())
 print(a.run_label, {GN[g]: round(100 * v[0] / v[1], 3) for g, v in tot.items()},

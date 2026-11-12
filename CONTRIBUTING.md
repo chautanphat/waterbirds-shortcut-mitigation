@@ -156,7 +156,6 @@ For example:
 ```text
 src/methods/poter/
 ├── README.md
-├── ORIGINAL_SOURCE.md
 ├── train.py
 ├── models.py
 ├── loss.py
@@ -398,7 +397,23 @@ Do not report only overall accuracy, because it can conceal poor performance on 
 
 Every meaningful experiment should be traceable.
 
+All future methods must export per-example evaluation predictions using the
+[shared predictions.csv v1 protocol](docs/prediction_protocol.md). Retain full
+predictions and companion provenance for each run/seed/split, document the export
+command, and validate against reference metadata before reporting results.
+Store new exports at `experiments/<experiment-id>/predictions/<split>/predictions.csv`
+with `provenance.json` beside it. Keep dataset images separate in the dataset directory.
+Preserve method-specific training, preprocessing and model-selection procedures;
+apply the common format at the export boundary.
+
 Use configuration files as the source of truth for experiment settings.
+
+For new meaningful runs, follow the [experiment records contract](docs/experiment_record_contract.md)
+for `experiments/<experiment-id>/run.json` and the
+[model artifacts and inference contract](docs/model_artifact_contract.md) for its
+companion `model.json`. Retain native model formats, resolved settings, artifact
+identities and selection evidence; disclose missing historical inputs. These
+records are reviewed separately from prediction CSV validation.
 
 A configuration should record relevant fields such as:
 
@@ -581,12 +596,14 @@ Include:
 - Known deviations.
 - License and notices.
 
-Preserve the upstream README when it is part of the original implementation. Add project-specific documentation without misrepresenting the original instructions.
+When cloning an external baseline for testing or reproduction, preserve its upstream README. Add project-specific documentation without misrepresenting the original instructions. For project-owned or shared code, cite the paper, source repository, and relevant version directly in the method README. A separate `ORIGINAL_SOURCE.md` is optional; create one only when a substantial source history needs its own document, and avoid duplicating information already in the README. Retain applicable license notices.
 
 
 ### 8.6. `docs/experiment_log.md`
 
 Maintain a concise experiment index.
+
+Synthetic smoke tests and routine implementation checks do not belong in the experiment log and do not require experiment entries or recorded metrics.
 
 For each experiment, record:
 - Experiment identifier.

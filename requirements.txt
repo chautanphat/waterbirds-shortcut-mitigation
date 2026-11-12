@@ -1,0 +1,8 @@
+# Shared ERM infrastructure; preserved baselines retain their own dependencies.
+# Use a torch/torchvision pair appropriate for your CUDA runtime (or CPU).
+torch>=2.6,<3
+torchvision>=0.21,<1
+numpy>=1.26,<3
+pandas>=2.2,<3
+Pillow>=10.3,<13
+PyYAML>=6,<7

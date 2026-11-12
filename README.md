@@ -35,6 +35,19 @@ waterbirds-shortcut-mitigation/
 
 Use `baselines/<method-name>/` for an official external implementation that is being preserved and reproduced. Use `src/methods/<method-name>/` for a method implemented by this project, reimplemented from a paper, or integrated into the project's common framework. Store tracked experiment settings in `configs/` or `experiments/`; keep raw data, large checkpoints, caches, and local logs out of version control.
 
+## Shared ERM
+
+Use `python scripts/train_erm.py` for the repository-wide, DPE-aligned standard ERM baseline. Its reusable dataset, backbone, evaluation, and feature-export modules live in `src/`; settings are in [`configs/erm/waterbirds_standard.yaml`](configs/erm/waterbirds_standard.yaml). See the [shared ERM guide](src/methods/erm/README.md) for setup, evaluation, and DPE handoff commands.
+
+## Waterbirds Prediction Viewer
+
+Open [`scripts/viewer.html`](scripts/viewer.html) directly in Chrome or Edge to inspect per-image Waterbirds predictions across **DPE**, **AutoBackSwap**, **POTER**, and **ERM** (no local server required):
+
+1. **Predictions auto-load on open:** All 13 exported test runs under `experiments/` are pre-bundled in the HTML viewer for instant comparison across subpopulation groups (`G1–G4`), **Common Failures (All Wrong)**, **Methods Disagree**, **Compare A vs B**, and the **Bird Species Failure Ranking**.
+2. **Load bird photos (optional):** Click **`2. 🖼️ Load Bird Photos (data/waterbirds/)`** in the top bar and select your local `data/waterbirds` folder to render the bird photographs on each card.
+
+See the [Waterbirds Prediction Viewer Guide](docs/viewer.md), [Export Predictions Guide](docs/export_predictions.md), and [Shared Prediction CSV Protocol](docs/prediction_protocol.md) for details on exporting new methods (such as GroupDRO) and validating `predictions.csv` artifacts.
+
 ## Team workflow
 
 For full contributor operating rules, repository conventions, and the baseline integration lifecycle, refer to [`CONTRIBUTING.md`](CONTRIBUTING.md).
@@ -74,4 +87,4 @@ See [`docs/`](docs/) and [`CONTRIBUTING.md`](CONTRIBUTING.md) for detailed proje
 
 ## DPE experiment evidence
 
-The [five-seed verification report](results/dpe/five_seed_verification_20261112/README.md) gives the current results, uncertainty and supported claims. The [results index](results/dpe/README.md) separates current evidence from historical checks; [notebook notes](notebooks/README.md) identify archived launchers.
+The [five-seed verification report](results/dpe/five_seed_verification_20261112/README.md) gives the current results, uncertainty and supported claims. The [results index](results/dpe/README.md) separates current evidence from historical checks; [notebook notes](notebooks/README.md) describe available workflows.

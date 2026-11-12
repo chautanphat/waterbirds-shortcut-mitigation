@@ -19,7 +19,7 @@ Official Waterbirds splits: train 4,795; validation 1,199; test 5,794. Test grou
 
 Each frozen backbone supplies raw features to 15 prototype heads. The primary group-stratified validation partition uses seed 0: 720 head-training examples and 479 combiner-training examples. Heads use 20 epochs with one balanced, drop-last optimizer update per epoch; head epochs are selected using the head-training pool. Combiners use the separate 479-example pool, group-balanced loss, 400 CPU float64 AdamW steps, learning rate 0.01, hidden width 8 and tanh. Weight decays 0.01 and 0.001 are reported independently. Prediction dropout rate is 0.25 during fitting; inference has no dropout. No candidate-selection split was introduced. All declared fits are frozen before test scoring; test features can be extracted after the backbone freezes but do not fit heads or combiners.
 
-The source commit is `8e14249f4b3510363be06f627182e2daa9926179`. A narrow runtime adapter extends the stage-0 seed guard to seeds 3 and 4 while retaining the original recipe. Runtime: Python 3.13.16, PyTorch 2.11.0+cu130, torchvision 0.26.0+cu130, NumPy 2.1.3, SciPy 1.16.3, Pillow 13.0.0 and Tesla T4. See `environment.json`, `execution_contract.json`, and the experiment record.
+The source commit is `8e14249f4b3510363be06f627182e2daa9926179`. A narrow runtime adapter extends the stage-0 seed guard to seeds 3 and 4 while retaining the original recipe. Runtime: Python 3.13.16, PyTorch 2.11.0+cu130, torchvision 0.26.0+cu130, NumPy 2.1.3, SciPy 1.16.3, Pillow 13.0.0 and Tesla T4. The archived `environment.json` and `execution_contract.json`, plus the experiment record, preserve these details.
 
 ## Primary results
 
@@ -90,14 +90,23 @@ SciSpace search identified relevant last-layer retraining literature. [On Featur
 
 ## Files and reproduction
 
-- `per_seed.csv`, `summary_by_cohort.csv`: all primary results.
-- `partition_sensitivity.csv`, `partition_summary.csv`: all alternative partitions.
-- `combiner_randomness.csv`, `combiner_randomness_summary.csv`, `combiner_paired_differences.csv`: nested initialization checks.
-- `controls.csv`, `control_summary.csv`: all controls; `uncertainty.json`: three distinct uncertainty summaries.
-- `independent_audit.json`, `environment.json`, `execution_contract.json`, `images/`, solver evidence and `repository_tests.txt`: verification records.
-- Large predictions, head tensors, raw logs and rejected-input arrays remain in the ignored uploaded-output directory and the original ZIP; keep the original ZIP and full Kaggle output. The tracked tables are not a training-resume bundle.
+Core evidence is kept beside this report:
 
-Reproduce the lightweight audit after extracting the ZIP (no GPU training):
+- `per_seed.csv` and `summary_by_cohort.csv`: all primary results.
+- `partition_sensitivity.csv`: all alternative-partition results.
+- `combiner_randomness.csv`: all nested initialization checks.
+- `controls.csv`: all controls; `uncertainty.json`: uncertainty calculations.
+- `independent_audit.json` and `five_seed_findings.png`: audit summary and figure.
+
+The [supporting-evidence archive](../supporting_evidence.zip) contains the historical reports, supplementary summaries, environment, execution contract, per-seed image-replay records, solver evidence, test output and archived notebooks. Its entries retain their former repository-relative paths; `SHA256SUMS` can be used to check their contents. For example:
+
+```bash
+unzip results/dpe/supporting_evidence.zip -d /tmp/dpe-supporting-evidence
+```
+
+The supporting archive does **not** contain the complete uploaded experiment bundle: keep the original verification ZIP and full Kaggle output separately for predictions, model checkpoints, and recovery.
+
+Reproduce the lightweight audit after extracting the original verification ZIP (no GPU training):
 
 ```bash
 python scripts/analysis/audit_dpe_five_seed.py \
@@ -106,4 +115,4 @@ python scripts/analysis/audit_dpe_five_seed.py \
   --archive /path/to/verification_results.zip
 ```
 
-Use NumPy and SciPy; the audit reads saved predictions and states and does not import PyTorch. An experiment record is in `experiments/exp-dpe-waterbirds-five-seed-verification-004/record.json`. Historical launch/recovery notebooks are archived and labeled; there is no need to rerun them to interpret these results.
+Use NumPy and SciPy; the audit reads saved predictions and states and does not import PyTorch. The [experiment record](../../../experiments/exp-dpe-waterbirds-five-seed-verification-004/record.json) preserves configuration and provenance. Historical launch/recovery notebooks are retained in the supporting archive rather than presented as current run instructions.
