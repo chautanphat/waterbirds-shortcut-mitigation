@@ -1,0 +1,19 @@
+\begin{tikzpicture}[dpe diagram,x=1cm,y=1cm]
+  \node[dpe heading,anchor=west] at (0,2.05) {The same 15 heads in both cases};
+  \node[dpe box,minimum width=1.25cm,minimum height=1.25cm] (heads) at (.7,.8)
+    {Head 1\\Head 2\\$\vdots$\\Head 15};
+  \node[dpe box,minimum width=2.15cm] (mean) at (4.0,1.45) {Average the\\15 predictions};
+  \node[dpe box,minimum width=2.15cm] (mask) at (3.8,0) {Training with dropout:\\hide some predictions};
+  \node[dpe box,minimum width=1.8cm,draw=dpewater,fill=dpewater!7] (mlp) at (7.0,0)
+    {Small neural\\network};
+  \node[anchor=west] (out1) at (8.15,1.45) {Prediction};
+  \node[anchor=west] (out2) at (8.15,0) {Prediction};
+  \draw[dpe arrow] (heads.east) -- ++(.45,0) |- (mean.west);
+  \draw[dpe arrow] (mean.east) -- (out1.west);
+  \draw[dpe arrow] (heads.east) -- ++(.45,0) |- (mask.west);
+  \draw[dpe arrow] (mask.east) -- (mlp.west);
+  \draw[dpe arrow] (mlp.east) -- (out2.west);
+  \draw[dpe arrow,dashed,draw=dpewater] (2.0,.8) -- (2.0,.65) -- (7.0,.65) -- (mlp.north);
+  \node[fill=white,inner sep=1pt] at (4.8,.65)
+    {Testing: use all heads};
+\end{tikzpicture}
