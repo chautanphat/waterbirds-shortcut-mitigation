@@ -11,3 +11,7 @@ Research review, 2026-11-12. The project hypotheses are defined in [`report/main
 | [Ensemble Diversity Optimization (2026)](https://scispace.com/papers/ensemble-diversity-optimization-for-subjective-supervision-9gstddplv84z) | Studies prediction-space ensemble weighting and diversity regularization. | Its benchmarks involve subjective NLP and calibration; no Waterbirds or WGA claim follows. |
 
 Sources were inspected through SciSpace records and extracted context, not a complete independent audit of every paper or implementation. None of the proposed applications is an established result in this project. The existing [five-seed report](five_seed_verification_20261112/README.md) remains the source of current numerical claims.
+
+A [follow-up review](h1_h3_followup_literature.md) checks multi-prototype methods,
+complementarity and worst-group aggregation against the completed normal-ERM and
+ERM* experiments, and specifies controls for the next exploratory grid.
