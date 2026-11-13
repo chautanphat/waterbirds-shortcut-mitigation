@@ -342,3 +342,14 @@ The ERM* interface now uses a conventional repository layout: a short notebook
 launcher, an ordinary CLI, Python modules and a configuration file. Module strings,
 notebook file-writing cells and runtime source extraction were removed. Changes are
 published on `experiment/dpe-ermstar-neural`, the notebook’s default Kaggle checkout.
+
+## exp-dpe-ermstar-neural — completed two-source exploratory run
+
+- Run: public Kaggle `noerula/dpe-exploration`, saved version 3, retrieved 2026-11-13.
+- Waterbirds/ResNet-50; 400 epochs; independent seeds 0/1 on two T4 GPUs. Both completed.
+- Matched uniform mean WGA 93.4161%; logistic 94.0031%; plain/dropout MLP WD .01
+  93.7600/93.8265%; full-validation DPE uniform 94.0810%. Every configuration retained.
+- Plain/dropout MLPs improve matched uniform on both sources; logistic wins one and
+  loses one. No confirmed dropout, partition-independent, paper-reference superiority
+  or H3 claim.
+- [Scientific report and independent replay](../results/dpe/ermstar_neural_two_seed_20261113/README.md).
