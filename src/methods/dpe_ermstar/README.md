@@ -1,6 +1,8 @@
 # ERM* + DPE with neural aggregation
 
-Prepared Kaggle experiment, **not a new benchmark result**. Use
+An exploratory two-source Kaggle run has completed; see the
+[scientific report and replay](../../../results/dpe/ermstar_neural_two_seed_20261113/README.md).
+The launcher remains available for further runs. Use
 [dpe_ermstar_neural_two_gpu_kaggle.ipynb](../../../notebooks/dpe_ermstar_neural_two_gpu_kaggle.ipynb):
 use the `experiment/dpe-ermstar-neural` branch selected by `REPO_BRANCH`, enable Internet,
 select GPU T4 ×2, and Run All. Defaults are two source seeds, 0 and 1,

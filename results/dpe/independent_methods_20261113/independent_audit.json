@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "predictors_audited": 5880,
+  "rows_per_predictor": 5794,
+  "auditor_sha256": "9b10137a2d2adc24d5e31cb93ece1f812320d62cfaa95b77153b61a912c8da7d",
+  "study_plan_sha256": "5f4424db626e1e54fb5ec2b8495ece2884c456e594f795d6677bdbc4867d873b",
+  "expected_configurations": 5880,
+  "execution_statuses": {
+    "alias": 658,
+    "completed": 5222
+  },
+  "source_counts": {
+    "ermstar": 2,
+    "normal_erm": 5
+  },
+  "selected_predictor": null,
+  "checks": [
+    "canonical CSV hashes",
+    "full metadata identities, labels, groups and counts",
+    "independent integer accuracy arithmetic",
+    "ledger/table/record agreement",
+    "source-wise mean/SD and paired-delta summaries",
+    "fitted-state and head-artifact hashes",
+    "frozen-fit locks and convex Brier certificates",
+    "implementation snapshot hashes",
+    "retained independent NumPy replay evidence"
+  ],
+  "limitations": [
+    "Does not rerun CNN image extraction or optimizer training",
+    "Reused sources and test set remain exploratory"
+  ]
+}
