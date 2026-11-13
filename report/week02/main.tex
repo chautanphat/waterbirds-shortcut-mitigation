@@ -1,199 +1,180 @@
-% This report follows the original Springer LNCS project template.
+% Week 2 progress report; retains the Week 1 Springer LNCS template.
+% Numerical sources: results/dpe/{five_seed_verification_20261112,
+% ermstar_neural_two_seed_20261113,independent_methods_20261113}/.
 \documentclass[runningheads]{llncs}
-%
-% Preserve Vietnamese support where installed; this English report also builds
-% on TeX installations without the optional vietnam package.
 \IfFileExists{vietnam.sty}{\usepackage[utf8,nocaptions]{vietnam}}{\usepackage[utf8]{inputenc}}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{url}
 \usepackage{tikz}
-\usepackage{float}
-\usetikzlibrary{arrows.meta}
-% Shared visual language for the three DPE hypothesis diagrams.
+\usepackage[hidelinks]{hyperref}
+\usetikzlibrary{arrows.meta,positioning,calc}
+% Keep each method illustration with its caption and after its explanation.
+\makeatletter
+\newenvironment{methodfigure}{\par\medskip\noindent
+  \begin{minipage}{\linewidth}\centering\def\@captype{figure}}
+  {\end{minipage}\par\medskip}
+\makeatother
 \definecolor{dpeland}{HTML}{A65320}
 \definecolor{dpewater}{HTML}{216B9B}
 \definecolor{dpeink}{HTML}{263747}
 \tikzset{
-  dpe diagram/.style={font=\sffamily\scriptsize, text=dpeink,
-    >=Stealth, line width=0.55pt},
-  dpe land/.style={circle, draw=dpeland, fill=dpeland!12,
-    text=dpeland, minimum size=5.5mm, inner sep=1pt},
-  dpe water/.style={rectangle, draw=dpewater, fill=dpewater!12,
-    text=dpewater, minimum size=5.5mm, inner sep=1pt},
-  dpe box/.style={draw=dpeink!45, rounded corners=2pt,
-    fill=dpeink!3, align=center, inner sep=4pt},
-  dpe arrow/.style={->, draw=dpeink!75},
-  dpe heading/.style={font=\sffamily\scriptsize\bfseries}
+  dpe diagram/.style={font=\sffamily\scriptsize,text=dpeink,
+    >=Stealth,line width=0.55pt},
+  dpe box/.style={draw=dpeink!45,rounded corners=2pt,
+    fill=dpeink!3,align=center,inner sep=4pt},
+  dpe arrow/.style={->,draw=dpeink!75},
+  dpe heading/.style={font=\sffamily\scriptsize\bfseries},
+  dpe land/.style={circle,draw=dpeland,fill=dpeland!12,
+    text=dpeland,minimum size=5mm,inner sep=1pt},
+  dpe water/.style={rectangle,draw=dpewater,fill=dpewater!12,
+    text=dpewater,minimum size=5mm,inner sep=1pt}
 }
-%
 \begin{document}
-%
-\title{Background Shortcut Learning Mitigation for Waterbirds}
-%
-\titlerunning{Waterbirds Baseline Reproduction}
-%
+\title{Background Shortcut Learning Mitigation for Waterbirds\texorpdfstring{\\}{: }
+Week 2 Progress Report}
+\titlerunning{Waterbirds: Week 2 Progress Report}
 \author{Chau Tan Phat\inst{1,2} \and
 Nguyen Dang Khang\inst{1,2} \and
 Nguyen Phu Trong\inst{1,2} \and
 Nguyen Dinh Minh Huy\inst{1,2}}
-%
 \authorrunning{C. T. Phat, N. D. Khang, N. P. Trong, N. D. M. Huy}
-%
 \institute{Faculty of Information Technology, University of Science, Ho Chi Minh City, Vietnam \and
 Vietnam National University, Ho Chi Minh City, Vietnam\\
 \email{ctphat2519@apcs.fitus.edu.vn, ndkhang2535@apcs.fitus.edu.vn}\\
 \email{nptrong2530@apcs.fitus.edu.vn, ndmhuy2521@apcs.fitus.edu.vn}}
-%
 \maketitle
-%
-\begin{abstract}
-This is our weekly report on three methods that try to stop image classifiers from relying on the background: DPE, POTER, and AutoBackSwap. We ran each method on the Waterbirds dataset and compared our numbers with the ones in the papers. DPE and AutoBackSwap came close to the published worst-group accuracy. POTER finished training for one seed, but we only have validation results so far. While looking at AutoBackSwap's mistakes, we found that three bird species seem to be labeled wrongly in the dataset, and that they cause many of its errors. We also list three ideas for improving DPE that we plan to try next week.
 
-\keywords{Shortcut learning \and Waterbirds \and Reproducibility \and Worst-group accuracy.}
-\end{abstract}
-%
-\section{Introduction}
-\subsection{Problem statement}
-\paragraph{Definition.}
-Each image in the Waterbirds dataset \cite{waterbirds} shows a bird, and the task is to decide whether it is a landbird or a waterbird. The difficulty is that the background is correlated with the label: most landbirds are photographed on land and most waterbirds on water. A model can therefore get good accuracy just by looking at the background, without looking at the bird.
+\section{This Week's Work}
+This week we tried to improve DPE by changing how its classifiers work together. We tested learned weights, a small neural network, and changes to the prototypes. We also built a viewer to compare the mistakes made by DPE, AutoBackSwap, POTER, and ERM on individual images.
 
-\paragraph{Why it is hard.}
-A normally trained model (ERM, which simply minimizes the average training loss) tends to learn this shortcut. It then fails on the rare images where the background is misleading, such as a landbird on water. In practice we also do not know which group an image belongs to during training, which makes the problem harder.
+\section{DPE Experiments}
+In Week 1, we ran DPE. It first trains a ResNet-50 to extract image features, then keeps that model fixed. On top of it, DPE trains 15 small classifiers, called \emph{heads}. Each head has two \emph{prototypes}: learned reference points representing landbirds and waterbirds. These are feature vectors, not actual bird photos. A head compares an image's features with its prototypes and gives a probability for each class. DPE averages the 15 predictions.
 
-\subsubsection{Research scope}
-This week we re-ran three existing methods on Waterbirds, compared our results with the papers, and looked at some of the mistakes they make.
+We used the same Waterbirds splits as before: 4,795 training, 1,199 validation, and 5,794 test images. We ran five normal-ERM models (100 training epochs) and two ERM$^*$ models (400 epochs with image augmentation). A different random seed gives a separate training run; three of the five normal-ERM runs were reused from earlier experiments. Heads train for 20 epochs, with learning rate 0.001 and batch size 256.
 
-\subsection{Literature review}
-The three methods we study take different approaches. POTER \cite{poter} gives more weight to training images that look like the hard cases in a small validation set. DPE \cite{dpe} trains many small classifiers on top of a frozen model and averages them. AutoBackSwap \cite{autobackswap} cuts the bird out of each image and pastes it onto a different background, so the model cannot depend on the background.
+For the learned combinations, we divided validation into 720 images for training heads and 479 for learning how to combine them. We repeated this division three ways, called Splits 0, 1, and 2, retraining the heads and combinations each time. These fits never use test labels. We report \emph{worst-group accuracy} (WGA): the lowest accuracy among the four bird/background groups. Tables average this number across runs; a gain from 89\% to 90\% is one percentage point (pp). Except for the explicitly labeled paper row in Table~\ref{tab:neural}, all results are from our own runs~\cite{five,star,independent}.
 
-\subsection{Contributions}
-\begin{itemize}
-    \item We ran DPE, POTER, AutoBackSwap, and an ERM baseline, and compared the results with the papers.
-    \item We checked the individual test predictions of AutoBackSwap and ERM, and found a possible labeling problem in the dataset and a small bug in the released code.
-    \item We wrote down three ideas for improving DPE, to be tested next week.
-\end{itemize}
+\newpage
+\subsection{Combining the 15 Heads}
+We expected that giving more weight to useful heads might improve DPE. Simple fixed weights did not help: our three-run study gave 89.48\% WGA, compared with 89.52\% for averaging~\cite{h2}.
 
-\section{Related Work}
-ERM works well on average but is dominated by the majority groups. GroupDRO \cite{waterbirds} fixes this by directly improving the worst group, but it needs group labels for every training image. The three methods in this report try to avoid that requirement.
+We then tried a learned linear combination and a small neural network (MLP, with 15 inputs and 8 hidden units). We also trained the network while randomly hiding 25\% of head predictions, keeping at least one per image. This is \emph{prediction dropout}; it encourages the network to work without depending on one head. All heads are available when testing (Fig.~\ref{fig:aggregation}). Networks train for 400 steps at learning rate 0.01. Table~\ref{tab:neural} uses weight decay 0.01; 0.001 gave similar findings.
 
-\section{Approach}
-All three methods use a ResNet-50 pretrained on ImageNet.
-\begin{itemize}
-    \item \textbf{DPE} \cite{dpe}: first train the model with ERM and freeze it. Then train 15 small classifiers (we call them heads) on balanced subsets of the data, and average their predictions.
-    \item \textbf{POTER} \cite{poter}: compare the training images with a small validation set whose groups are known, and give higher sampling weight to the images that are similar to the hard groups.
-    \item \textbf{AutoBackSwap} \cite{autobackswap}: use a detector to find the bird, remove it and fill in the background, then paste the bird onto random backgrounds while training.
-\end{itemize}
+\begin{methodfigure}
+\input{figures/week02_aggregation.tex}
+\caption{Two ways to combine the same heads. Ordinary DPE averages their predictions. The learned network can combine them differently. Dropout hides some inputs during training only.}
+\label{fig:aggregation}
+\end{methodfigure}
 
-\section{Experiments}
-
-\subsection{Dataset and Metrics}
-We use the official Waterbirds splits \cite{waterbirds}: 4,795 training, 1,199 validation, and 5,794 test images. The images fall into four groups:
-$G_1$ landbird on land (2,255 test images),
-$G_2$ landbird on water (2,255),
-$G_3$ waterbird on land (642), and
-$G_4$ waterbird on water (642).
-We report overall accuracy (Acc) and worst-group accuracy (WGA), which is the lowest accuracy among the four groups. The best checkpoint is always chosen on the validation set, never on the test set.
-
-\subsection{Settings}
-DPE was run once (seed 0) in two versions: the standard one, and the enhanced one that uses a stronger ERM model (ERM$^*$). POTER was trained once (seed 1) for 300 epochs. AutoBackSwap and ERM were run on a Tesla T4 GPU: seeds 0--2 without minority-group training images, plus one AutoBackSwap run and three ERM runs with them.
-
-\subsection{Results and Discussion}
-\subsubsection{Comparison with the papers}
-Table~\ref{tab1} shows our results. DPE reached 89.00\% WGA in the standard setting (paper: 91.0$\pm$0.5\%) and 92.70\% in the enhanced setting (paper: 94.1$\pm$0.2\%), so we are about 2 points below the paper in both. For ERM and AutoBackSwap, our WGA is within two standard deviations of the paper in all four settings. Without minority-group images, AutoBackSwap raises WGA from 33.38\% (ERM) to 92.33\% (paper: 92.2\%). POTER finished training, and its best validation WGA is 90.10\% at epoch 258. This is a validation number, so we cannot compare it with the paper's test WGA of 90.9\% yet. We still need to recover the test results.
-
-\begin{table}[t]
+\begin{table}[!ht]
 \centering
-\caption{Results on Waterbirds (\%). Acc denotes overall accuracy and WGA denotes worst-group accuracy. DPE, ERM, and AutoBackSwap are evaluated on the held-out test split. POTER currently reflects validation metrics (epoch 258) for seed 1; held-out test evaluation is pending artifact recovery.}
-\label{tab1}
+\caption{Test WGA (\%): our results and the original paper, labeled separately. Our means use five normal-ERM runs and two ERM$^*$ runs. The variants share our split-validation heads; full-validation reproduction uses all 1,199 validation images.}
+\label{tab:neural}
 \small
-\setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{@{}lccccc@{}}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}lrr@{}}
 \toprule
-Method and setting & Seeds & \multicolumn{2}{c}{Our result} & \multicolumn{2}{c}{Paper (Test)} \\
-\cmidrule(lr){3-4}\cmidrule(l){5-6}
- & & Acc & WGA & Acc & WGA \\
+How predictions are combined & Normal ERM & ERM$^*$\\
 \midrule
-DPE, standard & 1 & 91.40 & 89.00 & 92.5$\pm$0.2 & 91.0$\pm$0.5 \\
-DPE, enhanced ERM$^*$ & 1 & 93.30 & 92.70 & 96.0$\pm$0.1 & 94.1$\pm$0.2 \\
+Uniform (our split baseline) & 89.23 & 93.42\\
+Linear combiner (our variant) & 89.56 & 94.00\\
+Neural network (our variant) & 89.96 & 93.76\\
+Dropout network (our variant) & 89.85 & 93.83\\
 \midrule
-POTER (val.\ checkpoint) & 1 & 91.60$^\dagger$ & 90.10$^\dagger$ & --- & 90.9$\pm$0.3 \\
+DPE (our full-val. reproduction) & 89.60 & 94.08\\
 \midrule
-ERM, no minority & 3 & 68.68$\pm$1.00 & 33.38$\pm$1.51 & 68.4$\pm$1.9 & 33.4$\pm$4.4 \\
-ERM, with minority & 3 & 93.67$\pm$0.23 & 78.45$\pm$2.22 & 93.6$\pm$0.4 & 74.9$\pm$3.3 \\
-AutoBackSwap, no minority & 3 & 94.49$\pm$0.40 & 92.33$\pm$0.16 & 95.1$\pm$0.3 & 92.2$\pm$0.4 \\
-AutoBackSwap, with minority & 1 & 95.44 & 92.37 & 95.0$\pm$0.5 & 93.0$\pm$0.9 \\
+DPE (original paper~\cite{paper}) & 91.00 & 94.10\\
 \bottomrule
 \end{tabular}
-\par\vspace{3pt}
-{\footnotesize $^\dagger$Validation metrics at epoch 258 (held-out test evaluation pending recovery of test split logs).}
 \end{table}
 
-\subsubsection{Failure Case Analysis (AutoBackSwap)}
-Recall the four groups: $G_1$ landbird on land, $G_2$ landbird on water, $G_3$ waterbird on land, and $G_4$ waterbird on water. We looked at the individual test predictions of ERM and AutoBackSwap (seed 0, no minority-group images). ERM makes 1,752 mistakes, mostly on $G_2$ and $G_3$ where the background is misleading (accuracy 34.90\% and 60.13\%). AutoBackSwap makes only 346 mistakes: 75 in $G_1$, 176 in $G_2$, 49 in $G_3$, and 46 in $G_4$.
+In our runs, the network raises normal-ERM WGA from 89.23\% to 89.96\%. Dropout gives 89.85\%, below the plain network. Its gain over averaging also changes from $+0.62$ to $+0.28$ to $-0.14$ pp across the three splits. The result depends on which images train the heads and the network. With only five runs, uncertainty across runs still includes no gain.
 
-We noticed three more things:
+On ERM$^*$, both networks improve our split baseline on both runs, but neither beats our 94.08\% full-validation reproduction. The paper reports 94.10\%; it is a separate reference, not the baseline used to compute our gains. Reserving data for the combiner can offset its benefit.
+
+\newpage
+\subsection{Re-pairing and More Prototypes}
+\begin{table}[!ht]
+\centering
+\caption{Our prototype-test WGA (\%): five normal-ERM runs, two ERM$^*$ runs. Ranges cover tested settings; global pooling shows its earlier highest mean. Dashes indicate untested settings, not zero accuracy.}
+\label{tab:prototype-results}
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Method & Normal ERM & ERM$^*$\\
+\midrule
+Uniform (our matched split baseline) & 89.23 & 93.42\\
+Re-paired prototypes & 89.23 & ---\\
+Larger prototype subsets (range) & 89.23--89.42 & 93.24--93.42\\
+All 30 prototypes (earlier highest mean) & 89.30 & ---\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Main finding:} re-pairing changed no predicted labels; larger subsets and global pooling gave only small, inconsistent gains (Table~\ref{tab:prototype-results})~\cite{h1,independent}.
+
+We reused fixed prototypes, testing re-pairings and all 225 pairs at the original scoring scales, plus subsets of 1, 2, 3, 5, or 15 pairs per head (Split 0; Fig.~\ref{fig:prototype}).
+
+\begin{methodfigure}
+\input{figures/week02_prototypes.tex}
+\caption{Re-pairing changes partners; larger subsets add prototypes. Circles/squares represent landbirds/waterbirds; subscripts identify the source head.}
+\label{fig:prototype}
+\end{methodfigure}
+
+\subsection{Prototype Weights and a Small Correction}
+We fitted prototype weights and a \emph{linear correction} using head disagreements. The \emph{confidence adjustment} control changes only the average's confidence and threshold. Fits use 400 steps, learning rate 0.01, and penalties discouraging large changes.
+
+\begin{table}[!ht]
+\centering
+% Fixed configurations: prototype-importance-shared-T0.05-maximum-l0.01;
+% residual-affine-average-l0.1; residual-linear-average-l0.1.
+\caption{Our normal-ERM gains over our matched uniform baseline (pp; five runs). Positive is better. Fixed penalties: 0.01 for prototype weights, 0.1 for confidence adjustment and linear correction. Full ERM$^*$ results are retained in the experiment record~\cite{independent}.}
+\label{tab:allocations}
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Change & Split 0 & Split 1 & Split 2\\
+\midrule
+Prototype weights & +1.32 & $-0.02$ & $-1.19$\\
+Confidence adjustment & +0.53 & +0.18 & +0.20\\
+Linear correction & +1.11 & +0.40 & +0.56\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Prototype-weight gains reverse across splits. The linear correction beats both controls on all normal-ERM split means, but loses to confidence adjustment on ERM$^*$ (Table~\ref{tab:allocations}).
+
+\newpage
+\section{Prediction Viewer}
+We built a local browser viewer~\cite{viewer} containing 13 baseline runs from DPE, AutoBackSwap, POTER, and ERM. It shows shared mistakes, disagreements, and cases one method fixes but another misses. We can filter by species or bird/background group, inspect all predictions for an image, and export selected cases.
+
+\begin{methodfigure}
+\includegraphics[width=\linewidth]{figures/week02_viewer.png}
+\caption{Screenshot of the disagreement gallery with four baseline methods. Green matches the dataset label; red marks a mistake. These are our earlier baseline reproductions.}
+\label{fig:viewer}
+\end{methodfigure}
+
+In the second card, DPE and ERM are correct while AutoBackSwap and POTER are wrong. The viewer lets us inspect these differences directly.
+
+\section{Next Week}
 \begin{itemize}
-    \item The released code prints the accuracies of $G_2$ and $G_3$ with their names swapped in \path{test_accuracies.txt}. After recomputing from \path{metadata.csv}, the real worst group is $G_2$ (92.20\%).
-    \item 202 test images are misclassified in all three seeds, and 109 of them are in $G_2$. So the errors are not random.
-    \item Three species (\path{102.Western_Wood_Pewee}, \path{021.Eastern_Towhee}, \path{088.Western_Meadowlark}; 90 test images) look like landbirds, but \path{metadata.csv} labels them as waterbirds. AutoBackSwap calls 64 of these 90 images landbirds, which gives 64 of its 346 mistakes and 37 of the 46 mistakes in $G_4$. These may be label errors in the dataset rather than model errors, but we have not verified this beyond looking at the species names.
+\item Repeat the linear correction on new runs and splits, comparing averaging and confidence adjustment, including ERM$^*$.
+\item Use the viewer to inspect errors from re-pairing and larger subsets and changes from new DPE variants. Check why prototype weights depend on the fitting images.
+\item Follow up re-pairing: test sharper distance-based scores, keeping original pairs as a control, to check whether re-pairing can affect decisions.
 \end{itemize}
+These experiments use a test set we have already inspected. Small gains need further checking, and higher WGA alone does not show less reliance on backgrounds.
 
-\subsubsection{Ablation Study (DPE)}
-In the standard setting, the full DPE gets 89.00\% WGA. Using random subsets without the covariance term gives 88.20\%, and using one fixed subset gives 88.80\%. So the full method is better by 0.2--0.8 points, which is a small gap from a single seed. In the enhanced setting all three variants give 92.70--92.80\%, so the differences are negligible.
-
-\subsubsection{Observations and Hypotheses on DPE}
-We have not yet audited per-image failure cases for DPE. The observations below come from studying the method, and the hypotheses are open questions that we have not tested yet; we plan to evaluate them next week.
-
-\paragraph{Observation.} Each of the 15 DPE heads is a binary prototype classifier that holds exactly two prototypes, one per class. For an input feature, a head computes class probabilities from the distances to its own two prototypes only, and the final prediction is the uniform average of the 15 head probabilities. This design has three consequences: (i)~prototypes are only compared within their original pair, (ii)~every head contributes equally regardless of what it has learned, and (iii)~each head's decision uses only 2 of the 30 available prototypes.
-
-\paragraph{H1: Shuffling prototype pairs across heads.} If the landbird prototype of one head is paired with the waterbird prototype of another head, does the resulting set of pairs introduce additional diversity into the ensemble and thereby improve WGA? Because the heads are trained on different balanced subsets, re-pairing yields new decision boundaries without additional training. We will compare random and exhaustive re-pairings on the trained heads, selecting the configuration by validation WGA.
-
-\begin{figure}[H]
-\centering
-\input{figures/dpe_h1_pairs.tex}
-\caption{H1: change which prototypes compete. Original DPE compares $L_i$ only with $W_i$. An example re-pairing compares $L_i$ with $W_{\pi(i)}$; each new pair still produces a two-class probability, and the ensemble still averages the pair probabilities. Circles denote landbird prototypes and squares waterbird prototypes; subscripts identify the source head. Only three of 15 pairs are shown. The prototypes stay fixed; whether the new comparisons improve WGA is untested.}
-\label{fig:dpe-h1}
-\end{figure}
-
-\paragraph{H2: Reweighting the heads.} Uniform $1/15$ averaging assumes all heads are equally reliable. If some heads have learned background features and are therefore noisy, can reweighting the heads improve accuracy? We will estimate per-head weights on the validation set (e.g., from per-head worst-group accuracy) and check whether heads that receive low weights are those with low accuracy on the background-conflicting groups $G_2$ and $G_3$.
-
-\begin{figure}[H]
-\centering
-\input{figures/dpe_h2_weights.tex}
-\caption{H2: change how much each head contributes. The same head probabilities $p_i(c\mid x)$ enter either a uniform average or a weighted sum. Arrow widths on the right illustrate unequal contributions, not measured reliability. Nonnegative weights that sum to one would be chosen using validation data, including performance on background-conflicting groups $G_2$ and $G_3$, then fixed for test evaluation. No head has yet been identified as background-dependent.}
-\label{fig:dpe-h2}
-\end{figure}
-
-\paragraph{H3: Multiple prototypes per class within each head.} Can each of the 15 heads make a better prediction by using several prototypes per class instead of one? Multiple prototypes may represent different appearances within a class. We will first reuse the existing 30 trained prototypes: head $i$ receives a class-balanced subset $S_i$, computes a softmax over negative-distance scores within that subset, and sums the prototype probabilities by class to obtain $p_i(L\mid x)$ and $p_i(W\mid x)$. Different heads retain different subsets. We will first average these 15 probability vectors uniformly, then evaluate the H2 weighting rule as a separate combination. Learning additional prototypes within each head would require retraining and is a possible later extension.
-
-The original DPE is the two-prototype case, $S_i=\{L_i,W_i\}$. Global pooling is another special case: if every head uses all 30 prototypes with identical scoring and aggregation, every head produces the same probabilities, so uniform averaging or normalized H2 weighting returns the same global prediction. We will compare the original pairs, distinct larger subsets, and global pooling, selecting subset size, membership, and any score calibration using validation data only. Figure~\ref{fig:dpe-h3} illustrates these cases. All remain untested.
-
-\begin{figure}[H]
-\centering
-\input{figures/dpe_h3_joint.tex}
-\caption{H3: give each head more prototypes while retaining the ensemble. The middle panel shows two prototypes per class in three illustrative heads; all 15 heads still output two class probabilities before averaging or H2 weighting. Circles are landbird prototypes, squares are waterbird prototypes, and subscripts identify their source heads in the existing pool. Each softmax is computed within the receiving head's subset, then probability mass is summed by class. The bottom panel shows global pooling as the special case of identical full-pool heads. No accuracy gain is assumed.}
-\label{fig:dpe-h3}
-\end{figure}
-
-\section{Conclusion}
-DPE and AutoBackSwap gave results close to their papers, and POTER still needs its test evaluation. Looking at AutoBackSwap's mistakes, we found that three species may be mislabeled in the dataset, and that they explain about 80\% of its $G_4$ errors. Next week we will finish POTER's test evaluation, look at DPE's failure cases, and try the three ideas above.
-%
-% ---- Bibliography ----
-%
-\begin{thebibliography}{8}
-\sloppy
-\bibitem{dpe}
-To, M.N.N., Wilson, P.F.R., Nguyen, V., et al.: Diverse prototypical ensembles improve robustness to subpopulation shift. In: Proceedings of the 42nd International Conference on Machine Learning (2025). \url{https://arxiv.org/abs/2505.23027}
-
-\bibitem{poter}
-Jo, S.-H., et al.: Potentials from optimal transport for empirical reweighting. NeurIPS (2026). \url{https://arxiv.org/abs/2610.01028}
-
-\bibitem{autobackswap}
-Roder, C., Schweighofer, K.: Automated background swapping for robustness against spurious backgrounds. arXiv preprint arXiv:2606.32018 (2026). \url{https://arxiv.org/abs/2606.32018}
-
-\bibitem{waterbirds}
-Sagawa, S., Koh, P.W., Hashimoto, T.B., Liang, P.: Distributionally robust neural networks for group shifts: On the importance of regularization for worst-case generalization. In: International Conference on Learning Representations (2020).
+\begin{thebibliography}{7}
+\bibitem{h2} Three-run head weighting. \href{../../src/methods/dpe_head_reweighting/reports/h2.md}{Settings and results}.
+\bibitem{five} Five-run DPE verification. \href{../../results/dpe/five_seed_verification_20261112/README.md}{Settings, results and uncertainty}.
+\bibitem{star} Two-run ERM$^*$ combination study. \href{../../results/dpe/ermstar_neural_two_seed_20261113/README.md}{Settings and results}.
+\bibitem{independent} Prototype and correction experiments. \href{../../results/dpe/independent_methods_20261113/README.md}{Settings and results}.
+\bibitem{h1} Earlier prototype experiments and follow-up. \href{../../results/dpe/h1_h3_followup_literature.md}{Experiment summary}.
+\bibitem{viewer} Waterbirds prediction viewer. \href{../../scripts/viewer.html}{Open viewer}; \href{../../docs/viewer.md}{usage guide}.
+\bibitem{paper} To et al.: Diverse Prototypical Ensembles Improve Robustness to Subpopulation Shift (2025), Table 2. \href{https://arxiv.org/html/2505.23027v1#S5.T2}{Original paper}.
 \end{thebibliography}
 \end{document}
