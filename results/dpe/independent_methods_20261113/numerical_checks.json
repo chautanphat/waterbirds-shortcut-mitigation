@@ -1,0 +1,460 @@
+{
+  "earlier_attempt_retained": true,
+  "changed_method_grid": false,
+  "tolerances": {
+    "historical_probability": 2e-07,
+    "independent_replay": 1e-10,
+    "solver_gap": 1e-07
+  },
+  "precision_checks": [
+    {
+      "arm": "full_validation",
+      "head_label_changes": 0,
+      "max_delta": 1.1920928955078125e-07,
+      "source": "ermstar-seed0",
+      "uniform_label_changes": 0
+    },
+    {
+      "arm": "partition0",
+      "head_label_changes": 0,
+      "max_delta": 1.1920928955078125e-07,
+      "source": "ermstar-seed0",
+      "uniform_label_changes": 0
+    },
+    {
+      "arm": "full_validation",
+      "head_label_changes": 0,
+      "max_delta": 1.1920928955078125e-07,
+      "source": "ermstar-seed1",
+      "uniform_label_changes": 0
+    },
+    {
+      "arm": "partition0",
+      "head_label_changes": 0,
+      "max_delta": 1.1920928955078125e-07,
+      "source": "ermstar-seed1",
+      "uniform_label_changes": 0
+    },
+    {
+      "arm": "partition0",
+      "head_label_changes": 0,
+      "max_delta": 1.1920928955078125e-07,
+      "source": "normal-erm-seed0",
+      "uniform_label_changes": 0
+    },
+    {
+      "arm": "partition0",
+      "head_label_changes": 0,
+      "max_delta": 1.1920928955078125e-07,
+      "source": "normal-erm-seed1",
+      "uniform_label_changes": 0
+    },
+    {
+      "arm": "partition0",
+      "head_label_changes": 0,
+      "max_delta": 1.1920928955078125e-07,
+      "source": "normal-erm-seed2",
+      "uniform_label_changes": 0
+    },
+    {
+      "arm": "partition0",
+      "head_label_changes": 0,
+      "max_delta": 1.1920928955078125e-07,
+      "source": "normal-erm-seed3",
+      "uniform_label_changes": 0
+    },
+    {
+      "arm": "partition0",
+      "head_label_changes": 0,
+      "max_delta": 1.1920928955078125e-07,
+      "source": "normal-erm-seed4",
+      "uniform_label_changes": 0
+    }
+  ],
+  "brier_checks": [
+    {
+      "configuration": "brier-average-l0.01",
+      "gap": 0.0,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-average-l0.1",
+      "gap": 1.2462253451417382e-14,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-maximum-l0.01",
+      "gap": 2.7755575615628914e-17,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-maximum-l0.1",
+      "gap": 1.942890293094024e-16,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T1-brier-maximum-l0.01",
+      "gap": 9.628070057887683e-08,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T1-brier-maximum-l0.1",
+      "gap": 2.7755575615628914e-17,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.1-brier-maximum-l0.01",
+      "gap": 3.6272373993284646e-13,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.1-brier-maximum-l0.1",
+      "gap": 4.4026800941066035e-08,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.05-brier-maximum-l0.01",
+      "gap": 8.590939418184895e-10,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.05-brier-maximum-l0.1",
+      "gap": 1.7034783306169032e-11,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T1-brier-maximum-l0.01",
+      "gap": 9.188855232267201e-11,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T1-brier-maximum-l0.1",
+      "gap": 0.0,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.1-brier-maximum-l0.01",
+      "gap": 1.1524323162426242e-11,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.1-brier-maximum-l0.1",
+      "gap": 2.1351781454015395e-11,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.05-brier-maximum-l0.01",
+      "gap": 8.002869200662843e-12,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.05-brier-maximum-l0.1",
+      "gap": 6.785385447960479e-11,
+      "source": "ermstar-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-average-l0.01",
+      "gap": 0.0,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-average-l0.1",
+      "gap": 1.942890293094024e-16,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-maximum-l0.01",
+      "gap": 2.7755575615628914e-17,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-maximum-l0.1",
+      "gap": 5.71209746169643e-14,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T1-brier-maximum-l0.01",
+      "gap": 8.838427850710318e-09,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T1-brier-maximum-l0.1",
+      "gap": 3.3958200973405184e-09,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.1-brier-maximum-l0.01",
+      "gap": 3.251345026544783e-11,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.1-brier-maximum-l0.1",
+      "gap": 1.1717934955690623e-10,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.05-brier-maximum-l0.01",
+      "gap": 1.7696558801683082e-10,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.05-brier-maximum-l0.1",
+      "gap": 2.0816681711721685e-17,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T1-brier-maximum-l0.01",
+      "gap": 5.052902540825244e-13,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T1-brier-maximum-l0.1",
+      "gap": 2.2085389073112083e-12,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.1-brier-maximum-l0.01",
+      "gap": 5.4299620355635625e-11,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.1-brier-maximum-l0.1",
+      "gap": 4.697081612548004e-11,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.05-brier-maximum-l0.01",
+      "gap": 3.7533698371561286e-11,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.05-brier-maximum-l0.1",
+      "gap": 4.120356139614145e-11,
+      "source": "ermstar-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-average-l0.01",
+      "gap": 0.0,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-average-l0.1",
+      "gap": 4.163336342344337e-16,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-maximum-l0.01",
+      "gap": 8.096202985807821e-09,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-maximum-l0.1",
+      "gap": 8.326672684688674e-17,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T1-brier-maximum-l0.01",
+      "gap": 6.106226635438361e-16,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T1-brier-maximum-l0.1",
+      "gap": 1.1102230246251565e-16,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.1-brier-maximum-l0.01",
+      "gap": 5.80785419757035e-14,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.1-brier-maximum-l0.1",
+      "gap": 2.6077931480905647e-11,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.05-brier-maximum-l0.01",
+      "gap": 2.4098725792676134e-10,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.05-brier-maximum-l0.1",
+      "gap": 9.391404320879815e-12,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T1-brier-maximum-l0.01",
+      "gap": 4.5387721359091415e-11,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T1-brier-maximum-l0.1",
+      "gap": 1.6977530492567894e-12,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.1-brier-maximum-l0.01",
+      "gap": 2.222853845434969e-11,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.1-brier-maximum-l0.1",
+      "gap": 8.453515665252098e-13,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.05-brier-maximum-l0.01",
+      "gap": 4.1577449816365686e-11,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.05-brier-maximum-l0.1",
+      "gap": 7.926298506433227e-12,
+      "source": "normal-erm-seed0",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-average-l0.01",
+      "gap": 0.0,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-average-l0.1",
+      "gap": 1.1102230246251565e-15,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-maximum-l0.01",
+      "gap": 8.788471062004533e-10,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "brier-maximum-l0.1",
+      "gap": 2.7755575615628914e-17,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T1-brier-maximum-l0.01",
+      "gap": 1.5950019083277311e-12,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T1-brier-maximum-l0.1",
+      "gap": 3.223863481727207e-09,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.1-brier-maximum-l0.01",
+      "gap": 1.1531053889513032e-13,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.1-brier-maximum-l0.1",
+      "gap": 1.2618378564255295e-12,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.05-brier-maximum-l0.01",
+      "gap": 5.639583244843038e-11,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k3-T0.05-brier-maximum-l0.1",
+      "gap": 3.029521078445896e-11,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T1-brier-maximum-l0.01",
+      "gap": 1.7183976463996942e-11,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T1-brier-maximum-l0.1",
+      "gap": 6.411260411454123e-13,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.1-brier-maximum-l0.01",
+      "gap": 8.489389746735299e-12,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.1-brier-maximum-l0.1",
+      "gap": 2.2250257192268919e-13,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.05-brier-maximum-l0.01",
+      "gap": 1.9929058403533872e-12,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    },
+    {
+      "configuration": "combined-k5-T0.05-brier-maximum-l0.1",
+      "gap": 1.8947621249765234e-12,
+      "source": "normal-erm-seed1",
+      "status": "passed"
+    }
+  ]
+}
