@@ -1,0 +1,36 @@
+% Reuse the existing pool; prototype subscripts identify their source heads.
+\begin{tikzpicture}[dpe diagram]
+\path[use as bounding box] (-0.3,-7.3) rectangle (11.7,0.45);
+\node[dpe heading,anchor=west] at (0,0.05) {Observed: one prototype per class in each head};
+\node[dpe box] (original) at (1.4,-0.6) {Head $i$: $L_i,W_i$};
+\node[dpe box] (binary) at (5,-0.6) {2-way softmax\\Two class probabilities};
+\node[dpe box] (baseavg) at (9.5,-0.6) {Uniform average\\over 15 heads};
+\draw[dpe arrow] (original.east) -- (binary.west);
+\draw[dpe arrow] (binary.east) -- (baseavg.west);
+\draw[draw=dpeink!25] (0,-1.2) -- (11.4,-1.2);
+\node[dpe heading,anchor=west] at (0,-1.65) {H3: several prototypes per class, with distinct subsets across heads};
+\foreach \i/\a/\b/\y in {1/1/2/-2.55,2/2/3/-3.8,3/1/3/-5.05} {
+  \draw[draw=dpeink!35,dashed,rounded corners=2pt]
+    (0,\y-0.48) rectangle (3.1,\y+0.48);
+  \node[anchor=west,font=\sffamily\tiny] at (0.1,\y+0.29) {Head \i};
+  \node[dpe land] at (0.45,\y-0.1) {$L_{\a}$};
+  \node[dpe land] at (1.15,\y-0.1) {$L_{\b}$};
+  \node[dpe water] at (1.9,\y-0.1) {$W_{\a}$};
+  \node[dpe water] at (2.6,\y-0.1) {$W_{\b}$};
+  \node[dpe box,minimum width=2.8cm] (local\i) at (5.1,\y)
+    {Softmax within subset\\Sum by class\\$p_{\i}(L),\ p_{\i}(W)$};
+  \draw[dpe arrow] (3.1,\y) -- (local\i.west);
+}
+\node[dpe box,minimum height=1.25cm] (combine) at (9,-3.8)
+  {Average 15 heads\\or H2 weighted sum};
+\foreach \i in {1,2,3} {\draw[dpe arrow] (local\i.east) -- (combine.west);}
+\node[align=center] (out) at (11.1,-3.8) {$p(L)$\\$p(W)$};
+\draw[dpe arrow] (combine.east) -- (out.west);
+\node[anchor=west,font=\sffamily\tiny] at (0.1,-5.7)
+  {$\cdots$ 15 heads total; four prototypes per head shown as an example};
+\draw[draw=dpeink!25] (0,-6) -- (11.4,-6);
+\node[dpe heading,anchor=west] at (0,-6.35) {Special case: global pooling};
+\node[align=center] at (5.7,-6.95)
+  {All heads use all 30 prototypes + identical scoring and aggregation\\
+   $\Longrightarrow$ identical head predictions $\Longrightarrow$ one global classifier};
+\end{tikzpicture}
