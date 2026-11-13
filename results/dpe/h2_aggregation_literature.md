@@ -15,3 +15,6 @@ Sources were inspected through SciSpace records and extracted context, not a com
 A [follow-up review](h1_h3_followup_literature.md) checks multi-prototype methods,
 complementarity and worst-group aggregation against the completed normal-ERM and
 ERM* experiments, and specifies controls for the next exploratory grid.
+
+The [weighting/neural and prototype-ensemble decision note](h2_and_prototype_ensemble_priorities.md)
+prioritizes distinct new tests, documents known failures and clarifies equal-data controls.
