@@ -1,0 +1,16 @@
+\begin{tikzpicture}[dpe diagram]
+  \node[dpe box,minimum width=2.2cm,minimum height=1.8cm] (heads) at (1,0)
+    {Head 1 answer\\Head 2 answer\\$\vdots$\\Head 15 answer};
+  \node[dpe box,minimum width=3.6cm] (equal) at (5.5,.8)
+    {Original: every head gets $1/15$};
+  \node[dpe box,minimum width=3.6cm,draw=dpewater,fill=dpewater!7] (learn) at (5.5,-.8)
+    {Learn different weights\\Example: head 1 counts more};
+  \node[dpe box,minimum width=2.2cm] (out) at (10,0)
+    {Final landbird /\\waterbird answer};
+  \draw[dpe arrow] (heads.east) -- ++(.6,0) |- (equal.west);
+  \draw[dpe arrow] (heads.east) -- ++(.6,0) |- (learn.west);
+  \draw[dpe arrow] (equal.east) -- ++(.5,0) |- (out.west);
+  \draw[dpe arrow] (learn.east) -- ++(.5,0) |- (out.west);
+  \node[align=center] at (5.5,-1.65)
+    {Follow-up: let a small network combine the same 15 answers};
+\end{tikzpicture}
