@@ -1,0 +1,12 @@
+{
+  "completed_tasks": 831,
+  "full_resume_new_commits": 0,
+  "initial_completed_tasks": 4,
+  "real_budgeted_launches": [
+    2,
+    2
+  ],
+  "separate_process_resume": true,
+  "synthetic_tests_passed": 5,
+  "truncated_temp_and_corrupt_output_recovery": true
+}

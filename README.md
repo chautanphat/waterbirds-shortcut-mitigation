@@ -1,5 +1,11 @@
 # Background Shortcut Learning Mitigation
 
+**Kết quả DPE v2:** D5 đạt **96,076% test accuracy**, tăng **0,368 điểm %** so
+với uniform cùng heads; WGA giảm **2,418 điểm %** xuống **90,343%**. D5 là
+winner chọn trên validation của nghiên cứu v2. Xem
+[báo cáo chi tiết D5](results/dpe/discrete_weighting_v2_20261114/README.md)
+để đọc cấu hình, kết quả ba seed và sự đánh đổi về subgroup robustness.
+
 This project explores methods for mitigating shortcut learning and spurious correlations in machine-learning systems.
 
 The repository is intended for collaborative research across multiple datasets, baselines, and mitigation methods. The root README gives only the project-level conventions; detailed setup, implementation, and experiment guides belong in [`docs/`](docs/) and in the documentation for each method.

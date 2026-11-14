@@ -345,6 +345,16 @@ published on `experiment/dpe-ermstar-neural`, the notebook’s default Kaggle ch
 
 ## DPE weighting with isolated OOF head/gate fitting — 2026-11-14
 
+Related completed follow-up: discrete reliability v2, run
+`64b58d2c31b62c9d`, 831 committed tasks, 29 prespecified configurations over
+three seeds, all A0–A20 diagnostic categories and 132 distinct test evaluations.
+Locked D5 reaches 96.076 ± 0.339% accuracy and 90.343 ± 1.685% WGA versus
+95.708 ± 0.117% / 92.761 ± 0.552% matched uniform. The +0.368 pp accuracy
+change incurs −2.418 pp WGA; this is exploratory on the reused test set with
+a shared backbone. Full results and recovery validation:
+[discrete v2 report](../results/dpe/discrete_weighting_v2_20261114/README.md).
+Code/config/resume instructions: [workflow](../experiments/discrete_weighting/README.md).
+
 - **Execution / scope:** completed exploratory adaptation; 127 configurations
   across 41 deployable method families plus the oracle diagnostic, three-seed
   finalist confirmation and automatic winner ablation. Additional locked A18

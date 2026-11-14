@@ -1,0 +1,13 @@
+{
+  "accuracy_delta_pp": 0.3681969853871851,
+  "all_completion_hashes_verified": true,
+  "completed_task_count": 830,
+  "paired_mean_ci_pp": [
+    0.17834541479691637,
+    0.575307789667472
+  ],
+  "report_script_sha256": "1cef6de5a1d7013b10275584c4be113e60f2b2832d7051ff0f3c962636930d1e",
+  "status": "passed",
+  "wga_delta_pp": -2.418463182082975,
+  "winner_reconstruction_verified": true
+}

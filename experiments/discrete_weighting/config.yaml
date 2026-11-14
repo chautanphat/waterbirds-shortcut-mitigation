@@ -1,0 +1,5 @@
+prior: outputs/weighting
+output_root: outputs/discrete_weighting_v2
+seeds: [0, 1, 2]
+bootstrap: 1000
+protocol: existing_class_stratified_80_20_OOF
