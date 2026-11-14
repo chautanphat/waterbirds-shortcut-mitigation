@@ -82,4 +82,5 @@ tempCodeRunnerFile.py
 *.synctex(busy)
 *.fls
 *.fdb_latexmk
+*.out
 

@@ -2,40 +2,38 @@
 \providecommand\hyper@newdestlabel[2]{}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
-\citation{five,star,independent}
 \@writefile{toc}{\contentsline {title}{Background Shortcut Learning Mitigation for Waterbirds\unskip \ \ignorespaces  Week 2 Progress Report}{1}{chapter.1}\protected@file@percent }
 \@writefile{toc}{\authcount {4}}
 \@writefile{toc}{\contentsline {author}{Chau Tan Phat \and Nguyen Dang Khang \and Nguyen Phu Trong \and Nguyen Dinh Minh Huy}{1}{chapter.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {1}This Week's Work}{1}{section.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}DPE Experiments}{1}{section.2}\protected@file@percent }
-\citation{h2}
-\citation{paper}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Combining the 15 Heads}{2}{subsection.2.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Two ways to combine the same heads. Ordinary DPE averages their predictions. The learned network can combine them differently. Dropout hides some inputs during training only.}}{2}{figure.1}\protected@file@percent }
-\newlabel{fig:aggregation}{{1}{2}{Two ways to combine the same heads. Ordinary DPE averages their predictions. The learned network can combine them differently. Dropout hides some inputs during training only}{figure.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Test WGA (\%): our results and the original paper, labeled separately. Our means use five normal-ERM runs and two ERM$^*$ runs. The variants share our split-validation heads; full-validation reproduction uses all 1,199 validation images.}}{2}{table.1}\protected@file@percent }
-\newlabel{tab:neural}{{1}{2}{Test WGA (\%): our results and the original paper, labeled separately. Our means use five normal-ERM runs and two ERM$^*$ runs. The variants share our split-validation heads; full-validation reproduction uses all 1,199 validation images}{table.1}{}}
-\citation{h1,independent}
-\citation{independent}
-\citation{independent}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Re-pairing and More Prototypes}{3}{subsection.2.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Our prototype-test WGA (\%): five normal-ERM runs, two ERM$^*$ runs. Ranges cover tested settings; global pooling shows its earlier highest mean. Dashes indicate untested settings, not zero accuracy.}}{3}{table.2}\protected@file@percent }
-\newlabel{tab:prototype-results}{{2}{3}{Our prototype-test WGA (\%): five normal-ERM runs, two ERM$^*$ runs. Ranges cover tested settings; global pooling shows its earlier highest mean. Dashes indicate untested settings, not zero accuracy}{table.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Re-pairing changes partners; larger subsets add prototypes. Circles/squares represent landbirds/waterbirds; subscripts identify the source head.}}{3}{figure.2}\protected@file@percent }
-\newlabel{fig:prototype}{{2}{3}{Re-pairing changes partners; larger subsets add prototypes. Circles/squares represent landbirds/waterbirds; subscripts identify the source head}{figure.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Prototype Weights and a Small Correction}{3}{subsection.2.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Our normal-ERM gains over our matched uniform baseline (pp; five runs). Positive is better. Fixed penalties: 0.01 for prototype weights, 0.1 for confidence adjustment and linear correction. Full ERM$^*$ results are retained in the experiment record~\cite  {independent}.}}{3}{table.3}\protected@file@percent }
-\newlabel{tab:allocations}{{3}{3}{Our normal-ERM gains over our matched uniform baseline (pp; five runs). Positive is better. Fixed penalties: 0.01 for prototype weights, 0.1 for confidence adjustment and linear correction. Full ERM$^*$ results are retained in the experiment record~\cite {independent}}{table.3}{}}
-\citation{viewer}
-\bibcite{h2}{1}
-\bibcite{five}{2}
-\bibcite{star}{3}
-\bibcite{independent}{4}
-\bibcite{h1}{5}
-\bibcite{viewer}{6}
-\bibcite{paper}{7}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Prediction Viewer}{4}{section.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Screenshot of the disagreement gallery with four baseline methods. Green matches the dataset label; red marks a mistake. These are our earlier baseline reproductions.}}{4}{figure.3}\protected@file@percent }
-\newlabel{fig:viewer}{{3}{4}{Screenshot of the disagreement gallery with four baseline methods. Green matches the dataset label; red marks a mistake. These are our earlier baseline reproductions}{figure.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Next Week}{4}{section.4}\protected@file@percent }
-\gdef \@abspage@last{4}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Original DPE. Each head uses its own pair of reference points. All 15 answers count equally.}}{1}{figure.1}\protected@file@percent }
+\newlabel{fig:dpe-basic}{{1}{1}{Original DPE. Each head uses its own pair of reference points. All 15 answers count equally}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}DPE Hypothesis Experiments}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Changing Prototype Pairs}{2}{subsection.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Change partners, then average. $L$: landbird; $W$: waterbird. Numbers identify the original head. The points stay fixed.}}{2}{figure.2}\protected@file@percent }
+\newlabel{fig:h1}{{2}{2}{Change partners, then average. $L$: landbird; $W$: waterbird. Numbers identify the original head. The points stay fixed}{figure.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Our prototype-test WGA (\%): five normal-ERM runs, two ERM$^*$ runs. Ranges cover tested settings; global pooling shows its earlier highest mean. Dashes indicate untested settings, not zero accuracy.}}{2}{table.1}\protected@file@percent }
+\newlabel{tab:pair-results}{{1}{2}{Our prototype-test WGA (\%): five normal-ERM runs, two ERM$^*$ runs. Ranges cover tested settings; global pooling shows its earlier highest mean. Dashes indicate untested settings, not zero accuracy}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Using More Prototypes per Head}{2}{subsection.2.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Add points within each head. Subsets can differ. Using all 30 points with identical scoring makes every head's answer the same.}}{2}{figure.3}\protected@file@percent }
+\newlabel{fig:h3}{{3}{2}{Add points within each head. Subsets can differ. Using all 30 points with identical scoring makes every head's answer the same}{figure.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Test WGA (\%), Split 0: five standard-ERM and two ERM$^*$ runs. Subsets use 2, 3, 5, or 15 pairs per head. The all-30 row is an earlier highest mean; a dash means untested.}}{3}{table.2}\protected@file@percent }
+\newlabel{tab:subset-results}{{2}{3}{Test WGA (\%), Split 0: five standard-ERM and two ERM$^*$ runs. Subsets use 2, 3, 5, or 15 pairs per head. The all-30 row is an earlier highest mean; a dash means untested}{table.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Combining the Heads}{3}{subsection.2.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The Week 1 idea: compare equal averaging with a weighted sum of the same head predictions. Here $p_i(c\mid x)$ is head $i$'s probability for class $c$ on image $x$. Arrow widths show example weights, not measured reliability.}}{3}{figure.4}\protected@file@percent }
+\newlabel{fig:h2}{{4}{3}{The Week 1 idea: compare equal averaging with a weighted sum of the same head predictions. Here $p_i(c\mid x)$ is head $i$'s probability for class $c$ on image $x$. Arrow widths show example weights, not measured reliability}{figure.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Test WGA (\%): our results and the original paper, labeled separately. Our means use five normal-ERM runs and two ERM$^*$ runs. The variants share our split-validation heads; full-validation reproduction uses all 1,199 validation images.}}{4}{table.3}\protected@file@percent }
+\newlabel{tab:combinations}{{3}{4}{Test WGA (\%): our results and the original paper, labeled separately. Our means use five normal-ERM runs and two ERM$^*$ runs. The variants share our split-validation heads; full-validation reproduction uses all 1,199 validation images}{table.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Normal-ERM test WGA (\%; five runs). For each split, $\Delta $ is the change in percentage points from that split's matched uniform baseline. Positive is better. The full-validation reproduction and the paper are separate references; their data usage differs, so no matched-split change is reported for them.}}{5}{table.4}\protected@file@percent }
+\newlabel{tab:allocations}{{4}{5}{Normal-ERM test WGA (\%; five runs). For each split, $\Delta $ is the change in percentage points from that split's matched uniform baseline. Positive is better. The full-validation reproduction and the paper are separate references; their data usage differs, so no matched-split change is reported for them}{table.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Predictions Viewer}{5}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Compare the Methods}{5}{subsection.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The comparison viewer. Green agrees with the dataset label; red marks a mistake. In the second card, DPE and ERM are correct while AutoBackSwap and POTER are wrong.}}{5}{figure.5}\protected@file@percent }
+\newlabel{fig:viewer}{{5}{5}{The comparison viewer. Green agrees with the dataset label; red marks a mistake. In the second card, DPE and ERM are correct while AutoBackSwap and POTER are wrong}{figure.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Rotation Test}{5}{subsection.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces POTER inference on four orientations of one albatross. Labels give the displayed waterbird probability. Panels are cropped from the supplied screenshots.}}{6}{figure.6}\protected@file@percent }
+\newlabel{fig:rotation-check}{{6}{6}{POTER inference on four orientations of one albatross. Labels give the displayed waterbird probability. Panels are cropped from the supplied screenshots}{figure.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Fused Image}{6}{subsection.3.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces POTER inference on the fused image. The left side shows the input; the right side shows the model crop and probabilities.}}{6}{figure.7}\protected@file@percent }
+\newlabel{fig:external-check}{{7}{6}{POTER inference on the fused image. The left side shows the input; the right side shows the model crop and probabilities}{figure.7}{}}
+\gdef \@abspage@last{6}
