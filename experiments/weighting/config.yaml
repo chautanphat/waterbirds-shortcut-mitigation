@@ -1,0 +1,22 @@
+dataset_dir: waterbird_complete95_forest2water2/waterbird_complete95_forest2water2
+backbone: checkpoints/kaggle_exploration/seed0/ckpt_last.pt
+original_heads: checkpoints/kaggle_exploration/seed0/ensemble.pt
+output_dir: outputs/weighting
+device: cpu
+protocol: crossfit
+folds: 3
+seeds: [0, 1, 2]
+screen_seeds: [0, 1]
+feature_batch_size: 24
+max_wall_seconds: 14400
+epochs: 100
+patience: 10
+bootstrap_repeats: 2000
+method_whitelist: null
+head_training:
+  members: 15
+  epochs: 20
+  batch_size: 256
+  lr: 0.001
+  cov_reg: 500000.0
+  wd_weight: 10.0

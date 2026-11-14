@@ -342,3 +342,35 @@ The ERM* interface now uses a conventional repository layout: a short notebook
 launcher, an ordinary CLI, Python modules and a configuration file. Module strings,
 notebook file-writing cells and runtime source extraction were removed. Changes are
 published on `experiment/dpe-ermstar-neural`, the notebook’s default Kaggle checkout.
+
+## DPE weighting with isolated OOF head/gate fitting — 2026-11-14
+
+- **Execution / scope:** completed exploratory adaptation; 127 configurations
+  across 41 deployable method families plus the oracle diagnostic, three-seed
+  finalist confirmation and automatic winner ablation. Additional locked A18
+  diagnostic uses five-fold cross-fitting. Original checkpoints preserved.
+- **Source / settings:** commit `dc39c2fcafe75ddd413cd25b9f394680bb06fd1c`
+  plus retained local source snapshots/hashes; settings in
+  [config.yaml](../experiments/weighting/config.yaml). CPU; shared supplied
+  frozen backbone. Full source/environment identities are in the output manifest.
+- **Protocol:** new class-balanced heads use three-fold OOF predictions; gate
+  train/select is 80/20 by class; group labels are evaluation-only. Winner D19
+  locks before final test evaluation. Backbone training history is not embedded
+  in the supplied checkpoint and remains an explicit provenance limitation.
+- **Results:** D19 test accuracy 95.961 ± 0.422%, WGA 83.645 ± 4.083%; matched
+  U0 accuracy 95.708 ± 0.117%, WGA 92.761 ± 0.552%. Supplied original group-aware
+  DPE reference: accuracy 96.048%, WGA 94.393%. Three repeats share one backbone;
+  SD describes refitted heads/gates, not independent backbone training. Results
+  do not support replacing original DPE. Full report and uncertainty:
+  [research report](../results/dpe/weighting_20261114/README.md).
+- **Winner run/model records:**
+  [seed 0](../experiments/exp-dpe-weighting-d19-seed0-fa5f0fb8/run.json),
+  [seed 1](../experiments/exp-dpe-weighting-d19-seed1-8728316a/run.json),
+  [seed 2](../experiments/exp-dpe-weighting-d19-seed2-f5b69e37/run.json).
+  Each record links its model and canonical full-test prediction export.
+- **Validation / recovery:** 51 new tests passed; 21 compatible historical tests
+  passed, five platform-specific historical tests excluded after documented
+  Windows failures. Independent audit verified 84 final predictors, nine folds,
+  all 42 ranks and unchanged original checkpoint hashes. Outputs, 329 weighting
+  checkpoints, failure cases and resume instructions remain in
+  `outputs/weighting/`; see [workflow status](../experiments/weighting/STATUS.md).

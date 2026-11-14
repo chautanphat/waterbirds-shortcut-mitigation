@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "checkpoint_hashes_unchanged": true,
+  "validation_count": 1199,
+  "test_count": 5794,
+  "crossfit_fold_audits": 9,
+  "unique_final_predictors_audited": 84,
+  "all_42_ranks_present": true,
+  "native_adapter_probability_difference": 0.0,
+  "scope": "ID separation, cached-output arithmetic, normalized weights, original checkpoint preservation; not independent CNN training provenance"
+}

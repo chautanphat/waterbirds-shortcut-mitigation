@@ -52,6 +52,7 @@ Thumbs.db
 /datasets/
 /dataset/
 /data/
+/waterbird_complete95_forest2water2/
 *.npy
 *.npz
 

@@ -1,0 +1,10 @@
+{
+  "new_workflow_tests_passed": 51,
+  "compatible_historical_tests_passed": 21,
+  "historical_platform_tests_deselected": 5,
+  "initial_historical_failures": [
+    "Windows encoding/path generation",
+    "POSIX os.killpg unavailable"
+  ],
+  "native_adapter_probability_difference": 0.0
+}

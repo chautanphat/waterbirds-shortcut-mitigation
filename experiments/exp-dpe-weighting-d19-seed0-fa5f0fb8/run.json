@@ -1,0 +1,73 @@
+{
+  "record_contract_version": 1,
+  "experiment_id": "exp-dpe-weighting-d19-seed0-fa5f0fb8",
+  "method": "no-group crossfit DPE weighting adaptation",
+  "seed": 0,
+  "purpose": "Accuracy-prioritized weighting versus matched uniform and original DPE",
+  "execution": {
+    "status": "completed",
+    "invocation": "python -m experiments.weighting.run --config experiments/weighting/config.yaml --phase all --resume",
+    "execution_date": "2026-11-14T14:12:13.983455+00:00"
+  },
+  "source": {
+    "commit": "dc39c2fcafe75ddd413cd25b9f394680bb06fd1c",
+    "source_hashes": {
+      "experiments/weighting/cache.py": "ba786e8616db597324a7f1485d2d8b0d5425761f0001d79462d899944149d8e1",
+      "experiments/weighting/data.py": "98abe81b3f8da676d2409ecfcda62153a9b2b5f593b3e6f9e645d0153df3e9d5",
+      "experiments/weighting/gates.py": "c2e237a2f71650c1d8d5f393fd7d6447d0446f823a6dc9c2936cca46d62e07dc",
+      "experiments/weighting/losses.py": "513b9045f4cf64034191999f05cace6df33a7f2335c7a6f0749ab45a1e4a08fd",
+      "experiments/weighting/methods.py": "7a13f491096d459c1a4ec44d5b745cd485bc67f2f9019dcf018414219bc44ac4",
+      "experiments/weighting/metrics.py": "6aaa8f41bccbba132f5d0f69a2280291c85515e65673f7eaa2b5a7d331b5c442",
+      "experiments/weighting/run.py": "da0cbf0a983a8f98bb4660afab6879669f1cf65d927a8886b0dc57cf028f35e8",
+      "experiments/weighting/__init__.py": "5874bee2ed12b68e7f3b1e530629424f852800643198dd9dbc314cfcbc813997"
+    }
+  },
+  "configuration": {
+    "path": "experiments/exp-dpe-weighting-d19-seed0-fa5f0fb8/resolved_config.json",
+    "sha256": "793ec4aa255112d3814a4e3a88d20800a71bd21cb77798296cfa9da8bc688f84"
+  },
+  "dataset": {
+    "root": "waterbird_complete95_forest2water2/waterbird_complete95_forest2water2",
+    "protocol": "crossfit",
+    "folds": 3,
+    "groups": "evaluation only"
+  },
+  "randomness": {
+    "head_and_gate_seed": 0,
+    "shared_backbone": true
+  },
+  "environment": {
+    "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "device": "cpu",
+    "packages": {
+      "torch": "2.15.0",
+      "torchvision": "0.29.2",
+      "numpy": "2.2.6",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1"
+    }
+  },
+  "selection": {
+    "lock": "outputs/weighting/selection_lock.json",
+    "rule": "meta-select accuracy, BA, NLL"
+  },
+  "artifacts": {
+    "model": "experiments/exp-dpe-weighting-d19-seed0-fa5f0fb8/model.json",
+    "predictions": "experiments/exp-dpe-weighting-d19-seed0-fa5f0fb8/predictions/test"
+  },
+  "results": {
+    "table": "outputs/weighting/final_test.csv",
+    "units": "fractions; deltas pp"
+  },
+  "assessment": {
+    "reproduction_status": "exploratory adaptation",
+    "limitations": [
+      "Backbone training history not embedded in supplied bare checkpoint; training-only origin assumed from handoff.",
+      "OOF-to-final-head distribution shift; single shared backbone; exploratory test reused historically."
+    ]
+  },
+  "relationships": {
+    "study": "outputs/weighting"
+  }
+}

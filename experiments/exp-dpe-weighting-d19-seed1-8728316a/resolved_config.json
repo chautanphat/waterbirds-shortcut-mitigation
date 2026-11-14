@@ -1,0 +1,60 @@
+{
+  "dataset_dir": "waterbird_complete95_forest2water2/waterbird_complete95_forest2water2",
+  "backbone": "checkpoints/kaggle_exploration/seed0/ckpt_last.pt",
+  "original_heads": "checkpoints/kaggle_exploration/seed0/ensemble.pt",
+  "output_dir": "outputs/weighting",
+  "device": "cpu",
+  "protocol": "crossfit",
+  "folds": 3,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "screen_seeds": [
+    0,
+    1
+  ],
+  "feature_batch_size": 24,
+  "max_wall_seconds": 14400,
+  "epochs": 100,
+  "patience": 10,
+  "bootstrap_repeats": 2000,
+  "method_whitelist": null,
+  "head_training": {
+    "members": 15,
+    "epochs": 20,
+    "batch_size": 256,
+    "lr": 0.001,
+    "cov_reg": 500000.0,
+    "wd_weight": 10.0
+  },
+  "winner": {
+    "rank": 39,
+    "method": "D19",
+    "config": {
+      "kl": 0.0,
+      "lr": 0.001
+    },
+    "seed": 1,
+    "members": 15,
+    "split": "meta_select",
+    "accuracy": 0.9541666666666667,
+    "balanced_accuracy": 0.9435475734032892,
+    "nll": 0.41711181614526666,
+    "brier": 0.2390227360001237,
+    "ece": 0.28339614641195837,
+    "per_class": {
+      "0": 0.9625668449197861,
+      "1": 0.9245283018867925
+    },
+    "count": 240,
+    "train_seconds": 0.8834936000002926,
+    "latency_ms_per_sample": 0.005035666666420487,
+    "params": 816,
+    "fit_key": "8728316a61a0ac9b394e",
+    "status": "completed",
+    "wga": null,
+    "wga_reason": "Group labels isolated from selection"
+  }
+}
