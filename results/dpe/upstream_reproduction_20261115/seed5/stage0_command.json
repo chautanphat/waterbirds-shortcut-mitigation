@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "/kaggle/working/dpe-audited/venv/bin/python",
+    "-c",
+    "import runpy; from subpopbench.dataset.datasets import Waterbirds; Waterbirds.N_WORKERS=2; runpy.run_module('subpopbench.train', run_name='__main__')",
+    "--algorithm",
+    "ERM",
+    "--dataset",
+    "Waterbirds",
+    "--train_attr",
+    "no",
+    "--data_dir",
+    "/kaggle/working/dpe-audited/data",
+    "--output_dir",
+    "/kaggle/working/dpe-audited/results/standard-group-5-6/seed5/subpopbench",
+    "--output_folder_name",
+    "standard",
+    "--seed",
+    "5",
+    "--hparams_seed",
+    "0"
+  ],
+  "cwd": "/kaggle/working/dpe-audited/subpopbench-upstream"
+}

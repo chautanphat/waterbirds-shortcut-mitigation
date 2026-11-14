@@ -1,0 +1,212 @@
+{
+ "sources": [
+  {
+   "backbone_sha256": null,
+   "ensembles": {
+    "full_validation": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed0/paper_reference/ensemble.pt",
+    "partition0": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed0/neural_split/ensemble.pt"
+   },
+   "features": {
+    "test": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed0/features/test.npz",
+    "val": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed0/features/val.npz"
+   },
+   "historical_predictions": {
+    "full_validation": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed0/paper_reference/test_heads.npz",
+    "partition0": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed0/neural_split/test_heads.npz"
+   },
+   "id": "ermstar-seed0",
+   "manifest": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed0/neural_split/partition.json",
+   "metadata": "/kaggle/working/code/data/metadata.csv",
+   "provenance": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed0/features/complete.json",
+   "recipe": "ermstar",
+   "seed": 0
+  },
+  {
+   "backbone_sha256": null,
+   "ensembles": {
+    "full_validation": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed1/paper_reference/ensemble.pt",
+    "partition0": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed1/neural_split/ensemble.pt"
+   },
+   "features": {
+    "test": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed1/features/test.npz",
+    "val": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed1/features/val.npz"
+   },
+   "historical_predictions": {
+    "full_validation": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed1/paper_reference/test_heads.npz",
+    "partition0": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed1/neural_split/test_heads.npz"
+   },
+   "id": "ermstar-seed1",
+   "manifest": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed1/neural_split/partition.json",
+   "metadata": "/kaggle/working/code/data/metadata.csv",
+   "provenance": "/kaggle/working/tmp/recovered/dpe-exploration/dpe_ermstar/jobs/seed1/features/complete.json",
+   "recipe": "ermstar",
+   "seed": 1
+  },
+  {
+   "backbone_sha256": "d58957af68b5e119b801fd04b3ff2a0c4314c206a0dc57aa603e41092c8bc137",
+   "ensemble_hashes": {
+    "full_validation": "795337a2bb903d3d177bc97a7abcdfec70804e30c071e79562eef73bc77545cc",
+    "partition0": "e6296e5470f68cb18c4e4cf63875218b6c703390e72e9a1300bf373f1ebfe8f6",
+    "partition1": "8c78985dd3ca5c444ca572c9100cd1c0ef32cb76ca9e85e43ced60a78eeffc26",
+    "partition2": "a860748d0fddcd72b252773f8b9910974a723d0bcda0d342b0d4b50835c22a85"
+   },
+   "ensembles": {
+    "full_validation": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed0-full_validation_20epochs.pt",
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed0/checkpoints/ensemble.pt",
+    "partition1": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed0-partition1.pt",
+    "partition2": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed0-partition2.pt"
+   },
+   "features": {
+    "test": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/features/standard/seed0-94a41692f6/test_raw.npz",
+    "val": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/features/standard/seed0-94a41692f6/val_raw.npz"
+   },
+   "historical_predictions": {
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed0/experiment/predictions/test.npz"
+   },
+   "id": "normal-erm-seed0",
+   "manifest": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed0/experiment/manifest.json",
+   "metadata": "/kaggle/working/code/data/metadata.csv",
+   "partition_manifests": {
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed0/experiment/manifest.json",
+    "partition1": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/partitions/seed0-split1-manifest.json",
+    "partition2": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/partitions/seed0-split2-manifest.json"
+   },
+   "provenance": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/features/standard/seed0-94a41692f6/provenance.json",
+   "recipe": "normal_erm",
+   "seed": 0
+  },
+  {
+   "backbone_sha256": "298abab3ff5f16785376d35d3e7bb3bae20c8f2dfd9d769dc8e741dcc28e2123",
+   "ensemble_hashes": {
+    "full_validation": "dba43962e3f46cc4cab716af1f36013465383993e6e10f7ab09015ed8771accf",
+    "partition0": "7c57c33067f521b6724e9ebcba8e9c554e68daa32a93b8d49365a7d07611abfa",
+    "partition1": "2647d800c44825186b9f478863acc0f03778c2e74740f02bead05510c4c61f0e",
+    "partition2": "912d7d58bcf4ce64b9ac571335f5f6aa28142d9304c7639e38a82f31eab8d7e1"
+   },
+   "ensembles": {
+    "full_validation": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed1-full_validation_20epochs.pt",
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed1/checkpoints/ensemble.pt",
+    "partition1": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed1-partition1.pt",
+    "partition2": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed1-partition2.pt"
+   },
+   "features": {
+    "test": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/features/standard/seed1-94a41692f6/test_raw.npz",
+    "val": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/features/standard/seed1-94a41692f6/val_raw.npz"
+   },
+   "historical_predictions": {
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed1/experiment/predictions/test.npz"
+   },
+   "id": "normal-erm-seed1",
+   "manifest": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed1/experiment/manifest.json",
+   "metadata": "/kaggle/working/code/data/metadata.csv",
+   "partition_manifests": {
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed1/experiment/manifest.json",
+    "partition1": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/partitions/seed1-split1-manifest.json",
+    "partition2": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/partitions/seed1-split2-manifest.json"
+   },
+   "provenance": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/features/standard/seed1-94a41692f6/provenance.json",
+   "recipe": "normal_erm",
+   "seed": 1
+  },
+  {
+   "backbone_sha256": "36530f7bb350dcae2713afa15b29b572b24185c3332c0e1a003f3cde070e5396",
+   "ensemble_hashes": {
+    "full_validation": "5d0a7513238ae2eb6a1a963f25504382b43554ed3b34c74a1d6581cb7ed62c80",
+    "partition0": "5346ed02a401d6e0cefb7e0895230837f0bcaffd7b76cea7eeb15a6f24710eb7",
+    "partition1": "73ff145db118ebce599bcfa65c7dab8e919c367a16a941c427814ad77f9de974",
+    "partition2": "25c24b40b42b17e4050b237a4b05611b7f2928a9b0a6715fd2062439f8cf00ea"
+   },
+   "ensembles": {
+    "full_validation": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed2-full_validation_20epochs.pt",
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed2/checkpoints/ensemble.pt",
+    "partition1": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed2-partition1.pt",
+    "partition2": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed2-partition2.pt"
+   },
+   "features": {
+    "test": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/features/standard/seed2-94a41692f6/test_raw.npz",
+    "val": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/features/standard/seed2-94a41692f6/val_raw.npz"
+   },
+   "historical_predictions": {
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed2/experiment/predictions/test.npz"
+   },
+   "id": "normal-erm-seed2",
+   "manifest": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed2/experiment/manifest.json",
+   "metadata": "/kaggle/working/code/data/metadata.csv",
+   "partition_manifests": {
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed2/experiment/manifest.json",
+    "partition1": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/partitions/seed2-split1-manifest.json",
+    "partition2": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/partitions/seed2-split2-manifest.json"
+   },
+   "provenance": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/features/standard/seed2-94a41692f6/provenance.json",
+   "recipe": "normal_erm",
+   "seed": 2
+  },
+  {
+   "backbone_sha256": "f498212957c3cf780adee5ebac98dcf9344352eecf0a61ee20b0bb7c15cd9718",
+   "ensemble_hashes": {
+    "full_validation": "d7331c8ebf8115786b1a5a089c5814fbc8d245d0185f29d5441c9b5aa8f8522d",
+    "partition0": "e032881876c4a698383049856fca7254770428810381c27cf8febfc111057392",
+    "partition1": "35218df2496a3ecc87be12fc513bc37496538f032bbbf789ba8568806ee9863c",
+    "partition2": "cd71e96cf616bbe81079abe8047d7ddc7f02cffb2e919ba58e19626ca13c7953"
+   },
+   "ensembles": {
+    "full_validation": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed3-full_validation_20epochs.pt",
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed3/checkpoints/ensemble.pt",
+    "partition1": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed3-partition1.pt",
+    "partition2": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed3-partition2.pt"
+   },
+   "features": {
+    "test": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/additional_sources/features/standard/seed3-94a41692f6/test_raw.npz",
+    "val": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/additional_sources/features/standard/seed3-94a41692f6/val_raw.npz"
+   },
+   "historical_predictions": {
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed3/experiment/predictions/test.npz"
+   },
+   "id": "normal-erm-seed3",
+   "manifest": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed3/experiment/manifest.json",
+   "metadata": "/kaggle/working/code/data/metadata.csv",
+   "partition_manifests": {
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed3/experiment/manifest.json",
+    "partition1": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/partitions/seed3-split1-manifest.json",
+    "partition2": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/partitions/seed3-split2-manifest.json"
+   },
+   "provenance": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/additional_sources/features/standard/seed3-94a41692f6/provenance.json",
+   "recipe": "normal_erm",
+   "seed": 3
+  },
+  {
+   "backbone_sha256": "a15e0218dd2c7c26446df1c9d4b6269d9a268009ae8a90bc28cee1bac8e5ec1d",
+   "ensemble_hashes": {
+    "full_validation": "84cfe70717b3383353192101341ad9e4b74e248e555cf2d435ef1a42dbaa8e95",
+    "partition0": "a05e6c63ed5f696239a4433eb24265aade59674f7ad02d4aa0a8adfe4475b46c",
+    "partition1": "ebcc660414db63497e21fd70aab95b631430dd66d31b7d9406b430315b6a358e",
+    "partition2": "6763fe99f68b11533682ee8f6ed046082e3f915f05fa944cad1f0b79d80ab2bb"
+   },
+   "ensembles": {
+    "full_validation": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed4-full_validation_20epochs.pt",
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed4/checkpoints/ensemble.pt",
+    "partition1": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed4-partition1.pt",
+    "partition2": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/control_heads/seed4-partition2.pt"
+   },
+   "features": {
+    "test": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/additional_sources/features/standard/seed4-94a41692f6/test_raw.npz",
+    "val": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/additional_sources/features/standard/seed4-94a41692f6/val_raw.npz"
+   },
+   "historical_predictions": {
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed4/experiment/predictions/test.npz"
+   },
+   "id": "normal-erm-seed4",
+   "manifest": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed4/experiment/manifest.json",
+   "metadata": "/kaggle/working/code/data/metadata.csv",
+   "partition_manifests": {
+    "partition0": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed4/experiment/manifest.json",
+    "partition1": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/partitions/seed4-split1-manifest.json",
+    "partition2": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/partitions/seed4-split2-manifest.json"
+   },
+   "provenance": "/kaggle/working/tmp/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/additional_sources/features/standard/seed4-94a41692f6/provenance.json",
+   "recipe": "normal_erm",
+   "seed": 4
+  }
+ ],
+ "blockers": []
+}

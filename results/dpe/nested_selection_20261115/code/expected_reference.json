@@ -1,0 +1,83 @@
+{
+ "fullval_saved": {
+  "ermstar-seed0": 94.392523,
+  "ermstar-seed1": 93.76947,
+  "normal-erm-seed0": 89.563863,
+  "normal-erm-seed1": 90.654206,
+  "normal-erm-seed2": 89.096573,
+  "normal-erm-seed3": 89.252336,
+  "normal-erm-seed4": 89.4081
+ },
+ "crossfit_uniform": {
+  "ermstar-seed0": 94.392523,
+  "ermstar-seed1": 92.815965,
+  "normal-erm-seed0": 90.731707,
+  "normal-erm-seed1": 90.110865,
+  "normal-erm-seed2": 90.031153,
+  "normal-erm-seed3": 89.356984,
+  "normal-erm-seed4": 90.465632
+ },
+ "crossfit_affine|average-l0.1": {
+  "ermstar-seed0": 94.23676,
+  "ermstar-seed1": 93.791574,
+  "normal-erm-seed0": 90.342679,
+  "normal-erm-seed1": 90.965732,
+  "normal-erm-seed2": 89.719626,
+  "normal-erm-seed3": 89.4081,
+  "normal-erm-seed4": 89.875389
+ },
+ "crossfit_affine|average-l0.01": {
+  "ermstar-seed0": 93.925234,
+  "ermstar-seed1": 93.925234,
+  "normal-erm-seed0": 89.563863,
+  "normal-erm-seed1": 90.498442,
+  "normal-erm-seed2": 89.4081,
+  "normal-erm-seed3": 89.4081,
+  "normal-erm-seed4": 89.563863
+ },
+ "crossfit_affine|maximum-l0.1": {
+  "ermstar-seed0": 93.76947,
+  "ermstar-seed1": 94.05765,
+  "normal-erm-seed0": 89.4081,
+  "normal-erm-seed1": 89.719626,
+  "normal-erm-seed2": 89.252336,
+  "normal-erm-seed3": 89.4081,
+  "normal-erm-seed4": 89.4081
+ },
+ "crossfit_affine|maximum-l0.01": {
+  "ermstar-seed0": 93.76947,
+  "ermstar-seed1": 94.080997,
+  "normal-erm-seed0": 89.563863,
+  "normal-erm-seed1": 90.186916,
+  "normal-erm-seed2": 89.252336,
+  "normal-erm-seed3": 89.4081,
+  "normal-erm-seed4": 89.563863
+ },
+ "pool_uniform_p0": {
+  "ermstar-seed0": 94.548287,
+  "ermstar-seed1": 92.283814,
+  "normal-erm-seed0": 89.756098,
+  "normal-erm-seed1": 90.022173,
+  "normal-erm-seed2": 88.780488,
+  "normal-erm-seed3": 88.785047,
+  "normal-erm-seed4": 88.824834
+ },
+ "pool_affine_p0|average-l0.1": {
+  "ermstar-seed0": 94.080997,
+  "ermstar-seed1": 93.702882,
+  "normal-erm-seed0": 90.332594,
+  "normal-erm-seed1": 90.066519,
+  "normal-erm-seed2": 89.563863,
+  "normal-erm-seed3": 89.252336,
+  "normal-erm-seed4": 89.578714
+ },
+ "pool_linear_p0|average-l0.1": {
+  "ermstar-seed0": 94.23676,
+  "ermstar-seed1": 93.08204,
+  "normal-erm-seed0": 90.731707,
+  "normal-erm-seed1": 89.889135,
+  "normal-erm-seed2": 90.186916,
+  "normal-erm-seed3": 90.465632,
+  "normal-erm-seed4": 90.465632
+ }
+}

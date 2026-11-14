@@ -1,0 +1,3 @@
+seed,protocol,head_implementation,train_attr,wga_percent,accuracy_percent,group_00_accuracy_percent,group_01_accuracy_percent,group_10_accuracy_percent,group_11_accuracy_percent
+5,subpopbench,official_cli,yes,89.40809968847351,92.45771487745944,95.56541019955654,90.68736141906874,89.40809968847351,90.80996884735202
+6,subpopbench,official_cli,yes,86.47450110864744,91.54297549188816,96.23059866962306,86.47450110864744,90.03115264797508,94.39252336448598
