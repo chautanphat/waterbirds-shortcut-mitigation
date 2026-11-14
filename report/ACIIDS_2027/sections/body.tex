@@ -4,7 +4,7 @@
 
 \medskip\noindent\textbf{Backbones.} Five standard-ERM backbones (seeds 0--4, 100 epochs) and two ERM$^*$ backbones (seeds 0--1, 400 epochs with augmentation) are reported separately because they are different recipes, not repeats of one configuration. Folds, partitions, split seeds and combiner initialisations are repeats within a backbone and are never counted as independent evidence.
 
-\medskip\noindent\textbf{DPE heads.} A DPE ensemble has 15 two-prototype distance-based heads trained in sequence on group-balanced subsets of the validation features of a frozen ResNet-50 \cite{to2025dpe}: 20 epochs per head, batch size 256, learning rate $10^{-3}$, momentum 0.9, entropic scale 30, covariance penalty $5\times10^5$ (decaying by stage for standard ERM, constant for ERM$^*$ as in the preserved recipes). Its prediction is the uniform average of the head probabilities. \TODO{state how the head checkpoint is chosen; selected head epochs were not exported for the ERM$^*$ sources} \emph{Full-validation DPE} trains on all of $V$ and is the primary reference. \emph{Fixed-split} arms train heads on 720 images and keep 479 for a combiner, at three nested partitions P0--P2; the uniform 720-image ensemble is the matched reference.
+\medskip\noindent\textbf{DPE heads.} A DPE ensemble has 15 two-prototype distance-based heads trained in sequence on group-balanced subsets of the validation features of a frozen ResNet-50 \cite{to2025dpe}: 20 epochs per head, batch size 256, learning rate $10^{-3}$, momentum 0.9, entropic scale 30, covariance penalty $5\times10^5$ (decaying by stage for standard ERM, constant for ERM$^*$ as in the preserved recipes). Its prediction is the uniform average of the head probabilities. For standard ERM each head keeps the epoch with the highest worst-group accuracy on its own training pool (ties to the later epoch), so no held-out image affects head selection; the ERM$^*$ heads follow the preserved upstream recipe, whose selected epochs were not exported. \emph{Full-validation DPE} trains on all of $V$ and is the primary reference. \emph{Fixed-split} arms train heads on 720 images and keep 479 for a combiner, at three nested partitions P0--P2; the uniform 720-image ensemble is the matched reference.
 
 \medskip\noindent\textbf{Combiners.} All combiners act on $s=\mathrm{logit}(\bar q)$, where $\bar q$ is the mean waterbird probability of the 15 heads. The affine combiner outputs $\sigma(as+b)$; the linear residual adds a linear function of the head disagreements $q_h-\bar q$. Both start at the identity ($a=1$, $b=0$, zero correction), and the slope is not constrained. The loss is binary cross-entropy averaged within each group and then either averaged (\emph{average}) or maximised (\emph{maximum}) over the four groups, plus $\lambda[(a-1)^2+b^2]$ (and the mean squared correction weight), with $\lambda\in\{0.01,0.1\}$. Fits use 400 full-batch Adam steps at learning rate 0.01 in double precision. The dropout MLP keeps the earlier recipe (width 8, AdamW, prediction dropout 0.25).
 
@@ -36,13 +36,13 @@ box/.style={draw,rounded corners,align=center,minimum height=9mm,text width=25mm
 
 \medskip\noindent\textbf{Threshold equivalence.} For a single score and $a>0$, the decision $\sigma(as+b)\ge\tfrac12$ is $s\ge -b/a$, so affine calibration and thresholding give the same family of decisions. The average in Eq.~\eqref{eq:crossfit} is not a function of the mean score alone, so the slope $a$ can change decisions there. Beating a threshold on 15-head DPE would therefore not show that $a$ matters inside the 75-head ensemble; that needs a control on the same ensemble.
 
-\medskip\noindent\textbf{Declared controls for the second run.} \PH{confirm each control against the code in the Kaggle bundle and state which were completed}
+\medskip\noindent\textbf{Controls.} C1--C3 use the same fold split, fold ensembles and out-of-fold scores as the affine calibrator, and the same four (loss, $\lambda$) settings where a loss is fitted.
 \begin{itemize}
-\item[C1] \emph{Uncalibrated fold ensemble}: Eq.~\eqref{eq:crossfit} with $a=1,b=0$ (completed in the first study).
-\item[C2] \emph{Offset only on the same fold ensemble}: Eq.~\eqref{eq:crossfit} with $a=1$ and $b$ fitted on the same out-of-fold scores, loss and penalty; also a single threshold on the fold-average score.
-\item[C3] \emph{Transferred threshold}: a threshold on the out-of-fold scores $s_i$ of the fold models, applied to the score of full-validation DPE. The fold models see 959--960 images and the full model 1,199, so the threshold is transferred across pool sizes. An in-sample threshold on full-validation DPE is not held out and is not used.
-\item[C4] \emph{75-head bag}: five 15-head ensembles trained on all of $V$ with different seeds, averaged uniformly; it has as many heads as cross-fitting but no held-out scores. \PH{confirm the definition used in the run}
-\item[C5] \emph{DFR-style retraining}: group-balanced L1-penalised logistic regression on the same features, with the penalty chosen by cross-validation on $V$ \cite{kirichenko2023dfr}.
+\item[C1] \emph{Uncalibrated fold ensemble}: Eq.~\eqref{eq:crossfit} with $a=1,b=0$.
+\item[C2] \emph{Offset only on the same fold ensemble}: Eq.~\eqref{eq:crossfit} with $a=1$ and $b$ fitted with the same group loss, penalty $\lambda b^2$ and optimiser. A second variant thresholds the fold-average score at the $t$ that maximises out-of-fold WGA (candidates: 0 and midpoints between consecutive scores; ties go to the smallest $|t|$).
+\item[C3] \emph{Transferred offset or threshold}: the offset $b$ of C2, or its WGA-maximising threshold $t$, applied to the score of full-validation DPE. The fold models see 959--960 images and the full model 1,199, so both are transferred across pool sizes. An in-sample threshold on full-validation DPE is not held out and is not used.
+\item[C4] \emph{75-head bag}: five 15-head ensembles trained on all of $V$ with different seeds, averaged uniformly; as many heads as cross-fitting but no held-out scores. \PH{pending}
+\item[C5] \emph{DFR-style retraining}: group-balanced L1-penalised logistic regression on the same features, with the penalty chosen by cross-validation on $V$ \cite{kirichenko2023dfr}. \PH{pending}
 \end{itemize}
 
 \medskip\noindent\textbf{Validation-only selection.} The calibration setting is chosen from the grid $\{\text{average},\text{maximum}\}\times\{0.01,0.1\}$ by nested cross-validation on validation labels only. In each outer split, candidate prototypes and calibrators are fitted using the outer training part alone (with an inner cross-fit), and the outer held-out images influence neither prototypes nor calibration; they are used only to score candidates. The chosen setting is then refitted on all of $V$ and evaluated once on test. \PH{outer and inner fold counts; selection metric (group-balanced NLL or validation WGA); tie rule; the ten split seeds and how many completed for each recipe}
@@ -110,8 +110,37 @@ Five-fold affine, average, .1 & $-1.86$ & $+0.52$ & $+0.47$ & $-1.12$\\
 \end{tabular}}
 \end{table}
 
-\subsection{Validation-only selection and threshold controls}
-\PH{From REPORT.md and results\_long.csv: mean WGA and OA for full-validation DPE, C1--C5 and the selected cross-fit affine setting, per recipe; paired differences with intervals for (i) selected cross-fit affine minus full-validation DPE, (ii) selected cross-fit affine minus C2, (iii) selected cross-fit affine minus C3; the selection log (which setting each split seed chose); and the spread over split seeds within each backbone.}
+\subsection{Threshold and offset controls (Q3)}
+\label{sec:controls}
+Table~\ref{tab:controls} adds controls C1--C3 for the highlighted setting (average loss, $\lambda=0.1$). We recomputed the fold ensembles from the saved features and heads; all 42 historical WGA values for full-validation DPE, C1 and the four affine settings were reproduced exactly.
+
+\begin{table}[t]
+\centering\small
+\caption{Threshold and offset controls, fixed settings (average loss, $\lambda=0.1$). WGA in \%; $\Delta$ is the paired difference (pp) against full-validation DPE with a pointwise 95\% $t$ interval over five standard-ERM backbones.}
+\label{tab:controls}
+\resizebox{\linewidth}{!}{\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+& \multicolumn{3}{c}{Standard ERM ($n=5$)} & \multicolumn{2}{c}{ERM$^*$ ($n=2$)}\\
+Procedure & WGA & $\Delta$ & 95\% interval & WGA & $\Delta$\\\midrule
+Full-validation DPE & 89.60 & -- & -- & 94.08 & --\\
+C1 fold ensemble, uniform & 90.14 & $+0.54$ & $[-0.37,+1.46]$ & 93.60 & $-0.48$\\
+Fold ensemble, affine & 90.06 & $+0.47$ & $[+0.16,+0.77]$ & 94.01 & $-0.07$\\
+C2 fold ensemble, offset only ($a=1$) & 90.06 & $+0.47$ & $[+0.16,+0.77]$ & 94.01 & $-0.07$\\
+C2 fold ensemble, WGA threshold & 89.06 & $-0.53$ & $[-1.47,+0.41]$ & 93.66 & $-0.42$\\
+C3 full DPE, transferred offset & 89.16 & $-0.44$ & $[-0.65,-0.22]$ & 93.38 & $-0.70$\\
+C3 full DPE, transferred WGA threshold & 89.34 & $-0.25$ & $[-1.16,+0.65]$ & 93.75 & $-0.33$\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\textbf{The slope does not matter.} For the highlighted setting, affine recalibration and the offset-only control have the same overall accuracy and the same accuracy in each of the four groups on all seven backbones. With average loss and $\lambda=0.01$ their WGA is also identical on every backbone; with maximum loss the WGA differences are $+0.25$\,pp ($[-0.15,+0.65]$) and $-0.12$\,pp ($[-0.38,+0.13]$) on standard ERM. The fitted slopes are 1.20--1.31 and the offsets $|b|\le0.011$, while the median absolute test score of full-validation DPE is only 0.10--0.16 in logit, so the fitted map moves the decision boundary by a few thousandths and the slope has no measurable effect.
+
+\textbf{Tuned thresholds do not help.} Choosing the threshold that maximises out-of-fold WGA lowers test WGA, both on the fold ensemble ($-0.53$\,pp) and transferred to full-validation DPE ($-0.25$\,pp). The loss-fitted offset transferred to full-validation DPE lowers WGA on every backbone ($-0.44$\,pp, $[-0.65,-0.22]$; $-0.70$\,pp on ERM$^*$). A decision boundary learnt on fold models does not carry over to a model trained on 25\% more images.
+
+\textbf{Where the gain comes from.} Every procedure with a positive mean on standard ERM is a fold ensemble with a boundary at or within a few thousandths of zero. The ingredient common to them is the five-fold ensemble itself, whose gain over full-validation DPE ($+0.54$\,pp) has an interval that includes zero and is negative on ERM$^*$. These are fixed settings on a test set inspected before, so they describe the procedures; they do not confirm a gain.
+
+\subsection{Validation-only selection}
+\PH{From the nested-selection run, if it completes: which setting each split seed chose, the spread over split seeds within each backbone, and C4/C5. Otherwise state that selection among the four settings was not run.}
 
 \section{Evaluation Caveat: Label Anomaly in Waterbirds}
 \label{sec:caveat}
