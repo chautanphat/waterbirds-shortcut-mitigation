@@ -1,0 +1,236 @@
+{
+  "caution": "Shared backbone, previously inspected development; not fresh scientific confirmation. Bootstrap aligns repeats by unique image ID and stratifies evaluation groups after predictions.",
+  "criteria": {
+    "WGA_improves_two_seeds": false,
+    "clean_provenance": true,
+    "each_AA_above_minus1": false,
+    "mean_AA_above_minus1": true,
+    "positive_mean_WGA": true
+  },
+  "mean_delta_AA_pp": -0.8340283569641412,
+  "mean_delta_WGA_pp": 0.2915012854023513,
+  "paired_image_bootstrap_CI_AA_pp": [
+    -1.3066444259104808,
+    -0.3336113427856547
+  ],
+  "paired_image_bootstrap_CI_WGA_pp": [
+    -1.9671092968472697,
+    1.830017640668191
+  ],
+  "seeds": [
+    {
+      "broken": 19,
+      "candidate": {
+        "accuracy": 0.9491242702251876,
+        "balanced_accuracy": 0.951184230673146,
+        "brier": 0.4196486825692107,
+        "count": 1199,
+        "ece": 0.40530273641030173,
+        "nll": 0.6124679115195935,
+        "per_class": {
+          "0": 0.947481243301179,
+          "1": 0.9548872180451128
+        },
+        "per_group": {
+          "0": {
+            "accuracy": 0.9657387580299786,
+            "count": 467
+          },
+          "1": {
+            "accuracy": 0.9291845493562232,
+            "count": 466
+          },
+          "2": {
+            "accuracy": 0.9398496240601504,
+            "count": 133
+          },
+          "3": {
+            "accuracy": 0.9699248120300752,
+            "count": 133
+          }
+        },
+        "wga": 0.9291845493562232,
+        "worst_class_accuracy": 0.947481243301179
+      },
+      "corrected": 8,
+      "delta_AA_pp": -0.9174311926605561,
+      "delta_WGA_pp": 1.941011326599762,
+      "seed": 0,
+      "uniform": {
+        "accuracy": 0.9582985821517932,
+        "balanced_accuracy": 0.9503602253221478,
+        "brier": 0.43936616438224396,
+        "count": 1199,
+        "ece": 0.42601423610539313,
+        "nll": 0.6323828217030473,
+        "per_class": {
+          "0": 0.9646302250803859,
+          "1": 0.9360902255639098
+        },
+        "per_group": {
+          "0": {
+            "accuracy": 0.974304068522484,
+            "count": 467
+          },
+          "1": {
+            "accuracy": 0.9549356223175965,
+            "count": 466
+          },
+          "2": {
+            "accuracy": 0.9097744360902256,
+            "count": 133
+          },
+          "3": {
+            "accuracy": 0.9624060150375939,
+            "count": 133
+          }
+        },
+        "wga": 0.9097744360902256,
+        "worst_class_accuracy": 0.9360902255639098
+      }
+    },
+    {
+      "broken": 15,
+      "candidate": {
+        "accuracy": 0.9491242702251876,
+        "balanced_accuracy": 0.9471528499705857,
+        "brier": 0.41560148005473735,
+        "count": 1199,
+        "ece": 0.40285714423513097,
+        "nll": 0.6083684207034915,
+        "per_class": {
+          "0": 0.9506966773847803,
+          "1": 0.943609022556391
+        },
+        "per_group": {
+          "0": {
+            "accuracy": 0.9721627408993576,
+            "count": 467
+          },
+          "1": {
+            "accuracy": 0.9291845493562232,
+            "count": 466
+          },
+          "2": {
+            "accuracy": 0.9323308270676691,
+            "count": 133
+          },
+          "3": {
+            "accuracy": 0.9548872180451128,
+            "count": 133
+          }
+        },
+        "wga": 0.9291845493562232,
+        "worst_class_accuracy": 0.943609022556391
+      },
+      "corrected": 3,
+      "delta_AA_pp": -1.0008340283569672,
+      "delta_WGA_pp": -0.3146277711445933,
+      "seed": 1,
+      "uniform": {
+        "accuracy": 0.9591326105087573,
+        "balanced_accuracy": 0.9549275117053082,
+        "brier": 0.43814851653001025,
+        "count": 1199,
+        "ece": 0.4260882159587838,
+        "nll": 0.6311566365166865,
+        "per_class": {
+          "0": 0.962486602357985,
+          "1": 0.9473684210526315
+        },
+        "per_group": {
+          "0": {
+            "accuracy": 0.9785867237687366,
+            "count": 467
+          },
+          "1": {
+            "accuracy": 0.9463519313304721,
+            "count": 466
+          },
+          "2": {
+            "accuracy": 0.9323308270676691,
+            "count": 133
+          },
+          "3": {
+            "accuracy": 0.9624060150375939,
+            "count": 133
+          }
+        },
+        "wga": 0.9323308270676691,
+        "worst_class_accuracy": 0.9473684210526315
+      }
+    },
+    {
+      "broken": 9,
+      "candidate": {
+        "accuracy": 0.9491242702251876,
+        "balanced_accuracy": 0.9471528499705857,
+        "brier": 0.4205367457858302,
+        "count": 1199,
+        "ece": 0.4056758033369626,
+        "nll": 0.6133625983887444,
+        "per_class": {
+          "0": 0.9506966773847803,
+          "1": 0.943609022556391
+        },
+        "per_group": {
+          "0": {
+            "accuracy": 0.9593147751605996,
+            "count": 467
+          },
+          "1": {
+            "accuracy": 0.9420600858369099,
+            "count": 466
+          },
+          "2": {
+            "accuracy": 0.924812030075188,
+            "count": 133
+          },
+          "3": {
+            "accuracy": 0.9624060150375939,
+            "count": 133
+          }
+        },
+        "wga": 0.924812030075188,
+        "worst_class_accuracy": 0.943609022556391
+      },
+      "corrected": 2,
+      "delta_AA_pp": -0.5838198498749003,
+      "delta_WGA_pp": -0.7518796992481147,
+      "seed": 2,
+      "uniform": {
+        "accuracy": 0.9549624687239366,
+        "balanced_accuracy": 0.9509041897347872,
+        "brier": 0.44150891319266045,
+        "count": 1199,
+        "ece": 0.42370494874543796,
+        "nll": 0.63453838903864,
+        "per_class": {
+          "0": 0.9581993569131833,
+          "1": 0.943609022556391
+        },
+        "per_group": {
+          "0": {
+            "accuracy": 0.9635974304068522,
+            "count": 467
+          },
+          "1": {
+            "accuracy": 0.9527896995708155,
+            "count": 466
+          },
+          "2": {
+            "accuracy": 0.9323308270676691,
+            "count": 133
+          },
+          "3": {
+            "accuracy": 0.9548872180451128,
+            "count": 133
+          }
+        },
+        "wga": 0.9323308270676691,
+        "worst_class_accuracy": 0.943609022556391
+      }
+    }
+  ],
+  "status": "FAIL"
+}

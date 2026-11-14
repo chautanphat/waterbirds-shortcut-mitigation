@@ -1,0 +1,12 @@
+{
+  "ABC_folds": 9,
+  "classwise_not_shared_mixture": true,
+  "exact_uniform": true,
+  "head_fit_IDs_epochs_and_hashes": true,
+  "historical_test_used": false,
+  "independent_pooled_metrics": true,
+  "newly_trained_v5_heads": 135,
+  "normalization_only_B": true,
+  "same_ordered_B_C_heads": true,
+  "status": "PASS"
+}

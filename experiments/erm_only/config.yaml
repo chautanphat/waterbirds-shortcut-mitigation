@@ -1,0 +1,21 @@
+profile: dpe_standard_erm
+dataset:
+  data_dir: waterbird_complete95_forest2water2/waterbird_complete95_forest2water2
+  batch_size: 128
+  batch_size_eval: 256
+  workers: 0
+  augmentation: false
+model:
+  weights: IMAGENET1K_V2
+  freeze_bn: false
+training:
+  steps: null
+  epochs: 100
+  lr: 0.001
+  momentum: 0.9
+  weight_decay: 0.0
+  sampling: class_balanced
+  eval_every: 300
+  seed: 0
+  device: cpu
+output_dir: checkpoints/erm_only_verified/seed0

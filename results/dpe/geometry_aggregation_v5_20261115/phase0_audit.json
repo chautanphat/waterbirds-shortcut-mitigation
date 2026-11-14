@@ -1,0 +1,8 @@
+{
+  "criterion": "On meta_train uniform-wrong mixed-expert images, -dmin rank >.5 and better than confidence in at least2/3 seeds; diagnostic only.",
+  "formula": "logit_jk=-abs(scale_j)*D_jk; D uses L2-normalized standardized embedding and L2-normalized prototype",
+  "group_selection": false,
+  "historical_test_used": false,
+  "shared_ERMstar_backbone": true,
+  "supports_distance_routing": "no"
+}

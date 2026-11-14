@@ -151,7 +151,7 @@ class DPE:
         )
         return metrics
 
-    def evaluate(self, target='test') -> dict:
+    def evaluate(self, target='test', aggregation='uniform', aggregation_metadata=None) -> dict:
         """
         Predict using the trained ensemble on the test set.
 
@@ -166,11 +166,16 @@ class DPE:
         ds = self.loaders[target].dataset
         classes, attributes, groups = np.array(ds.y), np.array(ds._a), np.array(ds.g)
 
-        preds = self.predict_proba(target=target).cpu().numpy()
+        if aggregation == 'uniform' and aggregation_metadata is None:
+            preds = self.predict_proba(target=target).cpu().numpy()
+        else:
+            preds = self.predict_proba(target=target, aggregation=aggregation,
+                                       aggregation_metadata=aggregation_metadata).cpu().numpy()
         res = eval_metrics(preds, classes, attributes, groups)
         return res
 
-    def predict_proba(self, target='test', avg=True, raw_logits=False) -> torch.Tensor:
+    def predict_proba(self, target='test', avg=True, raw_logits=False,
+                      aggregation='uniform', aggregation_metadata=None) -> torch.Tensor:
         """
         Predict probabilities using the trained ensemble on the test set.
 
@@ -180,6 +185,10 @@ class DPE:
             An array of predicted probabilities for each class.
         """
         assert self.ensemble is not None, "Model must be trained before predicting."
+        if aggregation not in ('uniform', 'distance'):
+            raise ValueError('Supported aggregation modes: uniform, distance')
+        if aggregation == 'distance' and (not avg or raw_logits or self.config.loss_name != 'isomax'):
+            raise ValueError('Distance aggregation requires averaged probabilities from IsoMax+ heads')
 
         model = _init_model(
             num_classes=self.datasets['val'].num_labels,
@@ -187,6 +196,14 @@ class DPE:
             loss_name=self.config.loss_name,
             device=self.config.device,
         )
+
+        if aggregation == 'distance':
+            from .geometry import distance_mix
+            logits, distances = _predict(self.ensemble, self.loaders[target], model,
+                                         device=self.config.device, return_distances=True)
+            member_probs = logits.softmax(dim=2).transpose(0, 1).numpy()
+            mixed, _ = distance_mix(member_probs, distances.transpose(0, 1).numpy(), aggregation_metadata)
+            return torch.from_numpy(mixed).detach()
 
         pred_list = _predict(
             prototype_ensemble=self.ensemble,
@@ -591,7 +608,7 @@ def _train_ensemble(
     return ensemble_wga, ensemble_balanced_acc, res, prototype_ensemble
 
 
-def _predict(prototype_ensemble, eval_loader, model, device='cuda'):
+def _predict(prototype_ensemble, eval_loader, model, device='cuda', return_distances=False):
     """
     Predict using a trained prototype ensemble on pre-extracted features.
     Parameters
@@ -608,6 +625,10 @@ def _predict(prototype_ensemble, eval_loader, model, device='cuda'):
     dist_scales = [_[1].detach() for _ in prototype_ensemble]
     clf = torch.concat([_[0] for _ in prototype_ensemble], dim=1).detach().transpose(0, 1)
     preds_list = torch.zeros(clf.shape[0], len(eval_loader.dataset), eval_loader.dataset.num_labels)
+    if return_distances:
+        if not hasattr(model[-1], 'prototypes') or float(model[-1].temperature) != 1.0:
+            raise ValueError('Verified geometry mode requires normalized IsoMax+ distances at classifier temperature1')
+        distances_list = torch.zeros_like(preds_list)
 
     position = 0
 
@@ -623,10 +644,19 @@ def _predict(prototype_ensemble, eval_loader, model, device='cuda'):
                     model[-1].weight = torch.nn.Parameter(weight, requires_grad=False)
                     model[-1].bias = torch.nn.Parameter(dist_scales[i], requires_grad=False)  # bias for ce loss
                 model.eval()
-                preds_list[i][position:position + feats.shape[0]] = model(feats.squeeze())
+                if return_distances:
+                    # Compute the same normalized distance once; respect learned logit scale.
+                    from torch.nn import functional as F
+                    features = model[:-1](feats.reshape(feats.shape[0], -1))
+                    distance = torch.cdist(F.normalize(features), F.normalize(weight), p=2.0,
+                                           compute_mode='donot_use_mm_for_euclid_dist')
+                    preds_list[i][position:position + feats.shape[0]] = -torch.abs(dist_scales[i]) * distance
+                    distances_list[i][position:position + feats.shape[0]] = distance
+                else:
+                    preds_list[i][position:position + feats.shape[0]] = model(feats.squeeze())
             position += feats.shape[0]
 
-    return preds_list
+    return (preds_list, distances_list) if return_distances else preds_list
 
 
 def _evaluate_ensemble(prototype_ensemble, loader, full_model, device='cuda'):

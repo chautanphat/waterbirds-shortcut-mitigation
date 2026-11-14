@@ -1,0 +1,11 @@
+{
+  "all_artifact_hashes_verified": true,
+  "completed": 61,
+  "duplicate_tasks": 0,
+  "pytest_passed": 5,
+  "real_head_kill_test": "NOT_REACHED: Gate A failed before nested heads",
+  "real_initial_budget": 2,
+  "resumed_new_commits": 59,
+  "status": "PASS",
+  "synthetic_process_kill_verified": true
+}

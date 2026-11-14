@@ -1,0 +1,20 @@
+{
+  "CLI": "PYTHONPATH=baselines/dpe4subpop/src python -m dpe.geometry --input-cache CACHE.npz --output NEW.npz --aggregation distance",
+  "all9_C_prediction_caches_exact": true,
+  "candidate": "G1_g50",
+  "command": "model.predict_proba(target=\"val\", aggregation=\"distance\")",
+  "default": "uniform",
+  "dependency_note": "netcal1.3.5 installed without dependencies, as required by vendor DPE evaluation import; numerical experiment dependencies unchanged.",
+  "gate_sha256": "6399226d25e5906dab33dea3656e163d1d2c2610ee3e9653255418d4416b6617",
+  "mode": "distance",
+  "real_DPE_API_cache_parity": true,
+  "serialization": "versioned verified_distance_v1.json; no fitted calibration or normalizer needed by G1",
+  "sources": {
+    "baselines\\dpe4subpop\\src\\dpe\\core.py": "cd99e622a1327c47e5bf034aa75ad2eb2091666daa8b320a00861f4c4a79cbc4",
+    "baselines\\dpe4subpop\\src\\dpe\\geometry.py": "633bafea68550f143ef330b639020abe7b6c2e5d51351c01545c6c27e3c60a05",
+    "baselines\\dpe4subpop\\src\\dpe\\verified_distance_v1.json": "1cd15c7696e7f55c7f45cf96b9eba3a128b9ecb50aabe4fb804aeae54e4a48c4",
+    "tests\\methods\\test_dpe_geometry_inference.py": "e92da774d00dc71c3d26c1aa9600c73acaf7f10e70812bb3918ba9edc5fee769"
+  },
+  "status": "COMPLETE",
+  "tests": ".............                                                            [100%]\n13 passed in 22.40s"
+}

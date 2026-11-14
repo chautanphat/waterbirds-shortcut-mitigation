@@ -1,0 +1,9 @@
+{
+  "CRC": "PASS",
+  "bytes": 31226752,
+  "external_resume_inputs": "Original development_oof_bundle.zip, frozen val embedding cache and original OOF heads remain in the workspace.",
+  "includes": "135 new head finals and epoch checkpoints; predictions, reports, tables, figures and source/manifest lineage",
+  "members": 1351,
+  "path": "DPE_Geometry_v5_results.zip",
+  "sha256": "e81ec32def8543014e442472825c063d42fa74c1e76f24625f4b4abac510d954"
+}

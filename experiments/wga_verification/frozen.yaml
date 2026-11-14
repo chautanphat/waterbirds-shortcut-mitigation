@@ -1,0 +1,18 @@
+development_bundle: outputs/weighting/development_bundle
+prior: outputs/weighting
+output_root: outputs/wga_verification_v3
+seeds: [0, 1, 2]
+source_analysis: DPE_WGA_Deep_Analysis.md
+source_archive: DPE_WGA_Audit_Repro.zip
+tolerance_pp: 0.03
+recipe:
+  pca_components: 24
+  pca_solver: randomized
+  pca_seed: 0
+  clusters: 2
+  kmeans_n_init: 6
+  kmeans_seed: 1
+  cap: 0.25
+  l2: 0.02
+  cv_folds: 5
+  cv_seed: 3001

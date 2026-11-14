@@ -1,0 +1,179 @@
+{
+  "all_ranked": [
+    {
+      "alpha": 0.25,
+      "beta": 2.0,
+      "delta_AA_pp_by_seed": [
+        0.4166666666666652,
+        0.4166666666666652,
+        0.0
+      ],
+      "eligible": true,
+      "map_id": "R4",
+      "mean_NLL": 0.1445257203796775,
+      "proxy": 0.15791577138978516
+    },
+    {
+      "alpha": 0.25,
+      "beta": 1.0,
+      "delta_AA_pp_by_seed": [
+        0.4166666666666652,
+        0.0,
+        0.0
+      ],
+      "eligible": true,
+      "map_id": "R4",
+      "mean_NLL": 0.1473014621228908,
+      "proxy": 0.15953235270670169
+    },
+    {
+      "alpha": 0.1,
+      "beta": 2.0,
+      "delta_AA_pp_by_seed": [
+        0.4166666666666652,
+        0.0,
+        0.0
+      ],
+      "eligible": true,
+      "map_id": "R4",
+      "mean_NLL": 0.14845479130874867,
+      "proxy": 0.16026350746693685
+    },
+    {
+      "alpha": 0.25,
+      "beta": 0.5,
+      "delta_AA_pp_by_seed": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "eligible": true,
+      "map_id": "R4",
+      "mean_NLL": 0.14905703345660956,
+      "proxy": 0.1605938608109294
+    },
+    {
+      "alpha": 0.1,
+      "beta": 1.0,
+      "delta_AA_pp_by_seed": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "eligible": true,
+      "map_id": "R4",
+      "mean_NLL": 0.1495944024298885,
+      "proxy": 0.16094327970615815
+    },
+    {
+      "alpha": 0.1,
+      "beta": 0.5,
+      "delta_AA_pp_by_seed": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "eligible": true,
+      "map_id": "R4",
+      "mean_NLL": 0.15030570163416127,
+      "proxy": 0.1613776016591011
+    },
+    {
+      "alpha": 0.25,
+      "beta": 2.0,
+      "delta_AA_pp_by_seed": [
+        0.4166666666666652,
+        0.4166666666666652,
+        0.4166666666666652
+      ],
+      "eligible": true,
+      "map_id": "R3",
+      "mean_NLL": 0.4975921130725411,
+      "proxy": 0.504580513242133
+    },
+    {
+      "alpha": 0.25,
+      "beta": 1.0,
+      "delta_AA_pp_by_seed": [
+        0.4166666666666652,
+        0.0,
+        0.0
+      ],
+      "eligible": true,
+      "map_id": "R3",
+      "mean_NLL": 0.4997173830204396,
+      "proxy": 0.5068786120754677
+    },
+    {
+      "alpha": 0.1,
+      "beta": 2.0,
+      "delta_AA_pp_by_seed": [
+        0.4166666666666652,
+        0.0,
+        0.0
+      ],
+      "eligible": true,
+      "map_id": "R3",
+      "mean_NLL": 0.5002208107313085,
+      "proxy": 0.5074195837589904
+    },
+    {
+      "alpha": 0.25,
+      "beta": 0.5,
+      "delta_AA_pp_by_seed": [
+        0.4166666666666652,
+        0.0,
+        0.0
+      ],
+      "eligible": true,
+      "map_id": "R3",
+      "mean_NLL": 0.5008332611749783,
+      "proxy": 0.5080831921524492
+    },
+    {
+      "alpha": 0.1,
+      "beta": 1.0,
+      "delta_AA_pp_by_seed": [
+        0.4166666666666652,
+        0.0,
+        0.0
+      ],
+      "eligible": true,
+      "map_id": "R3",
+      "mean_NLL": 0.5010732274565964,
+      "proxy": 0.5083413631891026
+    },
+    {
+      "alpha": 0.1,
+      "beta": 0.5,
+      "delta_AA_pp_by_seed": [
+        0.4166666666666652,
+        0.0,
+        0.0
+      ],
+      "eligible": true,
+      "map_id": "R3",
+      "mean_NLL": 0.5015201937089291,
+      "proxy": 0.5088238717836425
+    }
+  ],
+  "config_hash": "1d7619b407f4f3ac332565da5a8037ebc4e451f76d19951a11bebb592d0a2e82",
+  "group_blind": true,
+  "groups_accessed": false,
+  "one_primary_only": true,
+  "primary": {
+    "alpha": 0.25,
+    "beta": 2.0,
+    "delta_AA_pp_by_seed": [
+      0.4166666666666652,
+      0.4166666666666652,
+      0.0
+    ],
+    "eligible": true,
+    "map_id": "R4",
+    "mean_NLL": 0.1445257203796775,
+    "proxy": 0.15791577138978516
+  },
+  "selection": "mean across seeds of worst-class NLL, then mean NLL, then map ID/alpha/beta; each seed delta AA strictly > -1pp",
+  "test_used": false
+}

@@ -1,6 +1,8 @@
 # Background Shortcut Learning Mitigation
 
-**Kết quả DPE v2:** D5 đạt **96,076% test accuracy**, tăng **0,368 điểm %** so
+**DPE v3 — hướng aggregation có vẻ khởi sắc nhất trong chuỗi nghiên cứu v3–v5:** G1 geometry đạt gate nested với **WGA +0,5013 điểm %**, **AA +0,1112 điểm %**, tăng WGA ở **2/3 seed**. Đã có chế độ `aggregation="distance"` opt-in; Uniform vẫn mặc định. Kết quả còn tạm thời, trên development dùng ERM*, với khoảng tin cậy WGA chứa 0. Đọc ngay [**báo cáo thực nghiệm ở thư mục gốc**](DPE_V3_EXPERIMENT_RESULTS.md), gồm cả giới hạn và liên hệ với audit lỗi nhãn.
+
+**Kết quả DPE v2 trên backbone ERM* đã xác minh:** D5 đạt **96,076% test accuracy**, tăng **0,368 điểm %** so
 với uniform cùng heads; WGA giảm **2,418 điểm %** xuống **90,343%**. D5 là
 winner chọn trên validation của nghiên cứu v2. Xem
 [báo cáo chi tiết D5](results/dpe/discrete_weighting_v2_20261114/README.md)

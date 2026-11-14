@@ -1,0 +1,10 @@
+{
+  "updates": 14800,
+  "best_val_wga": 0.8270676732063293,
+  "best_position": {
+    "epoch": 267
+  },
+  "selected_checkpoint": "ckpt_last.pt",
+  "last_checkpoint": "ckpt_last.pt",
+  "best_checkpoint": "ckpt_best_wga.pt"
+}

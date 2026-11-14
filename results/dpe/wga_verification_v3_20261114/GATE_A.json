@@ -1,0 +1,14 @@
+{
+  "flips": {
+    "broken": 16,
+    "corrected": 32,
+    "flips": 48
+  },
+  "mean_delta_AA_pp": 0.44481512371420395,
+  "mean_delta_WGA_pp": 1.7898824314003876,
+  "reasons": [
+    "Required original analysis/reproduction source unavailable: DPE_WGA_Deep_Analysis.md, DPE_WGA_Audit_Repro.zip; original script and original SHA manifest cannot be independently executed/compared."
+  ],
+  "source_comparison_completed": false,
+  "status": "FAIL"
+}

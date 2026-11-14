@@ -1,0 +1,13 @@
+{
+  "status": "PREPARED_NOT_TRAINED",
+  "track": "standard_ERM_no_augmentation",
+  "verified_standard_checkpoint_available": false,
+  "previous_D5_results": "Verified ERM* backbone: 400 epochs, augmentation true; exact remote/local SHA-256 match",
+  "required_initialization": "IMAGENET1K_V2",
+  "initialization_cached": false,
+  "torch_cuda_available": false,
+  "epochs": 100,
+  "seed": 0,
+  "checkpoint_selection": "fixed_final_epoch",
+  "provenance_audit": "results/dpe/backbone_provenance_20261114/README.md"
+}

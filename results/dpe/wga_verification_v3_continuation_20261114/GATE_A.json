@@ -1,0 +1,12 @@
+{
+  "independent_epigraph_audit": "18 valid prior tasks retained",
+  "max_source_discrepancy_pp": 0.0,
+  "original_manifest": "Not supplied: explained missing original manifest, receipt hashes recorded; development bundle export manifest verified.",
+  "reasons": [],
+  "source_scripts_executed": [
+    "cv_sensitivity.py",
+    "robust_static.py"
+  ],
+  "status": "PASS",
+  "supersedes": "verification/GATE_A.json (old missing-source decision retained immutably)"
+}

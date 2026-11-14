@@ -1,0 +1,4 @@
+{
+  "reason": "Gate A failed; nested evaluation was not run and production integration is prohibited.",
+  "status": "NOT_RUN_GATE_A_FAIL"
+}

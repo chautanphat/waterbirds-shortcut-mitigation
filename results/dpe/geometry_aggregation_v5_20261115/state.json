@@ -1,0 +1,2039 @@
+{
+  "active_phase": "complete",
+  "active_task": null,
+  "completed": 424,
+  "default_aggregation": "uniform",
+  "done_configs": [
+    "outer:1:1:head09",
+    "outer:2:2:head12",
+    "outer:2:1:head09",
+    "outer:1:1:head14",
+    "outer:2:0:head04",
+    "outer:2:2:head05",
+    "screen:G1_g20:0",
+    "outer:2:1:head01",
+    "outer:1:1:head10",
+    "outer:0:1:aggregate:S2_t0.025",
+    "outer:0:0:head11",
+    "outer:2:2:evaluate:G1_g50",
+    "outer:0:1:evaluate:G1_g50",
+    "outer:2:2:head11",
+    "outer:1:2:head03",
+    "outer:2:0:aggregate:S2_t0.025",
+    "screen:S2_t0.5:1",
+    "outer:2:2:predict",
+    "outer:1:1:aggregate:S2_t0.025",
+    "screen:U0:0",
+    "outer:0:1:head13",
+    "outer:0:1:head14",
+    "screen:E1_g1:0",
+    "screen:S1_t0.5:2",
+    "outer:2:0:head03",
+    "outer:1:1:evaluate:G1_g50",
+    "outer:1:1:head12",
+    "screen:S4_a0.1:1",
+    "outer:1:2:plan",
+    "outer:1:2:head04",
+    "outer:0:1:head01",
+    "outer:2:2:head10",
+    "outer:0:2:head06",
+    "outer:0:0:evaluate:S2_t0.025",
+    "outer:1:2:head00",
+    "outer:2:2:head03",
+    "screen:G1_g5:2",
+    "outer:0:0:head08",
+    "outer:0:0:predict",
+    "outer:0:0:aggregate:S2_t0.025",
+    "outer:2:1:predict",
+    "screen:G2_g0.5:2",
+    "outer:0:1:head02",
+    "outer:1:0:head13",
+    "outer:2:0:head09",
+    "outer:0:1:head08",
+    "outer:1:0:plan",
+    "outer:0:0:head06",
+    "outer:1:2:normalize",
+    "outer:0:1:plan",
+    "screen:S4_a0.25:1",
+    "outer:1:2:head12",
+    "screen:S1_t0.1:1",
+    "outer:1:0:head14",
+    "screen:S3_t0.025:0",
+    "outer:0:0:head04",
+    "outer:1:0:head07",
+    "outer:2:2:head02",
+    "outer:2:1:head13",
+    "outer:0:0:head01",
+    "outer:2:2:aggregate:G1_g50",
+    "outer:0:2:evaluate:S2_t0.025",
+    "outer:1:2:complete",
+    "screen:S2_t0.1:1",
+    "outer:0:1:head06",
+    "outer:1:1:normalize",
+    "screen:S3_t0.5:1",
+    "outer:0:1:evaluate:S2_t0.025",
+    "screen:U0:1",
+    "outer:1:0:evaluate:G1_g50",
+    "screen:E1_g1:2",
+    "outer:0:2:head14",
+    "outer:0:0:head12",
+    "screen:S2_t0.1:2",
+    "outer:2:1:head11",
+    "outer:0:0:evaluate:G1_g50",
+    "screen:S3_t0.1:2",
+    "screen:lock",
+    "outer:2:1:evaluate:G1_g50",
+    "outer:1:0:predict",
+    "outer:0:2:head10",
+    "outer:2:0:head07",
+    "screen:S4_a0.25:0",
+    "outer:0:0:head14",
+    "outer:2:0:head05",
+    "outer:2:0:head11",
+    "outer:0:1:head04",
+    "outer:0:2:normalize",
+    "screen:S3_t0.5:2",
+    "outer:1:2:head10",
+    "outer:1:2:head09",
+    "outer:0:0:aggregate:G1_g50",
+    "outer:0:0:head10",
+    "outer:1:0:head03",
+    "outer:2:1:head04",
+    "screen:S4_a0.5:1",
+    "outer:2:0:normalize",
+    "outer:2:0:head08",
+    "outer:2:2:evaluate:S2_t0.025",
+    "screen:E1_g5:2",
+    "outer:2:2:plan",
+    "screen:G3_m1_DIAGNOSTIC:1",
+    "outer:0:2:head03",
+    "outer:1:0:normalize",
+    "outer:2:1:head07",
+    "outer:2:2:head00",
+    "screen:G1_g50:1",
+    "screen:G3_m10:1",
+    "outer:2:0:head12",
+    "outer:1:0:evaluate:S2_t0.025",
+    "screen:S2_t0.5:0",
+    "screen:E1_g1:1",
+    "pool:G1_g50:1",
+    "outer:2:2:head13",
+    "screen:S1_t0.025:2",
+    "outer:1:1:head06",
+    "outer:2:1:head14",
+    "outer:2:1:head00",
+    "screen:S3_t0.025:2",
+    "screen:G3_m10:2",
+    "outer:2:2:head14",
+    "screen:S1_t0.5:1",
+    "outer:1:1:head00",
+    "outer:1:2:head06",
+    "outer:2:0:aggregate:G1_g50",
+    "outer:1:0:head05",
+    "outer:1:1:head01",
+    "screen:S4_a0.5:0",
+    "outer:1:2:head05",
+    "screen:G2_g0.5:0",
+    "screen:S4_a0.25:2",
+    "outer:1:1:evaluate:S2_t0.025",
+    "outer:2:1:aggregate:G1_g50",
+    "outer:0:0:head13",
+    "screen:G3_m5:1",
+    "outer:0:2:head08",
+    "outer:1:0:head06",
+    "screen:G2_g2:0",
+    "outer:1:2:aggregate:G1_g50",
+    "screen:S2_t0.025:0",
+    "outer:0:0:plan",
+    "screen:G2_g2:1",
+    "outer:2:0:predict",
+    "outer:0:1:predict",
+    "outer:2:0:plan",
+    "screen:G1_g20:1",
+    "outer:2:0:head02",
+    "outer:1:0:head00",
+    "screen:U0:2",
+    "screen:G1_g5:0",
+    "outer:0:1:head12",
+    "outer:2:0:evaluate:G1_g50",
+    "outer:2:0:head00",
+    "outer:0:2:head01",
+    "outer:1:0:head10",
+    "outer:0:2:predict",
+    "outer:1:1:head04",
+    "screen:G3_m1_DIAGNOSTIC:0",
+    "screen:G1_g20:2",
+    "outer:1:0:head01",
+    "outer:0:0:head09",
+    "screen:G1_g50:2",
+    "screen:S3_t0.5:0",
+    "outer:1:1:head11",
+    "outer:2:1:aggregate:S2_t0.025",
+    "screen:E1_g5:1",
+    "outer:1:2:evaluate:S2_t0.025",
+    "outer:0:0:complete",
+    "screen:S4_a0.1:2",
+    "outer:0:0:head07",
+    "outer:2:0:head14",
+    "outer:1:0:head12",
+    "outer:0:1:head09",
+    "outer:0:2:head09",
+    "outer:2:1:normalize",
+    "screen:S1_t0.5:0",
+    "outer:0:2:head07",
+    "outer:0:2:head00",
+    "outer:0:2:head12",
+    "outer:1:0:head04",
+    "screen:E1_g5:0",
+    "outer:2:2:head06",
+    "outer:1:1:head05",
+    "outer:1:1:head03",
+    "pool:G1_g50:0",
+    "screen:G1_g50:0",
+    "outer:0:2:head05",
+    "outer:0:0:head00",
+    "outer:1:2:head02",
+    "screen:S4_a0.1:0",
+    "outer:2:1:head10",
+    "outer:0:2:complete",
+    "outer:0:1:head05",
+    "screen:S2_t0.1:0",
+    "outer:2:2:normalize",
+    "outer:1:2:head07",
+    "pool:S2_t0.025:2",
+    "outer:1:0:aggregate:G1_g50",
+    "pool:S2_t0.025:0",
+    "outer:1:1:plan",
+    "screen:normalize:0",
+    "screen:G3_m3:1",
+    "outer:1:1:predict",
+    "pool:G1_g50:2",
+    "outer:2:1:head06",
+    "outer:2:2:head08",
+    "screen:S3_t0.1:0",
+    "screen:S2_t0.025:1",
+    "outer:2:0:head01",
+    "outer:0:2:aggregate:G1_g50",
+    "outer:1:0:head02",
+    "outer:1:2:head01",
+    "outer:0:2:head02",
+    "screen:normalize:2",
+    "outer:2:2:head04",
+    "outer:1:1:head07",
+    "outer:0:1:aggregate:G1_g50",
+    "screen:S3_t0.1:1",
+    "outer:2:1:head08",
+    "outer:0:0:normalize",
+    "outer:1:0:aggregate:S2_t0.025",
+    "screen:S1_t0.1:2",
+    "outer:2:2:head01",
+    "outer:2:2:aggregate:S2_t0.025",
+    "outer:2:1:complete",
+    "outer:2:0:head10",
+    "outer:1:0:head08",
+    "screen:S2_t0.5:2",
+    "screen:G2_g0.5:1",
+    "screen:S1_t0.025:1",
+    "screen:G2_g1:1",
+    "screen:G2_g1:0",
+    "outer:1:2:head14",
+    "outer:0:1:complete",
+    "outer:0:0:head03",
+    "outer:2:0:evaluate:S2_t0.025",
+    "screen:S2_t0.025:2",
+    "screen:G2_g1:2",
+    "outer:1:0:head11",
+    "outer:1:1:head02",
+    "outer:1:2:head08",
+    "outer:0:1:head07",
+    "outer:2:2:complete",
+    "outer:0:1:head11",
+    "screen:normalize:1",
+    "screen:G1_g5:1",
+    "screen:G3_m5:2",
+    "outer:0:1:head03",
+    "outer:1:0:head09",
+    "outer:2:1:evaluate:S2_t0.025",
+    "outer:0:2:aggregate:S2_t0.025",
+    "outer:0:0:head02",
+    "screen:G3_m10:0",
+    "outer:0:2:plan",
+    "outer:2:1:head02",
+    "screen:G3_m1_DIAGNOSTIC:2",
+    "outer:2:1:head05",
+    "screen:G3_m3:2",
+    "outer:1:2:head11",
+    "outer:2:0:complete",
+    "screen:S3_t0.025:1",
+    "screen:G2_g2:2",
+    "outer:2:1:plan",
+    "outer:1:2:evaluate:G1_g50",
+    "outer:1:1:head13",
+    "outer:2:0:head13",
+    "outer:1:1:aggregate:G1_g50",
+    "screen:S1_t0.025:0",
+    "outer:0:1:head10",
+    "outer:1:2:predict",
+    "outer:0:0:head05",
+    "outer:2:0:head06",
+    "outer:2:1:head12",
+    "screen:S1_t0.1:0",
+    "outer:0:2:evaluate:G1_g50",
+    "outer:0:2:head13",
+    "outer:0:1:normalize",
+    "outer:1:2:aggregate:S2_t0.025",
+    "pool:S2_t0.025:1",
+    "outer:2:1:head03",
+    "outer:2:2:head09",
+    "screen:G3_m5:0",
+    "outer:0:2:head04",
+    "outer:1:1:head08",
+    "outer:2:2:head07",
+    "outer:0:2:head11",
+    "outer:1:2:head13",
+    "screen:report",
+    "outer:0:1:head00",
+    "screen:S4_a0.5:2",
+    "outer:1:1:complete",
+    "outer:1:0:complete",
+    "screen:G3_m3:0"
+  ],
+  "error": null,
+  "full_resume": "PASS",
+  "integration": "COMPLETE_OPT_IN_DISTANCE",
+  "last_completed": "post:package",
+  "manifest_sha256": "1d6e595dac04bb84e2a22b0aa06ad3564fa825718e08b2c99b209b229f476dd1",
+  "mean_delta_AA_pp": 0.11120378092854821,
+  "mean_delta_WGA_pp": 0.5012531328320838,
+  "newly_trained_heads": 135,
+  "next_pending": "None under frozen v5 protocol; preserve all results and use frozen recipe for fresh-cohort confirmation",
+  "package": "DPE_Geometry_v5_results.zip",
+  "promotion": "PASS",
+  "report": "FINAL_REPORT_COMPLETE.md",
+  "research_report": "FINAL_RESEARCH_REPORT.md",
+  "resume_command": ".venv/Scripts/python.exe -m experiments.geometry_aggregation_v5.run --phase all --resume",
+  "status": "COMPLETE",
+  "task_DAG": {
+    "acceptance": [],
+    "audit:export:0:meta_select": [
+      "inputs"
+    ],
+    "audit:export:0:meta_train": [
+      "inputs"
+    ],
+    "audit:export:1:meta_select": [
+      "inputs"
+    ],
+    "audit:export:1:meta_train": [
+      "inputs"
+    ],
+    "audit:export:2:meta_select": [
+      "inputs"
+    ],
+    "audit:export:2:meta_train": [
+      "inputs"
+    ],
+    "audit:plots:0:meta_select": [
+      "audit:export:0:meta_select",
+      "audit:export:0:meta_train"
+    ],
+    "audit:plots:0:meta_train": [
+      "audit:export:0:meta_train"
+    ],
+    "audit:plots:1:meta_select": [
+      "audit:export:1:meta_select",
+      "audit:export:1:meta_train"
+    ],
+    "audit:plots:1:meta_train": [
+      "audit:export:1:meta_train"
+    ],
+    "audit:plots:2:meta_select": [
+      "audit:export:2:meta_select",
+      "audit:export:2:meta_train"
+    ],
+    "audit:plots:2:meta_train": [
+      "audit:export:2:meta_train"
+    ],
+    "audit:rank:0:meta_select:confidence": [
+      "audit:export:0:meta_select"
+    ],
+    "audit:rank:0:meta_select:distance_margin": [
+      "audit:export:0:meta_select"
+    ],
+    "audit:rank:0:meta_select:negative_entropy": [
+      "audit:export:0:meta_select"
+    ],
+    "audit:rank:0:meta_select:negative_min_distance": [
+      "audit:export:0:meta_select"
+    ],
+    "audit:rank:0:meta_train:confidence": [
+      "audit:export:0:meta_train"
+    ],
+    "audit:rank:0:meta_train:distance_margin": [
+      "audit:export:0:meta_train"
+    ],
+    "audit:rank:0:meta_train:negative_entropy": [
+      "audit:export:0:meta_train"
+    ],
+    "audit:rank:0:meta_train:negative_min_distance": [
+      "audit:export:0:meta_train"
+    ],
+    "audit:rank:1:meta_select:confidence": [
+      "audit:export:1:meta_select"
+    ],
+    "audit:rank:1:meta_select:distance_margin": [
+      "audit:export:1:meta_select"
+    ],
+    "audit:rank:1:meta_select:negative_entropy": [
+      "audit:export:1:meta_select"
+    ],
+    "audit:rank:1:meta_select:negative_min_distance": [
+      "audit:export:1:meta_select"
+    ],
+    "audit:rank:1:meta_train:confidence": [
+      "audit:export:1:meta_train"
+    ],
+    "audit:rank:1:meta_train:distance_margin": [
+      "audit:export:1:meta_train"
+    ],
+    "audit:rank:1:meta_train:negative_entropy": [
+      "audit:export:1:meta_train"
+    ],
+    "audit:rank:1:meta_train:negative_min_distance": [
+      "audit:export:1:meta_train"
+    ],
+    "audit:rank:2:meta_select:confidence": [
+      "audit:export:2:meta_select"
+    ],
+    "audit:rank:2:meta_select:distance_margin": [
+      "audit:export:2:meta_select"
+    ],
+    "audit:rank:2:meta_select:negative_entropy": [
+      "audit:export:2:meta_select"
+    ],
+    "audit:rank:2:meta_select:negative_min_distance": [
+      "audit:export:2:meta_select"
+    ],
+    "audit:rank:2:meta_train:confidence": [
+      "audit:export:2:meta_train"
+    ],
+    "audit:rank:2:meta_train:distance_margin": [
+      "audit:export:2:meta_train"
+    ],
+    "audit:rank:2:meta_train:negative_entropy": [
+      "audit:export:2:meta_train"
+    ],
+    "audit:rank:2:meta_train:negative_min_distance": [
+      "audit:export:2:meta_train"
+    ],
+    "audit:report": [
+      "audit:scales:0",
+      "audit:export:0:meta_train",
+      "audit:rank:0:meta_train:negative_min_distance",
+      "audit:rank:0:meta_train:negative_entropy",
+      "audit:rank:0:meta_train:confidence",
+      "audit:rank:0:meta_train:distance_margin",
+      "audit:plots:0:meta_train",
+      "audit:export:0:meta_select",
+      "audit:rank:0:meta_select:negative_min_distance",
+      "audit:rank:0:meta_select:negative_entropy",
+      "audit:rank:0:meta_select:confidence",
+      "audit:rank:0:meta_select:distance_margin",
+      "audit:plots:0:meta_select",
+      "audit:scales:1",
+      "audit:export:1:meta_train",
+      "audit:rank:1:meta_train:negative_min_distance",
+      "audit:rank:1:meta_train:negative_entropy",
+      "audit:rank:1:meta_train:confidence",
+      "audit:rank:1:meta_train:distance_margin",
+      "audit:plots:1:meta_train",
+      "audit:export:1:meta_select",
+      "audit:rank:1:meta_select:negative_min_distance",
+      "audit:rank:1:meta_select:negative_entropy",
+      "audit:rank:1:meta_select:confidence",
+      "audit:rank:1:meta_select:distance_margin",
+      "audit:plots:1:meta_select",
+      "audit:scales:2",
+      "audit:export:2:meta_train",
+      "audit:rank:2:meta_train:negative_min_distance",
+      "audit:rank:2:meta_train:negative_entropy",
+      "audit:rank:2:meta_train:confidence",
+      "audit:rank:2:meta_train:distance_margin",
+      "audit:plots:2:meta_train",
+      "audit:export:2:meta_select",
+      "audit:rank:2:meta_select:negative_min_distance",
+      "audit:rank:2:meta_select:negative_entropy",
+      "audit:rank:2:meta_select:confidence",
+      "audit:rank:2:meta_select:distance_margin",
+      "audit:plots:2:meta_select"
+    ],
+    "audit:scales:0": [
+      "inputs"
+    ],
+    "audit:scales:1": [
+      "inputs"
+    ],
+    "audit:scales:2": [
+      "inputs"
+    ],
+    "diagnostic:screen:E1_g1:0": [
+      "screen:lock",
+      "screen:E1_g1:0"
+    ],
+    "diagnostic:screen:E1_g1:1": [
+      "screen:lock",
+      "screen:E1_g1:1"
+    ],
+    "diagnostic:screen:E1_g1:2": [
+      "screen:lock",
+      "screen:E1_g1:2"
+    ],
+    "diagnostic:screen:E1_g5:0": [
+      "screen:lock",
+      "screen:E1_g5:0"
+    ],
+    "diagnostic:screen:E1_g5:1": [
+      "screen:lock",
+      "screen:E1_g5:1"
+    ],
+    "diagnostic:screen:E1_g5:2": [
+      "screen:lock",
+      "screen:E1_g5:2"
+    ],
+    "diagnostic:screen:G1_g20:0": [
+      "screen:lock",
+      "screen:G1_g20:0"
+    ],
+    "diagnostic:screen:G1_g20:1": [
+      "screen:lock",
+      "screen:G1_g20:1"
+    ],
+    "diagnostic:screen:G1_g20:2": [
+      "screen:lock",
+      "screen:G1_g20:2"
+    ],
+    "diagnostic:screen:G1_g50:0": [
+      "screen:lock",
+      "screen:G1_g50:0"
+    ],
+    "diagnostic:screen:G1_g50:1": [
+      "screen:lock",
+      "screen:G1_g50:1"
+    ],
+    "diagnostic:screen:G1_g50:2": [
+      "screen:lock",
+      "screen:G1_g50:2"
+    ],
+    "diagnostic:screen:G1_g5:0": [
+      "screen:lock",
+      "screen:G1_g5:0"
+    ],
+    "diagnostic:screen:G1_g5:1": [
+      "screen:lock",
+      "screen:G1_g5:1"
+    ],
+    "diagnostic:screen:G1_g5:2": [
+      "screen:lock",
+      "screen:G1_g5:2"
+    ],
+    "diagnostic:screen:G2_g0.5:0": [
+      "screen:lock",
+      "screen:G2_g0.5:0"
+    ],
+    "diagnostic:screen:G2_g0.5:1": [
+      "screen:lock",
+      "screen:G2_g0.5:1"
+    ],
+    "diagnostic:screen:G2_g0.5:2": [
+      "screen:lock",
+      "screen:G2_g0.5:2"
+    ],
+    "diagnostic:screen:G2_g1:0": [
+      "screen:lock",
+      "screen:G2_g1:0"
+    ],
+    "diagnostic:screen:G2_g1:1": [
+      "screen:lock",
+      "screen:G2_g1:1"
+    ],
+    "diagnostic:screen:G2_g1:2": [
+      "screen:lock",
+      "screen:G2_g1:2"
+    ],
+    "diagnostic:screen:G2_g2:0": [
+      "screen:lock",
+      "screen:G2_g2:0"
+    ],
+    "diagnostic:screen:G2_g2:1": [
+      "screen:lock",
+      "screen:G2_g2:1"
+    ],
+    "diagnostic:screen:G2_g2:2": [
+      "screen:lock",
+      "screen:G2_g2:2"
+    ],
+    "diagnostic:screen:G3_m10:0": [
+      "screen:lock",
+      "screen:G3_m10:0"
+    ],
+    "diagnostic:screen:G3_m10:1": [
+      "screen:lock",
+      "screen:G3_m10:1"
+    ],
+    "diagnostic:screen:G3_m10:2": [
+      "screen:lock",
+      "screen:G3_m10:2"
+    ],
+    "diagnostic:screen:G3_m1_DIAGNOSTIC:0": [
+      "screen:lock",
+      "screen:G3_m1_DIAGNOSTIC:0"
+    ],
+    "diagnostic:screen:G3_m1_DIAGNOSTIC:1": [
+      "screen:lock",
+      "screen:G3_m1_DIAGNOSTIC:1"
+    ],
+    "diagnostic:screen:G3_m1_DIAGNOSTIC:2": [
+      "screen:lock",
+      "screen:G3_m1_DIAGNOSTIC:2"
+    ],
+    "diagnostic:screen:G3_m3:0": [
+      "screen:lock",
+      "screen:G3_m3:0"
+    ],
+    "diagnostic:screen:G3_m3:1": [
+      "screen:lock",
+      "screen:G3_m3:1"
+    ],
+    "diagnostic:screen:G3_m3:2": [
+      "screen:lock",
+      "screen:G3_m3:2"
+    ],
+    "diagnostic:screen:G3_m5:0": [
+      "screen:lock",
+      "screen:G3_m5:0"
+    ],
+    "diagnostic:screen:G3_m5:1": [
+      "screen:lock",
+      "screen:G3_m5:1"
+    ],
+    "diagnostic:screen:G3_m5:2": [
+      "screen:lock",
+      "screen:G3_m5:2"
+    ],
+    "diagnostic:screen:S1_t0.025:0": [
+      "screen:lock",
+      "screen:S1_t0.025:0"
+    ],
+    "diagnostic:screen:S1_t0.025:1": [
+      "screen:lock",
+      "screen:S1_t0.025:1"
+    ],
+    "diagnostic:screen:S1_t0.025:2": [
+      "screen:lock",
+      "screen:S1_t0.025:2"
+    ],
+    "diagnostic:screen:S1_t0.1:0": [
+      "screen:lock",
+      "screen:S1_t0.1:0"
+    ],
+    "diagnostic:screen:S1_t0.1:1": [
+      "screen:lock",
+      "screen:S1_t0.1:1"
+    ],
+    "diagnostic:screen:S1_t0.1:2": [
+      "screen:lock",
+      "screen:S1_t0.1:2"
+    ],
+    "diagnostic:screen:S1_t0.5:0": [
+      "screen:lock",
+      "screen:S1_t0.5:0"
+    ],
+    "diagnostic:screen:S1_t0.5:1": [
+      "screen:lock",
+      "screen:S1_t0.5:1"
+    ],
+    "diagnostic:screen:S1_t0.5:2": [
+      "screen:lock",
+      "screen:S1_t0.5:2"
+    ],
+    "diagnostic:screen:S2_t0.025:0": [
+      "screen:lock",
+      "screen:S2_t0.025:0"
+    ],
+    "diagnostic:screen:S2_t0.025:1": [
+      "screen:lock",
+      "screen:S2_t0.025:1"
+    ],
+    "diagnostic:screen:S2_t0.025:2": [
+      "screen:lock",
+      "screen:S2_t0.025:2"
+    ],
+    "diagnostic:screen:S2_t0.1:0": [
+      "screen:lock",
+      "screen:S2_t0.1:0"
+    ],
+    "diagnostic:screen:S2_t0.1:1": [
+      "screen:lock",
+      "screen:S2_t0.1:1"
+    ],
+    "diagnostic:screen:S2_t0.1:2": [
+      "screen:lock",
+      "screen:S2_t0.1:2"
+    ],
+    "diagnostic:screen:S2_t0.5:0": [
+      "screen:lock",
+      "screen:S2_t0.5:0"
+    ],
+    "diagnostic:screen:S2_t0.5:1": [
+      "screen:lock",
+      "screen:S2_t0.5:1"
+    ],
+    "diagnostic:screen:S2_t0.5:2": [
+      "screen:lock",
+      "screen:S2_t0.5:2"
+    ],
+    "diagnostic:screen:S3_t0.025:0": [
+      "screen:lock",
+      "screen:S3_t0.025:0"
+    ],
+    "diagnostic:screen:S3_t0.025:1": [
+      "screen:lock",
+      "screen:S3_t0.025:1"
+    ],
+    "diagnostic:screen:S3_t0.025:2": [
+      "screen:lock",
+      "screen:S3_t0.025:2"
+    ],
+    "diagnostic:screen:S3_t0.1:0": [
+      "screen:lock",
+      "screen:S3_t0.1:0"
+    ],
+    "diagnostic:screen:S3_t0.1:1": [
+      "screen:lock",
+      "screen:S3_t0.1:1"
+    ],
+    "diagnostic:screen:S3_t0.1:2": [
+      "screen:lock",
+      "screen:S3_t0.1:2"
+    ],
+    "diagnostic:screen:S3_t0.5:0": [
+      "screen:lock",
+      "screen:S3_t0.5:0"
+    ],
+    "diagnostic:screen:S3_t0.5:1": [
+      "screen:lock",
+      "screen:S3_t0.5:1"
+    ],
+    "diagnostic:screen:S3_t0.5:2": [
+      "screen:lock",
+      "screen:S3_t0.5:2"
+    ],
+    "diagnostic:screen:S4_a0.1:0": [
+      "screen:lock",
+      "screen:S4_a0.1:0"
+    ],
+    "diagnostic:screen:S4_a0.1:1": [
+      "screen:lock",
+      "screen:S4_a0.1:1"
+    ],
+    "diagnostic:screen:S4_a0.1:2": [
+      "screen:lock",
+      "screen:S4_a0.1:2"
+    ],
+    "diagnostic:screen:S4_a0.25:0": [
+      "screen:lock",
+      "screen:S4_a0.25:0"
+    ],
+    "diagnostic:screen:S4_a0.25:1": [
+      "screen:lock",
+      "screen:S4_a0.25:1"
+    ],
+    "diagnostic:screen:S4_a0.25:2": [
+      "screen:lock",
+      "screen:S4_a0.25:2"
+    ],
+    "diagnostic:screen:S4_a0.5:0": [
+      "screen:lock",
+      "screen:S4_a0.5:0"
+    ],
+    "diagnostic:screen:S4_a0.5:1": [
+      "screen:lock",
+      "screen:S4_a0.5:1"
+    ],
+    "diagnostic:screen:S4_a0.5:2": [
+      "screen:lock",
+      "screen:S4_a0.5:2"
+    ],
+    "diagnostic:screen:U0:0": [
+      "screen:lock",
+      "screen:U0:0"
+    ],
+    "diagnostic:screen:U0:1": [
+      "screen:lock",
+      "screen:U0:1"
+    ],
+    "diagnostic:screen:U0:2": [
+      "screen:lock",
+      "screen:U0:2"
+    ],
+    "final:report": [
+      "nested:gate"
+    ],
+    "inputs": [
+      "acceptance"
+    ],
+    "nested:gate": [
+      "pool:G1_g50:0",
+      "pool:G1_g50:1",
+      "pool:G1_g50:2",
+      "pool:S2_t0.025:0",
+      "pool:S2_t0.025:1",
+      "pool:S2_t0.025:2"
+    ],
+    "outer:0:0:aggregate:G1_g50": [
+      "outer:0:0:normalize",
+      "screen:lock"
+    ],
+    "outer:0:0:aggregate:S2_t0.025": [
+      "outer:0:0:normalize",
+      "screen:lock"
+    ],
+    "outer:0:0:complete": [
+      "outer:0:0:evaluate:G1_g50",
+      "outer:0:0:evaluate:S2_t0.025"
+    ],
+    "outer:0:0:evaluate:G1_g50": [
+      "outer:0:0:aggregate:G1_g50"
+    ],
+    "outer:0:0:evaluate:S2_t0.025": [
+      "outer:0:0:aggregate:S2_t0.025"
+    ],
+    "outer:0:0:head00": [
+      "outer:0:0:plan",
+      "acceptance"
+    ],
+    "outer:0:0:head01": [
+      "outer:0:0:head00"
+    ],
+    "outer:0:0:head02": [
+      "outer:0:0:head01"
+    ],
+    "outer:0:0:head03": [
+      "outer:0:0:head02"
+    ],
+    "outer:0:0:head04": [
+      "outer:0:0:head03"
+    ],
+    "outer:0:0:head05": [
+      "outer:0:0:head04"
+    ],
+    "outer:0:0:head06": [
+      "outer:0:0:head05"
+    ],
+    "outer:0:0:head07": [
+      "outer:0:0:head06"
+    ],
+    "outer:0:0:head08": [
+      "outer:0:0:head07"
+    ],
+    "outer:0:0:head09": [
+      "outer:0:0:head08"
+    ],
+    "outer:0:0:head10": [
+      "outer:0:0:head09"
+    ],
+    "outer:0:0:head11": [
+      "outer:0:0:head10"
+    ],
+    "outer:0:0:head12": [
+      "outer:0:0:head11"
+    ],
+    "outer:0:0:head13": [
+      "outer:0:0:head12"
+    ],
+    "outer:0:0:head14": [
+      "outer:0:0:head13"
+    ],
+    "outer:0:0:normalize": [
+      "outer:0:0:predict"
+    ],
+    "outer:0:0:plan": [
+      "screen:report"
+    ],
+    "outer:0:0:predict": [
+      "outer:0:0:head00",
+      "outer:0:0:head01",
+      "outer:0:0:head02",
+      "outer:0:0:head03",
+      "outer:0:0:head04",
+      "outer:0:0:head05",
+      "outer:0:0:head06",
+      "outer:0:0:head07",
+      "outer:0:0:head08",
+      "outer:0:0:head09",
+      "outer:0:0:head10",
+      "outer:0:0:head11",
+      "outer:0:0:head12",
+      "outer:0:0:head13",
+      "outer:0:0:head14"
+    ],
+    "outer:0:1:aggregate:G1_g50": [
+      "outer:0:1:normalize",
+      "screen:lock"
+    ],
+    "outer:0:1:aggregate:S2_t0.025": [
+      "outer:0:1:normalize",
+      "screen:lock"
+    ],
+    "outer:0:1:complete": [
+      "outer:0:1:evaluate:G1_g50",
+      "outer:0:1:evaluate:S2_t0.025"
+    ],
+    "outer:0:1:evaluate:G1_g50": [
+      "outer:0:1:aggregate:G1_g50"
+    ],
+    "outer:0:1:evaluate:S2_t0.025": [
+      "outer:0:1:aggregate:S2_t0.025"
+    ],
+    "outer:0:1:head00": [
+      "outer:0:1:plan",
+      "acceptance"
+    ],
+    "outer:0:1:head01": [
+      "outer:0:1:head00"
+    ],
+    "outer:0:1:head02": [
+      "outer:0:1:head01"
+    ],
+    "outer:0:1:head03": [
+      "outer:0:1:head02"
+    ],
+    "outer:0:1:head04": [
+      "outer:0:1:head03"
+    ],
+    "outer:0:1:head05": [
+      "outer:0:1:head04"
+    ],
+    "outer:0:1:head06": [
+      "outer:0:1:head05"
+    ],
+    "outer:0:1:head07": [
+      "outer:0:1:head06"
+    ],
+    "outer:0:1:head08": [
+      "outer:0:1:head07"
+    ],
+    "outer:0:1:head09": [
+      "outer:0:1:head08"
+    ],
+    "outer:0:1:head10": [
+      "outer:0:1:head09"
+    ],
+    "outer:0:1:head11": [
+      "outer:0:1:head10"
+    ],
+    "outer:0:1:head12": [
+      "outer:0:1:head11"
+    ],
+    "outer:0:1:head13": [
+      "outer:0:1:head12"
+    ],
+    "outer:0:1:head14": [
+      "outer:0:1:head13"
+    ],
+    "outer:0:1:normalize": [
+      "outer:0:1:predict"
+    ],
+    "outer:0:1:plan": [
+      "screen:report"
+    ],
+    "outer:0:1:predict": [
+      "outer:0:1:head00",
+      "outer:0:1:head01",
+      "outer:0:1:head02",
+      "outer:0:1:head03",
+      "outer:0:1:head04",
+      "outer:0:1:head05",
+      "outer:0:1:head06",
+      "outer:0:1:head07",
+      "outer:0:1:head08",
+      "outer:0:1:head09",
+      "outer:0:1:head10",
+      "outer:0:1:head11",
+      "outer:0:1:head12",
+      "outer:0:1:head13",
+      "outer:0:1:head14"
+    ],
+    "outer:0:2:aggregate:G1_g50": [
+      "outer:0:2:normalize",
+      "screen:lock"
+    ],
+    "outer:0:2:aggregate:S2_t0.025": [
+      "outer:0:2:normalize",
+      "screen:lock"
+    ],
+    "outer:0:2:complete": [
+      "outer:0:2:evaluate:G1_g50",
+      "outer:0:2:evaluate:S2_t0.025"
+    ],
+    "outer:0:2:evaluate:G1_g50": [
+      "outer:0:2:aggregate:G1_g50"
+    ],
+    "outer:0:2:evaluate:S2_t0.025": [
+      "outer:0:2:aggregate:S2_t0.025"
+    ],
+    "outer:0:2:head00": [
+      "outer:0:2:plan",
+      "acceptance"
+    ],
+    "outer:0:2:head01": [
+      "outer:0:2:head00"
+    ],
+    "outer:0:2:head02": [
+      "outer:0:2:head01"
+    ],
+    "outer:0:2:head03": [
+      "outer:0:2:head02"
+    ],
+    "outer:0:2:head04": [
+      "outer:0:2:head03"
+    ],
+    "outer:0:2:head05": [
+      "outer:0:2:head04"
+    ],
+    "outer:0:2:head06": [
+      "outer:0:2:head05"
+    ],
+    "outer:0:2:head07": [
+      "outer:0:2:head06"
+    ],
+    "outer:0:2:head08": [
+      "outer:0:2:head07"
+    ],
+    "outer:0:2:head09": [
+      "outer:0:2:head08"
+    ],
+    "outer:0:2:head10": [
+      "outer:0:2:head09"
+    ],
+    "outer:0:2:head11": [
+      "outer:0:2:head10"
+    ],
+    "outer:0:2:head12": [
+      "outer:0:2:head11"
+    ],
+    "outer:0:2:head13": [
+      "outer:0:2:head12"
+    ],
+    "outer:0:2:head14": [
+      "outer:0:2:head13"
+    ],
+    "outer:0:2:normalize": [
+      "outer:0:2:predict"
+    ],
+    "outer:0:2:plan": [
+      "screen:report"
+    ],
+    "outer:0:2:predict": [
+      "outer:0:2:head00",
+      "outer:0:2:head01",
+      "outer:0:2:head02",
+      "outer:0:2:head03",
+      "outer:0:2:head04",
+      "outer:0:2:head05",
+      "outer:0:2:head06",
+      "outer:0:2:head07",
+      "outer:0:2:head08",
+      "outer:0:2:head09",
+      "outer:0:2:head10",
+      "outer:0:2:head11",
+      "outer:0:2:head12",
+      "outer:0:2:head13",
+      "outer:0:2:head14"
+    ],
+    "outer:1:0:aggregate:G1_g50": [
+      "outer:1:0:normalize",
+      "screen:lock"
+    ],
+    "outer:1:0:aggregate:S2_t0.025": [
+      "outer:1:0:normalize",
+      "screen:lock"
+    ],
+    "outer:1:0:complete": [
+      "outer:1:0:evaluate:G1_g50",
+      "outer:1:0:evaluate:S2_t0.025"
+    ],
+    "outer:1:0:evaluate:G1_g50": [
+      "outer:1:0:aggregate:G1_g50"
+    ],
+    "outer:1:0:evaluate:S2_t0.025": [
+      "outer:1:0:aggregate:S2_t0.025"
+    ],
+    "outer:1:0:head00": [
+      "outer:1:0:plan",
+      "acceptance"
+    ],
+    "outer:1:0:head01": [
+      "outer:1:0:head00"
+    ],
+    "outer:1:0:head02": [
+      "outer:1:0:head01"
+    ],
+    "outer:1:0:head03": [
+      "outer:1:0:head02"
+    ],
+    "outer:1:0:head04": [
+      "outer:1:0:head03"
+    ],
+    "outer:1:0:head05": [
+      "outer:1:0:head04"
+    ],
+    "outer:1:0:head06": [
+      "outer:1:0:head05"
+    ],
+    "outer:1:0:head07": [
+      "outer:1:0:head06"
+    ],
+    "outer:1:0:head08": [
+      "outer:1:0:head07"
+    ],
+    "outer:1:0:head09": [
+      "outer:1:0:head08"
+    ],
+    "outer:1:0:head10": [
+      "outer:1:0:head09"
+    ],
+    "outer:1:0:head11": [
+      "outer:1:0:head10"
+    ],
+    "outer:1:0:head12": [
+      "outer:1:0:head11"
+    ],
+    "outer:1:0:head13": [
+      "outer:1:0:head12"
+    ],
+    "outer:1:0:head14": [
+      "outer:1:0:head13"
+    ],
+    "outer:1:0:normalize": [
+      "outer:1:0:predict"
+    ],
+    "outer:1:0:plan": [
+      "screen:report"
+    ],
+    "outer:1:0:predict": [
+      "outer:1:0:head00",
+      "outer:1:0:head01",
+      "outer:1:0:head02",
+      "outer:1:0:head03",
+      "outer:1:0:head04",
+      "outer:1:0:head05",
+      "outer:1:0:head06",
+      "outer:1:0:head07",
+      "outer:1:0:head08",
+      "outer:1:0:head09",
+      "outer:1:0:head10",
+      "outer:1:0:head11",
+      "outer:1:0:head12",
+      "outer:1:0:head13",
+      "outer:1:0:head14"
+    ],
+    "outer:1:1:aggregate:G1_g50": [
+      "outer:1:1:normalize",
+      "screen:lock"
+    ],
+    "outer:1:1:aggregate:S2_t0.025": [
+      "outer:1:1:normalize",
+      "screen:lock"
+    ],
+    "outer:1:1:complete": [
+      "outer:1:1:evaluate:G1_g50",
+      "outer:1:1:evaluate:S2_t0.025"
+    ],
+    "outer:1:1:evaluate:G1_g50": [
+      "outer:1:1:aggregate:G1_g50"
+    ],
+    "outer:1:1:evaluate:S2_t0.025": [
+      "outer:1:1:aggregate:S2_t0.025"
+    ],
+    "outer:1:1:head00": [
+      "outer:1:1:plan",
+      "acceptance"
+    ],
+    "outer:1:1:head01": [
+      "outer:1:1:head00"
+    ],
+    "outer:1:1:head02": [
+      "outer:1:1:head01"
+    ],
+    "outer:1:1:head03": [
+      "outer:1:1:head02"
+    ],
+    "outer:1:1:head04": [
+      "outer:1:1:head03"
+    ],
+    "outer:1:1:head05": [
+      "outer:1:1:head04"
+    ],
+    "outer:1:1:head06": [
+      "outer:1:1:head05"
+    ],
+    "outer:1:1:head07": [
+      "outer:1:1:head06"
+    ],
+    "outer:1:1:head08": [
+      "outer:1:1:head07"
+    ],
+    "outer:1:1:head09": [
+      "outer:1:1:head08"
+    ],
+    "outer:1:1:head10": [
+      "outer:1:1:head09"
+    ],
+    "outer:1:1:head11": [
+      "outer:1:1:head10"
+    ],
+    "outer:1:1:head12": [
+      "outer:1:1:head11"
+    ],
+    "outer:1:1:head13": [
+      "outer:1:1:head12"
+    ],
+    "outer:1:1:head14": [
+      "outer:1:1:head13"
+    ],
+    "outer:1:1:normalize": [
+      "outer:1:1:predict"
+    ],
+    "outer:1:1:plan": [
+      "screen:report"
+    ],
+    "outer:1:1:predict": [
+      "outer:1:1:head00",
+      "outer:1:1:head01",
+      "outer:1:1:head02",
+      "outer:1:1:head03",
+      "outer:1:1:head04",
+      "outer:1:1:head05",
+      "outer:1:1:head06",
+      "outer:1:1:head07",
+      "outer:1:1:head08",
+      "outer:1:1:head09",
+      "outer:1:1:head10",
+      "outer:1:1:head11",
+      "outer:1:1:head12",
+      "outer:1:1:head13",
+      "outer:1:1:head14"
+    ],
+    "outer:1:2:aggregate:G1_g50": [
+      "outer:1:2:normalize",
+      "screen:lock"
+    ],
+    "outer:1:2:aggregate:S2_t0.025": [
+      "outer:1:2:normalize",
+      "screen:lock"
+    ],
+    "outer:1:2:complete": [
+      "outer:1:2:evaluate:G1_g50",
+      "outer:1:2:evaluate:S2_t0.025"
+    ],
+    "outer:1:2:evaluate:G1_g50": [
+      "outer:1:2:aggregate:G1_g50"
+    ],
+    "outer:1:2:evaluate:S2_t0.025": [
+      "outer:1:2:aggregate:S2_t0.025"
+    ],
+    "outer:1:2:head00": [
+      "outer:1:2:plan",
+      "acceptance"
+    ],
+    "outer:1:2:head01": [
+      "outer:1:2:head00"
+    ],
+    "outer:1:2:head02": [
+      "outer:1:2:head01"
+    ],
+    "outer:1:2:head03": [
+      "outer:1:2:head02"
+    ],
+    "outer:1:2:head04": [
+      "outer:1:2:head03"
+    ],
+    "outer:1:2:head05": [
+      "outer:1:2:head04"
+    ],
+    "outer:1:2:head06": [
+      "outer:1:2:head05"
+    ],
+    "outer:1:2:head07": [
+      "outer:1:2:head06"
+    ],
+    "outer:1:2:head08": [
+      "outer:1:2:head07"
+    ],
+    "outer:1:2:head09": [
+      "outer:1:2:head08"
+    ],
+    "outer:1:2:head10": [
+      "outer:1:2:head09"
+    ],
+    "outer:1:2:head11": [
+      "outer:1:2:head10"
+    ],
+    "outer:1:2:head12": [
+      "outer:1:2:head11"
+    ],
+    "outer:1:2:head13": [
+      "outer:1:2:head12"
+    ],
+    "outer:1:2:head14": [
+      "outer:1:2:head13"
+    ],
+    "outer:1:2:normalize": [
+      "outer:1:2:predict"
+    ],
+    "outer:1:2:plan": [
+      "screen:report"
+    ],
+    "outer:1:2:predict": [
+      "outer:1:2:head00",
+      "outer:1:2:head01",
+      "outer:1:2:head02",
+      "outer:1:2:head03",
+      "outer:1:2:head04",
+      "outer:1:2:head05",
+      "outer:1:2:head06",
+      "outer:1:2:head07",
+      "outer:1:2:head08",
+      "outer:1:2:head09",
+      "outer:1:2:head10",
+      "outer:1:2:head11",
+      "outer:1:2:head12",
+      "outer:1:2:head13",
+      "outer:1:2:head14"
+    ],
+    "outer:2:0:aggregate:G1_g50": [
+      "outer:2:0:normalize",
+      "screen:lock"
+    ],
+    "outer:2:0:aggregate:S2_t0.025": [
+      "outer:2:0:normalize",
+      "screen:lock"
+    ],
+    "outer:2:0:complete": [
+      "outer:2:0:evaluate:G1_g50",
+      "outer:2:0:evaluate:S2_t0.025"
+    ],
+    "outer:2:0:evaluate:G1_g50": [
+      "outer:2:0:aggregate:G1_g50"
+    ],
+    "outer:2:0:evaluate:S2_t0.025": [
+      "outer:2:0:aggregate:S2_t0.025"
+    ],
+    "outer:2:0:head00": [
+      "outer:2:0:plan",
+      "acceptance"
+    ],
+    "outer:2:0:head01": [
+      "outer:2:0:head00"
+    ],
+    "outer:2:0:head02": [
+      "outer:2:0:head01"
+    ],
+    "outer:2:0:head03": [
+      "outer:2:0:head02"
+    ],
+    "outer:2:0:head04": [
+      "outer:2:0:head03"
+    ],
+    "outer:2:0:head05": [
+      "outer:2:0:head04"
+    ],
+    "outer:2:0:head06": [
+      "outer:2:0:head05"
+    ],
+    "outer:2:0:head07": [
+      "outer:2:0:head06"
+    ],
+    "outer:2:0:head08": [
+      "outer:2:0:head07"
+    ],
+    "outer:2:0:head09": [
+      "outer:2:0:head08"
+    ],
+    "outer:2:0:head10": [
+      "outer:2:0:head09"
+    ],
+    "outer:2:0:head11": [
+      "outer:2:0:head10"
+    ],
+    "outer:2:0:head12": [
+      "outer:2:0:head11"
+    ],
+    "outer:2:0:head13": [
+      "outer:2:0:head12"
+    ],
+    "outer:2:0:head14": [
+      "outer:2:0:head13"
+    ],
+    "outer:2:0:normalize": [
+      "outer:2:0:predict"
+    ],
+    "outer:2:0:plan": [
+      "screen:report"
+    ],
+    "outer:2:0:predict": [
+      "outer:2:0:head00",
+      "outer:2:0:head01",
+      "outer:2:0:head02",
+      "outer:2:0:head03",
+      "outer:2:0:head04",
+      "outer:2:0:head05",
+      "outer:2:0:head06",
+      "outer:2:0:head07",
+      "outer:2:0:head08",
+      "outer:2:0:head09",
+      "outer:2:0:head10",
+      "outer:2:0:head11",
+      "outer:2:0:head12",
+      "outer:2:0:head13",
+      "outer:2:0:head14"
+    ],
+    "outer:2:1:aggregate:G1_g50": [
+      "outer:2:1:normalize",
+      "screen:lock"
+    ],
+    "outer:2:1:aggregate:S2_t0.025": [
+      "outer:2:1:normalize",
+      "screen:lock"
+    ],
+    "outer:2:1:complete": [
+      "outer:2:1:evaluate:G1_g50",
+      "outer:2:1:evaluate:S2_t0.025"
+    ],
+    "outer:2:1:evaluate:G1_g50": [
+      "outer:2:1:aggregate:G1_g50"
+    ],
+    "outer:2:1:evaluate:S2_t0.025": [
+      "outer:2:1:aggregate:S2_t0.025"
+    ],
+    "outer:2:1:head00": [
+      "outer:2:1:plan",
+      "acceptance"
+    ],
+    "outer:2:1:head01": [
+      "outer:2:1:head00"
+    ],
+    "outer:2:1:head02": [
+      "outer:2:1:head01"
+    ],
+    "outer:2:1:head03": [
+      "outer:2:1:head02"
+    ],
+    "outer:2:1:head04": [
+      "outer:2:1:head03"
+    ],
+    "outer:2:1:head05": [
+      "outer:2:1:head04"
+    ],
+    "outer:2:1:head06": [
+      "outer:2:1:head05"
+    ],
+    "outer:2:1:head07": [
+      "outer:2:1:head06"
+    ],
+    "outer:2:1:head08": [
+      "outer:2:1:head07"
+    ],
+    "outer:2:1:head09": [
+      "outer:2:1:head08"
+    ],
+    "outer:2:1:head10": [
+      "outer:2:1:head09"
+    ],
+    "outer:2:1:head11": [
+      "outer:2:1:head10"
+    ],
+    "outer:2:1:head12": [
+      "outer:2:1:head11"
+    ],
+    "outer:2:1:head13": [
+      "outer:2:1:head12"
+    ],
+    "outer:2:1:head14": [
+      "outer:2:1:head13"
+    ],
+    "outer:2:1:normalize": [
+      "outer:2:1:predict"
+    ],
+    "outer:2:1:plan": [
+      "screen:report"
+    ],
+    "outer:2:1:predict": [
+      "outer:2:1:head00",
+      "outer:2:1:head01",
+      "outer:2:1:head02",
+      "outer:2:1:head03",
+      "outer:2:1:head04",
+      "outer:2:1:head05",
+      "outer:2:1:head06",
+      "outer:2:1:head07",
+      "outer:2:1:head08",
+      "outer:2:1:head09",
+      "outer:2:1:head10",
+      "outer:2:1:head11",
+      "outer:2:1:head12",
+      "outer:2:1:head13",
+      "outer:2:1:head14"
+    ],
+    "outer:2:2:aggregate:G1_g50": [
+      "outer:2:2:normalize",
+      "screen:lock"
+    ],
+    "outer:2:2:aggregate:S2_t0.025": [
+      "outer:2:2:normalize",
+      "screen:lock"
+    ],
+    "outer:2:2:complete": [
+      "outer:2:2:evaluate:G1_g50",
+      "outer:2:2:evaluate:S2_t0.025"
+    ],
+    "outer:2:2:evaluate:G1_g50": [
+      "outer:2:2:aggregate:G1_g50"
+    ],
+    "outer:2:2:evaluate:S2_t0.025": [
+      "outer:2:2:aggregate:S2_t0.025"
+    ],
+    "outer:2:2:head00": [
+      "outer:2:2:plan",
+      "acceptance"
+    ],
+    "outer:2:2:head01": [
+      "outer:2:2:head00"
+    ],
+    "outer:2:2:head02": [
+      "outer:2:2:head01"
+    ],
+    "outer:2:2:head03": [
+      "outer:2:2:head02"
+    ],
+    "outer:2:2:head04": [
+      "outer:2:2:head03"
+    ],
+    "outer:2:2:head05": [
+      "outer:2:2:head04"
+    ],
+    "outer:2:2:head06": [
+      "outer:2:2:head05"
+    ],
+    "outer:2:2:head07": [
+      "outer:2:2:head06"
+    ],
+    "outer:2:2:head08": [
+      "outer:2:2:head07"
+    ],
+    "outer:2:2:head09": [
+      "outer:2:2:head08"
+    ],
+    "outer:2:2:head10": [
+      "outer:2:2:head09"
+    ],
+    "outer:2:2:head11": [
+      "outer:2:2:head10"
+    ],
+    "outer:2:2:head12": [
+      "outer:2:2:head11"
+    ],
+    "outer:2:2:head13": [
+      "outer:2:2:head12"
+    ],
+    "outer:2:2:head14": [
+      "outer:2:2:head13"
+    ],
+    "outer:2:2:normalize": [
+      "outer:2:2:predict"
+    ],
+    "outer:2:2:plan": [
+      "screen:report"
+    ],
+    "outer:2:2:predict": [
+      "outer:2:2:head00",
+      "outer:2:2:head01",
+      "outer:2:2:head02",
+      "outer:2:2:head03",
+      "outer:2:2:head04",
+      "outer:2:2:head05",
+      "outer:2:2:head06",
+      "outer:2:2:head07",
+      "outer:2:2:head08",
+      "outer:2:2:head09",
+      "outer:2:2:head10",
+      "outer:2:2:head11",
+      "outer:2:2:head12",
+      "outer:2:2:head13",
+      "outer:2:2:head14"
+    ],
+    "pool:G1_g50:0": [
+      "outer:0:0:complete",
+      "outer:0:1:complete",
+      "outer:0:2:complete"
+    ],
+    "pool:G1_g50:1": [
+      "outer:1:0:complete",
+      "outer:1:1:complete",
+      "outer:1:2:complete"
+    ],
+    "pool:G1_g50:2": [
+      "outer:2:0:complete",
+      "outer:2:1:complete",
+      "outer:2:2:complete"
+    ],
+    "pool:S2_t0.025:0": [
+      "outer:0:0:complete",
+      "outer:0:1:complete",
+      "outer:0:2:complete"
+    ],
+    "pool:S2_t0.025:1": [
+      "outer:1:0:complete",
+      "outer:1:1:complete",
+      "outer:1:2:complete"
+    ],
+    "pool:S2_t0.025:2": [
+      "outer:2:0:complete",
+      "outer:2:1:complete",
+      "outer:2:2:complete"
+    ],
+    "post:full_resume": [
+      "production:report"
+    ],
+    "post:heatmaps:0:meta_select": [
+      "post:full_resume"
+    ],
+    "post:heatmaps:0:meta_train": [
+      "post:full_resume"
+    ],
+    "post:heatmaps:1:meta_select": [
+      "post:full_resume"
+    ],
+    "post:heatmaps:1:meta_train": [
+      "post:full_resume"
+    ],
+    "post:heatmaps:2:meta_select": [
+      "post:full_resume"
+    ],
+    "post:heatmaps:2:meta_train": [
+      "post:full_resume"
+    ],
+    "post:package": [
+      "post:report"
+    ],
+    "post:report": [
+      "post:summary_figures",
+      "post:heatmaps:0:meta_train",
+      "post:heatmaps:0:meta_select",
+      "post:heatmaps:1:meta_train",
+      "post:heatmaps:1:meta_select",
+      "post:heatmaps:2:meta_train",
+      "post:heatmaps:2:meta_select"
+    ],
+    "post:summary_figures": [
+      "post:full_resume"
+    ],
+    "production:acceptance": [
+      "final:report"
+    ],
+    "production:report": [
+      "production:acceptance"
+    ],
+    "screen:E1_g1:0": [
+      "screen:normalize:0"
+    ],
+    "screen:E1_g1:1": [
+      "screen:normalize:1"
+    ],
+    "screen:E1_g1:2": [
+      "screen:normalize:2"
+    ],
+    "screen:E1_g5:0": [
+      "screen:normalize:0"
+    ],
+    "screen:E1_g5:1": [
+      "screen:normalize:1"
+    ],
+    "screen:E1_g5:2": [
+      "screen:normalize:2"
+    ],
+    "screen:G1_g20:0": [
+      "screen:normalize:0"
+    ],
+    "screen:G1_g20:1": [
+      "screen:normalize:1"
+    ],
+    "screen:G1_g20:2": [
+      "screen:normalize:2"
+    ],
+    "screen:G1_g50:0": [
+      "screen:normalize:0"
+    ],
+    "screen:G1_g50:1": [
+      "screen:normalize:1"
+    ],
+    "screen:G1_g50:2": [
+      "screen:normalize:2"
+    ],
+    "screen:G1_g5:0": [
+      "screen:normalize:0"
+    ],
+    "screen:G1_g5:1": [
+      "screen:normalize:1"
+    ],
+    "screen:G1_g5:2": [
+      "screen:normalize:2"
+    ],
+    "screen:G2_g0.5:0": [
+      "screen:normalize:0"
+    ],
+    "screen:G2_g0.5:1": [
+      "screen:normalize:1"
+    ],
+    "screen:G2_g0.5:2": [
+      "screen:normalize:2"
+    ],
+    "screen:G2_g1:0": [
+      "screen:normalize:0"
+    ],
+    "screen:G2_g1:1": [
+      "screen:normalize:1"
+    ],
+    "screen:G2_g1:2": [
+      "screen:normalize:2"
+    ],
+    "screen:G2_g2:0": [
+      "screen:normalize:0"
+    ],
+    "screen:G2_g2:1": [
+      "screen:normalize:1"
+    ],
+    "screen:G2_g2:2": [
+      "screen:normalize:2"
+    ],
+    "screen:G3_m10:0": [
+      "screen:normalize:0"
+    ],
+    "screen:G3_m10:1": [
+      "screen:normalize:1"
+    ],
+    "screen:G3_m10:2": [
+      "screen:normalize:2"
+    ],
+    "screen:G3_m1_DIAGNOSTIC:0": [
+      "screen:normalize:0"
+    ],
+    "screen:G3_m1_DIAGNOSTIC:1": [
+      "screen:normalize:1"
+    ],
+    "screen:G3_m1_DIAGNOSTIC:2": [
+      "screen:normalize:2"
+    ],
+    "screen:G3_m3:0": [
+      "screen:normalize:0"
+    ],
+    "screen:G3_m3:1": [
+      "screen:normalize:1"
+    ],
+    "screen:G3_m3:2": [
+      "screen:normalize:2"
+    ],
+    "screen:G3_m5:0": [
+      "screen:normalize:0"
+    ],
+    "screen:G3_m5:1": [
+      "screen:normalize:1"
+    ],
+    "screen:G3_m5:2": [
+      "screen:normalize:2"
+    ],
+    "screen:S1_t0.025:0": [
+      "screen:normalize:0"
+    ],
+    "screen:S1_t0.025:1": [
+      "screen:normalize:1"
+    ],
+    "screen:S1_t0.025:2": [
+      "screen:normalize:2"
+    ],
+    "screen:S1_t0.1:0": [
+      "screen:normalize:0"
+    ],
+    "screen:S1_t0.1:1": [
+      "screen:normalize:1"
+    ],
+    "screen:S1_t0.1:2": [
+      "screen:normalize:2"
+    ],
+    "screen:S1_t0.5:0": [
+      "screen:normalize:0"
+    ],
+    "screen:S1_t0.5:1": [
+      "screen:normalize:1"
+    ],
+    "screen:S1_t0.5:2": [
+      "screen:normalize:2"
+    ],
+    "screen:S2_t0.025:0": [
+      "screen:normalize:0"
+    ],
+    "screen:S2_t0.025:1": [
+      "screen:normalize:1"
+    ],
+    "screen:S2_t0.025:2": [
+      "screen:normalize:2"
+    ],
+    "screen:S2_t0.1:0": [
+      "screen:normalize:0"
+    ],
+    "screen:S2_t0.1:1": [
+      "screen:normalize:1"
+    ],
+    "screen:S2_t0.1:2": [
+      "screen:normalize:2"
+    ],
+    "screen:S2_t0.5:0": [
+      "screen:normalize:0"
+    ],
+    "screen:S2_t0.5:1": [
+      "screen:normalize:1"
+    ],
+    "screen:S2_t0.5:2": [
+      "screen:normalize:2"
+    ],
+    "screen:S3_t0.025:0": [
+      "screen:normalize:0"
+    ],
+    "screen:S3_t0.025:1": [
+      "screen:normalize:1"
+    ],
+    "screen:S3_t0.025:2": [
+      "screen:normalize:2"
+    ],
+    "screen:S3_t0.1:0": [
+      "screen:normalize:0"
+    ],
+    "screen:S3_t0.1:1": [
+      "screen:normalize:1"
+    ],
+    "screen:S3_t0.1:2": [
+      "screen:normalize:2"
+    ],
+    "screen:S3_t0.5:0": [
+      "screen:normalize:0"
+    ],
+    "screen:S3_t0.5:1": [
+      "screen:normalize:1"
+    ],
+    "screen:S3_t0.5:2": [
+      "screen:normalize:2"
+    ],
+    "screen:S4_a0.1:0": [
+      "screen:normalize:0"
+    ],
+    "screen:S4_a0.1:1": [
+      "screen:normalize:1"
+    ],
+    "screen:S4_a0.1:2": [
+      "screen:normalize:2"
+    ],
+    "screen:S4_a0.25:0": [
+      "screen:normalize:0"
+    ],
+    "screen:S4_a0.25:1": [
+      "screen:normalize:1"
+    ],
+    "screen:S4_a0.25:2": [
+      "screen:normalize:2"
+    ],
+    "screen:S4_a0.5:0": [
+      "screen:normalize:0"
+    ],
+    "screen:S4_a0.5:1": [
+      "screen:normalize:1"
+    ],
+    "screen:S4_a0.5:2": [
+      "screen:normalize:2"
+    ],
+    "screen:U0:0": [
+      "screen:normalize:0"
+    ],
+    "screen:U0:1": [
+      "screen:normalize:1"
+    ],
+    "screen:U0:2": [
+      "screen:normalize:2"
+    ],
+    "screen:lock": [
+      "screen:U0:0",
+      "screen:U0:1",
+      "screen:U0:2",
+      "screen:E1_g1:0",
+      "screen:E1_g1:1",
+      "screen:E1_g1:2",
+      "screen:E1_g5:0",
+      "screen:E1_g5:1",
+      "screen:E1_g5:2",
+      "screen:G1_g5:0",
+      "screen:G1_g5:1",
+      "screen:G1_g5:2",
+      "screen:G1_g20:0",
+      "screen:G1_g20:1",
+      "screen:G1_g20:2",
+      "screen:G1_g50:0",
+      "screen:G1_g50:1",
+      "screen:G1_g50:2",
+      "screen:G2_g0.5:0",
+      "screen:G2_g0.5:1",
+      "screen:G2_g0.5:2",
+      "screen:G2_g1:0",
+      "screen:G2_g1:1",
+      "screen:G2_g1:2",
+      "screen:G2_g2:0",
+      "screen:G2_g2:1",
+      "screen:G2_g2:2",
+      "screen:G3_m3:0",
+      "screen:G3_m3:1",
+      "screen:G3_m3:2",
+      "screen:G3_m5:0",
+      "screen:G3_m5:1",
+      "screen:G3_m5:2",
+      "screen:G3_m10:0",
+      "screen:G3_m10:1",
+      "screen:G3_m10:2",
+      "screen:G3_m1_DIAGNOSTIC:0",
+      "screen:G3_m1_DIAGNOSTIC:1",
+      "screen:G3_m1_DIAGNOSTIC:2",
+      "screen:S1_t0.025:0",
+      "screen:S1_t0.025:1",
+      "screen:S1_t0.025:2",
+      "screen:S1_t0.1:0",
+      "screen:S1_t0.1:1",
+      "screen:S1_t0.1:2",
+      "screen:S1_t0.5:0",
+      "screen:S1_t0.5:1",
+      "screen:S1_t0.5:2",
+      "screen:S2_t0.025:0",
+      "screen:S2_t0.025:1",
+      "screen:S2_t0.025:2",
+      "screen:S2_t0.1:0",
+      "screen:S2_t0.1:1",
+      "screen:S2_t0.1:2",
+      "screen:S2_t0.5:0",
+      "screen:S2_t0.5:1",
+      "screen:S2_t0.5:2",
+      "screen:S3_t0.025:0",
+      "screen:S3_t0.025:1",
+      "screen:S3_t0.025:2",
+      "screen:S3_t0.1:0",
+      "screen:S3_t0.1:1",
+      "screen:S3_t0.1:2",
+      "screen:S3_t0.5:0",
+      "screen:S3_t0.5:1",
+      "screen:S3_t0.5:2",
+      "screen:S4_a0.1:0",
+      "screen:S4_a0.1:1",
+      "screen:S4_a0.1:2",
+      "screen:S4_a0.25:0",
+      "screen:S4_a0.25:1",
+      "screen:S4_a0.25:2",
+      "screen:S4_a0.5:0",
+      "screen:S4_a0.5:1",
+      "screen:S4_a0.5:2"
+    ],
+    "screen:normalize:0": [
+      "audit:report"
+    ],
+    "screen:normalize:1": [
+      "audit:report"
+    ],
+    "screen:normalize:2": [
+      "audit:report"
+    ],
+    "screen:report": [
+      "diagnostic:screen:U0:0",
+      "diagnostic:screen:U0:1",
+      "diagnostic:screen:U0:2",
+      "diagnostic:screen:E1_g1:0",
+      "diagnostic:screen:E1_g1:1",
+      "diagnostic:screen:E1_g1:2",
+      "diagnostic:screen:E1_g5:0",
+      "diagnostic:screen:E1_g5:1",
+      "diagnostic:screen:E1_g5:2",
+      "diagnostic:screen:G1_g5:0",
+      "diagnostic:screen:G1_g5:1",
+      "diagnostic:screen:G1_g5:2",
+      "diagnostic:screen:G1_g20:0",
+      "diagnostic:screen:G1_g20:1",
+      "diagnostic:screen:G1_g20:2",
+      "diagnostic:screen:G1_g50:0",
+      "diagnostic:screen:G1_g50:1",
+      "diagnostic:screen:G1_g50:2",
+      "diagnostic:screen:G2_g0.5:0",
+      "diagnostic:screen:G2_g0.5:1",
+      "diagnostic:screen:G2_g0.5:2",
+      "diagnostic:screen:G2_g1:0",
+      "diagnostic:screen:G2_g1:1",
+      "diagnostic:screen:G2_g1:2",
+      "diagnostic:screen:G2_g2:0",
+      "diagnostic:screen:G2_g2:1",
+      "diagnostic:screen:G2_g2:2",
+      "diagnostic:screen:G3_m3:0",
+      "diagnostic:screen:G3_m3:1",
+      "diagnostic:screen:G3_m3:2",
+      "diagnostic:screen:G3_m5:0",
+      "diagnostic:screen:G3_m5:1",
+      "diagnostic:screen:G3_m5:2",
+      "diagnostic:screen:G3_m10:0",
+      "diagnostic:screen:G3_m10:1",
+      "diagnostic:screen:G3_m10:2",
+      "diagnostic:screen:G3_m1_DIAGNOSTIC:0",
+      "diagnostic:screen:G3_m1_DIAGNOSTIC:1",
+      "diagnostic:screen:G3_m1_DIAGNOSTIC:2",
+      "diagnostic:screen:S1_t0.025:0",
+      "diagnostic:screen:S1_t0.025:1",
+      "diagnostic:screen:S1_t0.025:2",
+      "diagnostic:screen:S1_t0.1:0",
+      "diagnostic:screen:S1_t0.1:1",
+      "diagnostic:screen:S1_t0.1:2",
+      "diagnostic:screen:S1_t0.5:0",
+      "diagnostic:screen:S1_t0.5:1",
+      "diagnostic:screen:S1_t0.5:2",
+      "diagnostic:screen:S2_t0.025:0",
+      "diagnostic:screen:S2_t0.025:1",
+      "diagnostic:screen:S2_t0.025:2",
+      "diagnostic:screen:S2_t0.1:0",
+      "diagnostic:screen:S2_t0.1:1",
+      "diagnostic:screen:S2_t0.1:2",
+      "diagnostic:screen:S2_t0.5:0",
+      "diagnostic:screen:S2_t0.5:1",
+      "diagnostic:screen:S2_t0.5:2",
+      "diagnostic:screen:S3_t0.025:0",
+      "diagnostic:screen:S3_t0.025:1",
+      "diagnostic:screen:S3_t0.025:2",
+      "diagnostic:screen:S3_t0.1:0",
+      "diagnostic:screen:S3_t0.1:1",
+      "diagnostic:screen:S3_t0.1:2",
+      "diagnostic:screen:S3_t0.5:0",
+      "diagnostic:screen:S3_t0.5:1",
+      "diagnostic:screen:S3_t0.5:2",
+      "diagnostic:screen:S4_a0.1:0",
+      "diagnostic:screen:S4_a0.1:1",
+      "diagnostic:screen:S4_a0.1:2",
+      "diagnostic:screen:S4_a0.25:0",
+      "diagnostic:screen:S4_a0.25:1",
+      "diagnostic:screen:S4_a0.25:2",
+      "diagnostic:screen:S4_a0.5:0",
+      "diagnostic:screen:S4_a0.5:1",
+      "diagnostic:screen:S4_a0.5:2"
+    ]
+  },
+  "tests_passed": 13,
+  "updated_utc": "2026-11-14T18:56:23.164987+00:00"
+}

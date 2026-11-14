@@ -1,0 +1,986 @@
+{
+  "active_phase": "complete",
+  "active_task": null,
+  "completed": 225,
+  "done_configs": [
+    "outer:0:2:reuse",
+    "outer:2:1:fit:representation",
+    "outer:1:0:cache",
+    "outer:2:2:predict",
+    "grid:R3:a0.25:b2:s2",
+    "grid:R3:a0.1:b2:s0",
+    "grid:R4:a0.1:b1:s2",
+    "outer:1:0:evaluate",
+    "outer:0:0:reuse",
+    "outer:0:0:fit:lookup",
+    "grid:R3:a0.25:b1:s2",
+    "outer:0:0:predict",
+    "outer:2:1:predict",
+    "outer:2:2:fit:lookup",
+    "outer:2:0:fit:lookup",
+    "grid:R3:a0.1:b1:s2",
+    "outer:2:2:reuse",
+    "grid:R4:a0.1:b0.5:s0",
+    "outer:1:1:cache",
+    "outer:0:0:evaluate",
+    "screen:R2:a0.1:b1:s0",
+    "grid:R4:a0.1:b0.5:s1",
+    "outer:2:1:evaluate",
+    "outer:1:2:reuse",
+    "screen:R5:a0.1:b1:s2",
+    "outer:1:1:fit:representation",
+    "outer:2:1:cache",
+    "outer:1:0:predict",
+    "screen:R4:a0.1:b1:s2",
+    "grid:R4:a0.1:b0.5:s2",
+    "grid:R4:a0.1:b1:s1",
+    "outer:0:0:fit:representation",
+    "screen:R6:a0.1:b1:s1",
+    "outer:1:2:evaluate",
+    "screen:R3:a0.1:b1:s1",
+    "grid:R3:a0.25:b0.5:s1",
+    "grid:R4:a0.25:b1:s2",
+    "grid:R4:a0.1:b2:s0",
+    "outer:1:1:evaluate",
+    "grid:R3:a0.25:b0.5:s2",
+    "grid:R4:a0.25:b0.5:s1",
+    "grid:R3:a0.1:b0.5:s0",
+    "screen:R2:a0.1:b1:s1",
+    "grid:R3:a0.1:b0.5:s2",
+    "screen:R1:a0.1:b1:s0",
+    "screen:R3:a0.1:b1:s0",
+    "outer:1:2:fit:lookup",
+    "outer:2:0:fit:representation",
+    "outer:0:1:cache",
+    "grid:R3:a0.1:b1:s1",
+    "grid:R3:a0.1:b2:s1",
+    "grid:R4:a0.25:b2:s2",
+    "outer:1:1:fit:lookup",
+    "outer:0:1:fit:lookup",
+    "outer:2:0:predict",
+    "outer:0:1:predict",
+    "grid:R3:a0.1:b1:s0",
+    "outer:0:1:reuse",
+    "screen:R4:a0.1:b1:s1",
+    "outer:0:1:fit:representation",
+    "grid:R4:a0.1:b2:s1",
+    "outer:0:2:predict",
+    "outer:1:1:reuse",
+    "outer:2:1:fit:lookup",
+    "outer:2:0:cache",
+    "outer:0:2:cache",
+    "outer:1:2:fit:representation",
+    "screen:R1:a0.1:b1:s1",
+    "grid:R3:a0.25:b2:s0",
+    "outer:0:2:evaluate",
+    "screen:R5:a0.1:b1:s0",
+    "grid:R4:a0.25:b2:s0",
+    "screen:R5:a0.1:b1:s1",
+    "grid:R3:a0.25:b2:s1",
+    "screen:R4:a0.1:b1:s0",
+    "outer:1:1:predict",
+    "outer:1:0:reuse",
+    "screen:R6:a0.1:b1:s2",
+    "screen:R3:a0.1:b1:s2",
+    "outer:2:2:fit:representation",
+    "outer:0:2:fit:representation",
+    "grid:R3:a0.25:b0.5:s0",
+    "grid:R4:a0.25:b1:s0",
+    "outer:2:0:evaluate",
+    "grid:R3:a0.1:b0.5:s1",
+    "grid:R3:a0.25:b1:s0",
+    "grid:R4:a0.25:b2:s1",
+    "outer:1:0:fit:lookup",
+    "outer:0:0:cache",
+    "grid:R4:a0.25:b1:s1",
+    "grid:R3:a0.25:b1:s1",
+    "grid:R4:a0.1:b1:s0",
+    "outer:2:1:reuse",
+    "grid:R4:a0.25:b0.5:s0",
+    "outer:2:0:reuse",
+    "grid:R4:a0.1:b2:s2",
+    "outer:2:2:cache",
+    "outer:0:1:evaluate",
+    "outer:1:0:fit:representation",
+    "outer:2:2:evaluate",
+    "outer:0:2:fit:lookup",
+    "grid:R4:a0.25:b0.5:s2",
+    "screen:R1:a0.1:b1:s2",
+    "grid:R3:a0.1:b2:s2",
+    "screen:R6:a0.1:b1:s0",
+    "outer:1:2:predict",
+    "outer:1:2:cache",
+    "screen:R2:a0.1:b1:s2"
+  ],
+  "error": null,
+  "failures_resolved": "r1 descriptive NumPy bug fixed in r2; r3 initialization maintenance; all completed tasks retained",
+  "full_resume": "PASS",
+  "independent_audit": "PASS",
+  "last_completed": "final:package",
+  "manifest_sha256": "006ba66d8b2cd8ad1efb22b5c9e4eaf50daa847d22f9ff1a8119e48f42ee0148",
+  "mean_delta_AA_pp": 0.166805671392826,
+  "mean_delta_WGA_pp": -0.5012531328320802,
+  "next_pending": "None under frozen v4 protocol; do not integrate or retune",
+  "package": "DPE_WGA_v4_results.zip",
+  "production_integration": "NOT_PERFORMED",
+  "promotion_gate": "FAIL",
+  "report": "FINAL_RESEARCH_REPORT_r2.md",
+  "resume_command": ".venv/Scripts/python.exe -m experiments.score_audit_v4.run --phase all --resume",
+  "status": "COMPLETE_GATE_FAILED",
+  "task_DAG": {
+    "acceptance": [],
+    "final:full_resume": [
+      "final:independent_audit"
+    ],
+    "final:independent_audit": [
+      "final:report"
+    ],
+    "final:package": [
+      "final:report_correction",
+      "final:full_resume"
+    ],
+    "final:report": [
+      "phase2:gate"
+    ],
+    "final:report_correction": [
+      "final:independent_audit"
+    ],
+    "grid:R3:a0.1:b0.5:s0": [
+      "phase1fit:R3:0:lookup"
+    ],
+    "grid:R3:a0.1:b0.5:s1": [
+      "phase1fit:R3:1:lookup"
+    ],
+    "grid:R3:a0.1:b0.5:s2": [
+      "phase1fit:R3:2:lookup"
+    ],
+    "grid:R3:a0.1:b1:s0": [
+      "phase1fit:R3:0:lookup"
+    ],
+    "grid:R3:a0.1:b1:s1": [
+      "phase1fit:R3:1:lookup"
+    ],
+    "grid:R3:a0.1:b1:s2": [
+      "phase1fit:R3:2:lookup"
+    ],
+    "grid:R3:a0.1:b2:s0": [
+      "phase1fit:R3:0:lookup"
+    ],
+    "grid:R3:a0.1:b2:s1": [
+      "phase1fit:R3:1:lookup"
+    ],
+    "grid:R3:a0.1:b2:s2": [
+      "phase1fit:R3:2:lookup"
+    ],
+    "grid:R3:a0.25:b0.5:s0": [
+      "phase1fit:R3:0:lookup"
+    ],
+    "grid:R3:a0.25:b0.5:s1": [
+      "phase1fit:R3:1:lookup"
+    ],
+    "grid:R3:a0.25:b0.5:s2": [
+      "phase1fit:R3:2:lookup"
+    ],
+    "grid:R3:a0.25:b1:s0": [
+      "phase1fit:R3:0:lookup"
+    ],
+    "grid:R3:a0.25:b1:s1": [
+      "phase1fit:R3:1:lookup"
+    ],
+    "grid:R3:a0.25:b1:s2": [
+      "phase1fit:R3:2:lookup"
+    ],
+    "grid:R3:a0.25:b2:s0": [
+      "phase1fit:R3:0:lookup"
+    ],
+    "grid:R3:a0.25:b2:s1": [
+      "phase1fit:R3:1:lookup"
+    ],
+    "grid:R3:a0.25:b2:s2": [
+      "phase1fit:R3:2:lookup"
+    ],
+    "grid:R4:a0.1:b0.5:s0": [
+      "phase1fit:R4:0:lookup"
+    ],
+    "grid:R4:a0.1:b0.5:s1": [
+      "phase1fit:R4:1:lookup"
+    ],
+    "grid:R4:a0.1:b0.5:s2": [
+      "phase1fit:R4:2:lookup"
+    ],
+    "grid:R4:a0.1:b1:s0": [
+      "phase1fit:R4:0:lookup"
+    ],
+    "grid:R4:a0.1:b1:s1": [
+      "phase1fit:R4:1:lookup"
+    ],
+    "grid:R4:a0.1:b1:s2": [
+      "phase1fit:R4:2:lookup"
+    ],
+    "grid:R4:a0.1:b2:s0": [
+      "phase1fit:R4:0:lookup"
+    ],
+    "grid:R4:a0.1:b2:s1": [
+      "phase1fit:R4:1:lookup"
+    ],
+    "grid:R4:a0.1:b2:s2": [
+      "phase1fit:R4:2:lookup"
+    ],
+    "grid:R4:a0.25:b0.5:s0": [
+      "phase1fit:R4:0:lookup"
+    ],
+    "grid:R4:a0.25:b0.5:s1": [
+      "phase1fit:R4:1:lookup"
+    ],
+    "grid:R4:a0.25:b0.5:s2": [
+      "phase1fit:R4:2:lookup"
+    ],
+    "grid:R4:a0.25:b1:s0": [
+      "phase1fit:R4:0:lookup"
+    ],
+    "grid:R4:a0.25:b1:s1": [
+      "phase1fit:R4:1:lookup"
+    ],
+    "grid:R4:a0.25:b1:s2": [
+      "phase1fit:R4:2:lookup"
+    ],
+    "grid:R4:a0.25:b2:s0": [
+      "phase1fit:R4:0:lookup"
+    ],
+    "grid:R4:a0.25:b2:s1": [
+      "phase1fit:R4:1:lookup"
+    ],
+    "grid:R4:a0.25:b2:s2": [
+      "phase1fit:R4:2:lookup"
+    ],
+    "inputs": [
+      "acceptance"
+    ],
+    "outer:0:0:cache": [
+      "outer:0:0:reuse"
+    ],
+    "outer:0:0:evaluate": [
+      "outer:0:0:predict"
+    ],
+    "outer:0:0:fit:lookup": [
+      "outer:0:0:fit:representation"
+    ],
+    "outer:0:0:fit:representation": [
+      "outer:0:0:cache"
+    ],
+    "outer:0:0:predict": [
+      "outer:0:0:fit:lookup"
+    ],
+    "outer:0:0:reuse": [
+      "phase1:report"
+    ],
+    "outer:0:1:cache": [
+      "outer:0:1:reuse"
+    ],
+    "outer:0:1:evaluate": [
+      "outer:0:1:predict"
+    ],
+    "outer:0:1:fit:lookup": [
+      "outer:0:1:fit:representation"
+    ],
+    "outer:0:1:fit:representation": [
+      "outer:0:1:cache"
+    ],
+    "outer:0:1:predict": [
+      "outer:0:1:fit:lookup"
+    ],
+    "outer:0:1:reuse": [
+      "phase1:report"
+    ],
+    "outer:0:2:cache": [
+      "outer:0:2:reuse"
+    ],
+    "outer:0:2:evaluate": [
+      "outer:0:2:predict"
+    ],
+    "outer:0:2:fit:lookup": [
+      "outer:0:2:fit:representation"
+    ],
+    "outer:0:2:fit:representation": [
+      "outer:0:2:cache"
+    ],
+    "outer:0:2:predict": [
+      "outer:0:2:fit:lookup"
+    ],
+    "outer:0:2:reuse": [
+      "phase1:report"
+    ],
+    "outer:1:0:cache": [
+      "outer:1:0:reuse"
+    ],
+    "outer:1:0:evaluate": [
+      "outer:1:0:predict"
+    ],
+    "outer:1:0:fit:lookup": [
+      "outer:1:0:fit:representation"
+    ],
+    "outer:1:0:fit:representation": [
+      "outer:1:0:cache"
+    ],
+    "outer:1:0:predict": [
+      "outer:1:0:fit:lookup"
+    ],
+    "outer:1:0:reuse": [
+      "phase1:report"
+    ],
+    "outer:1:1:cache": [
+      "outer:1:1:reuse"
+    ],
+    "outer:1:1:evaluate": [
+      "outer:1:1:predict"
+    ],
+    "outer:1:1:fit:lookup": [
+      "outer:1:1:fit:representation"
+    ],
+    "outer:1:1:fit:representation": [
+      "outer:1:1:cache"
+    ],
+    "outer:1:1:predict": [
+      "outer:1:1:fit:lookup"
+    ],
+    "outer:1:1:reuse": [
+      "phase1:report"
+    ],
+    "outer:1:2:cache": [
+      "outer:1:2:reuse"
+    ],
+    "outer:1:2:evaluate": [
+      "outer:1:2:predict"
+    ],
+    "outer:1:2:fit:lookup": [
+      "outer:1:2:fit:representation"
+    ],
+    "outer:1:2:fit:representation": [
+      "outer:1:2:cache"
+    ],
+    "outer:1:2:predict": [
+      "outer:1:2:fit:lookup"
+    ],
+    "outer:1:2:reuse": [
+      "phase1:report"
+    ],
+    "outer:2:0:cache": [
+      "outer:2:0:reuse"
+    ],
+    "outer:2:0:evaluate": [
+      "outer:2:0:predict"
+    ],
+    "outer:2:0:fit:lookup": [
+      "outer:2:0:fit:representation"
+    ],
+    "outer:2:0:fit:representation": [
+      "outer:2:0:cache"
+    ],
+    "outer:2:0:predict": [
+      "outer:2:0:fit:lookup"
+    ],
+    "outer:2:0:reuse": [
+      "phase1:report"
+    ],
+    "outer:2:1:cache": [
+      "outer:2:1:reuse"
+    ],
+    "outer:2:1:evaluate": [
+      "outer:2:1:predict"
+    ],
+    "outer:2:1:fit:lookup": [
+      "outer:2:1:fit:representation"
+    ],
+    "outer:2:1:fit:representation": [
+      "outer:2:1:cache"
+    ],
+    "outer:2:1:predict": [
+      "outer:2:1:fit:lookup"
+    ],
+    "outer:2:1:reuse": [
+      "phase1:report"
+    ],
+    "outer:2:2:cache": [
+      "outer:2:2:reuse"
+    ],
+    "outer:2:2:evaluate": [
+      "outer:2:2:predict"
+    ],
+    "outer:2:2:fit:lookup": [
+      "outer:2:2:fit:representation"
+    ],
+    "outer:2:2:fit:representation": [
+      "outer:2:2:cache"
+    ],
+    "outer:2:2:predict": [
+      "outer:2:2:fit:lookup"
+    ],
+    "outer:2:2:reuse": [
+      "phase1:report"
+    ],
+    "phase0:aggregate:0:calibrated": [
+      "phase0:expert_export:0"
+    ],
+    "phase0:aggregate:0:raw": [
+      "phase0:expert_export:0"
+    ],
+    "phase0:aggregate:1:calibrated": [
+      "phase0:expert_export:1"
+    ],
+    "phase0:aggregate:1:raw": [
+      "phase0:expert_export:1"
+    ],
+    "phase0:aggregate:2:calibrated": [
+      "phase0:expert_export:2"
+    ],
+    "phase0:aggregate:2:raw": [
+      "phase0:expert_export:2"
+    ],
+    "phase0:expert_export:0": [
+      "inputs"
+    ],
+    "phase0:expert_export:1": [
+      "inputs"
+    ],
+    "phase0:expert_export:2": [
+      "inputs"
+    ],
+    "phase0:image_plots:0": [
+      "phase0:expert_export:0"
+    ],
+    "phase0:image_plots:1": [
+      "phase0:expert_export:1"
+    ],
+    "phase0:image_plots:2": [
+      "phase0:expert_export:2"
+    ],
+    "phase0:report": [
+      "phase0:expert_export:0",
+      "phase0:aggregate:0:raw",
+      "phase0:aggregate:0:calibrated",
+      "phase0:image_plots:0",
+      "phase0:expert_export:1",
+      "phase0:aggregate:1:raw",
+      "phase0:aggregate:1:calibrated",
+      "phase0:image_plots:1",
+      "phase0:expert_export:2",
+      "phase0:aggregate:2:raw",
+      "phase0:aggregate:2:calibrated",
+      "phase0:image_plots:2"
+    ],
+    "phase1:lock": [
+      "phase1:shortlist",
+      "grid:R4:a0.1:b0.5:s0",
+      "grid:R4:a0.1:b0.5:s1",
+      "grid:R4:a0.1:b0.5:s2",
+      "grid:R4:a0.1:b1:s0",
+      "grid:R4:a0.1:b1:s1",
+      "grid:R4:a0.1:b1:s2",
+      "grid:R4:a0.1:b2:s0",
+      "grid:R4:a0.1:b2:s1",
+      "grid:R4:a0.1:b2:s2",
+      "grid:R4:a0.25:b0.5:s0",
+      "grid:R4:a0.25:b0.5:s1",
+      "grid:R4:a0.25:b0.5:s2",
+      "grid:R4:a0.25:b1:s0",
+      "grid:R4:a0.25:b1:s1",
+      "grid:R4:a0.25:b1:s2",
+      "grid:R4:a0.25:b2:s0",
+      "grid:R4:a0.25:b2:s1",
+      "grid:R4:a0.25:b2:s2",
+      "grid:R3:a0.1:b0.5:s0",
+      "grid:R3:a0.1:b0.5:s1",
+      "grid:R3:a0.1:b0.5:s2",
+      "grid:R3:a0.1:b1:s0",
+      "grid:R3:a0.1:b1:s1",
+      "grid:R3:a0.1:b1:s2",
+      "grid:R3:a0.1:b2:s0",
+      "grid:R3:a0.1:b2:s1",
+      "grid:R3:a0.1:b2:s2",
+      "grid:R3:a0.25:b0.5:s0",
+      "grid:R3:a0.25:b0.5:s1",
+      "grid:R3:a0.25:b0.5:s2",
+      "grid:R3:a0.25:b1:s0",
+      "grid:R3:a0.25:b1:s1",
+      "grid:R3:a0.25:b1:s2",
+      "grid:R3:a0.25:b2:s0",
+      "grid:R3:a0.25:b2:s1",
+      "grid:R3:a0.25:b2:s2"
+    ],
+    "phase1:report": [
+      "phase1diagnostic:screen:R1:a0.1:b1:s0",
+      "phase1diagnostic:screen:R1:a0.1:b1:s1",
+      "phase1diagnostic:screen:R1:a0.1:b1:s2",
+      "phase1diagnostic:screen:R2:a0.1:b1:s0",
+      "phase1diagnostic:screen:R2:a0.1:b1:s1",
+      "phase1diagnostic:screen:R2:a0.1:b1:s2",
+      "phase1diagnostic:screen:R3:a0.1:b1:s0",
+      "phase1diagnostic:screen:R3:a0.1:b1:s1",
+      "phase1diagnostic:screen:R3:a0.1:b1:s2",
+      "phase1diagnostic:screen:R4:a0.1:b1:s0",
+      "phase1diagnostic:screen:R4:a0.1:b1:s1",
+      "phase1diagnostic:screen:R4:a0.1:b1:s2",
+      "phase1diagnostic:screen:R5:a0.1:b1:s0",
+      "phase1diagnostic:screen:R5:a0.1:b1:s1",
+      "phase1diagnostic:screen:R5:a0.1:b1:s2",
+      "phase1diagnostic:screen:R6:a0.1:b1:s0",
+      "phase1diagnostic:screen:R6:a0.1:b1:s1",
+      "phase1diagnostic:screen:R6:a0.1:b1:s2",
+      "phase1diagnostic:grid:R4:a0.1:b0.5:s0",
+      "phase1diagnostic:grid:R4:a0.1:b0.5:s1",
+      "phase1diagnostic:grid:R4:a0.1:b0.5:s2",
+      "phase1diagnostic:grid:R4:a0.1:b1:s0",
+      "phase1diagnostic:grid:R4:a0.1:b1:s1",
+      "phase1diagnostic:grid:R4:a0.1:b1:s2",
+      "phase1diagnostic:grid:R4:a0.1:b2:s0",
+      "phase1diagnostic:grid:R4:a0.1:b2:s1",
+      "phase1diagnostic:grid:R4:a0.1:b2:s2",
+      "phase1diagnostic:grid:R4:a0.25:b0.5:s0",
+      "phase1diagnostic:grid:R4:a0.25:b0.5:s1",
+      "phase1diagnostic:grid:R4:a0.25:b0.5:s2",
+      "phase1diagnostic:grid:R4:a0.25:b1:s0",
+      "phase1diagnostic:grid:R4:a0.25:b1:s1",
+      "phase1diagnostic:grid:R4:a0.25:b1:s2",
+      "phase1diagnostic:grid:R4:a0.25:b2:s0",
+      "phase1diagnostic:grid:R4:a0.25:b2:s1",
+      "phase1diagnostic:grid:R4:a0.25:b2:s2",
+      "phase1diagnostic:grid:R3:a0.1:b0.5:s0",
+      "phase1diagnostic:grid:R3:a0.1:b0.5:s1",
+      "phase1diagnostic:grid:R3:a0.1:b0.5:s2",
+      "phase1diagnostic:grid:R3:a0.1:b1:s0",
+      "phase1diagnostic:grid:R3:a0.1:b1:s1",
+      "phase1diagnostic:grid:R3:a0.1:b1:s2",
+      "phase1diagnostic:grid:R3:a0.1:b2:s0",
+      "phase1diagnostic:grid:R3:a0.1:b2:s1",
+      "phase1diagnostic:grid:R3:a0.1:b2:s2",
+      "phase1diagnostic:grid:R3:a0.25:b0.5:s0",
+      "phase1diagnostic:grid:R3:a0.25:b0.5:s1",
+      "phase1diagnostic:grid:R3:a0.25:b0.5:s2",
+      "phase1diagnostic:grid:R3:a0.25:b1:s0",
+      "phase1diagnostic:grid:R3:a0.25:b1:s1",
+      "phase1diagnostic:grid:R3:a0.25:b1:s2",
+      "phase1diagnostic:grid:R3:a0.25:b2:s0",
+      "phase1diagnostic:grid:R3:a0.25:b2:s1",
+      "phase1diagnostic:grid:R3:a0.25:b2:s2"
+    ],
+    "phase1:shortlist": [
+      "screen:R1:a0.1:b1:s0",
+      "screen:R1:a0.1:b1:s1",
+      "screen:R1:a0.1:b1:s2",
+      "screen:R2:a0.1:b1:s0",
+      "screen:R2:a0.1:b1:s1",
+      "screen:R2:a0.1:b1:s2",
+      "screen:R3:a0.1:b1:s0",
+      "screen:R3:a0.1:b1:s1",
+      "screen:R3:a0.1:b1:s2",
+      "screen:R4:a0.1:b1:s0",
+      "screen:R4:a0.1:b1:s1",
+      "screen:R4:a0.1:b1:s2",
+      "screen:R5:a0.1:b1:s0",
+      "screen:R5:a0.1:b1:s1",
+      "screen:R5:a0.1:b1:s2",
+      "screen:R6:a0.1:b1:s0",
+      "screen:R6:a0.1:b1:s1",
+      "screen:R6:a0.1:b1:s2"
+    ],
+    "phase1diagnostic:grid:R3:a0.1:b0.5:s0": [
+      "phase1:lock",
+      "grid:R3:a0.1:b0.5:s0"
+    ],
+    "phase1diagnostic:grid:R3:a0.1:b0.5:s1": [
+      "phase1:lock",
+      "grid:R3:a0.1:b0.5:s1"
+    ],
+    "phase1diagnostic:grid:R3:a0.1:b0.5:s2": [
+      "phase1:lock",
+      "grid:R3:a0.1:b0.5:s2"
+    ],
+    "phase1diagnostic:grid:R3:a0.1:b1:s0": [
+      "phase1:lock",
+      "grid:R3:a0.1:b1:s0"
+    ],
+    "phase1diagnostic:grid:R3:a0.1:b1:s1": [
+      "phase1:lock",
+      "grid:R3:a0.1:b1:s1"
+    ],
+    "phase1diagnostic:grid:R3:a0.1:b1:s2": [
+      "phase1:lock",
+      "grid:R3:a0.1:b1:s2"
+    ],
+    "phase1diagnostic:grid:R3:a0.1:b2:s0": [
+      "phase1:lock",
+      "grid:R3:a0.1:b2:s0"
+    ],
+    "phase1diagnostic:grid:R3:a0.1:b2:s1": [
+      "phase1:lock",
+      "grid:R3:a0.1:b2:s1"
+    ],
+    "phase1diagnostic:grid:R3:a0.1:b2:s2": [
+      "phase1:lock",
+      "grid:R3:a0.1:b2:s2"
+    ],
+    "phase1diagnostic:grid:R3:a0.25:b0.5:s0": [
+      "phase1:lock",
+      "grid:R3:a0.25:b0.5:s0"
+    ],
+    "phase1diagnostic:grid:R3:a0.25:b0.5:s1": [
+      "phase1:lock",
+      "grid:R3:a0.25:b0.5:s1"
+    ],
+    "phase1diagnostic:grid:R3:a0.25:b0.5:s2": [
+      "phase1:lock",
+      "grid:R3:a0.25:b0.5:s2"
+    ],
+    "phase1diagnostic:grid:R3:a0.25:b1:s0": [
+      "phase1:lock",
+      "grid:R3:a0.25:b1:s0"
+    ],
+    "phase1diagnostic:grid:R3:a0.25:b1:s1": [
+      "phase1:lock",
+      "grid:R3:a0.25:b1:s1"
+    ],
+    "phase1diagnostic:grid:R3:a0.25:b1:s2": [
+      "phase1:lock",
+      "grid:R3:a0.25:b1:s2"
+    ],
+    "phase1diagnostic:grid:R3:a0.25:b2:s0": [
+      "phase1:lock",
+      "grid:R3:a0.25:b2:s0"
+    ],
+    "phase1diagnostic:grid:R3:a0.25:b2:s1": [
+      "phase1:lock",
+      "grid:R3:a0.25:b2:s1"
+    ],
+    "phase1diagnostic:grid:R3:a0.25:b2:s2": [
+      "phase1:lock",
+      "grid:R3:a0.25:b2:s2"
+    ],
+    "phase1diagnostic:grid:R4:a0.1:b0.5:s0": [
+      "phase1:lock",
+      "grid:R4:a0.1:b0.5:s0"
+    ],
+    "phase1diagnostic:grid:R4:a0.1:b0.5:s1": [
+      "phase1:lock",
+      "grid:R4:a0.1:b0.5:s1"
+    ],
+    "phase1diagnostic:grid:R4:a0.1:b0.5:s2": [
+      "phase1:lock",
+      "grid:R4:a0.1:b0.5:s2"
+    ],
+    "phase1diagnostic:grid:R4:a0.1:b1:s0": [
+      "phase1:lock",
+      "grid:R4:a0.1:b1:s0"
+    ],
+    "phase1diagnostic:grid:R4:a0.1:b1:s1": [
+      "phase1:lock",
+      "grid:R4:a0.1:b1:s1"
+    ],
+    "phase1diagnostic:grid:R4:a0.1:b1:s2": [
+      "phase1:lock",
+      "grid:R4:a0.1:b1:s2"
+    ],
+    "phase1diagnostic:grid:R4:a0.1:b2:s0": [
+      "phase1:lock",
+      "grid:R4:a0.1:b2:s0"
+    ],
+    "phase1diagnostic:grid:R4:a0.1:b2:s1": [
+      "phase1:lock",
+      "grid:R4:a0.1:b2:s1"
+    ],
+    "phase1diagnostic:grid:R4:a0.1:b2:s2": [
+      "phase1:lock",
+      "grid:R4:a0.1:b2:s2"
+    ],
+    "phase1diagnostic:grid:R4:a0.25:b0.5:s0": [
+      "phase1:lock",
+      "grid:R4:a0.25:b0.5:s0"
+    ],
+    "phase1diagnostic:grid:R4:a0.25:b0.5:s1": [
+      "phase1:lock",
+      "grid:R4:a0.25:b0.5:s1"
+    ],
+    "phase1diagnostic:grid:R4:a0.25:b0.5:s2": [
+      "phase1:lock",
+      "grid:R4:a0.25:b0.5:s2"
+    ],
+    "phase1diagnostic:grid:R4:a0.25:b1:s0": [
+      "phase1:lock",
+      "grid:R4:a0.25:b1:s0"
+    ],
+    "phase1diagnostic:grid:R4:a0.25:b1:s1": [
+      "phase1:lock",
+      "grid:R4:a0.25:b1:s1"
+    ],
+    "phase1diagnostic:grid:R4:a0.25:b1:s2": [
+      "phase1:lock",
+      "grid:R4:a0.25:b1:s2"
+    ],
+    "phase1diagnostic:grid:R4:a0.25:b2:s0": [
+      "phase1:lock",
+      "grid:R4:a0.25:b2:s0"
+    ],
+    "phase1diagnostic:grid:R4:a0.25:b2:s1": [
+      "phase1:lock",
+      "grid:R4:a0.25:b2:s1"
+    ],
+    "phase1diagnostic:grid:R4:a0.25:b2:s2": [
+      "phase1:lock",
+      "grid:R4:a0.25:b2:s2"
+    ],
+    "phase1diagnostic:screen:R1:a0.1:b1:s0": [
+      "phase1:lock",
+      "screen:R1:a0.1:b1:s0"
+    ],
+    "phase1diagnostic:screen:R1:a0.1:b1:s1": [
+      "phase1:lock",
+      "screen:R1:a0.1:b1:s1"
+    ],
+    "phase1diagnostic:screen:R1:a0.1:b1:s2": [
+      "phase1:lock",
+      "screen:R1:a0.1:b1:s2"
+    ],
+    "phase1diagnostic:screen:R2:a0.1:b1:s0": [
+      "phase1:lock",
+      "screen:R2:a0.1:b1:s0"
+    ],
+    "phase1diagnostic:screen:R2:a0.1:b1:s1": [
+      "phase1:lock",
+      "screen:R2:a0.1:b1:s1"
+    ],
+    "phase1diagnostic:screen:R2:a0.1:b1:s2": [
+      "phase1:lock",
+      "screen:R2:a0.1:b1:s2"
+    ],
+    "phase1diagnostic:screen:R3:a0.1:b1:s0": [
+      "phase1:lock",
+      "screen:R3:a0.1:b1:s0"
+    ],
+    "phase1diagnostic:screen:R3:a0.1:b1:s1": [
+      "phase1:lock",
+      "screen:R3:a0.1:b1:s1"
+    ],
+    "phase1diagnostic:screen:R3:a0.1:b1:s2": [
+      "phase1:lock",
+      "screen:R3:a0.1:b1:s2"
+    ],
+    "phase1diagnostic:screen:R4:a0.1:b1:s0": [
+      "phase1:lock",
+      "screen:R4:a0.1:b1:s0"
+    ],
+    "phase1diagnostic:screen:R4:a0.1:b1:s1": [
+      "phase1:lock",
+      "screen:R4:a0.1:b1:s1"
+    ],
+    "phase1diagnostic:screen:R4:a0.1:b1:s2": [
+      "phase1:lock",
+      "screen:R4:a0.1:b1:s2"
+    ],
+    "phase1diagnostic:screen:R5:a0.1:b1:s0": [
+      "phase1:lock",
+      "screen:R5:a0.1:b1:s0"
+    ],
+    "phase1diagnostic:screen:R5:a0.1:b1:s1": [
+      "phase1:lock",
+      "screen:R5:a0.1:b1:s1"
+    ],
+    "phase1diagnostic:screen:R5:a0.1:b1:s2": [
+      "phase1:lock",
+      "screen:R5:a0.1:b1:s2"
+    ],
+    "phase1diagnostic:screen:R6:a0.1:b1:s0": [
+      "phase1:lock",
+      "screen:R6:a0.1:b1:s0"
+    ],
+    "phase1diagnostic:screen:R6:a0.1:b1:s1": [
+      "phase1:lock",
+      "screen:R6:a0.1:b1:s1"
+    ],
+    "phase1diagnostic:screen:R6:a0.1:b1:s2": [
+      "phase1:lock",
+      "screen:R6:a0.1:b1:s2"
+    ],
+    "phase1fit:R1:0:lookup": [
+      "phase1fit:R1:0:representation"
+    ],
+    "phase1fit:R1:0:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R1:1:lookup": [
+      "phase1fit:R1:1:representation"
+    ],
+    "phase1fit:R1:1:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R1:2:lookup": [
+      "phase1fit:R1:2:representation"
+    ],
+    "phase1fit:R1:2:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R2:0:lookup": [
+      "phase1fit:R2:0:representation"
+    ],
+    "phase1fit:R2:0:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R2:1:lookup": [
+      "phase1fit:R2:1:representation"
+    ],
+    "phase1fit:R2:1:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R2:2:lookup": [
+      "phase1fit:R2:2:representation"
+    ],
+    "phase1fit:R2:2:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R3:0:lookup": [
+      "phase1fit:R3:0:representation"
+    ],
+    "phase1fit:R3:0:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R3:1:lookup": [
+      "phase1fit:R3:1:representation"
+    ],
+    "phase1fit:R3:1:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R3:2:lookup": [
+      "phase1fit:R3:2:representation"
+    ],
+    "phase1fit:R3:2:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R4:0:lookup": [
+      "phase1fit:R4:0:representation"
+    ],
+    "phase1fit:R4:0:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R4:1:lookup": [
+      "phase1fit:R4:1:representation"
+    ],
+    "phase1fit:R4:1:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R4:2:lookup": [
+      "phase1fit:R4:2:representation"
+    ],
+    "phase1fit:R4:2:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R5:0:lookup": [
+      "phase1fit:R5:0:representation"
+    ],
+    "phase1fit:R5:0:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R5:1:lookup": [
+      "phase1fit:R5:1:representation"
+    ],
+    "phase1fit:R5:1:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R5:2:lookup": [
+      "phase1fit:R5:2:representation"
+    ],
+    "phase1fit:R5:2:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R6:0:lookup": [
+      "phase1fit:R6:0:representation"
+    ],
+    "phase1fit:R6:0:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R6:1:lookup": [
+      "phase1fit:R6:1:representation"
+    ],
+    "phase1fit:R6:1:representation": [
+      "phase0:report"
+    ],
+    "phase1fit:R6:2:lookup": [
+      "phase1fit:R6:2:representation"
+    ],
+    "phase1fit:R6:2:representation": [
+      "phase0:report"
+    ],
+    "phase2:gate": [
+      "phase2:pool:0",
+      "phase2:pool:1",
+      "phase2:pool:2"
+    ],
+    "phase2:pool:0": [
+      "outer:0:0:evaluate",
+      "outer:0:1:evaluate",
+      "outer:0:2:evaluate"
+    ],
+    "phase2:pool:1": [
+      "outer:1:0:evaluate",
+      "outer:1:1:evaluate",
+      "outer:1:2:evaluate"
+    ],
+    "phase2:pool:2": [
+      "outer:2:0:evaluate",
+      "outer:2:1:evaluate",
+      "outer:2:2:evaluate"
+    ],
+    "screen:R1:a0.1:b1:s0": [
+      "phase1fit:R1:0:lookup"
+    ],
+    "screen:R1:a0.1:b1:s1": [
+      "phase1fit:R1:1:lookup"
+    ],
+    "screen:R1:a0.1:b1:s2": [
+      "phase1fit:R1:2:lookup"
+    ],
+    "screen:R2:a0.1:b1:s0": [
+      "phase1fit:R2:0:lookup"
+    ],
+    "screen:R2:a0.1:b1:s1": [
+      "phase1fit:R2:1:lookup"
+    ],
+    "screen:R2:a0.1:b1:s2": [
+      "phase1fit:R2:2:lookup"
+    ],
+    "screen:R3:a0.1:b1:s0": [
+      "phase1fit:R3:0:lookup"
+    ],
+    "screen:R3:a0.1:b1:s1": [
+      "phase1fit:R3:1:lookup"
+    ],
+    "screen:R3:a0.1:b1:s2": [
+      "phase1fit:R3:2:lookup"
+    ],
+    "screen:R4:a0.1:b1:s0": [
+      "phase1fit:R4:0:lookup"
+    ],
+    "screen:R4:a0.1:b1:s1": [
+      "phase1fit:R4:1:lookup"
+    ],
+    "screen:R4:a0.1:b1:s2": [
+      "phase1fit:R4:2:lookup"
+    ],
+    "screen:R5:a0.1:b1:s0": [
+      "phase1fit:R5:0:lookup"
+    ],
+    "screen:R5:a0.1:b1:s1": [
+      "phase1fit:R5:1:lookup"
+    ],
+    "screen:R5:a0.1:b1:s2": [
+      "phase1fit:R5:2:lookup"
+    ],
+    "screen:R6:a0.1:b1:s0": [
+      "phase1fit:R6:0:lookup"
+    ],
+    "screen:R6:a0.1:b1:s1": [
+      "phase1fit:R6:1:lookup"
+    ],
+    "screen:R6:a0.1:b1:s2": [
+      "phase1fit:R6:2:lookup"
+    ]
+  },
+  "updated_utc": "2026-11-14T18:17:38.642747+00:00"
+}

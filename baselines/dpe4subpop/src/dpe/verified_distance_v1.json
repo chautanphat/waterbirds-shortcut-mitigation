@@ -1,0 +1,28 @@
+{
+  "alpha": 0.25,
+  "backbone_track": "verified augmented ERMstar, one shared frozen backbone",
+  "calibrator": null,
+  "class_order": [
+    0,
+    1
+  ],
+  "distance": "Euclidean distance between L2-normalized per-image standardized feature and L2-normalized prototype; no learned logit scale in routing",
+  "gamma": 50.0,
+  "members": 15,
+  "mode": "distance",
+  "normalizer": null,
+  "probability_representation": "softmax of actual learned-scale IsoMax+ logits at classifier temperature1; training entropic scale30 excluded",
+  "schema_version": 1,
+  "verification": {
+    "WGA_CI95_pp": [
+      -0.21465950283433965,
+      1.2531328320802024
+    ],
+    "candidate": "G1_g50",
+    "decision_sha256": "6399226d25e5906dab33dea3656e163d1d2c2610ee3e9653255418d4416b6617",
+    "limitation": "Engineering gate passed on previously inspected development; confidence interval crosses zero; not fresh confirmatory evidence.",
+    "mean_delta_AA_pp": 0.11120378092854821,
+    "mean_delta_WGA_pp": 0.5012531328320838,
+    "report": "results/dpe/geometry_aggregation_v5_20261115/FINAL_REPORT.md"
+  }
+}

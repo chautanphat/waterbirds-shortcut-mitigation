@@ -1,5 +1,7 @@
 # DPE v2 — D5 đạt 96,076% accuracy, đánh đổi 2,418 điểm phần trăm WGA
 
+> **Đã xác minh backbone là ERM***: checkpoint local khớp SHA-256 hoàn toàn với output Kaggle v3, có `augmentation: true`, `epochs: 400`. Các số D5 dưới đây thuộc track ERM*, không phải ERM chuẩn. Xem [audit nguồn backbone](../backbone_provenance_20261114/README.md). Nghiên cứu ERM chuẩn được tách riêng.
+
 **D5 là cấu hình tốt nhất theo tiêu chí lựa chọn trên validation trong nghiên cứu v2.** Sau khi khóa cấu hình, accuracy trung bình trên test đạt **96,076%**, tăng **0,368 điểm phần trăm** so với uniform averaging dùng cùng 15 heads. Tuy nhiên, WGA giảm từ **92,761% xuống 90,343%**, tức **−2,418 điểm phần trăm**.
 
 Đây là winner của quy trình chọn bằng validation đã định trước, không phải khẳng định D5 đứng đầu mọi ablation trên test hoặc mọi tiêu chí robustness.

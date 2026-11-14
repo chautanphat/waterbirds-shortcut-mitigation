@@ -1,0 +1,7 @@
+{
+  "identical_to_uninterrupted": true,
+  "killed_after_epoch": 1,
+  "real_head_checkpoint_reused_in_nested": true,
+  "resumed_from_epoch": 1,
+  "status": "PASS"
+}

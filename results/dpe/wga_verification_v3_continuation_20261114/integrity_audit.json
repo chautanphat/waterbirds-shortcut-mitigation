@@ -1,0 +1,10 @@
+{
+  "group_blind_training": true,
+  "heads": 135,
+  "outer_folds": 9,
+  "paired_head_identity_verified": true,
+  "report_source_sha256": "ab2af64fbecc69f63b9df6b6248dc7236a97dce987b2b9f21f5b994d273c3fbf",
+  "status": "PASS",
+  "unique_heldout_ids_per_seed": 1199,
+  "weights_reconstructed": true
+}

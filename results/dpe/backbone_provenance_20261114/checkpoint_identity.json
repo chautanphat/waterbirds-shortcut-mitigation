@@ -1,0 +1,7 @@
+{
+  "remote_file": "dpe_ermstar/jobs/seed0/backbone/ckpt_last.pt",
+  "remote_bytes": 94356497,
+  "remote_sha256": "bce28dc72c3737ae19ffa057ba056e03d3f531180e7ad55e0b3c93bf4ea4bcaa",
+  "local_sha256": "bce28dc72c3737ae19ffa057ba056e03d3f531180e7ad55e0b3c93bf4ea4bcaa",
+  "exact_match": true
+}

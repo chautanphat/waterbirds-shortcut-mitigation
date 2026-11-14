@@ -1,0 +1,21 @@
+profile: dpe_enhanced_erm
+dataset:
+  data_dir: /kaggle/working/dpe_ermstar/data/waterbirds
+  batch_size: 128
+  batch_size_eval: 512
+  workers: 1
+  augmentation: true
+model:
+  weights: IMAGENET1K_V2
+  freeze_bn: false
+training:
+  steps: null
+  epochs: 400
+  lr: 0.001
+  momentum: 0.9
+  weight_decay: 0.0
+  sampling: class_balanced
+  eval_every: 300
+  seed: 0
+  device: cuda:0
+output_dir: /kaggle/working/dpe_ermstar/jobs/seed0/backbone
