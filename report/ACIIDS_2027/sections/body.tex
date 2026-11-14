@@ -1,155 +1,140 @@
-\section{Protocol and Methods}
-\label{sec:method}
-\textbf{Data and metric.} Waterbirds has 4,795 training, 1,199 validation and 5,794 test images. Groups are $g=(y,\text{background})$; the test groups contain 2,255, 2,255, 642 and 642 images. $\mathrm{WGA}=\min_g\mathrm{Acc}_g$ is computed per backbone and then averaged over backbones. The validation split $V$ is the only data used to fit anything on top of the frozen features.
+\section{Setup}
+\label{sec:setup}
+\subsection{Data and the label error}
+Waterbirds has 4,795 training, 1,199 validation and 5,794 test images. A group is a pair (bird class, background); the test groups landbird-on-land, landbird-on-water, waterbird-on-land and waterbird-on-water contain 2,255, 2,255, 642 and 642 images. WGA is the minimum of the four group accuracies, computed per backbone and then averaged.
 
-\medskip\noindent\textbf{Backbones.} Five standard-ERM backbones (seeds 0--4, 100 epochs) and two ERM$^*$ backbones (seeds 0--1, 400 epochs with augmentation) are reported separately because they are different recipes, not repeats of one configuration. Folds, partitions, split seeds and combiner initialisations are repeats within a backbone and are never counted as independent evidence.
+The generating script \cite{sagawa2020code} labels a CUB species as a waterbird if its lower-cased name contains any keyword from a list of seabirds and waterfowl, one of which is \texttt{tern}. The substring also occurs in \texttt{eastern} and \texttt{western}. Three species match no intended keyword and are labelled waterbird only through this match: 021 Eastern Towhee, 088 Western Meadowlark and 102 Western Wood-Pewee. Western Grebe and Western Gull also contain \texttt{tern} but are waterbirds through \texttt{grebe} and \texttt{gull}; a pass over all 46 waterbird-labelled species finds no other case. The affected images are 72 training, 18 validation (11 of the 133 waterbird-on-land and 7 of the 133 waterbird-on-water images) and 90 test images (43 and 47 of the two waterbird test groups of 642).
 
-\medskip\noindent\textbf{DPE heads.} A DPE ensemble has 15 two-prototype distance-based heads trained in sequence on group-balanced subsets of the validation features of a frozen ResNet-50 \cite{to2025dpe}: 20 epochs per head, batch size 256, learning rate $10^{-3}$, momentum 0.9, entropic scale 30, covariance penalty $5\times10^5$ (decaying by stage for standard ERM, constant for ERM$^*$ as in the preserved recipes). Its prediction is the uniform average of the head probabilities. For standard ERM each head keeps the epoch with the highest worst-group accuracy on its own training pool (ties to the later epoch), so no held-out image affects head selection; the ERM$^*$ heads follow the preserved upstream recipe, whose selected epochs were not exported. \emph{Full-validation DPE} trains on all of $V$ and is the primary reference. \emph{Fixed-split} arms train heads on 720 images and keep 479 for a combiner, at three nested partitions P0--P2; the uniform 720-image ensemble is the matched reference.
+We use three label sets. \emph{Official} is the released metadata. \emph{Corrected} relabels the affected images as landbirds, which also moves them to the landbird groups. For fitting we also consider \emph{drop}, which removes the 18 affected validation images. Backbones are always trained on the official training labels.
 
-\medskip\noindent\textbf{Combiners.} All combiners act on $s=\mathrm{logit}(\bar q)$, where $\bar q$ is the mean waterbird probability of the 15 heads. The affine combiner outputs $\sigma(as+b)$; the linear residual adds a linear function of the head disagreements $q_h-\bar q$. Both start at the identity ($a=1$, $b=0$, zero correction), and the slope is not constrained. The loss is binary cross-entropy averaged within each group and then either averaged (\emph{average}) or maximised (\emph{maximum}) over the four groups, plus $\lambda[(a-1)^2+b^2]$ (and the mean squared correction weight), with $\lambda\in\{0.01,0.1\}$. Fits use 400 full-batch Adam steps at learning rate 0.01 in double precision. The dropout MLP keeps the earlier recipe (width 8, AdamW, prediction dropout 0.25).
+\subsection{Backbones and heads}
+We use seven ResNet-50 backbones saved from earlier runs: five standard ERM backbones (seeds 0--4, 100 epochs) and two ERM$^*$ backbones (seeds 0--1, 400 epochs with augmentation), reported separately because they are different recipes. All heads act on frozen 2,048-dimensional features of the validation and test images.
 
-\medskip\noindent\textbf{Cross-fitting.} $V$ is split into five folds $V_1,\dots,V_5$ stratified by group (split seed 0). $E_{-k}$ is a 15-head ensemble trained on $V\setminus V_k$ (959--960 images); for $i\in V_k$ we store $s_i=\mathrm{logit}\,\bar q_{E_{-k}}(x_i)$. One affine map $C$ is fitted on the 1,199 out-of-fold pairs $(s_i,y_i)$ and applied to each fold ensemble before averaging:
-\begin{equation}
-p(x)=\tfrac15\textstyle\sum_{k=1}^5 \sigma\big(a\,s_{-k}(x)+b\big),\qquad s_{-k}(x)=\mathrm{logit}\,\bar q_{E_{-k}}(x).
-\label{eq:crossfit}
-\end{equation}
-Inference keeps $5\times15=75$ heads (Fig.~\ref{fig:protocol}). The uncalibrated control averages the same five ensembles with $a=1$, $b=0$.
+\textbf{DPE.} Fifteen two-prototype distance-based heads are trained in sequence on group-balanced subsets of the validation features \cite{to2025dpe}: 20 epochs per head, batch size 256, learning rate $10^{-3}$, momentum 0.9, entropic scale 30, covariance penalty $5\times10^5$ (decaying by stage for standard ERM, constant for ERM$^*$ as in the preserved recipes). For standard ERM each head keeps the epoch with the highest WGA on its own training pool. The prediction averages the head probabilities. \emph{Full-validation DPE}, fitted on all 1,199 images, is the reference throughout.
 
-\begin{figure}[t]
-\centering
-\resizebox{\linewidth}{!}{\begin{tikzpicture}[font=\scriptsize,>=Stealth,
-box/.style={draw,rounded corners,align=center,minimum height=9mm,text width=25mm}]
-\node[box] (v) {Validation $V$\\1,199 images};
-\node[box,right=6mm of v] (fold) {Train $E_{-k}$ on $V\setminus V_k$\\($k=1..5$)};
-\node[box,right=6mm of fold] (oof) {Out-of-fold scores\\one per image};
-\node[box,right=6mm of oof] (c) {Fit affine $C$\\or offset / threshold};
-\draw[->] (v)--(fold);\draw[->] (fold)--(oof);\draw[->] (oof)--(c);
-\node[box,below=8mm of c] (a) {Test: apply $C$ to each\\$E_{-k}$, then average};
-\node[box,below=8mm of v] (full) {Full-validation DPE\\15 heads on all of $V$};
-\node[box,below=8mm of fold] (thr) {Transferred threshold\\(control C3)};
-\draw[->] (c)--(a);\draw[->] (v)--(full);\draw[->] (full)--(thr);
-\draw[->,dashed] (oof.south) |- (thr.east);
-\end{tikzpicture}}
-\caption{Cross-fitting and the threshold transfer control. Test data enter only after all fits and selection rules are frozen.}
-\label{fig:protocol}
-\end{figure}
+\textbf{DFR-lite.} As a second validation-label method we fit group-weighted L1-penalised logistic regression on standardised features of the validation set, choosing $C\in\{0.01,0.03,0.1,0.3,1\}$ by five-fold validation WGA. It follows DFR \cite{kirichenko2023dfr} in using the same frozen features and group labels, but without DFR's repeated balanced subsampling.
 
-\medskip\noindent\textbf{Threshold equivalence.} For a single score and $a>0$, the decision $\sigma(as+b)\ge\tfrac12$ is $s\ge -b/a$, so affine calibration and thresholding give the same family of decisions. The average in Eq.~\eqref{eq:crossfit} is not a function of the mean score alone, so the slope $a$ can change decisions there. Beating a threshold on 15-head DPE would therefore not show that $a$ matters inside the 75-head ensemble; that needs a control on the same ensemble.
+\subsection{Protocols}
+\textbf{Label study.} Full-validation DPE (five head seeds per backbone) and DFR-lite are refitted on the official, corrected and drop validation sets, and every model is scored on official and corrected test labels. With official labels and head seed 0, the refit reproduces the saved ensembles exactly.
 
-\medskip\noindent\textbf{Controls.} C1--C3 use the same fold split, fold ensembles and out-of-fold scores as the affine calibrator, and the same four (loss, $\lambda$) settings where a loss is fitted.
+\textbf{Spending the validation set.} We compare full-validation DPE with three ways of adding a step on top of it.
 \begin{itemize}
-\item[C1] \emph{Uncalibrated fold ensemble}: Eq.~\eqref{eq:crossfit} with $a=1,b=0$.
-\item[C2] \emph{Offset only on the same fold ensemble}: Eq.~\eqref{eq:crossfit} with $a=1$ and $b$ fitted with the same group loss, penalty $\lambda b^2$ and optimiser. A second variant thresholds the fold-average score at the $t$ that maximises out-of-fold WGA (candidates: 0 and midpoints between consecutive scores; ties go to the smallest $|t|$).
-\item[C3] \emph{Transferred offset or threshold}: the offset $b$ of C2, or its WGA-maximising threshold $t$, applied to the score of full-validation DPE. The fold models see 959--960 images and the full model 1,199, so both are transferred across pool sizes. An in-sample threshold on full-validation DPE is not held out and is not used.
-\item[C4] \emph{75-head bag}: five 15-head ensembles trained on all of $V$ with different seeds, averaged uniformly; as many heads as cross-fitting but no held-out scores. \PH{pending}
-\item[C5] \emph{DFR-style retraining}: group-balanced L1-penalised logistic regression on the same features, with the penalty chosen by cross-validation on $V$ \cite{kirichenko2023dfr}. \PH{pending}
+\item \emph{Held-out combiners}: heads on 720 images and a combiner on the other 479 (an affine map of the ensemble score, a linear residual on head disagreements, or a dropout MLP), against the matched 720-image ensemble and against full-validation DPE.
+\item \emph{Cross-fitting}: five 15-head ensembles, each trained on four fifths of the validation set; one affine map $\sigma(a s+b)$ of the score $s=\mathrm{logit}\,\bar q$ is fitted on the 1,199 out-of-fold scores and applied to each fold ensemble before averaging, so no image is held back from head training.
+\item \emph{Controls}: the uncalibrated fold ensemble; the same pipeline with $a=1$ (offset only); the offset or threshold learnt on the out-of-fold scores and transferred to full-validation DPE; and a 75-head bag of five full-validation ensembles, which has as many heads as cross-fitting but no held-out scores.
 \end{itemize}
+Calibrators minimise group-averaged or worst-group cross-entropy with penalty $\lambda[(a-1)^2+b^2]$, $\lambda\in\{0.01,0.1\}$, using 400 full-batch Adam steps.
 
-\medskip\noindent\textbf{Validation-only selection.} The calibration setting is chosen from the grid $\{\text{average},\text{maximum}\}\times\{0.01,0.1\}$ by nested cross-validation on validation labels only. In each outer split, candidate prototypes and calibrators are fitted using the outer training part alone (with an inner cross-fit), and the outer held-out images influence neither prototypes nor calibration; they are used only to score candidates. The chosen setting is then refitted on all of $V$ and evaluated once on test. \PH{outer and inner fold counts; selection metric (group-balanced NLL or validation WGA); tie rule; the ten split seeds and how many completed for each recipe}
+\textbf{Validation-only selection.} The calibration setting is chosen by the lowest group-balanced negative log-likelihood (primary) or the highest WGA (secondary) in an inner five-fold cross-validation on the out-of-fold scores; heads are not refitted inside it. The whole procedure, including the head-training seeds and the fold and 720/479 splits, is repeated for ten split seeds, and full-validation DPE is retrained with the same seeds, so every comparison is paired within a cell.
+
+\textbf{Statistics.} Differences are paired per backbone, averaged over seeds within a backbone, and reported with pointwise 95\% $t$ intervals over the five standard-ERM backbones. With two ERM$^*$ backbones we report means only. Seeds and splits are repeats within a backbone and are not counted as independent evidence.
 
 \section{Results}
 \label{sec:results}
-\subsection{Completed study with fixed settings}
-\label{sec:explore}
-Table~\ref{tab:evidence} lists test results for fixed settings, all reported without selection; the same test set had been inspected in earlier work. Full-validation DPE reaches 89.60\% WGA on standard ERM, 1.4\,pp below the 91.0\% reported in \cite{to2025dpe}, and 94.08\% on ERM$^*$, matching the reported 94.1\%. Waterbird-on-land is the worst group for every backbone in both recipes.
+\subsection{Reproduction}
+Table~\ref{tab:repro} compares our full-validation DPE with the published numbers. Our standard-ERM DPE is 1.1--1.4\pp{} below the reported 91.0\%; ERM$^*$ matches. To check whether the gap comes from our implementation, we ran the authors' code end to end on two fresh ERM backbones. The backbones match the reported ERM accuracy (69.3\% against 69.1\%), and DPE reaches 89.4\% and 86.5\%. The official pipeline is therefore also below 91.0\% in our hands, and our results should be read relative to our own full-validation DPE. Over ten head seeds the WGA of full-validation DPE has a within-backbone SD of 0.40\pp{} (standard ERM) and 0.33\pp{} (ERM$^*$), which sets the scale for the differences below.
 
 \begin{table}[t]
 \centering\small
-\caption{Test results for fixed settings. WGA is mean $\pm$ sample SD over five standard-ERM or two ERM$^*$ backbones; OA is mean overall accuracy; all values in \%. P0 uses 720/479 images. All four five-fold affine settings (objective, $\lambda$) are shown.}
-\label{tab:evidence}
-\input{evidence_table.tex}
+\caption{Reproduction of full-validation DPE (test WGA, \%, official labels).}
+\label{tab:repro}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+Recipe & Run & DPE & Reported \cite{to2025dpe}\\\midrule
+ERM & ours, 5 backbones, saved heads & 89.60 & 91.0\\
+ERM & ours, 5 backbones, mean over 10 head seeds & 89.88 & 91.0\\
+ERM & authors' code, fresh backbones (seeds 5, 6) & 89.41, 86.47 & 91.0\\
+ERM$^*$ & ours, 2 backbones, saved heads & 94.08 & 94.1\\
+ERM$^*$ & ours, 2 backbones, mean over 10 head seeds & 93.88 & 94.1\\
+\bottomrule
+\end{tabular}
 \end{table}
 
-\textbf{Allocation (Q1).} Fig.~\ref{fig:allocation} shows the same fixed procedures across the three partitions. Against the matched 720-image uniform ensemble, affine calibration on the 479 reserved images is positive in all six recipe-by-partition cells. Against full-validation DPE the picture changes. The linear residual (average loss, $\lambda=0.1$) is ahead by $+0.75$, $+0.93$ and $+0.67$\,pp on standard ERM but behind by $-0.42$, $-0.37$ and $-1.17$\,pp on ERM$^*$; affine calibration gives $+0.16$, $+0.70$, $+0.31$ and $-0.19$, $+0.27$, $-0.73$\,pp. That residual setting was also highlighted after test inspection. A combiner that looks useful against the matched baseline is therefore not reliably useful against DPE that keeps all 1,199 images.
+\subsection{The label error dominates DPE's worst group}
+Waterbird-on-land is the worst group of full-validation DPE on every backbone. Table~\ref{tab:errors} counts its test errors. On standard ERM, 37--39 of the 43 mislabelled images in this group are predicted landbird, which is correct, and are counted as errors; they make up 55--62\% of the group's errors. On ERM$^*$ the share is about half.
+
+\begin{table}[t]
+\centering\small
+\caption{Errors of full-validation DPE (saved heads) in the waterbird-on-land test group (642 images, 43 of them from the three mislabelled species).}
+\label{tab:errors}
+\resizebox{\linewidth}{!}{\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+& \multicolumn{5}{c}{Standard ERM backbone} & \multicolumn{2}{c}{ERM$^*$}\\
+& 0 & 1 & 2 & 3 & 4 & 0 & 1\\\midrule
+Official WGA (\%) & 89.56 & 90.65 & 89.10 & 89.25 & 89.41 & 94.39 & 93.77\\
+Errors in waterbird-on-land & 67 & 60 & 70 & 69 & 68 & 36 & 40\\
+\quad of which mislabelled species & 37 & 37 & 39 & 38 & 39 & 18 & 21\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsection{Cleaning 18 validation labels}
+Table~\ref{tab:labels} gives the main result. Refitting DPE on corrected validation labels raises WGA on corrected test labels by $+2.48$\pp{} ($[+1.80,+3.15]$, positive on all five standard-ERM backbones); dropping the 18 images instead gives $+2.46$\pp{} ($[+1.90,+3.01]$). On ERM$^*$ the gains are $+2.12$ and $+2.08$\pp. The effect is larger than every aggregation effect in Section~\ref{sec:spend}, including settings chosen after looking at test results, and about six times the head-seed SD. DFR-lite also gains on standard ERM ($+1.56$\pp, $[+1.19,+1.94]$) but not on ERM$^*$.
+
+Scored with the official test labels, the same fix looks harmful: $-0.83$\pp{} ($[-1.34,-0.31]$) for DPE and $-1.92$\pp{} for DFR-lite. The refitted models predict landbird for more of the 90 mislabelled test images (on average 86 instead of 78 for DPE on standard ERM), which the official labels count as errors. A method that learns the correct concept is therefore penalised by the benchmark, and an improvement in label quality is invisible, or even negative, in results reported on the official labels.
+
+\begin{table}[t]
+\centering\small
+\caption{Test WGA (\%) after fitting on official, corrected or reduced (drop) validation labels, scored on official and corrected test labels. Means over five head seeds (DPE) and over backbones. $\Delta$: paired difference to the official-label fit on corrected test labels, with 95\% interval over the five standard-ERM backbones.}
+\label{tab:labels}
+\resizebox{\linewidth}{!}{\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+& & \multicolumn{3}{c}{Standard ERM ($n=5$)} & \multicolumn{2}{c}{ERM$^*$ ($n=2$)}\\
+Method & Fit labels & Official & Corrected & $\Delta$ corrected & Official & Corrected\\\midrule
+DPE & official & 89.89 & 90.34 & -- & 93.88 & 93.45\\
+DPE & corrected & 89.07 & \textbf{92.81} & $+2.48$ $[+1.80,+3.15]$ & 92.74 & \textbf{95.57}\\
+DPE & drop & 89.07 & 92.79 & $+2.46$ $[+1.90,+3.01]$ & 93.16 & 95.53\\\midrule
+DFR-lite & official & 88.62 & 88.97 & -- & 92.68 & 94.18\\
+DFR-lite & corrected & 86.70 & 90.53 & $+1.56$ $[+1.19,+1.94]$ & 88.94 & 94.13\\
+DFR-lite & drop & 86.54 & 90.42 & $+1.45$ $[+1.07,+1.83]$ & 89.25 & 94.16\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsection{Spending the validation set}
+\label{sec:spend}
+\textbf{Held-out combiners.} With fixed settings, an affine map fitted on the 479 reserved images improves on the matched 720-image ensemble in all six combinations of recipe and partition, which is the comparison a combiner is usually reported against. Against full-validation DPE the picture changes (Fig.~\ref{fig:allocation}): a linear residual is ahead by $+0.75$, $+0.93$ and $+0.67$\pp{} on standard ERM but behind by $-0.42$, $-0.37$ and $-1.17$\pp{} on ERM$^*$, and the dropout MLP ranges from $-1.22$ to $+0.81$\pp{} across the six combinations. When the setting is chosen on validation data (Table~\ref{tab:spend}), the linear residual is $-0.86$\pp{} and the affine combiner $-0.05$\pp{} relative to full-validation DPE.
 
 \begin{figure}[t]
 \centering\input{figures/allocation.tex}
-\caption{Standard-ERM mean WGA of the same fixed procedures at three 720/479 partitions; affine and linear residual use average loss and $\lambda=0.1$. The dashed line is full-validation DPE. Descriptive; no intervals shown.}
+\caption{Standard-ERM mean WGA of three fixed procedures at three 720/479 partitions (affine and linear residual: average loss, $\lambda=0.1$). Dashed: full-validation DPE. Saved heads, split seed 0.}
 \label{fig:allocation}
 \end{figure}
 
-\textbf{Cross-fitting (Q2).} Table~\ref{tab:paired} gives the per-backbone differences. On standard ERM the uncalibrated fold ensemble is $+0.54$\,pp ahead of full-validation DPE, with a wide interval. The affine setting with average loss and $\lambda=0.1$ is $+0.47$\,pp ahead and positive on all five backbones. This pointwise interval excludes zero, but does not account for test-informed selection or the broader exploratory search, and the other three affine settings give $+0.09$, $0.00$ and $-0.16$\,pp. Against the uncalibrated fold ensemble the same setting averages $-0.08$\,pp. On ERM$^*$ no cross-fit variant exceeds full-validation DPE.
+\textbf{Cross-fitting and recalibration.} Table~\ref{tab:spend} summarises the ten-split-seed study. With validation-only selection, cross-fitted affine recalibration is $-0.17$\pp{} ($[-0.33,-0.02]$, no backbone positive) with the primary rule and $-0.08$\pp{} with the secondary rule. The likelihood rule chose the weakest regularisation in all 70 cells. Even the setting we had highlighted earlier after looking at test results (average loss, $\lambda=0.1$), which gave $+0.47$\pp{} on split seed 0, averages $+0.17$\pp{} over ten split seeds, and the full-validation DPE of split seed 0 happened to be 0.28\pp{} below its ten-seed mean. Cross-fitting without recalibration is level with a 75-head bag ($+0.07$\pp, $[-0.32,+0.46]$), so what remains of its gain is explained by having more heads.
 
 \begin{table}[t]
 \centering\small
-\caption{Paired WGA differences (pp) against full-validation DPE, per backbone. Intervals are pointwise paired $t$ intervals over the five standard-ERM backbones; none is given for $n=2$.}
-\label{tab:paired}
-\resizebox{\linewidth}{!}{\begin{tabular}{@{}lrrrrrrc@{}}
+\caption{Spending the validation set: test WGA difference (pp, official labels) against full-validation DPE retrained with the same seeds, averaged over ten split seeds. Interval: 95\% over five standard-ERM backbones.}
+\label{tab:spend}
+\begin{tabular}{@{}lrrr@{}}
 \toprule
-& \multicolumn{5}{c}{Standard ERM backbone} & & \\
-Procedure & 0 & 1 & 2 & 3 & 4 & Mean & 95\% interval\\\midrule
-Five-fold uniform & $+1.17$ & $-0.54$ & $+0.93$ & $+0.10$ & $+1.06$ & $+0.54$ & $[-0.37,+1.46]$\\
-Five-fold affine, average, .1 & $+0.78$ & $+0.31$ & $+0.62$ & $+0.16$ & $+0.47$ & $+0.47$ & $[+0.16,+0.77]$\\
-Five-fold affine, average, .01 & $0.00$ & $-0.16$ & $+0.31$ & $+0.16$ & $+0.16$ & $+0.09$ & $[-0.13,+0.31]$\\
-Five-fold affine, maximum, .01 & $0.00$ & $-0.47$ & $+0.16$ & $+0.16$ & $+0.16$ & $0.00$ & $[-0.33,+0.33]$\\
-Five-fold affine, maximum, .1 & $-0.16$ & $-0.93$ & $+0.16$ & $+0.16$ & $0.00$ & $-0.16$ & $[-0.72,+0.41]$\\\midrule
-& \multicolumn{2}{c}{ERM$^*$ backbone} & & & & & \\
-& 0 & 1 & & & & Mean & \\\midrule
-Five-fold uniform & $0.00$ & $-0.95$ & & & & $-0.48$ & --\\
-Five-fold affine, average, .1 & $-0.16$ & $+0.02$ & & & & $-0.07$ & --\\
+& \multicolumn{2}{c}{Standard ERM} & ERM$^*$\\
+Procedure & $\Delta$ & 95\% interval & $\Delta$\\\midrule
+Full-validation DPE (WGA, \%) & 89.88 & & 93.88\\\midrule
+75-head bag (five full-validation ensembles) & $+0.06$ & $[-0.08,+0.20]$ & $+0.17$\\
+Cross-fit, uniform & $+0.13$ & $[-0.28,+0.53]$ & $+0.18$\\
+Cross-fit, affine, fixed setting & $+0.17$ & $[-0.01,+0.34]$ & $+0.11$\\
+Cross-fit, offset only ($a=1$), fixed setting & $+0.17$ & $[-0.01,+0.34]$ & $+0.11$\\
+Cross-fit, affine, selected (NLL) & $-0.17$ & $[-0.33,-0.02]$ & $-0.08$\\
+Cross-fit, affine, selected (WGA) & $-0.08$ & $[-0.17,+0.01]$ & $+0.03$\\
+Full DPE, offset transferred from folds & $-0.57$ & $[-0.76,-0.39]$ & $-0.49$\\
+720/479, affine, selected (NLL) & $-0.05$ & $[-0.17,+0.06]$ & $-0.24$\\
+720/479, linear residual, selected (NLL) & $-0.86$ & $[-1.32,-0.39]$ & $-0.76$\\
+DFR-lite & $-1.51$ & $[-1.83,-1.20]$ & $-1.28$\\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
 
-\textbf{Where the changes occur.} Table~\ref{tab:groups} breaks the change down by group. On standard ERM every variant raises waterbird-on-land, the worst group, and lowers landbird-on-land and waterbird-on-water. This is the pattern of a decision boundary moved toward the waterbird class, which is consistent with, but does not prove, a threshold effect. It also means the WGA gain is bought with accuracy on large groups.
+\textbf{Recalibration is a threshold shift.} Cross-fitted affine recalibration and the offset-only control have the same mean WGA at the fixed setting and differ by at most 0.09\pp{} at the other three settings. On split seed 0 they have identical accuracy in all four groups on all seven backbones at the fixed setting. The fitted slopes are 1.20--1.31 and the offsets at most 0.011 in absolute value, while the median absolute test logit of DPE is only 0.10--0.16, so the map moves the decision boundary by a few thousandths and the slope has no measurable effect. Thresholds learnt on the out-of-fold scores do not transfer: applied to full-validation DPE, which is trained on 25\% more images, they lower WGA on every standard-ERM backbone ($-0.57$\pp).
 
-\begin{table}[t]
-\centering\small
-\caption{Mean change in group accuracy (pp) against full-validation DPE, standard ERM ($n=5$). Groups are bird on background; waterbird-on-land is the worst group of full-validation DPE (89.60\%).}
-\label{tab:groups}
-\resizebox{\linewidth}{!}{\begin{tabular}{@{}lrrrr@{}}
-\toprule
-Procedure & Land/land & Land/water & Water/land & Water/water\\\midrule
-Full-validation DPE (accuracy, \%) & 94.83 & 90.66 & 89.60 & 92.18\\\midrule
-Fixed-split uniform (P0) & $-1.52$ & $-1.16$ & $+0.62$ & $-0.56$\\
-Fixed-split affine (P0) & $-1.22$ & $-0.73$ & $+0.53$ & $-0.72$\\
-Fixed-split linear residual (P0) & $-1.01$ & $-0.26$ & $+1.06$ & $-0.78$\\
-Five-fold uniform & $-2.41$ & $-0.27$ & $+0.87$ & $-0.75$\\
-Five-fold affine, average, .1 & $-1.86$ & $+0.52$ & $+0.47$ & $-1.12$\\
-\bottomrule
-\end{tabular}}
-\end{table}
+\subsection{Label errors change method comparisons}
+Re-scoring the split-seed-0 models on corrected test labels changes the comparison between methods. The uniform fold ensemble is $+0.54$\pp{} ahead of full-validation DPE on official labels and $-0.18$\pp{} behind on corrected labels (per backbone $+0.91$, $-0.78$, $+0.43$, $-2.43$, $+0.96$); the affine variant moves from $+0.47$ to $+0.64$\pp. Differences of half a point between Waterbirds methods can therefore depend on whether the 90 mislabelled test images are corrected, and on how a method happens to treat these species.
 
-\subsection{Threshold and offset controls (Q3)}
-\label{sec:controls}
-Table~\ref{tab:controls} adds controls C1--C3 for the highlighted setting (average loss, $\lambda=0.1$). We recomputed the fold ensembles from the saved features and heads; all 42 historical WGA values for full-validation DPE, C1 and the four affine settings were reproduced exactly.
+\section{Discussion and Limitations}
+\textbf{What limits validation-label methods.} For DPE on Waterbirds, the quality of 18 validation labels matters more than every scheme we tried for spending the validation set. The mechanism is plausible: DPE trains each head on a group-balanced subset, so the 11 mislabelled waterbird-on-land images are drawn into the minority group at a much higher rate than their share of the data, and they teach the heads that these landbirds are waterbirds. The official test labels then reward that mistake on the 43 matching test images. We recommend that methods trained on Waterbirds validation labels report results on corrected labels alongside the official ones, and fit on corrected validation labels.
 
-\begin{table}[t]
-\centering\small
-\caption{Threshold and offset controls, fixed settings (average loss, $\lambda=0.1$). WGA in \%; $\Delta$ is the paired difference (pp) against full-validation DPE with a pointwise 95\% $t$ interval over five standard-ERM backbones.}
-\label{tab:controls}
-\resizebox{\linewidth}{!}{\begin{tabular}{@{}lrrrrr@{}}
-\toprule
-& \multicolumn{3}{c}{Standard ERM ($n=5$)} & \multicolumn{2}{c}{ERM$^*$ ($n=2$)}\\
-Procedure & WGA & $\Delta$ & 95\% interval & WGA & $\Delta$\\\midrule
-Full-validation DPE & 89.60 & -- & -- & 94.08 & --\\
-C1 fold ensemble, uniform & 90.14 & $+0.54$ & $[-0.37,+1.46]$ & 93.60 & $-0.48$\\
-Fold ensemble, affine & 90.06 & $+0.47$ & $[+0.16,+0.77]$ & 94.01 & $-0.07$\\
-C2 fold ensemble, offset only ($a=1$) & 90.06 & $+0.47$ & $[+0.16,+0.77]$ & 94.01 & $-0.07$\\
-C2 fold ensemble, WGA threshold & 89.06 & $-0.53$ & $[-1.47,+0.41]$ & 93.66 & $-0.42$\\
-C3 full DPE, transferred offset & 89.16 & $-0.44$ & $[-0.65,-0.22]$ & 93.38 & $-0.70$\\
-C3 full DPE, transferred WGA threshold & 89.34 & $-0.25$ & $[-1.16,+0.65]$ & 93.75 & $-0.33$\\
-\bottomrule
-\end{tabular}}
-\end{table}
+\textbf{Limitations.} The study covers one dataset and seven backbones from two recipes, with only two ERM$^*$ backbones. The backbones and test set were inspected during earlier development, and the label error was first noticed in test errors; the correction itself is defined by the generator code and does not use any model. Backbones were trained on the official training labels, which include 72 affected images; retraining them could change the size of the effect. We correct only these three species; other issues, such as images that show several birds \cite{asgari2022masktune}, remain. Our standard-ERM DPE is below the published figure, as is the authors' code in our hands. Intervals are pointwise and over backbones only. Improved WGA does not show that a model relies less on backgrounds.
 
-\textbf{The slope does not matter.} For the highlighted setting, affine recalibration and the offset-only control have the same overall accuracy and the same accuracy in each of the four groups on all seven backbones. With average loss and $\lambda=0.01$ their WGA is also identical on every backbone; with maximum loss the WGA differences are $+0.25$\,pp ($[-0.15,+0.65]$) and $-0.12$\,pp ($[-0.38,+0.13]$) on standard ERM. The fitted slopes are 1.20--1.31 and the offsets $|b|\le0.011$, while the median absolute test score of full-validation DPE is only 0.10--0.16 in logit, so the fitted map moves the decision boundary by a few thousandths and the slope has no measurable effect.
-
-\textbf{Tuned thresholds do not help.} Choosing the threshold that maximises out-of-fold WGA lowers test WGA, both on the fold ensemble ($-0.53$\,pp) and transferred to full-validation DPE ($-0.25$\,pp). The loss-fitted offset transferred to full-validation DPE lowers WGA on every backbone ($-0.44$\,pp, $[-0.65,-0.22]$; $-0.70$\,pp on ERM$^*$). A decision boundary learnt on fold models does not carry over to a model trained on 25\% more images.
-
-\textbf{Where the gain comes from.} Every procedure with a positive mean on standard ERM is a fold ensemble with a boundary at or within a few thousandths of zero. The ingredient common to them is the five-fold ensemble itself, whose gain over full-validation DPE ($+0.54$\,pp) has an interval that includes zero and is negative on ERM$^*$. These are fixed settings on a test set inspected before, so they describe the procedures; they do not confirm a gain.
-
-\subsection{Validation-only selection}
-\PH{From the nested-selection run, if it completes: which setting each split seed chose, the spread over split seeds within each backbone, and C4/C5. Otherwise state that selection among the four settings was not run.}
-
-\section{Evaluation Caveat: Label Anomaly in Waterbirds}
-\label{sec:caveat}
-The script that generates Waterbirds labels a CUB species as a waterbird if its name contains any keyword from a list of seabirds and waterfowl, one of which is ``Tern'' \cite{sagawa2020code}. The substring also occurs in ``Eastern'' and ``Western'', so three species match no intended keyword and are labelled waterbird only through this unintended match: Eastern Towhee (021), Western Meadowlark (088) and Western Wood-Pewee (102). A pass over all 46 waterbird-labelled species finds no other case.
-
-The affected images include 11 of the 133 waterbird-on-land validation images and 43 of the 642 waterbird-on-land test images. Waterbird-on-land is the worst group of every DPE backbone in Table~\ref{tab:evidence}, so 6.7\% of the test images that define WGA, and some of the labels used to fit DPE heads and combiners, are affected. We found the anomaly while inspecting test errors. Every number in this paper uses the official labels.
-
-\section{Limitations and Conclusion}
-\label{sec:conclusion}
-\textbf{Limitations.} The study uses one dataset and seven backbones from two recipes, with only two ERM$^*$ backbones. The test set and backbones were inspected repeatedly during development, and the highlighted settings in Section~\ref{sec:explore} were chosen after test inspection; validation-only selection removes test selection from the final step but does not give a fresh test set. The standard-ERM reproduction is 1.4\,pp below the published figure, so gains on those backbones may partly repair a weak baseline. Intervals are pointwise and over backbones only. The DFR control uses the same group labels as DPE. Improved WGA alone does not show that a model relies less on backgrounds.
-
-\textbf{Conclusion.} \PH{two or three sentences after the decision rule: (A) validation-efficient adaptation, (B) simple calibration is enough, (C) exploratory result}. The completed study already supports two practical points: a learned combiner should be compared with DPE fitted on all validation images rather than with a matched reduced-data ensemble, and any calibration step should be compared with a threshold or offset fitted on the same scores.
+\section{Conclusion}
+Methods that train a light head on the Waterbirds validation set inherit a known but unmeasured label error: three landbird species are labelled waterbird because ``tern'' is a substring of ``Eastern'' and ``Western''. For diverse prototypical ensembles, these species account for half or more of the errors in the worst group, and fixing the 18 affected validation labels improves worst-group accuracy on corrected labels by about 2.5\pp{} on every standard-ERM backbone, while the official labels score the fix as a loss. Spending the same validation set through cross-fitting, recalibration or learned combiners does not beat DPE fitted on all images once settings are chosen on validation data, and recalibration reduces to a threshold shift. Cleaning labels, not allocating them, is the larger lever for this family of methods, and benchmark comparisons at the scale of half a point should report corrected labels.

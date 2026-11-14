@@ -1,38 +1,19 @@
-% ACIIDS 2027 manuscript (Springer LNCS). Merged 2026-11-14 from the Downloads draft and the repository evidence.
-% The older planning outline is saved in backup_before_outline_20261114/outline_main_20261114.tex.
-% Red [[...]] = waiting for the nested-selection run. Blue [TODO: ...] = check before submission.
-% Build:  python build_evidence.py ; pdflatex main ; bibtex main ; pdflatex main ; pdflatex main
+% ACIIDS 2027 manuscript (Springer LNCS). Rewritten 2026-11-15 around the validation-label study.
+% The earlier planning outline is saved in backup_before_outline_20261114/outline_main_20261114.tex.
+% Every number is traceable to results/dpe/*_20261115/ or results/dpe/independent_methods_20261113/.
+% Build:  pdflatex main ; bibtex main ; pdflatex main ; pdflatex main
 \documentclass[runningheads]{llncs}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb,graphicx,booktabs,tabularx,xcolor,url,tikz}
-\usetikzlibrary{arrows.meta,positioning}
 \usepackage[hidelinks]{hyperref}
 \setlength{\tabcolsep}{4pt}
 \setlength{\emergencystretch}{2em}
-
-\newcommand{\PH}[1]{\textbf{\textcolor{red}{[[#1]]}}}
 \newcommand{\TODO}[1]{\textbf{\textcolor{blue}{[TODO: #1]}}}
-
-% ---- Outcome framings. Pick ONE after reading REPORT.md, then delete the other two.
-% A: cross-fitted affine recalibration beats the threshold controls.
-\newcommand{\framingA}{With validation-only selection, cross-fitted affine recalibration changed mean test worst-group accuracy from \PH{a} to \PH{b} on the five standard-ERM backbones (\PH{+d}\,pp, 95\% interval \PH{l, u}) and was \PH{on par with / below} full-validation DPE on the ERM$^*$ backbones. It exceeded full-validation DPE with a transferred out-of-fold threshold by \PH{+e}\,pp (interval \PH{l, u}) and the same fold ensemble with an offset only ($a=1$) by \PH{+f}\,pp (interval \PH{l, u}), so the gain is not only a threshold shift. The effect is small and should be read as an incremental result.}
-\newcommand{\contribA}{\textbf{A data-budget-fair result.} With the same validation labels as DPE, cross-fitting plus a group-balanced affine recalibration, with the regularisation chosen on validation data only, gave \PH{+d}\,pp on five standard-ERM backbones (\PH{n of 5} positive) and \PH{result} on two ERM$^*$ backbones, and it beat the offset-only control on the same fold ensemble by \PH{+f}\,pp and the transferred threshold on full-validation DPE by \PH{+e}\,pp.}
-% B: recalibration (a threshold shift) explains the gain; cross-fitting adds little.
-\newcommand{\framingB}{Most of the gain is explained by recalibration: full-validation DPE with a threshold or affine map fitted on out-of-fold scores reached \PH{x}\% worst-group accuracy on the standard-ERM backbones, within \PH{y}\,pp of cross-fitted affine recalibration (\PH{z}\%), and cross-fitting itself without recalibration did \PH{not help / help by w\,pp}. We therefore recommend out-of-fold threshold selection as the inexpensive default and treat cross-fitting as optional.}
-\newcommand{\contribB}{\textbf{A negative result about the mechanism.} Fitting a threshold on out-of-fold scores of the full-validation ensemble recovers \PH{x of y}\,pp of the \PH{+d}\,pp gain of cross-fitted affine recalibration, so the gain is mostly a decision-threshold shift and not evidence that cross-fitting improves the ensemble.}
-% C: exploratory, differences within noise.
-\newcommand{\framingC}{With validation-only selection, the differences between cross-fitted recalibration and full-validation DPE were \PH{values} on the standard-ERM backbones and their intervals include zero. We therefore report the protocol, the controls and the sensitivity of each variant to the fold split as the main contribution, and we treat every gain as unconfirmed.}
-\newcommand{\contribC}{\textbf{An honest null or sensitivity result.} Once the regularisation setting is chosen on validation data and fold-split noise is included, no variant we tested is reliably better than full-validation DPE (\PH{summary}).}
-% P: provisional. No outcome is assumed until REPORT.md and results_long.csv are in the repository.
-\newcommand{\framingP}{\PH{Result sentences pending: the nested-selection run and its matched threshold controls have not been reported yet. Choose framing A, B or C from REPORT.md using the decision rule in README.md.}}
-\newcommand{\contribP}{\PH{Contribution 3 pending: choose contribA, contribB or contribC after the nested-selection run.}}
-% ---- the choice (edit these two lines; keep P until the run is in the repository)
-\newcommand{\framing}{\framingP}
-\newcommand{\contribresult}{\contribP}
+\newcommand{\pp}{\,pp}
 
 \begin{document}
-\title{Spending Scarce Group Annotations: Cross-Fitting and Recalibration for Prototype Ensembles under Subpopulation Shift\thanks{\TODO{working title; revisit once the result is known}}}
-\titlerunning{Spending Scarce Group Annotations}
+\title{Eighteen Labels Outweigh Aggregation: Validation-Label Errors and Data Allocation for Prototype Ensembles on Waterbirds}
+\titlerunning{Validation-Label Errors and Data Allocation on Waterbirds}
 \author{Chau Tan Phat\inst{1,2} \and Nguyen Dang Khang\inst{1,2} \and
 Nguyen Phu Trong\inst{1,2} \and Nguyen Dinh Minh Huy\inst{1,2}}
 \authorrunning{C. T. Phat et al.}
@@ -43,8 +24,8 @@ Vietnam National University, Ho Chi Minh City, Vietnam\\
 \maketitle
 
 \begin{abstract}
-Group-robust methods on Waterbirds rely on a small validation set with group labels that must both fit a light head on frozen features and, in recent work, learn how to combine ensemble members. We ask how that budget should be spent for diverse prototypical ensembles (DPE). On seven saved ResNet-50 backbones (five standard ERM, two ERM$^*$), we compare combiners that reserve 479 validation images with DPE fitted on all 1,199. We then study cross-fitting: five ensembles trained on four fifths of the images each, an affine recalibration fitted on their out-of-fold scores, and test scores averaged over the five. Because an affine map of one binary score is a threshold shift, we pair it with threshold-only controls on the same ensembles and with DFR-style retraining on the same features and labels. \framing{} The study covers one dataset, and the test set was inspected during earlier development, so all results are exploratory.
-\keywords{Subpopulation shift \and Worst-group accuracy \and Prototype ensembles \and Cross-fitting \and Calibration \and Waterbirds}
+Many group-robust methods on Waterbirds fit a light head on frozen features using a small validation set with group labels. We ask what limits such methods, taking diverse prototypical ensembles (DPE) as the case study: how the 1,199 validation images are spent, or what they are labelled. Three landbird species are labelled waterbird in the benchmark because its generator matches the keyword ``tern'' inside ``Eastern'' and ``Western''. This error is known, but its effect on validation-label methods has not been measured. On seven ResNet-50 backbones, these species account for 50--62\% of DPE's errors in its worst group, and refitting DPE after correcting only the 18 affected validation images raises worst-group accuracy on corrected test labels by 2.5\pp{} on every standard-ERM backbone (95\% interval $[1.8, 3.2]$), while the official labels score the same fix as a 0.8\pp{} loss. In contrast, spending the same validation set more carefully helps little: with validation-only selection over ten split seeds, cross-fitting with recalibration, learned combiners and threshold tuning do not beat DPE fitted on all images, and recalibration acts only as a decision-threshold shift. Correcting the labels also reverses the sign of a 0.5\pp{} method difference.
+\keywords{Subpopulation shift \and Worst-group accuracy \and Label errors \and Prototype ensembles \and Waterbirds}
 \end{abstract}
 
 \input{sections/intro}

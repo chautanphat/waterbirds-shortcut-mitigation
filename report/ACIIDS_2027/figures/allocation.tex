@@ -13,11 +13,11 @@
 \node[below] at (1,0) {P1};
 \node[below] at (2,0) {P2};
 \draw[thick,black] plot[mark=*] coordinates {(0,0.73373) (1,1.62131) (2,1.20439)};
-\node[right,black] at (2.1,1.20439) {Uniform};
+\node[right,black] at (2.1,1.00439) {Uniform};
 \draw[thick,blue!70!black] plot[mark=*] coordinates {(0,1.25881) (1,1.79862) (2,1.40383)};
 \node[right,blue!70!black] at (2.1,1.40383) {Affine};
 \draw[thick,orange!85!black] plot[mark=*] coordinates {(0,1.84780) (1,2.02310) (2,1.76106)};
-\node[right,orange!85!black] at (2.1,1.76106) {Linear residual};
+\node[right,orange!85!black] at (2.1,1.96106) {Linear residual};
 \draw[dashed,gray] (0,1.095) -- (2.05,1.095);
-\node[gray,anchor=west] at (0.05,0.75) {Full-validation uniform: 89.595\%};
+\node[gray,anchor=west] at (2.1,1.095-0.55) {Full-val.\ DPE (89.60)};
 \end{tikzpicture}

@@ -81,14 +81,15 @@ for y in (89,90,91,92):
     plot.append(f'\\node[left] at (-0.05,{y-88.5}) {{{y}}};')
 for x in range(3):
     plot.append(f'\\node[below] at ({x},0) {{P{x}}};')
-for color, config, label in [('black','uniform','Uniform'),('blue!70!black','residual-affine-average-l0.1','Affine'),
-                             ('orange!85!black','residual-linear-average-l0.1','Linear residual')]:
+# (label y-offset keeps end labels from overlapping: uniform and affine end 0.2 pp apart)
+for color, config, label, dy in [('black','uniform','Uniform',-0.2),('blue!70!black','residual-affine-average-l0.1','Affine',0.0),
+                                 ('orange!85!black','residual-linear-average-l0.1','Linear residual',0.2)]:
     means = [st.mean(collect('normal_erm',f'partition{x}',config)[1]) for x in range(3)]
     coords = ' '.join(f'({x},{y-88.5:.5f})' for x,y in enumerate(means))
     plot.append(f'\\draw[thick,{color}] plot[mark=*] coordinates {{{coords}}};')
-    plot.append(f'\\node[right,{color}] at (2.1,{means[-1]-88.5:.5f}) {{{label}}};')
+    plot.append(f'\\node[right,{color}] at (2.1,{means[-1]-88.5+dy:.5f}) {{{label}}};')
 plot.append(r'\draw[dashed,gray] (0,1.095) -- (2.05,1.095);')
-plot.append(r'\node[gray,anchor=west] at (0.05,0.75) {Full-validation uniform: 89.595\%};')
+plot.append(r'\node[gray,anchor=west] at (2.1,1.095-0.55) {Full-val.\ DPE (89.60)};')
 plot.append(r'\end{tikzpicture}')
 (OUT / 'figures/allocation.tex').write_text('\n'.join(plot), encoding='utf-8')
 (OUT / 'evidence_audit.json').write_text(json.dumps(dict(source=str(DATA), table=audit, contrasts=contrasts), indent=2), encoding='utf-8')

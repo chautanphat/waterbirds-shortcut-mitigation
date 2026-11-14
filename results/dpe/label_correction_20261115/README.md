@@ -48,8 +48,8 @@ ERM* (n=2, descriptive): DPE +2.12 (relabel) and +2.08 (drop) pp on corrected te
 Reading:
 
 * Fixing 18 of 1,199 validation labels improves DPE's corrected-test WGA by about 2.5 pp on
-  every standard-ERM backbone, five times the largest aggregation effect in this project and
-  six times the head-seed SD (about 0.4 pp).
+  every standard-ERM backbone, more than any aggregation effect in this project (including
+  test-selected settings) and about six times the head-seed SD (about 0.4 pp).
 * On the official test labels the same fix *lowers* WGA (DPE -0.83 pp, [-1.34, -0.31]): the
   corrected model calls more of the 90 mislabelled test images landbird (errors on them rise
   from 78 to 86 of 90 on average), which the official labels count as mistakes. A benchmark
