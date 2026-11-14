@@ -13,6 +13,9 @@ The supporting archive is **not** the original uploaded experiment bundle: predi
   setting is chosen on validation data; DFR-lite is 1.5 pp below DPE.
 * [Threshold and offset controls](threshold_controls_20261115/README.md): affine
   recalibration of the fold ensemble equals an offset-only shift; transferred thresholds hurt.
+* [Species-label error and validation-label methods](label_correction_20261115/README.md):
+  fixing 18 mislabelled validation images raises DPE's corrected-test WGA by +2.48 pp
+  ([+1.80, +3.15], 5/5 standard-ERM sources) but lowers its official-label WGA.
 * [Upstream reproduction on fresh backbones](upstream_reproduction_20261115/README.md):
   official code, seeds 5 and 6, DPE 89.41 and 86.47 vs the paper's 91.0.
 
