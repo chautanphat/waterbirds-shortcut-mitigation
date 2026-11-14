@@ -1,0 +1,109 @@
+{
+  "notebook": "https://www.kaggle.com/code/noerula/dpe-exploration",
+  "version": 3,
+  "retrieved_utc_date": "2026-11-13",
+  "artifacts": [
+    "dpe_ermstar/jobs/seed0-results.zip",
+    "dpe_ermstar/jobs/seed1-results.zip"
+  ],
+  "completion": {
+    "completed": [
+      0,
+      1
+    ],
+    "errors": [],
+    "planned": [
+      0,
+      1
+    ]
+  },
+  "runtime_log_seconds": 28319.76637412,
+  "configuration": {
+    "backbone_epochs": 400,
+    "cpu_threads": 1,
+    "head_training": {
+      "batch_size": 256,
+      "cov_reg": 500000.0,
+      "entropic_scale": 30.0,
+      "epochs": 20,
+      "heads": 15,
+      "lr": 0.001,
+      "momentum": 0.9,
+      "wd_weight": 10.0
+    },
+    "neural": {
+      "heads": 15,
+      "hidden_units": 8,
+      "learning_rate": 0.01,
+      "loss": "group_balanced_bce",
+      "prediction_dropout": 0.25,
+      "protocol": "independent_comparison",
+      "seed_offset": 10000,
+      "steps": 400,
+      "version": 1,
+      "weight_decays": [
+        0.01,
+        0.001
+      ]
+    },
+    "workers": 1
+  },
+  "version_check": "Explicit v3 output log equals latest output log",
+  "saved_code_comparison": {
+    "run.py": "same text as local implementation",
+    "upstream.py": "same text as local implementation",
+    "neural_combiner.py": "same text as local implementation"
+  },
+  "backbones": [
+    {
+      "seed": 0,
+      "summary": {
+        "updates": 14800,
+        "best_val_wga": 0.8270676732063293,
+        "best_position": {
+          "epoch": 267
+        },
+        "selected_checkpoint": "ckpt_last.pt",
+        "last_checkpoint": "ckpt_last.pt",
+        "best_checkpoint": "ckpt_best_wga.pt"
+      },
+      "environment": {
+        "python": "3.13.16",
+        "torch": "2.11.0+cu130",
+        "torchvision": "0.26.0+cu130",
+        "device": "cuda:0",
+        "git_dirty": false,
+        "split_counts": {
+          "train": 4795,
+          "val": 1199
+        },
+        "selection": "last checkpoint, matching the DPE stage-0 handoff"
+      }
+    },
+    {
+      "seed": 1,
+      "summary": {
+        "updates": 14800,
+        "best_val_wga": 0.8045112490653992,
+        "best_position": {
+          "epoch": 279
+        },
+        "selected_checkpoint": "ckpt_last.pt",
+        "last_checkpoint": "ckpt_last.pt",
+        "best_checkpoint": "ckpt_best_wga.pt"
+      },
+      "environment": {
+        "python": "3.13.16",
+        "torch": "2.11.0+cu130",
+        "torchvision": "0.26.0+cu130",
+        "device": "cuda:0",
+        "git_dirty": false,
+        "split_counts": {
+          "train": 4795,
+          "val": 1199
+        },
+        "selection": "last checkpoint, matching the DPE stage-0 handoff"
+      }
+    }
+  ]
+}

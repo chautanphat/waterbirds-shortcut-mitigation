@@ -1,5 +1,5 @@
 {
-  "status": "prepared_no_benchmark_training",
+  "status": "completed_exploratory_two_sources",
   "source_seeds": [
     0,
     1
@@ -12,8 +12,12 @@
   "configuration": "configs/dpe_ermstar/study.json",
   "notebook": "notebooks/dpe_ermstar_neural_two_gpu_kaggle.ipynb",
   "methods": "src/methods/dpe_ermstar/README.md",
-  "validation": "13 synthetic tests including plain notebook execution, original routine comparison and recovery",
-  "limits": "No real T4 throughput, live downloads or 400-epoch benchmark tested locally",
+  "validation": "24 test procedures and 22 training accuracy reports independently replayed with NumPy; 13 prior synthetic notebook/worker tests",
+  "limits": "Two sources and one fixed validation allocation; no formal confirmation, H3 evaluation or independent raw-image replay",
   "provenance": "Readable configurations, dataset rows, source paths, software versions and retained notebook/checkout; no experiment file checksums",
-  "publication": "experiment/dpe-ermstar-neural branch"
+  "publication": "experiment/dpe-ermstar-neural branch",
+  "results": "results/dpe/ermstar_neural_two_seed_20261113/README.md",
+  "run": "https://www.kaggle.com/code/noerula/dpe-exploration",
+  "saved_version": 3,
+  "findings": "MLPs improve matched uniform on both sources; logistic highest neural mean with one win/one loss; no neural mean above full-validation reference"
 }

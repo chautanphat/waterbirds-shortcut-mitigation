@@ -1,0 +1,17 @@
+\begin{tikzpicture}[dpe diagram]
+  \node[dpe heading] at (2,0.7) {Original pairs};
+  \node[dpe heading] at (8.9,0.7) {Change partners};
+  \foreach \i/\j/\y in {1/2/0,2/1/-0.85} {
+    \draw[dpeink!40,rounded corners=2pt] (0.7,\y-.32) rectangle (3.3,\y+.32);
+    \node[dpe land] (l\i) at (1.3,\y) {$L_\i$};
+    \node[dpe water] (w\i) at (2.7,\y) {$W_\i$};
+    \draw[dpeink!60] (l\i) -- (w\i);
+    \draw[dpeink!40,rounded corners=2pt] (7.6,\y-.32) rectangle (10.2,\y+.32);
+    \node[dpe land] (nl\i) at (8.2,\y) {$L_\i$};
+    \node[dpe water] (nw\i) at (9.6,\y) {$W_\j$};
+    \draw[dpeink!60] (nl\i) -- (nw\i);
+  }
+  \draw[dpe arrow] (3.7,-.4) -- (7.2,-.4)
+    node[midway,above,align=center] {Keep the points}
+    node[midway,below,align=center] {Swap their partners};
+\end{tikzpicture}

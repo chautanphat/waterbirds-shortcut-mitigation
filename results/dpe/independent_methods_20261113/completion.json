@@ -1,0 +1,14 @@
+{
+  "expected": 5880,
+  "failures": [],
+  "independent_backbone_sources": {
+    "ermstar": 2,
+    "normal_erm": 5
+  },
+  "results_complete": true,
+  "selected_configuration": null,
+  "statuses": {
+    "alias": 658,
+    "completed": 5222
+  }
+}

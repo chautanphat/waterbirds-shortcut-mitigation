@@ -1,0 +1,27 @@
+\begin{tikzpicture}[dpe diagram]
+\path[use as bounding box] (-0.3,-4.65) rectangle (11.7,0.45);
+\node[dpe heading] at (2.55,0.1) {Observed: every head counts equally};
+\node[dpe heading] at (8.75,0.1) {Idea: validation selects contributions};
+\foreach \i/\y in {1/-0.7,2/-1.6,3/-2.5} {
+  \node[dpe box,minimum width=1.35cm] (a\i) at (0.6,\y) {$p_{\i}(c\mid x)$};
+  \node[dpe box,minimum width=1.35cm] (b\i) at (6.8,\y) {$p_{\i}(c\mid x)$};
+}
+\node[dpe box,minimum height=1.3cm] (avg) at (4.25,-1.6) {Uniform\\average};
+\foreach \i in {1,2,3} {
+  \draw[dpe arrow] (a\i.east) -- (avg.west)
+    node[pos=0.35,fill=white,inner sep=1pt] {$1/15$};
+}
+\node[dpe box,minimum height=1.3cm] (weighted) at (10.5,-1.6) {Weighted\\sum};
+\draw[dpe arrow,line width=1.5pt] (b1.east) -- (weighted.west)
+  node[pos=0.35,fill=white,inner sep=1pt] {$w_1$};
+\draw[dpe arrow,line width=0.4pt] (b2.east) -- (weighted.west)
+  node[pos=0.35,fill=white,inner sep=1pt] {$w_2$};
+\draw[dpe arrow,line width=1pt] (b3.east) -- (weighted.west)
+  node[pos=0.35,fill=white,inner sep=1pt] {$w_3$};
+\node at (0.6,-3.05) {$\vdots\quad p_{15}$};
+\node at (6.8,-3.05) {$\vdots\quad p_{15}$};
+\node at (2.55,-3.65) {$p(c\mid x)=\frac{1}{15}\sum_{i=1}^{15}p_i(c\mid x)$};
+\node at (8.75,-3.65) {$p_w(c\mid x)=\sum_{i=1}^{15}w_i\,p_i(c\mid x)$};
+\node[align=center] at (8.75,-4.3) {$w_i\geq 0,\quad\sum_i w_i=1$\\Illustrative widths; no measured weights};
+\node[align=center] at (2.55,-4.3) {Same trained heads\\Same per-head probabilities};
+\end{tikzpicture}

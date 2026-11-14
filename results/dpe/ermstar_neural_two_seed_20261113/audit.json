@@ -1,0 +1,98 @@
+{
+  "status": "passed",
+  "seeds": [
+    {
+      "seed": 0,
+      "head_pool": 720,
+      "combiner_pool": 479,
+      "config": {
+        "backbone_epochs": 400,
+        "cpu_threads": 1,
+        "head_training": {
+          "batch_size": 256,
+          "cov_reg": 500000.0,
+          "entropic_scale": 30.0,
+          "epochs": 20,
+          "heads": 15,
+          "lr": 0.001,
+          "momentum": 0.9,
+          "wd_weight": 10.0
+        },
+        "neural": {
+          "heads": 15,
+          "hidden_units": 8,
+          "learning_rate": 0.01,
+          "loss": "group_balanced_bce",
+          "prediction_dropout": 0.25,
+          "protocol": "independent_comparison",
+          "seed_offset": 10000,
+          "steps": 400,
+          "version": 1,
+          "weight_decays": [
+            0.01,
+            0.001
+          ]
+        },
+        "workers": 1
+      },
+      "checked_test_procedures": 12
+    },
+    {
+      "seed": 1,
+      "head_pool": 720,
+      "combiner_pool": 479,
+      "config": {
+        "backbone_epochs": 400,
+        "cpu_threads": 1,
+        "head_training": {
+          "batch_size": 256,
+          "cov_reg": 500000.0,
+          "entropic_scale": 30.0,
+          "epochs": 20,
+          "heads": 15,
+          "lr": 0.001,
+          "momentum": 0.9,
+          "wd_weight": 10.0
+        },
+        "neural": {
+          "heads": 15,
+          "hidden_units": 8,
+          "learning_rate": 0.01,
+          "loss": "group_balanced_bce",
+          "prediction_dropout": 0.25,
+          "protocol": "independent_comparison",
+          "seed_offset": 10000,
+          "steps": 400,
+          "version": 1,
+          "weight_decays": [
+            0.01,
+            0.001
+          ]
+        },
+        "workers": 1
+      },
+      "checked_test_procedures": 12
+    }
+  ],
+  "checked_test_procedures": 24,
+  "checked_training_procedures": 22,
+  "groups": {
+    "00": 2255,
+    "01": 2255,
+    "10": 642,
+    "11": 642
+  },
+  "checks": [
+    "NumPy forward replay of fitted models",
+    "all saved WGA/overall/group metrics and deltas",
+    "identical test IDs/labels/groups across seeds and arms",
+    "disjoint head/combiner/test IDs",
+    "saved combiner training metrics reproduced",
+    "same primary partition across seeds"
+  ],
+  "limits": [
+    "No raw-image inference or independent backbone/head training",
+    "No independent neural refit",
+    "Historical fit-before-test ordering not proved by replay"
+  ]
+}
