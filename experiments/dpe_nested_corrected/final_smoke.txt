@@ -1,0 +1,233 @@
+test_budget_stops_before_a_new_fit (__main__.CorrectedTests.test_budget_stops_before_a_new_fit) ... ok
+test_cache_identity_and_overlap_fail_closed (__main__.CorrectedTests.test_cache_identity_and_overlap_fail_closed) ... ok
+test_corrupt_prediction_cache_is_rejected (__main__.CorrectedTests.test_corrupt_prediction_cache_is_rejected) ... ok
+test_empty_and_partial_reports_label_declared_missing_cells (__main__.CorrectedTests.test_empty_and_partial_reports_label_declared_missing_cells) ... ok
+test_equal_scores_move_together_and_default_wins_ties (__main__.CorrectedTests.test_equal_scores_move_together_and_default_wins_ties) ... ok
+test_every_inner_head_excludes_the_entire_evaluation_fold (__main__.CorrectedTests.test_every_inner_head_excludes_the_entire_evaluation_fold) ... ok
+test_exact_search_matches_exhaustive_classifier_partitions (__main__.CorrectedTests.test_exact_search_matches_exhaustive_classifier_partitions) ... ok
+test_exact_search_recovers_narrow_improvement (__main__.CorrectedTests.test_exact_search_recovers_narrow_improvement) ... ok
+test_heldout_label_perturbation_cannot_change_inner_context (__main__.CorrectedTests.test_heldout_label_perturbation_cannot_change_inner_context) ... ok
+test_postmean_control_is_one_threshold_on_the_mean (__main__.CorrectedTests.test_postmean_control_is_one_threshold_on_the_mean) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.539s
+
+OK
+# Corrected protocol diagnostics
+
+Protocol: `strict-nested-postmean-v2`.
+Completed: 2/20 planned source � split cells.
+PARTIAL RUN: do not treat interim means as the completed experiment.
+Primary rule remains balanced NLL; WGA is secondary. Prior test inspection makes this exploratory.
+Strict inner CV rebuilds all heads and calibrators inside each training fold and evaluates the complete inference graph.
+`postmean` applies one scalar threshold/bias AFTER uniform probability averaging.
+`bias_foldwise` applies a bias before averaging and is a distinct predictor.
+The full-validation OOF calibrator transfer is evaluated separately inside inner CV.
+Original pooled 60/40 affine/linear controls are retained; DFR preprocessing is fitted inside CV folds.
+
+## Mean test WGA and overall accuracy
+
+Each source is first averaged across its available split seeds, then sources are weighted equally. SD is across those source means.
+
+| arm | normal ERM WGA � source SD | normal ERM OA | ERM* WGA � source SD | ERM* OA |
+| --- | ---: | ---: | ---: | ---: |
+| bag75_uniform | 50.000 � n/a (n=1) | 72.500 | 50.000 � n/a (n=1) | 72.500 |
+| crossfit_affine_fixed | 50.000 � n/a (n=1) | 67.500 | 50.000 � n/a (n=1) | 70.000 |
+| crossfit_affine_sel_nll | 50.000 � n/a (n=1) | 67.500 | 50.000 � n/a (n=1) | 70.000 |
+| crossfit_affine_sel_wga | 50.000 � n/a (n=1) | 67.500 | 50.000 � n/a (n=1) | 70.000 |
+| crossfit_bias_foldwise_fixed | 50.000 � n/a (n=1) | 67.500 | 50.000 � n/a (n=1) | 70.000 |
+| crossfit_bias_foldwise_sel_nll | 50.000 � n/a (n=1) | 67.500 | 50.000 � n/a (n=1) | 70.000 |
+| crossfit_bias_foldwise_sel_wga | 50.000 � n/a (n=1) | 67.500 | 50.000 � n/a (n=1) | 70.000 |
+| crossfit_postmean_bias_fixed | 50.000 � n/a (n=1) | 67.500 | 50.000 � n/a (n=1) | 70.000 |
+| crossfit_postmean_bias_sel_nll | 50.000 � n/a (n=1) | 67.500 | 50.000 � n/a (n=1) | 70.000 |
+| crossfit_postmean_bias_sel_wga | 50.000 � n/a (n=1) | 67.500 | 50.000 � n/a (n=1) | 70.000 |
+| crossfit_postmean_thrwga | 50.000 � n/a (n=1) | 70.000 | 50.000 � n/a (n=1) | 70.000 |
+| crossfit_uniform | 50.000 � n/a (n=1) | 70.000 | 50.000 � n/a (n=1) | 70.000 |
+| dfr_lite | 50.000 � n/a (n=1) | 72.500 | 50.000 � n/a (n=1) | 72.500 |
+| fullval_affine_oof_fixed | 50.000 � n/a (n=1) | 72.500 | 50.000 � n/a (n=1) | 72.500 |
+| fullval_affine_oof_sel_nll | 50.000 � n/a (n=1) | 72.500 | 50.000 � n/a (n=1) | 72.500 |
+| fullval_affine_oof_sel_wga | 50.000 � n/a (n=1) | 72.500 | 50.000 � n/a (n=1) | 72.500 |
+| fullval_postmean_bias_fixed | 50.000 � n/a (n=1) | 72.500 | 50.000 � n/a (n=1) | 72.500 |
+| fullval_postmean_bias_sel_nll | 50.000 � n/a (n=1) | 72.500 | 50.000 � n/a (n=1) | 72.500 |
+| fullval_postmean_bias_sel_wga | 50.000 � n/a (n=1) | 72.500 | 50.000 � n/a (n=1) | 72.500 |
+| fullval_postmean_thrwga | 50.000 � n/a (n=1) | 72.500 | 50.000 � n/a (n=1) | 72.500 |
+| fullval_uniform | 50.000 � n/a (n=1) | 72.500 | 50.000 � n/a (n=1) | 72.500 |
+| pool_affine_fixed | 50.000 � n/a (n=1) | 70.000 | 50.000 � n/a (n=1) | 75.000 |
+| pool_affine_sel_nll | 50.000 � n/a (n=1) | 70.000 | 50.000 � n/a (n=1) | 75.000 |
+| pool_affine_sel_wga | 50.000 � n/a (n=1) | 70.000 | 50.000 � n/a (n=1) | 75.000 |
+| pool_linear_fixed | 50.000 � n/a (n=1) | 70.000 | 50.000 � n/a (n=1) | 75.000 |
+| pool_linear_sel_nll | 50.000 � n/a (n=1) | 70.000 | 50.000 � n/a (n=1) | 75.000 |
+| pool_linear_sel_wga | 50.000 � n/a (n=1) | 70.000 | 50.000 � n/a (n=1) | 75.000 |
+| pool_uniform | 50.000 � n/a (n=1) | 70.000 | 60.000 � n/a (n=1) | 75.000 |
+
+## normal_erm: corrected paired contrasts
+
+| contrast | mean pp | pointwise 95% source t-interval | per source |
+| --- | ---: | ---: | ---: |
+| crossfit_affine_sel_nll - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - bag75_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - crossfit_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - crossfit_affine_fixed | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_wga - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_fixed - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_fixed - crossfit_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_uniform - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_uniform - bag75_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| pool_affine_sel_nll - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| pool_linear_sel_nll - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| dfr_lite - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - crossfit_postmean_thrwga | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - fullval_postmean_thrwga | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - fullval_postmean_bias_sel_nll | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - crossfit_postmean_bias_sel_nll | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_postmean_thrwga - crossfit_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| fullval_postmean_thrwga - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+
+Exact threshold differs from 0.5 in 0/1 cells.
+Mean fitted-validation WGA gain over legacy coarse search: 0.000 pp. This is not a test gain.
+
+## normal_erm: every setting (no test-based selection)
+
+| family | setting | mean test WGA |
+| --- | ---: | ---: |
+| crossfit_affine | average-l0.1 | 50.000 |
+| crossfit_affine | maximum-l0.1 | 50.000 |
+| crossfit_affine | average-l0.01 | 50.000 |
+| crossfit_affine | maximum-l0.01 | 50.000 |
+| crossfit_bias_foldwise | average-l0.1 | 50.000 |
+| crossfit_bias_foldwise | maximum-l0.1 | 50.000 |
+| crossfit_bias_foldwise | average-l0.01 | 50.000 |
+| crossfit_bias_foldwise | maximum-l0.01 | 50.000 |
+| crossfit_postmean_bias | average-l0.1 | 50.000 |
+| crossfit_postmean_bias | maximum-l0.1 | 50.000 |
+| crossfit_postmean_bias | average-l0.01 | 50.000 |
+| crossfit_postmean_bias | maximum-l0.01 | 50.000 |
+| fullval_affine_oof | average-l0.1 | 50.000 |
+| fullval_affine_oof | maximum-l0.1 | 50.000 |
+| fullval_affine_oof | average-l0.01 | 50.000 |
+| fullval_affine_oof | maximum-l0.01 | 50.000 |
+| fullval_postmean_bias | average-l0.1 | 50.000 |
+| fullval_postmean_bias | maximum-l0.1 | 50.000 |
+| fullval_postmean_bias | average-l0.01 | 50.000 |
+| fullval_postmean_bias | maximum-l0.01 | 50.000 |
+| pool_affine | average-l0.1 | 50.000 |
+| pool_affine | maximum-l0.1 | 50.000 |
+| pool_affine | average-l0.01 | 50.000 |
+| pool_affine | maximum-l0.01 | 50.000 |
+| pool_linear | average-l0.1 | 50.000 |
+| pool_linear | maximum-l0.1 | 50.000 |
+| pool_linear | average-l0.01 | 50.000 |
+| pool_linear | maximum-l0.01 | 50.000 |
+
+Selection counts (source � split cells):
+
+| family | rule | cells | average-l0.1 | maximum-l0.1 | average-l0.01 | maximum-l0.01 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| crossfit_affine | nll | 1 | 0 | 0 | 1 | 0 |
+| crossfit_affine | wga | 1 | 0 | 0 | 1 | 0 |
+| crossfit_bias_foldwise | nll | 1 | 1 | 0 | 0 | 0 |
+| crossfit_bias_foldwise | wga | 1 | 1 | 0 | 0 | 0 |
+| crossfit_postmean_bias | nll | 1 | 1 | 0 | 0 | 0 |
+| crossfit_postmean_bias | wga | 1 | 1 | 0 | 0 | 0 |
+| fullval_affine_oof | nll | 1 | 0 | 0 | 1 | 0 |
+| fullval_affine_oof | wga | 1 | 0 | 0 | 1 | 0 |
+| fullval_postmean_bias | nll | 1 | 1 | 0 | 0 | 0 |
+| fullval_postmean_bias | wga | 1 | 0 | 0 | 0 | 1 |
+| pool_affine | nll | 1 | 0 | 0 | 1 | 0 |
+| pool_affine | wga | 1 | 0 | 0 | 1 | 0 |
+| pool_linear | nll | 1 | 0 | 0 | 1 | 0 |
+| pool_linear | wga | 1 | 0 | 0 | 1 | 0 |
+
+Split-seed variability: mean within-source SD (pp). Split seeds also change head-training seeds.
+
+| arm | mean SD |
+| --- | ---: |
+
+## ermstar: corrected paired contrasts
+
+| contrast | mean pp | pointwise 95% source t-interval | per source |
+| --- | ---: | ---: | ---: |
+| crossfit_affine_sel_nll - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - bag75_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - crossfit_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - crossfit_affine_fixed | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_wga - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_fixed - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_fixed - crossfit_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_uniform - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_uniform - bag75_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| pool_affine_sel_nll - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| pool_linear_sel_nll - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| dfr_lite - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - crossfit_postmean_thrwga | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - fullval_postmean_thrwga | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - fullval_postmean_bias_sel_nll | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_affine_sel_nll - crossfit_postmean_bias_sel_nll | +0.000 | [n/a, n/a] | +0.000 |
+| crossfit_postmean_thrwga - crossfit_uniform | +0.000 | [n/a, n/a] | +0.000 |
+| fullval_postmean_thrwga - fullval_uniform | +0.000 | [n/a, n/a] | +0.000 |
+
+Exact threshold differs from 0.5 in 1/1 cells.
+Mean fitted-validation WGA gain over legacy coarse search: 1.333 pp. This is not a test gain.
+
+## ermstar: every setting (no test-based selection)
+
+| family | setting | mean test WGA |
+| --- | ---: | ---: |
+| crossfit_affine | average-l0.1 | 50.000 |
+| crossfit_affine | maximum-l0.1 | 50.000 |
+| crossfit_affine | average-l0.01 | 50.000 |
+| crossfit_affine | maximum-l0.01 | 50.000 |
+| crossfit_bias_foldwise | average-l0.1 | 50.000 |
+| crossfit_bias_foldwise | maximum-l0.1 | 50.000 |
+| crossfit_bias_foldwise | average-l0.01 | 50.000 |
+| crossfit_bias_foldwise | maximum-l0.01 | 50.000 |
+| crossfit_postmean_bias | average-l0.1 | 50.000 |
+| crossfit_postmean_bias | maximum-l0.1 | 50.000 |
+| crossfit_postmean_bias | average-l0.01 | 50.000 |
+| crossfit_postmean_bias | maximum-l0.01 | 50.000 |
+| fullval_affine_oof | average-l0.1 | 50.000 |
+| fullval_affine_oof | maximum-l0.1 | 50.000 |
+| fullval_affine_oof | average-l0.01 | 50.000 |
+| fullval_affine_oof | maximum-l0.01 | 50.000 |
+| fullval_postmean_bias | average-l0.1 | 50.000 |
+| fullval_postmean_bias | maximum-l0.1 | 50.000 |
+| fullval_postmean_bias | average-l0.01 | 50.000 |
+| fullval_postmean_bias | maximum-l0.01 | 50.000 |
+| pool_affine | average-l0.1 | 50.000 |
+| pool_affine | maximum-l0.1 | 50.000 |
+| pool_affine | average-l0.01 | 50.000 |
+| pool_affine | maximum-l0.01 | 50.000 |
+| pool_linear | average-l0.1 | 50.000 |
+| pool_linear | maximum-l0.1 | 50.000 |
+| pool_linear | average-l0.01 | 50.000 |
+| pool_linear | maximum-l0.01 | 50.000 |
+
+Selection counts (source � split cells):
+
+| family | rule | cells | average-l0.1 | maximum-l0.1 | average-l0.01 | maximum-l0.01 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| crossfit_affine | nll | 1 | 0 | 0 | 1 | 0 |
+| crossfit_affine | wga | 1 | 0 | 0 | 0 | 1 |
+| crossfit_bias_foldwise | nll | 1 | 1 | 0 | 0 | 0 |
+| crossfit_bias_foldwise | wga | 1 | 1 | 0 | 0 | 0 |
+| crossfit_postmean_bias | nll | 1 | 1 | 0 | 0 | 0 |
+| crossfit_postmean_bias | wga | 1 | 1 | 0 | 0 | 0 |
+| fullval_affine_oof | nll | 1 | 0 | 0 | 1 | 0 |
+| fullval_affine_oof | wga | 1 | 0 | 0 | 1 | 0 |
+| fullval_postmean_bias | nll | 1 | 1 | 0 | 0 | 0 |
+| fullval_postmean_bias | wga | 1 | 0 | 0 | 1 | 0 |
+| pool_affine | nll | 1 | 0 | 0 | 0 | 1 |
+| pool_affine | wga | 1 | 0 | 0 | 0 | 1 |
+| pool_linear | nll | 1 | 0 | 0 | 0 | 1 |
+| pool_linear | wga | 1 | 0 | 0 | 1 | 0 |
+
+Split-seed variability: mean within-source SD (pp). Split seeds also change head-training seeds.
+
+| arm | mean SD |
+| --- | ---: |
+
+Missing declared cells: [('synthetic-normal_erm', 1), ('synthetic-normal_erm', 2), ('synthetic-normal_erm', 3), ('synthetic-normal_erm', 4), ('synthetic-normal_erm', 5), ('synthetic-normal_erm', 6), ('synthetic-normal_erm', 7), ('synthetic-normal_erm', 8), ('synthetic-normal_erm', 9), ('synthetic-ermstar', 1), ('synthetic-ermstar', 2), ('synthetic-ermstar', 3), ('synthetic-ermstar', 4), ('synthetic-ermstar', 5), ('synthetic-ermstar', 6), ('synthetic-ermstar', 7), ('synthetic-ermstar', 8), ('synthetic-ermstar', 9)]
+
+Task errors: synthetic-ermstar-split00.txt, synthetic-normal_erm-split00.txt
+
+SYNTHETIC SMOKE PASSED: [{"recipe": "normal_erm", "status": "passed", "arms": 28, "head_ensembles": 41, "epochs": 1, "calibration_steps": 8}, {"recipe": "ermstar", "status": "passed", "arms": 28, "head_ensembles": 41, "epochs": 1, "calibration_steps": 8}]

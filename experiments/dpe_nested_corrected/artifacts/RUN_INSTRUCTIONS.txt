@@ -1,0 +1,31 @@
+Corrected DPE Kaggle rerun
+
+1. In Kaggle, create a notebook and import dpe_nested_corrected_kaggle.ipynb.
+2. Turn Internet On. CPU is sufficient; the head trainers run on CPU.
+3. Optionally attach the earlier notebook's output to recover features from inputs.
+   Otherwise the notebook retrieves the same seven feature sets from public outputs.
+4. Choose Save & Run All. Keep the declared ten split seeds and selection rules.
+5. Download corrected_nested_results.zip for analysis.
+6. If the budget is reached, attach the corrected output or upload
+   corrected_nested_resume.zip as a Dataset, then Save & Run All again.
+
+The notebook embeds the complete code ZIP. A separate dpe_nested_corrected_code.zip
+is provided for inspection/local CLI use; uploading it as a code dataset is optional.
+
+Changes: fully nested head/calibrator rebuilding; full inference-graph inner
+evaluation; independent family selection; exact empirical WGA threshold search;
+explicit bias/threshold after averaging; foldwise bias kept as a separate control;
+DFR preprocessing inside folds; retained original pooled controls; stage checksums
+and source/config/runtime fingerprints; failures propagated; partial-run labeling.
+
+The primary selection rule remains balanced NLL, secondary WGA. The old four
+calibrated candidates and the fixed average/0.1 arm are retained. Old-protocol result
+caches are never imported. Reusing raw frozen backbone features is supported.
+
+Compute: 41 fifteen-head ensembles per source/split (previously 11), with 70 cells.
+The default budget is 8.5 hours; it may require more than one Kaggle session.
+Completed head-ensemble predictions are retained between sessions.
+
+Validation: unit tests and synthetic smoke tests are software checks. No corrected
+Waterbirds performance is claimed until you execute the full notebook. The test
+set was inspected previously, so this rerun remains exploratory evidence.

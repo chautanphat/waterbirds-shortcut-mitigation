@@ -1,0 +1,24 @@
+# Shared DPE-aligned standard (no-augmentation) stage-0 ERM.
+# Matches the stage-0 command in notebooks/dpe_waterbirds_end_to_end.ipynb
+# and its effective defaults from baselines/dpe4subpop/main.py.
+profile: dpe_standard_erm
+dataset:
+  data_dir: data/waterbirds  # contains metadata_waterbirds.csv and archive folder
+  batch_size: 128
+  batch_size_eval: 256
+  workers: 4
+  augmentation: false
+model:
+  weights: IMAGENET1K_V2
+  freeze_bn: false
+training:
+  epochs: 100
+  steps: null
+  lr: 0.001
+  momentum: 0.9
+  weight_decay: 0.0  # notebook omits --optim_weight_decay; DPE defaults to 0
+  sampling: class_balanced
+  eval_every: 300  # only used when steps replaces epochs
+  seed: 0
+  device: cuda
+output_dir: checkpoints/waterbirds_erm

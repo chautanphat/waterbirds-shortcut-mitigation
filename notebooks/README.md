@@ -25,3 +25,11 @@ reference and a separate-pool neural arm with matched uniform. Enable Internet a
 select **GPU T4 ×2** to run seeds0/1 concurrently, one GPU each. Full-output resume
 is supported. The notebook is a short launcher importing repository modules; it writes no Python
 source files. It checks out `experiment/dpe-ermstar-neural` by default. [Recipe audit, code reuse and tests](../src/methods/dpe_ermstar/README.md).
+
+## Corrected nested DPE selection
+
+The self-contained corrected notebook is in
+[the corrected experiment package](../experiments/dpe_nested_corrected/README.md).
+It fixes inner-CV nesting and threshold controls. Use CPU, enable Internet and
+Save & Run All. The corrected Waterbirds rerun is pending; synthetic tests passed.
+[Audit and interpretation](../docs/dpe_nested_audit_and_rerun.md).
