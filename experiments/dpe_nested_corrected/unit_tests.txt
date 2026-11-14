@@ -1,0 +1,15 @@
+test_budget_stops_before_a_new_fit (__main__.CorrectedTests.test_budget_stops_before_a_new_fit) ... ok
+test_cache_identity_and_overlap_fail_closed (__main__.CorrectedTests.test_cache_identity_and_overlap_fail_closed) ... ok
+test_corrupt_prediction_cache_is_rejected (__main__.CorrectedTests.test_corrupt_prediction_cache_is_rejected) ... ok
+test_empty_and_partial_reports_label_declared_missing_cells (__main__.CorrectedTests.test_empty_and_partial_reports_label_declared_missing_cells) ... ok
+test_equal_scores_move_together_and_default_wins_ties (__main__.CorrectedTests.test_equal_scores_move_together_and_default_wins_ties) ... ok
+test_every_inner_head_excludes_the_entire_evaluation_fold (__main__.CorrectedTests.test_every_inner_head_excludes_the_entire_evaluation_fold) ... ok
+test_exact_search_matches_exhaustive_classifier_partitions (__main__.CorrectedTests.test_exact_search_matches_exhaustive_classifier_partitions) ... ok
+test_exact_search_recovers_narrow_improvement (__main__.CorrectedTests.test_exact_search_recovers_narrow_improvement) ... ok
+test_heldout_label_perturbation_cannot_change_inner_context (__main__.CorrectedTests.test_heldout_label_perturbation_cannot_change_inner_context) ... ok
+test_postmean_control_is_one_threshold_on_the_mean (__main__.CorrectedTests.test_postmean_control_is_one_threshold_on_the_mean) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 3.564s
+
+OK

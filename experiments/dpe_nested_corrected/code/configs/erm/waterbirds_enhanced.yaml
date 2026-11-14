@@ -1,0 +1,23 @@
+# Shared DPE-aligned enhanced stage-0 ERM (ERM*).
+# Same optimization as standard ERM; augmentation applies to training only.
+profile: dpe_enhanced_erm
+dataset:
+  data_dir: data/waterbirds  # contains metadata_waterbirds.csv and archive folder
+  batch_size: 128
+  batch_size_eval: 256
+  workers: 4
+  augmentation: true
+model:
+  weights: IMAGENET1K_V2
+  freeze_bn: false
+training:
+  epochs: 100
+  steps: null
+  lr: 0.001
+  momentum: 0.9
+  weight_decay: 0.0  # notebook omits --optim_weight_decay; DPE defaults to 0
+  sampling: class_balanced
+  eval_every: 300  # only used when steps replaces epochs
+  seed: 0
+  device: cuda
+output_dir: checkpoints/waterbirds_enhanced_erm

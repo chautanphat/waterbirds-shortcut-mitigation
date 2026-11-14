@@ -111,3 +111,9 @@ Important deviations, limitations, and reproduction observations.
 ```
 
 Keep detailed setup and commands in the relevant method README; keep this documentation focused on the shared protocol and research record.
+
+## DPE nested-selection audit and corrected rerun
+
+[Audit, corrections, validation and research implications](dpe_nested_audit_and_rerun.md)
+distinguishes the original negative results from the corrected implementation and
+the still-pending Kaggle experiment.

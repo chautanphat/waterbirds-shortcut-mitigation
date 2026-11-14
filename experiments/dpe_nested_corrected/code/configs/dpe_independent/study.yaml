@@ -1,0 +1,42 @@
+version: 1
+source_revision: 22b65ec5fc8f00b33938fe2af6dc32ad2f34ecfd
+selection: none_report_every_configuration
+sources:
+  normal_erm: [0, 1, 2, 3, 4]
+  ermstar: [0, 1]
+partitions: [0, 1, 2]
+scales: [native, shared]
+temperatures: [1.0, 0.1, 0.05]
+subset_sizes: [1, 2, 3, 5, 15]
+memberships: [cyclic, permuted]
+local_sizes: [1, 3, 5, 15]
+losses: [average, maximum]
+penalties: [0.01, 0.1]
+anchor_weight_decays: [0.01, 0.001]
+joint_nll_penalties: [1.0, 0.1, 0.01]
+steps: 400
+learning_rate: 0.01
+hidden_units: 8
+seed_offset: 10000
+temperature_bounds: [0.01, 10.0]
+bias_bounds: [-5.0, 5.0]
+solver:
+  maxiter: 1000
+  ftol: 1.0e-10
+  feasibility_tolerance: 1.0e-7
+  probability_floor: 1.0e-12
+head_training:
+  heads: 15
+  epochs: 20
+  batch_size: 256
+  lr: 0.001
+  momentum: 0.9
+  entropic_scale: 30.0
+  cov_reg: 500000.0
+  wd_weight: 10.0
+crossfit:
+  folds: 5
+  split_seed: 0
+  subset_sizes: [3, 5]
+  temperatures: [1.0, 0.1, 0.05]
+timeout_hours: 8
