@@ -137,14 +137,14 @@ All 30 prototypes (earlier highest mean) & 89.30 & ---\\
 \textbf{Hypothesis.} Some heads might rely more on backgrounds and make less useful predictions. Giving those heads less weight might improve the final answer. This was a possible explanation, not something we had already shown.
 
 \begin{methodfigure}
-\input{figures/week02_h2_simple.tex}
-\caption{Keep the same heads, but change how their answers are combined. The unequal weights are examples, not measured values.}
+\input{figures/dpe_h2_weights.tex}
+\caption{The Week 1 idea: compare equal averaging with a weighted sum of the same head predictions. Here $p_i(c\mid x)$ is head $i$'s probability for class $c$ on image $x$. Arrow widths show example weights, not measured reliability.}
 \label{fig:h2}
 \end{methodfigure}
 
 \textbf{What we tried.} Simple fixed weights did not help. We then learned a linear combination and a small network with 15 inputs and 8 hidden units. We also tried hiding 25\% of the inputs during training (\emph{dropout}). All heads are used at test time.
 
-\begin{table}[!ht]
+\begin{table}[H]
 \centering
 \caption{Test WGA (\%): our results and the original paper, labeled separately. Our means use five normal-ERM runs and two ERM$^*$ runs. The variants share our split-validation heads; full-validation reproduction uses all 1,199 validation images.}
 \label{tab:combinations}
@@ -176,7 +176,7 @@ We also tested three ways to change the final prediction without retraining the 
 \end{itemize}
 All three fits use validation data. Prototype weights use a 0.01 penalty; the two adjustments use 0.1. These penalties discourage large changes. The linear correction beat the simpler confidence adjustment on standard ERM, but lost to it on ERM$^*$.
 
-\begin{table}[!ht]
+\begin{table}[H]
 \centering
 % Fixed configurations: prototype-importance-shared-T0.05-maximum-l0.01;
 % residual-affine-average-l0.1; residual-linear-average-l0.1.
