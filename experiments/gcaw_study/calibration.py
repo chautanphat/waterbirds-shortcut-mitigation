@@ -1,8 +1,6 @@
 """
-Triển khai:
-1. Calibrated Prototype Distance (A1: Head Z-score, A2: Class-Centered, A3: Class Z-score)
-2. Conditional Expert Agreement & Marginal-Free Reliability Lift Table (OOF + Shrinkage)
-3. Within-Sample Correct-Expert AUROC & Randomized-Weighting Control
+Triển khai chuẩn hóa khoảng cách (A1/A2/A3), bảng tin cậy có điều kiện với Shrinkage (B1/B2),
+và chuẩn hóa biên độ nội mẫu (Within-Sample Z-score) giúp khắc phục triệt để lỗi tắt biên độ ở B2.
 """
 
 from __future__ import annotations
@@ -11,40 +9,34 @@ import numpy as np
 from scipy.special import softmax
 
 
-def compute_head_predictions_and_agreement(probs: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Từ probs [N, 15, 2], tính:
-      - head_preds: [N, 15] nhãn dự đoán của từng head
-      - agreement: [N, 15] tỷ lệ 14 head còn lại đồng thuận với head j
-    """
-    head_preds = np.argmax(probs, axis=-1)  # [N, K]
-    N, K = head_preds.shape
-    # So sánh từng cặp head: eq[n, j, m] = 1 nếu head_preds[n, j] == head_preds[n, m]
-    eq = (head_preds[:, :, None] == head_preds[:, None, :]).astype(np.float64)
-    # Trừ đi chính nó (đường chéo = 1) và chia cho (K - 1)
-    agreement = (np.sum(eq, axis=-1) - 1.0) / max(1, K - 1)
-    return head_preds, agreement
-
-
 def within_sample_zscore(mat: np.ndarray, eps: float = 1e-6) -> np.ndarray:
     """
-    Chuẩn hóa vector 15 heads trên từng mẫu ảnh về mean=0, std=1.
-    Nếu tất cả 15 heads có giá trị bằng nhau trên mẫu i (std < eps), trả về 0.
-    Giúp bảo đảm khi AUROC nội mẫu cao thì biên độ đưa vào softmax luôn nhất quán.
+    Chuẩn hóa mỗi hàng (15 heads trên cùng 1 mẫu ảnh i) về trung bình 0, độ lệch chuẩn 1.
+    Đảm bảo khi thứ tự xếp hạng (AUROC) tốt thì biên độ đẩy vào softmax luôn đủ mạnh,
+    không bị suy biến về 0 như ở v7.0.
     """
     mean = np.mean(mat, axis=1, keepdims=True)
     std = np.std(mat, axis=1, keepdims=True)
     return np.where(std > eps, (mat - mean) / (std + eps), 0.0)
 
 
+def compute_head_predictions_and_agreement(probs: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Tính nhãn dự đoán head_preds [N, 15] và tỷ lệ đồng thuận LOO agreement [N, 15].
+    """
+    head_preds = np.argmax(probs, axis=-1)
+    _, K = head_preds.shape
+    eq = (head_preds[:, :, None] == head_preds[:, None, :]).astype(np.float64)
+    agreement = (np.sum(eq, axis=-1) - 1.0) / max(1, K - 1)
+    return head_preds, agreement
+
+
 class DistanceCalibrator:
     """
-    Chuẩn hóa khoảng cách d_j^{min}(x) theo thống kê trên dữ liệu fitting/OOF
-    mà KHÔNG sử dụng nhãn thực hay nhãn nhóm lúc suy diễn.
-    Hỗ trợ 3 chế độ:
+    Chuẩn hóa khoảng cách d_j^{min}(x) trên tập OOF/fitting của từng head:
       - 'raw': Giữ nguyên d_j^{min} (Baseline G1)
       - 'A1_head_zscore': (d - mu_j) / (sigma_j + eps)
-      - 'A2_class_center': d - mu_{j, y_hat} (Bảo toàn độ sắc nét phương sai của từng head)
+      - 'A2_class_center': d - mu_{j, y_hat} (Bảo toàn phương sai tự nhiên của head)
       - 'A3_class_zscore': (d - mu_{j, y_hat}) / (sigma_{j, y_hat} + eps)
     """
 
@@ -52,26 +44,25 @@ class DistanceCalibrator:
         assert mode in ("raw", "A1_head_zscore", "A2_class_center", "A3_class_zscore")
         self.mode = mode
         self.eps = eps
-        self.mu_head_: Optional[np.ndarray] = None        # [K]
-        self.std_head_: Optional[np.ndarray] = None       # [K]
-        self.mu_cls_: Optional[np.ndarray] = None         # [K, 2]
-        self.std_cls_: Optional[np.ndarray] = None        # [K, 2]
+        self.mu_head_: Optional[np.ndarray] = None
+        self.std_head_: Optional[np.ndarray] = None
+        self.mu_cls_: Optional[np.ndarray] = None
+        self.std_cls_: Optional[np.ndarray] = None
 
     def fit(self, distances_oof: np.ndarray, probs_oof: np.ndarray) -> "DistanceCalibrator":
-        d_min = np.min(distances_oof, axis=-1)            # [N, K]
-        head_preds = np.argmax(probs_oof, axis=-1)        # [N, K]
+        d_min = np.min(distances_oof, axis=-1)
+        head_preds = np.argmax(probs_oof, axis=-1)
         _, K = d_min.shape
 
         self.mu_head_ = np.mean(d_min, axis=0)
         self.std_head_ = np.std(d_min, axis=0)
-
         self.mu_cls_ = np.zeros((K, 2), dtype=np.float64)
         self.std_cls_ = np.ones((K, 2), dtype=np.float64)
 
         for j in range(K):
             for c in (0, 1):
                 mask = head_preds[:, j] == c
-                if np.sum(mask) >= 5:
+                if np.sum(mask) >= 10:
                     self.mu_cls_[j, c] = float(np.mean(d_min[mask, j]))
                     self.std_cls_[j, c] = float(np.std(d_min[mask, j]))
                 else:
@@ -80,7 +71,7 @@ class DistanceCalibrator:
         return self
 
     def transform(self, distances: np.ndarray, probs: np.ndarray) -> np.ndarray:
-        d_min = np.min(distances, axis=-1)                # [N, K]
+        d_min = np.min(distances, axis=-1)
         if self.mode == "raw":
             return d_min.copy()
 
@@ -88,15 +79,15 @@ class DistanceCalibrator:
         if self.mode == "A1_head_zscore":
             return (d_min - self.mu_head_[None, :]) / (self.std_head_[None, :] + self.eps)
 
-        head_preds = np.argmax(probs, axis=-1)            # [N, K]
-        N, K = d_min.shape
+        head_preds = np.argmax(probs, axis=-1)
+        _, K = d_min.shape
         out = np.zeros_like(d_min, dtype=np.float64)
         for j in range(K):
             preds_j = head_preds[:, j]
             mu_jc = self.mu_cls_[j, preds_j]
             if self.mode == "A2_class_center":
                 out[:, j] = d_min[:, j] - mu_jc
-            else:  # A3_class_zscore
+            else:
                 std_jc = self.std_cls_[j, preds_j]
                 out[:, j] = (d_min[:, j] - mu_jc) / (std_jc + self.eps)
         return out
@@ -104,11 +95,13 @@ class DistanceCalibrator:
 
 class ConditionalReliabilityTable:
     """
-    Bảng ước lượng độ tin cậy có điều kiện g_j(x) trên dữ liệu OOF với Empirical Bayes Shrinkage.
-    Hỗ trợ 2 chế độ:
-      - 'B1_absolute_prob': g_j(x) = 2 * P_shrunk(C_j=y | d_tilde, A_j, y_hat_j) - 1 (Công thức gốc)
-      - 'B2_marginal_free_lift': g_j(x) = 2 * [P_shrunk(C_j=y | d_tilde, A_j, y_hat_j) - P_marginal(C_j=y | A_j, y_hat_j)]
-        (Khử hoàn toàn hiệu ứng lề của Agreement để không thưởng cho phe đa số shortcut).
+    Ước lượng bảng tin cậy có điều kiện P(C_j=y | q_j, a_j, y_hat_j) trên dữ liệu OOF:
+      - 'B1_absolute_prob': g_j(x) = 2 * P_shrunk(q, a, c) - 1
+      - 'B2_marginal_free_lift':
+        Khử hiệu ứng đám đông bằng cách lấy độ nâng hình học nội cột:
+          within_agree_lift = P_shrunk(q, a, c) - P_marginal(a, c)
+        cộng với độ nhạy khoảng cách (Near vs. Far slope) của chính tầng đồng thuận đó,
+        giúp bảo toàn tín hiệu ngay cả khi cột có phương sai nhỏ.
     """
 
     def __init__(
@@ -125,11 +118,9 @@ class ConditionalReliabilityTable:
         self.shrinkage_m = float(shrinkage_m)
 
         self.dist_edges_: Optional[np.ndarray] = None
-        # Bảng lưu xác suất đúng đã làm trơn: shape [n_dist_bins, 3 (agree_bins), 2 (pred_class)]
         self.p_shrunk_table_: Optional[np.ndarray] = None
-        # Bảng lưu xác suất lề theo (agree_bin, pred_class): shape [3, 2]
         self.p_marginal_table_: Optional[np.ndarray] = None
-        # Bảng đếm số lượng mẫu OOF trong từng ô: shape [n_dist_bins, 3, 2]
+        self.lift_table_: Optional[np.ndarray] = None
         self.counts_table_: Optional[np.ndarray] = None
 
     def _bin_features(
@@ -154,14 +145,9 @@ class ConditionalReliabilityTable:
         probs_oof: np.ndarray,
         y_oof: np.ndarray,
     ) -> "ConditionalReliabilityTable":
-        """
-        Ước lượng bảng tin cậy từ dữ liệu OOF (gộp toàn bộ N x 15 quan sát head-level).
-        Không sử dụng nhãn nhóm (group labels).
-        """
         head_preds, agreement = compute_head_predictions_and_agreement(probs_oof)
-        head_correct = (head_preds == y_oof[:, None]).astype(np.float64)  # [N, K]
+        head_correct = (head_preds == y_oof[:, None]).astype(np.float64)
 
-        # Chia phân vị trên phân phối khoảng cách chuẩn hóa toàn cục
         self.dist_edges_ = np.quantile(
             d_tilde_oof.ravel(), np.linspace(0.0, 1.0, self.n_dist_bins + 1)
         )
@@ -174,7 +160,6 @@ class ConditionalReliabilityTable:
                 mask_ac = (a_bins == a) & (head_preds == c)
                 n_ac = int(np.sum(mask_ac))
                 k_ac = float(np.sum(head_correct[mask_ac]))
-                # Làm trơn nhẹ mức lề về global_acc
                 self.p_marginal_table_[a, c] = (k_ac + 10.0 * global_acc) / (n_ac + 10.0)
 
         self.p_shrunk_table_ = np.zeros((self.n_dist_bins, 3, 2), dtype=np.float64)
@@ -187,41 +172,34 @@ class ConditionalReliabilityTable:
                     n_qac = int(np.sum(mask_qac))
                     k_qac = float(np.sum(head_correct[mask_qac]))
                     prior_p = self.p_marginal_table_[a, c]
-
                     self.counts_table_[q, a, c] = n_qac
                     self.p_shrunk_table_[q, a, c] = (
                         k_qac + self.shrinkage_m * prior_p
                     ) / (n_qac + self.shrinkage_m)
 
+        # Tính sẵn bảng Lift khử hiệu ứng đám đông:
+        # So sánh mỗi ô (q, a, c) với trung bình 3 tầng khoảng cách của chính cột (a, c) đó
+        col_mean = np.mean(self.p_shrunk_table_, axis=0, keepdims=True)  # [1, 3, 2]
+        self.lift_table_ = self.p_shrunk_table_ - col_mean               # [3, 3, 2]
         return self
 
     def predict_g(self, d_tilde: np.ndarray, probs: np.ndarray) -> np.ndarray:
-        """
-        Trả về ma trận tín hiệu tin cậy g_j(x) kích thước [N, 15]:
-        - B1_absolute_prob: 2 * P_shrunk(C=y | q, a, c) - 1
-        - B2_marginal_free_lift:
-          Khử hiệu ứng đám đông bằng cách trừ đi kỳ vọng trung bình tại tầng khoảng cách Far (Q3)
-          của nhóm đa số, đồng thời chuẩn hóa theo lớp dự đoán để bảo toàn độ chênh giữa
-          phe thiểu số gần tâm (Near, LowAgree) và phe đa số xa tâm (Far, HighAgree).
-        """
-        assert self.p_shrunk_table_ is not None and self.p_marginal_table_ is not None
+        assert (
+            self.p_shrunk_table_ is not None
+            and self.p_marginal_table_ is not None
+            and self.lift_table_ is not None
+        )
         head_preds, agreement = compute_head_predictions_and_agreement(probs)
         q_bins, a_bins = self._bin_features(d_tilde, agreement)
 
-        p_cell = self.p_shrunk_table_[q_bins, a_bins, head_preds]
         if self.mode == "B1_absolute_prob":
+            p_cell = self.p_shrunk_table_[q_bins, a_bins, head_preds]
             return 2.0 * p_cell - 1.0
 
-        # B2: Độ nâng của ô (q, a, c) so với trung bình khoảng cách trong cùng (a, c)
-        # CỘNG VỚI hiệu chỉnh chống đa số xa tâm (Interaction Contrast)
-        p_col_mean = np.mean(self.p_shrunk_table_, axis=0)[a_bins, head_preds]
-        within_col_lift = p_cell - p_col_mean
-
-        # Điểm thưởng tương tác hình học: thưởng cho head ở Near (q=0) và phạt Far (q=2)
-        # tỷ lệ thuận với độ nhạy thực nghiệm của cột đó
-        class_baseline = np.mean(self.p_marginal_table_, axis=0)[head_preds]
-        debiased_score = within_col_lift + 0.5 * (p_cell - class_baseline)
-        return np.clip(2.0 * debiased_score, -1.0, 1.0)
+        # B2: Marginal-Free Lift chuẩn hóa theo biên độ thực nghiệm của bảng
+        raw_lift = self.lift_table_[q_bins, a_bins, head_preds]
+        scale = max(0.02, float(np.max(np.abs(self.lift_table_))))
+        return np.clip(raw_lift / scale, -1.0, 1.0)
 
 
 def compute_gcaw_weights(
@@ -233,12 +211,16 @@ def compute_gcaw_weights(
     standardize_within_sample: bool = True,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Tính điểm số a_j(x) và trọng số w_j(x) với tùy chọn chuẩn hóa Z-score nội mẫu
-    để tránh suy biến biên độ softmax.
+    Tính điểm a_j(x) = -gamma * d_comp + beta * g_comp và w_j(x) = (1-alpha)/15 + alpha * softmax(a_j).
+    Khi standardize_within_sample=True, cả d_tilde và g_rel đều được đưa về cùng thang đo Z-score
+    trên 15 heads của từng bức ảnh trước khi nhân với gamma và beta.
     """
     K = d_tilde.shape[1]
-    d_comp = within_sample_zscore(d_tilde) if (standardize_within_sample and gamma > 0) else d_tilde
-    scores = -gamma * d_comp
+    if gamma != 0.0:
+        d_comp = within_sample_zscore(d_tilde) if standardize_within_sample else d_tilde
+        scores = -gamma * d_comp
+    else:
+        scores = np.zeros_like(d_tilde, dtype=np.float64)
 
     if g_rel is not None and beta != 0.0:
         g_comp = within_sample_zscore(g_rel) if standardize_within_sample else g_rel
@@ -255,18 +237,13 @@ def compute_within_sample_auroc(
     y: np.ndarray,
     sample_mask: Optional[np.ndarray] = None,
 ) -> float:
-    """
-    Tính Within-Sample Correct-Expert AUROC:
-    Xác suất trung bình trong cùng một bức ảnh, một head đoán đúng được gán điểm
-    a_j(x) lớn hơn một head đoán sai. Chỉ tính trên các ảnh có cả head đúng lẫn head sai.
-    """
     if sample_mask is not None:
         scores = scores[sample_mask]
         probs = probs[sample_mask]
         y = y[sample_mask]
 
-    head_preds = np.argmax(probs, axis=-1)  # [M, K]
-    correct_mat = head_preds == y[:, None]  # [M, K]
+    head_preds = np.argmax(probs, axis=-1)
+    correct_mat = head_preds == y[:, None]
 
     aurocs = []
     for i in range(len(y)):
@@ -274,8 +251,8 @@ def compute_within_sample_auroc(
         w_idx = np.where(~correct_mat[i])[0]
         if len(c_idx) == 0 or len(w_idx) == 0:
             continue
-        s_c = scores[i, c_idx][:, None]  # [n_c, 1]
-        s_w = scores[i, w_idx][None, :]  # [1, n_w]
+        s_c = scores[i, c_idx][:, None]
+        s_w = scores[i, w_idx][None, :]
         wins = np.sum(s_c > s_w) + 0.5 * np.sum(s_c == s_w)
         aurocs.append(float(wins) / (len(c_idx) * len(w_idx)))
 
@@ -288,10 +265,6 @@ def evaluate_ensemble_metrics(
     y: np.ndarray,
     group: np.ndarray,
 ) -> Dict[str, float]:
-    """
-    Tính WGA, AA, độ chính xác từng nhóm và tổng trọng số đặt lên các head đoán sai
-    trên các mẫu thuộc Group 2 (Worst Minority).
-    """
     weighted_probs = np.einsum("nj,njk->nk", weights, probs)
     preds = np.argmax(weighted_probs, axis=1)
     correct = (preds == y).astype(np.float64)
@@ -327,19 +300,12 @@ def run_randomized_weight_control(
     n_permutations: int = 100,
     seed: int = 42,
 ) -> Dict[str, float]:
-    """
-    Đối chứng trọng số ngẫu nhiên (Randomized-Weighting Control):
-    Giữ nguyên phân phối độ lớn trọng số w_j(x) trên từng ảnh nhưng hoán vị ngẫu nhiên
-    thứ tự 15 heads để kiểm tra xem mức tăng WGA đến từ chất lượng ranking thực sự
-    hay chỉ do nhiễu phương sai ngẫu nhiên.
-    """
     rng = np.random.default_rng(seed)
     N, K = base_weights.shape
     wga_samples = []
     aa_samples = []
 
     for _ in range(n_permutations):
-        # Sinh ma trận hoán vị độc lập cho từng mẫu hoặc từng batch head
         perm_indices = np.argsort(rng.random((N, K)), axis=1)
         w_perm = np.take_along_axis(base_weights, perm_indices, axis=1)
         m = evaluate_ensemble_metrics(w_perm, probs, y, group)

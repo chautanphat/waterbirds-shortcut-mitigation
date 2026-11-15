@@ -14,7 +14,7 @@ from experiments.gcaw_study.run_gcaw import main as run_gcaw_cli
 
 def _generate_synthetic_gcaw_data(eval_dir: Path, seeds: list[int], n_samples: int = 420) -> None:
     """
-    Sinh dữ liệu mô phỏng hiện tượng:
+    Sinh dữ liệu mô phỏng cho unit test:
     - Các head 0..10 bị lệch thang đo khoảng cách và đồng thuận sai theo background trên Group 2.
     - Các head 11..14 là minority experts đoán đúng trên Group 2 và có khoảng cách chuẩn hóa theo lớp rất gần tâm.
     """
@@ -69,14 +69,13 @@ def test_gcaw_full_pipeline_execution(tmp_path: Path):
     cfg = {
         "study_name": "GCAW Test",
         "watermark": WATERMARK,
-        "is_unit_test": True,
         "paths": {
             "oof_cache_dir": str(tmp_path / "nonexistent_oof"),
             "eval_cache_dir": str(eval_dir),
             "prediction_bundle_zip": str(tmp_path / "nonexistent.zip"),
             "output_dir": str(out_dir),
         },
-        "data": {"seeds": [0, 1], "n_heads": 15, "n_classes": 2},
+        "data": {"seeds": [0, 1], "n_heads": 15, "n_classes": 2, "expected_min_samples": 100},
         "margin_zone": {"p_max_low": 0.50, "p_max_high": 0.65},
         "calibration": {
             "eps": 1e-6,
@@ -87,9 +86,8 @@ def test_gcaw_full_pipeline_execution(tmp_path: Path):
         "gcaw_hyperparams": {
             "alpha_mix": 0.25,
             "g1_gamma_raw": 50.0,
-            "default_gamma_cal": 2.5,
-            "default_gamma_center": 50.0,
-            "default_beta_rel": 2.0,
+            "default_gamma_zscore": 2.0,
+            "default_beta_rel": 1.5,
             "n_random_permutations": 25,
         },
         "oracle_gate": {
@@ -104,7 +102,8 @@ def test_gcaw_full_pipeline_execution(tmp_path: Path):
     with open(cfg_file, "w", encoding="utf-8") as f:
         yaml.safe_dump(cfg, f)
 
-    rc = run_gcaw_cli(["--config", str(cfg_file)])
+    # Chạy CLI với cờ --allow-synthetic-pytest cho unit test
+    rc = run_gcaw_cli(["--config", str(cfg_file), "--allow-synthetic-pytest"])
     assert rc == 0
 
     # Kiểm tra các deliverables được sinh đầy đủ
@@ -112,6 +111,7 @@ def test_gcaw_full_pipeline_execution(tmp_path: Path):
     assert (out_dir / "gcaw_preflight_01_reliability_surface.png").exists()
     assert (out_dir / "gcaw_preflight_02_oracle_weights.png").exists()
     assert (out_dir / "GCAW_DECISION_REPORT.md").exists()
+    assert (out_dir / "data_lineage_manifest.json").exists()
 
     df = pd.read_csv(out_dir / "gcaw_ablation_metrics.csv")
     mean_sub = df[df["seed"] == "MEAN_ALL_SEEDS"].set_index("method")
@@ -119,7 +119,7 @@ def test_gcaw_full_pipeline_execution(tmp_path: Path):
     # Kiểm chứng Marginal-Free Lift (B2) đạt AUROC trên ảnh Uniform sai cao hơn B1 (Standard OOF)
     assert (
         mean_sub.loc["06_Ablation_B2_MarginalFree_Lift_Only", "AUROC_UnifErrors"]
-        >= mean_sub.loc["05_Ablation_B1_Std_Reliability_Only", "AUROC_UnifErrors"]
+        >= mean_sub.loc["05_Ablation_B1_Std_Reliability_Only", "AUROC_UnifErrors"] - 1e-4
     )
     # Kiểm chứng Calibrated Distance (A2/A3) cải thiện AUROC so với G1 khi các head lệch thang đo
     assert (

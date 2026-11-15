@@ -1,8 +1,8 @@
 """
 Giai đoạn 1 (Pre-Flight Gate):
-Giải bài toán Test-Optimal Oracle và trích xuất Heatmap trên đúng lưới đặc trưng của GCAW:
-  (Calibrated Distance Quantile x Agreement Bin x Predicted Class)
-cho cả Full Set và Flip-able Margin Subset (p_bar_max in [0.50, 0.62]).
+Sửa lỗi gom trung bình mẫu của v7.0: Phân loại mỗi mẫu theo trạng thái hình học của
+nhóm head thiểu số (Minority Prototype Distance Quantile x Ensemble Agreement Regime x Predicted Class)
+để đảm bảo các ô trên lưới 18 cells được kích hoạt đầy đủ.
 """
 
 from __future__ import annotations
@@ -11,7 +11,6 @@ import tempfile
 from pathlib import Path
 from typing import Dict, Any, Tuple
 import numpy as np
-import pandas as pd
 from scipy.optimize import minimize
 from scipy.special import expit
 import matplotlib
@@ -31,20 +30,32 @@ def assign_gcaw_grid_cells(
     agree_thresholds: Tuple[float, float] = (0.35, 0.70),
 ) -> Tuple[np.ndarray, Dict[int, Dict[str, Any]]]:
     """
-    Gán mỗi mẫu ảnh i vào 1 trong 18 ô đặc trưng của GCAW dựa trên trung bình mẫu
-    hoặc trạng thái của phe thiểu số:
-      - Trục 1: Calibrated Distance Quantile [Near (Q1), Medium (Q2), Far (Q3)]
-      - Trục 2: Ensemble Dispersion / Minority Agreement [Low, Mid, High]
-      - Trục 3: Uniform Predicted Class [Class 0, Class 1]
+    Phân chia mỗi mẫu ảnh i vào 18 ô đặc trưng GCAW:
+      - Trục 1: Khoảng cách chuẩn hóa tại nhóm head gần tâm nhất (Top-3 Nearest Calibrated Distance)
+        chia theo 3 phân vị [Near (Q1), Med (Q2), Far (Q3)].
+      - Trục 2: Mức độ phân tán đồng thuận của ensemble (Ensemble Agreement Bin: Low / Mid / High)
+        chia theo phân vị thực nghiệm hoặc ngưỡng để cả 3 cột đều có mẫu thực tế.
+      - Trục 3: Nhãn dự đoán của Uniform Ensemble [Class 0, Class 1].
     """
     _, agreement = compute_head_predictions_and_agreement(probs)
-    sample_d = np.mean(d_tilde, axis=1)
-    sample_agree = np.mean(agreement, axis=1)
+    # Lấy trung bình 3 head có khoảng cách chuẩn hóa gần nhất trên mỗi ảnh
+    sorted_d = np.sort(d_tilde, axis=1)
+    sample_d = np.mean(sorted_d[:, :3], axis=1)
+
+    # Mức độ đồng thuận nhỏ nhất (đại diện cho phe thiểu số trong bức ảnh đó)
+    min_agree = np.min(agreement, axis=1)
     pred_cls = np.argmax(np.mean(probs, axis=1), axis=1)
 
     d_edges = np.quantile(sample_d, [0.0, 1.0 / 3.0, 2.0 / 3.0, 1.0])
     d_bin = np.clip(np.digitize(sample_d, d_edges[1:-1], right=False), 0, 2)
-    a_bin = np.clip(np.digitize(sample_agree, agree_thresholds, right=True), 0, 2)
+
+    # Nếu ngưỡng cố định làm trống ô, tự động dùng tertiles thực nghiệm trên min_agree
+    a_bin = np.clip(np.digitize(min_agree, agree_thresholds, right=True), 0, 2)
+    if len(np.unique(a_bin)) < 3:
+        a_edges = np.quantile(np.mean(agreement, axis=1), [0.0, 1.0 / 3.0, 2.0 / 3.0, 1.0])
+        a_bin = np.clip(
+            np.digitize(np.mean(agreement, axis=1), a_edges[1:-1], right=False), 0, 2
+        )
 
     cell_ids = pred_cls * 9 + d_bin * 3 + a_bin
 
@@ -74,9 +85,6 @@ def solve_gcaw_grid_oracle(
     cfg_oracle: Dict[str, Any],
     n_cells: int = 18,
 ) -> np.ndarray:
-    """
-    Tìm ma trận trọng số W* in R^{18 x 15} tối đa hóa WGA trên lưới đặc trưng GCAW.
-    """
     N, K, _ = probs.shape
     max_cap = float(cfg_oracle["max_weight_cap"])
     aa_tol = float(cfg_oracle["aa_drop_tolerance"])
@@ -193,30 +201,24 @@ def render_gcaw_pre_flight_heatmaps(
     cell_meta: Dict[int, Dict[str, Any]],
     output_dir: Path,
 ) -> None:
-    """
-    Vẽ 2 biểu đồ Heatmap cốt lõi cho Giai đoạn 1 (Pre-flight Gate):
-      1. gcaw_preflight_01_reliability_surface.png: Đối chiếu Empirical Accuracy P(C=y)
-         và Marginal-Free Lift g_j^{lift}(x) trên lưới (Calibrated Distance x Agreement).
-      2. gcaw_preflight_02_oracle_weights.png: Phân phối trọng số lý tưởng W* trên 18 ô GCAW.
-    """
     output_dir.mkdir(parents=True, exist_ok=True)
     d_labels = ["Near (Q1)", "Medium (Q2)", "Far (Q3)"]
     a_labels = ["Low Agree (Minority)", "Mid Agree", "High Agree (Majority)"]
 
-    # --- Biểu đồ 1: Reliability Surface & Marginal-Free Lift (3x3x2 panels) ---
+    # --- Heatmap 1: OOF Shrunk Accuracy vs. Marginal-Free Lift ---
     fig1, axes1 = plt.subplots(2, 2, figsize=(13, 9), layout="constrained")
     fig1.suptitle(
         f"{WATERMARK}\nStage 1 Gate: Empirical Head Accuracy vs. Marginal-Free Reliability Lift",
-        fontsize=12,
+        fontsize=11.5,
         fontweight="bold",
     )
 
+    max_lift = max(0.05, float(np.max(np.abs(lift_table))))
     for c_idx in range(2):
         cls_name = "Class 0 (Landbird)" if c_idx == 0 else "Class 1 (Waterbird)"
-        # Panel trái: Empirical Accuracy
         ax_acc = axes1[c_idx, 0]
         mat_acc = emp_acc_table[:, :, c_idx]
-        im1 = ax_acc.imshow(mat_acc, cmap="viridis", vmin=0.45, vmax=0.98)
+        im1 = ax_acc.imshow(mat_acc, cmap="viridis", vmin=0.50, vmax=1.00)
         ax_acc.set_title(f"{cls_name} — OOF Shrunk Accuracy P(C=y)", fontsize=10)
         ax_acc.set_xticks(range(3))
         ax_acc.set_xticklabels(a_labels, fontsize=8.5)
@@ -228,18 +230,17 @@ def render_gcaw_pre_flight_heatmaps(
                 ax_acc.text(c, r, f"{mat_acc[r, c]:.3f}", ha="center", va="center", color="white", fontweight="bold")
         fig1.colorbar(im1, ax=ax_acc, shrink=0.8)
 
-        # Panel phải: Marginal-Free Lift g_j^{lift}
         ax_lift = axes1[c_idx, 1]
         mat_lift = lift_table[:, :, c_idx]
-        im2 = ax_lift.imshow(mat_lift, cmap="RdBu", vmin=-0.25, vmax=0.25)
-        ax_lift.set_title(f"{cls_name} — Marginal-Free Lift g_j(x) (Agreement De-biased)", fontsize=10)
+        im2 = ax_lift.imshow(mat_lift, cmap="RdBu_r", vmin=-max_lift, vmax=max_lift)
+        ax_lift.set_title(f"{cls_name} — Marginal-Free Lift (Positive = Red, Negative = Blue)", fontsize=10)
         ax_lift.set_xticks(range(3))
         ax_lift.set_xticklabels(a_labels, fontsize=8.5)
         ax_lift.set_yticks(range(3))
         ax_lift.set_yticklabels(d_labels, fontsize=8.5)
         for r in range(3):
             for c in range(3):
-                ax_lift.text(c, r, f"{mat_lift[r, c]:+.3f}", ha="center", va="center", color="black", fontweight="bold")
+                ax_lift.text(c, r, f"{mat_lift[r, c]:+.4f}", ha="center", va="center", color="black", fontweight="bold")
         fig1.colorbar(im2, ax=ax_lift, shrink=0.8)
 
     fd1, tmp1 = tempfile.mkstemp(dir=output_dir, suffix=".tmp.png")
@@ -248,17 +249,20 @@ def render_gcaw_pre_flight_heatmaps(
     plt.close(fig1)
     os.replace(tmp1, output_dir / "gcaw_preflight_01_reliability_surface.png")
 
-    # --- Biểu đồ 2: Oracle Weights trên 18 ô GCAW ---
-    fig2, axes2 = plt.subplots(1, 2, figsize=(15, 7), layout="constrained")
+    # --- Heatmap 2: Oracle Weights trên 18 ô GCAW (hiển thị cả giá trị số và cỡ mẫu n) ---
+    fig2, axes2 = plt.subplots(1, 2, figsize=(16, 7.5), layout="constrained")
     fig2.suptitle(
         f"{WATERMARK}\nStage 1 Gate: Test-Optimal Oracle Weights on GCAW Feature Grid",
-        fontsize=12,
+        fontsize=11.5,
         fontweight="bold",
     )
     for c_idx, ax in enumerate(axes2):
         rows = [c_idx * 9 + r for r in range(9)]
         sub_W = oracle_W[rows, :]
-        y_ticks = [f"{cell_meta[idx]['dist_label']} | {cell_meta[idx]['agree_label']}" for idx in rows]
+        y_ticks = [
+            f"{cell_meta[idx]['dist_label']} | {cell_meta[idx]['agree_label']} (n={cell_meta[idx]['count']})"
+            for idx in rows
+        ]
         im = ax.imshow(sub_W, aspect="auto", cmap="YlGnBu", vmin=0.0, vmax=0.40)
         ax.set_title(f"Predicted Class {c_idx} (9 GCAW Cells x 15 Heads)", fontsize=10)
         ax.set_xticks(range(sub_W.shape[1]))
@@ -267,6 +271,11 @@ def render_gcaw_pre_flight_heatmaps(
         ax.set_yticklabels(y_ticks, fontsize=8)
         for b in (2.5, 5.5):
             ax.axhline(b, color="white", linestyle="--", linewidth=1.5)
+        for r in range(9):
+            for c in range(sub_W.shape[1]):
+                val = sub_W[r, c]
+                col_txt = "white" if val > 0.22 else "black"
+                ax.text(c, r, f"{val:.2f}", ha="center", va="center", fontsize=6.5, color=col_txt)
     fig2.colorbar(im, ax=axes2.ravel().tolist(), shrink=0.85, label="Oracle Head Weight W*")
 
     fd2, tmp2 = tempfile.mkstemp(dir=output_dir, suffix=".tmp.png")
