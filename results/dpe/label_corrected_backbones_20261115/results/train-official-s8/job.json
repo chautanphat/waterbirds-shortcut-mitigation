@@ -1,0 +1,11 @@
+{
+ "kind": "train",
+ "name": "train-official-s8",
+ "backbone_labels": "official",
+ "val_labels": "official",
+ "backbone_seed": 8,
+ "head_seed": 8,
+ "returncode": 0,
+ "seconds": 6540.979958772659,
+ "gpu": 0
+}

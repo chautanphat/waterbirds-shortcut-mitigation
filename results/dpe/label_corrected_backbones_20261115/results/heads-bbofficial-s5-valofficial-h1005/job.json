@@ -1,0 +1,11 @@
+{
+ "kind": "heads",
+ "name": "heads-bbofficial-s5-valofficial-h1005",
+ "backbone_labels": "official",
+ "val_labels": "official",
+ "backbone_seed": 5,
+ "head_seed": 1005,
+ "returncode": 0,
+ "seconds": 390.6033420562744,
+ "gpu": 0
+}

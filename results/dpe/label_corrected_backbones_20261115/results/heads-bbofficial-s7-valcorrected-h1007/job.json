@@ -1,0 +1,11 @@
+{
+ "kind": "heads",
+ "name": "heads-bbofficial-s7-valcorrected-h1007",
+ "backbone_labels": "official",
+ "val_labels": "corrected",
+ "backbone_seed": 7,
+ "head_seed": 1007,
+ "returncode": 0,
+ "seconds": 391.02480840682983,
+ "gpu": 0
+}

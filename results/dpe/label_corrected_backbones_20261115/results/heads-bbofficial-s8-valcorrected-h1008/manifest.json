@@ -1,0 +1,76 @@
+{
+  "args": {
+    "checkpoint": "/kaggle/working/dpe-labels/results/train-official-s8/ckpt_last.pt",
+    "checkpoint_provenance": "trained in this notebook (train-official-s8)",
+    "data_dir": "/kaggle/working/dpe-labels/data_corrected",
+    "dpe_root": "/kaggle/working/dpe-labels/dpe-upstream",
+    "head_implementation": "official_cli",
+    "label_set": "corrected",
+    "num_stages": 16,
+    "output_dir": "/kaggle/working/dpe-labels/results/heads-bbofficial-s8-valcorrected-h1008",
+    "protocol": "checkpoint",
+    "seed": 1008,
+    "steps": 0,
+    "subpop_root": "/kaggle/working/dpe-labels/subpopbench-upstream",
+    "train_attr": "yes",
+    "workers": 2
+  },
+  "artifacts": {
+    "ensemble.pt": "09c7e20b421b1e3305a6a932a1774f7986781b63fed9363aaa5d486fd5fd4463",
+    "feats_test.npy": "5c96c5feec35202828b78fe3ea4afa9780f0767d3c1dc5b61437523d8fc0a57f",
+    "feats_val.npy": "3689455dfc0b7641b067ecd1fee6b2db743c363bc45bb8fc36b5399ab48803c0",
+    "stage1/dist_scales_wga_val.pt": "8b3e448e9ca29f75a78213086f5be0bb65639947180333bfd30a0e220d3b8b1a",
+    "stage1/prototype_ensemble_wga_val.pt": "ca3c4452b4dee4a328d8f6853ef0eebf2ad2797557de6983bcb694931fcd4995",
+    "stage1_command.json": "9fa9845e3f6d4b0e282b851b8c46b1d80ba6ef187b994d89b5e4889a5b212ac8",
+    "subsets.json": "f7bf9249b6f6f4c3ca4d766b2f9b460612f24a90b7e8c2acd2c0fb0c1b2afa30",
+    "test_predictions.npz": "6dacc2ca6f7fe58b79156c3d56b5802c4823515ab41fe184b8b3da356d8d13bf"
+  },
+  "backbone": {
+    "provenance": "trained in this notebook (train-official-s8)",
+    "selection": "supplied checkpoint",
+    "sha256": "069bc6a28f557345264552302e9a57174e6d0463390306b0493c1379d03caabd",
+    "source": "/kaggle/working/dpe-labels/results/train-official-s8/ckpt_last.pt"
+  },
+  "checkpoint_sha256": "069bc6a28f557345264552302e9a57174e6d0463390306b0493c1379d03caabd",
+  "dataset": {
+    "group_counts": {
+      "0": [
+        3502,
+        252,
+        52,
+        989
+      ],
+      "1": [
+        478,
+        473,
+        122,
+        126
+      ],
+      "2": [
+        2298,
+        2302,
+        599,
+        595
+      ]
+    },
+    "images_sha256": "7dc03408506542f676e8807de229677eb29370b38ede0b3082da3f7a95840855",
+    "label_set": "corrected",
+    "metadata_sha256": "7ec5cc6a476792f9bfc5febf93442568e0e3dafa357585f0d2136f671ab253e1",
+    "rows": 11788
+  },
+  "environment": {
+    "cuda": "11.8",
+    "cudnn": 90100,
+    "gpu": "Tesla T4",
+    "python": "3.11.17 (main, Oct 14 2026, 01:05:33) [Clang 23.1.3 ]",
+    "torch": "2.6.0+cu118",
+    "torchvision": "0.21.0+cu118",
+    "visible_devices": "0"
+  },
+  "source": {
+    "dpe": "68b811461e238d44cced6ae6c8ce75b66cad5449",
+    "runner_sha256": "17ebaf0d34c2eb3bdfbd23a033287adc93d0925d00094b9dc8f780290441ae01",
+    "subpopbench": "4d3dbbe21029666ef19d040e110ec22908640c5b"
+  },
+  "status": "complete"
+}

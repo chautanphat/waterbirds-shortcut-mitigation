@@ -1,0 +1,11 @@
+{
+ "kind": "heads",
+ "name": "heads-bbofficial-s8-valofficial-h2008",
+ "backbone_labels": "official",
+ "val_labels": "official",
+ "backbone_seed": 8,
+ "head_seed": 2008,
+ "returncode": 0,
+ "seconds": 391.80071330070496,
+ "gpu": 1
+}

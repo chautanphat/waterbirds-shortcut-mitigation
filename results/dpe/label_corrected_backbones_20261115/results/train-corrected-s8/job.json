@@ -1,0 +1,11 @@
+{
+ "kind": "train",
+ "name": "train-corrected-s8",
+ "backbone_labels": "corrected",
+ "val_labels": "corrected",
+ "backbone_seed": 8,
+ "head_seed": 8,
+ "returncode": 0,
+ "seconds": 6781.3156480789185,
+ "gpu": 1
+}
