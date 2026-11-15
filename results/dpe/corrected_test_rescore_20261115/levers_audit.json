@@ -1,0 +1,159 @@
+{
+ "head_seed_sd": 0.405,
+ "rows": [
+  {
+   "row": "uniform on 720 images",
+   "panel": "Official labels",
+   "mean": -0.3738,
+   "lo": -1.0618,
+   "hi": 0.3142
+  },
+  {
+   "row": "affine combiner, selected",
+   "panel": "Official labels",
+   "mean": -0.0515,
+   "lo": -0.1678,
+   "hi": 0.0648
+  },
+  {
+   "row": "linear residual, selected",
+   "panel": "Official labels",
+   "mean": -0.8569,
+   "lo": -1.3219,
+   "hi": -0.392
+  },
+  {
+   "row": "linear residual, fixed setting",
+   "panel": "Official labels",
+   "mean": 0.3037,
+   "lo": -0.0514,
+   "hi": 0.6587
+  },
+  {
+   "row": "five-fold uniform",
+   "panel": "Official labels",
+   "mean": 0.1275,
+   "lo": -0.2791,
+   "hi": 0.5342
+  },
+  {
+   "row": "75-head bag",
+   "panel": "Official labels",
+   "mean": 0.0588,
+   "lo": -0.0797,
+   "hi": 0.1973
+  },
+  {
+   "row": "five-fold + recalibration, selected",
+   "panel": "Official labels",
+   "mean": -0.1716,
+   "lo": -0.3275,
+   "hi": -0.0156
+  },
+  {
+   "row": "full DPE + out-of-fold map, selected",
+   "panel": "Official labels",
+   "mean": -0.5766,
+   "lo": -0.7672,
+   "hi": -0.3859
+  },
+  {
+   "row": "five-fold + exact WGA threshold",
+   "panel": "Official labels",
+   "mean": -0.5038,
+   "lo": -1.1135,
+   "hi": 0.1059
+  },
+  {
+   "row": "DPE refit, saved backbones",
+   "panel": "Official labels",
+   "mean": -0.8251,
+   "lo": -1.3366,
+   "hi": -0.3136
+  },
+  {
+   "row": "DPE refit, fresh backbones ($n{=}4$)",
+   "panel": "Official labels",
+   "mean": -0.8947,
+   "lo": -3.1856,
+   "hi": 1.3961
+  },
+  {
+   "row": "uniform on 720 images",
+   "panel": "Clean subset",
+   "mean": -0.9038,
+   "lo": -1.4884,
+   "hi": -0.3192
+  },
+  {
+   "row": "affine combiner, selected",
+   "panel": "Clean subset",
+   "mean": 0.5774,
+   "lo": -0.01,
+   "hi": 1.1647
+  },
+  {
+   "row": "linear residual, selected",
+   "panel": "Clean subset",
+   "mean": 1.7413,
+   "lo": 1.4525,
+   "hi": 2.0301
+  },
+  {
+   "row": "linear residual, fixed setting",
+   "panel": "Clean subset",
+   "mean": 0.5082,
+   "lo": 0.0336,
+   "hi": 0.9828
+  },
+  {
+   "row": "five-fold uniform",
+   "panel": "Clean subset",
+   "mean": -0.3494,
+   "lo": -0.9029,
+   "hi": 0.204
+  },
+  {
+   "row": "75-head bag",
+   "panel": "Clean subset",
+   "mean": 0.0834,
+   "lo": -0.1519,
+   "hi": 0.3186
+  },
+  {
+   "row": "five-fold + recalibration, selected",
+   "panel": "Clean subset",
+   "mean": 1.1149,
+   "lo": 0.6683,
+   "hi": 1.5614
+  },
+  {
+   "row": "full DPE + out-of-fold map, selected",
+   "panel": "Clean subset",
+   "mean": 1.3854,
+   "lo": 1.1253,
+   "hi": 1.6454
+  },
+  {
+   "row": "five-fold + exact WGA threshold",
+   "panel": "Clean subset",
+   "mean": -1.137,
+   "lo": -1.8112,
+   "hi": -0.4628
+  },
+  {
+   "row": "DPE refit, saved backbones",
+   "panel": "Clean subset",
+   "mean": 2.2971,
+   "lo": 1.6537,
+   "hi": 2.9405
+  },
+  {
+   "row": "DPE refit, fresh backbones ($n{=}4$)",
+   "panel": "Clean subset",
+   "mean": 2.8219,
+   "lo": 0.5754,
+   "hi": 5.0684
+  }
+ ]
+}
