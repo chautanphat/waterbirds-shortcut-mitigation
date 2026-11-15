@@ -1,0 +1,38 @@
+study_name: "GCAW Pre-Flight Oracle & Staged Ablation Study (v7)"
+watermark: "[DIAGNOSTIC & ABLATION STUDY — GCAW PROTOCOL v7]"
+
+paths:
+  oof_cache_dir: "outputs/weighting/oof_fits"      # Nếu chưa có file OOF riêng, tự động dùng cross-fit nội bộ
+  eval_cache_dir: "outputs/weighting/fits"
+  prediction_bundle_zip: "prediction_bundle.zip"
+  output_dir: "results/dpe/gcaw_study_20261115"
+
+data:
+  seeds: [0, 1, 2]
+  n_heads: 15
+  n_classes: 2
+
+margin_zone:
+  p_max_low: 0.50
+  p_max_high: 0.62
+
+calibration:
+  eps: 1.0e-6
+  n_dist_quantiles: 3               # [Near, Medium, Far]
+  agreement_thresholds: [0.35, 0.70] # Chia thành [Low (<=0.35), Mid (0.35-0.70), High (>0.70)]
+  shrinkage_prior_m: 25.0           # Cường độ làm trơn Empirical Bayes chống overfit
+
+gcaw_hyperparams:
+  alpha_mix: 0.25                   # Cố định w_j = 0.75/15 + 0.25 * r_j
+  g1_gamma_raw: 50.0                # Hệ số chuẩn của G1 trên khoảng cách thô
+  default_gamma_cal: 2.5            # Hệ số mặc định cho khoảng cách đã chuẩn hóa Z-score
+  default_gamma_center: 50.0        # Hệ số mặc định cho khoảng cách chỉ trừ tâm (A2)
+  default_beta_rel: 2.0             # Hệ số mặc định cho tín hiệu reliability g_j(x)
+  n_random_permutations: 100        # Số lần hoán vị ngẫu nhiên để làm đối chứng
+
+oracle_gate:
+  max_weight_cap: 0.40
+  aa_drop_tolerance: 0.01
+  sigmoid_temp: 0.015
+  l2_uniform_reg: 0.005
+  max_iter: 400
