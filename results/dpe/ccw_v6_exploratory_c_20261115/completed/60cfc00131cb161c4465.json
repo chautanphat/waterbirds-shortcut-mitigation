@@ -1,0 +1,29 @@
+{
+  "artifacts": {
+    "fits/seed1/fold1/cells.csv": {
+      "bytes": 2676,
+      "sha256": "a2ee0b40a9659b7037b6f41101c3f4ab95805c86d4a5264fee1554596f6189ec"
+    },
+    "fits/seed1/fold1/model.json": {
+      "bytes": 24146,
+      "sha256": "5feb6b98169763b8e7e18bca2e1e826ed97a585d91f266d8b8c97f093beaf680"
+    },
+    "fits/seed1/fold1/provenance.json": {
+      "bytes": 15989,
+      "sha256": "eabc631b49142a088ad087782140ea4d2f46bb873cb3594e0b512d67fec10b86"
+    }
+  },
+  "completed_utc": "2026-11-15T03:24:59.204759+00:00",
+  "dependencies": [
+    "recovery"
+  ],
+  "id": "fit:1:1",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "fit_images": 240,
+    "fold": 1,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seed": 1,
+    "sigma_A": 0.02
+  }
+}

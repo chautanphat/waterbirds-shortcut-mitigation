@@ -55,6 +55,8 @@ Thumbs.db
 /waterbird_complete95_forest2water2/
 *.npy
 *.npz
+# Curated compact CCW diagnostic export (five methods, probabilities and weights).
+!/results/dpe/ccw_v6_exploratory_c_20261115/EXPLORATORY_C_PREDICTIONS.npz
 
 # Model weights and checkpoints
 *.pt

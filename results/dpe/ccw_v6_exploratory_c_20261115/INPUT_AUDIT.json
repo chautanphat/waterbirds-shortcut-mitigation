@@ -1,0 +1,84 @@
+{
+  "B_C_disjoint": true,
+  "C_for_fit": false,
+  "heads_verified": 135,
+  "labels": "Original official labels; documented species-label caveat retained",
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+  "rows": [
+    {
+      "B": 240,
+      "C": 400,
+      "fold": 0,
+      "heads": 15,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0
+    },
+    {
+      "B": 240,
+      "C": 400,
+      "fold": 1,
+      "heads": 15,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0
+    },
+    {
+      "B": 240,
+      "C": 399,
+      "fold": 2,
+      "heads": 15,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0
+    },
+    {
+      "B": 240,
+      "C": 400,
+      "fold": 0,
+      "heads": 15,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1
+    },
+    {
+      "B": 240,
+      "C": 400,
+      "fold": 1,
+      "heads": 15,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1
+    },
+    {
+      "B": 240,
+      "C": 399,
+      "fold": 2,
+      "heads": 15,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1
+    },
+    {
+      "B": 240,
+      "C": 400,
+      "fold": 0,
+      "heads": 15,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2
+    },
+    {
+      "B": 240,
+      "C": 400,
+      "fold": 1,
+      "heads": 15,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2
+    },
+    {
+      "B": 240,
+      "C": 399,
+      "fold": 2,
+      "heads": 15,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2
+    }
+  ],
+  "same_A_only_heads": true,
+  "status": "PASS",
+  "unique_images": 1199
+}

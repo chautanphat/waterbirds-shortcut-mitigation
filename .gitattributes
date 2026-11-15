@@ -1,0 +1,12 @@
+# Preserve research artifacts byte-for-byte so their SHA-256 receipts survive checkout.
+results/dpe/ccw_v6_20261115/** -text
+results/dpe/ccw_v6_exploratory_c_20261115/** -text
+experiments/ccw_v6/** -text
+baselines/dpe4subpop/DPE_CCW_v6_Codex_Handoff.md -text
+scripts/export_ccw_v6_branch.py -text
+scripts/export_dpe_v5_analysis_inputs.py -text
+scripts/verify_dpe_v5_analysis_inputs.py -text
+scripts/finalize_ccw_v6.py -text
+scripts/finalize_ccw_exploratory_c.py -text
+tests/methods/test_ccw_v6.py -text
+tests/methods/test_ccw_exploratory_c.py -text

@@ -1,0 +1,45 @@
+# CCW v6 input inventory
+
+- `baselines\dpe4subpop\DPE_CCW_v6_Codex_Handoff.md`: 26237 bytes, SHA256 `a2876e07e625682a68e801e535bba3bed2ba404f088054ef34808c586d23980a`
+- `outputs\geometry_aggregation_v5\DPE_v5_Analysis_Inputs.zip`: 1394619 bytes, SHA256 `941a9f777932d298bdfdffbba7f19d7d725699af636d5a01437f0c51b1a1a6f9`
+- `outputs\geometry_aggregation_v5\run1\nested\seed0\fold0\member_predictions.npz`: 209261 bytes, SHA256 `a9c8f5a258ebf34c902a23d85d10afa60d8f19ee3ed373401d9853b19046a031`
+- `outputs\geometry_aggregation_v5\run1\nested\seed0\fold0\ABC_manifest.json`: 83412 bytes, SHA256 `313ac804f9630e6985ed3e6721addeb4d6f06aaa7600c2006c6d589facff16a9`
+- `outputs\geometry_aggregation_v5\run1\nested\seed0\fold0\head_manifest.json`: 4644 bytes, SHA256 `b9737ade4c556322d7a3d428ebac76927d268bead55acddef3754ade5b8e289e`
+- `outputs\geometry_aggregation_v5\run1\nested\seed0\fold0\B_only_normalizer.json`: 17700 bytes, SHA256 `ff729b536cc27c33adfd1723feb500d0b0613363b4643fd2032110ed9f340224`
+- `outputs\geometry_aggregation_v5\run1\nested\seed0\fold1\member_predictions.npz`: 208707 bytes, SHA256 `6485fa2d6c681295e2f8d2e9ae42a7faf9becbc1d87c4580bfb2c44886f8d86e`
+- `outputs\geometry_aggregation_v5\run1\nested\seed0\fold1\ABC_manifest.json`: 83412 bytes, SHA256 `784ff2b3a1c5d704a6465f97c0008602c8aa304d2a162b7a5cdd622218e24b69`
+- `outputs\geometry_aggregation_v5\run1\nested\seed0\fold1\head_manifest.json`: 4644 bytes, SHA256 `79ff88b0fb6a4ed901f06e9237a5581ab43c30f44d4bcb36d7680d963a920c9a`
+- `outputs\geometry_aggregation_v5\run1\nested\seed0\fold1\B_only_normalizer.json`: 17695 bytes, SHA256 `7b02cb3ba4e18d9524ca1590f3d2d3608a1edc9a5254e7ec28f1493c3d453c34`
+- `outputs\geometry_aggregation_v5\run1\nested\seed0\fold2\member_predictions.npz`: 209186 bytes, SHA256 `6e62b6e98b94821dc9edec167d28504e0fdc7a11e2cb3b7554ce3cbc3c41dbcd`
+- `outputs\geometry_aggregation_v5\run1\nested\seed0\fold2\ABC_manifest.json`: 83412 bytes, SHA256 `c5704f306204eba7a845cb6502e598269eb4a4d1e0c25e57bdc9d50cbe8432ba`
+- `outputs\geometry_aggregation_v5\run1\nested\seed0\fold2\head_manifest.json`: 4644 bytes, SHA256 `f858afab62b0f7729766a215e03144c808229bc504f8e2908a900c3f82b223ab`
+- `outputs\geometry_aggregation_v5\run1\nested\seed0\fold2\B_only_normalizer.json`: 17705 bytes, SHA256 `34c0c996e22bb9ae063730916b3ba6ae80ec557ba15e44976082bfc5bad43148`
+- `outputs\geometry_aggregation_v5\run1\nested\seed1\fold0\member_predictions.npz`: 208966 bytes, SHA256 `f4863208a5946dcb6ba261c9ebbefbfa9ffa57eec0d089899e4d77f210b67a13`
+- `outputs\geometry_aggregation_v5\run1\nested\seed1\fold0\ABC_manifest.json`: 83412 bytes, SHA256 `2224e12fd401b5ead38e84bdcebdf0de789275dc0f9e4b8f3501dabe823f8874`
+- `outputs\geometry_aggregation_v5\run1\nested\seed1\fold0\head_manifest.json`: 4644 bytes, SHA256 `ba7b718492a44c7c5190c72de2440451b4481be561ef209c5fc5f9e402c72498`
+- `outputs\geometry_aggregation_v5\run1\nested\seed1\fold0\B_only_normalizer.json`: 17660 bytes, SHA256 `fcd0869146ce26d0fe183ec58886190caafbf80520bb7ba1528d31f00344d9d4`
+- `outputs\geometry_aggregation_v5\run1\nested\seed1\fold1\member_predictions.npz`: 209460 bytes, SHA256 `383636461047f5c79e18d6571c025dfa2d6ac41446962f6053775e722ccd37b1`
+- `outputs\geometry_aggregation_v5\run1\nested\seed1\fold1\ABC_manifest.json`: 83412 bytes, SHA256 `4b728ed96d24bc3f3e9d270a18caf73e5a35b9b2e20f9c33fee62c624d585124`
+- `outputs\geometry_aggregation_v5\run1\nested\seed1\fold1\head_manifest.json`: 4644 bytes, SHA256 `4f589a461527e41a929d4a485bdfb403a343687f62cd1a06594440c322df9ac1`
+- `outputs\geometry_aggregation_v5\run1\nested\seed1\fold1\B_only_normalizer.json`: 17664 bytes, SHA256 `d6734e99d108b98e6746907eb20a7d4119daac0af00e20188452898627fb3894`
+- `outputs\geometry_aggregation_v5\run1\nested\seed1\fold2\member_predictions.npz`: 209101 bytes, SHA256 `349173f426ba3cf490da2b4ad6a7b54494500dfc607288d0586468ff854641dd`
+- `outputs\geometry_aggregation_v5\run1\nested\seed1\fold2\ABC_manifest.json`: 83412 bytes, SHA256 `61b1a843a9d2fe47b0293a7a6da1edb8e1d10b1053ae1bb4328381efa7b762e4`
+- `outputs\geometry_aggregation_v5\run1\nested\seed1\fold2\head_manifest.json`: 4644 bytes, SHA256 `aaf93ae1aa6ba2dc35bd418002e6ed5e9ecfa36acf7c5b1cb7a68ef38896895b`
+- `outputs\geometry_aggregation_v5\run1\nested\seed1\fold2\B_only_normalizer.json`: 17645 bytes, SHA256 `cff4056bb791bf81193809a1297e1bc2b712faadbbb33c6e655e85321168e84b`
+- `outputs\geometry_aggregation_v5\run1\nested\seed2\fold0\member_predictions.npz`: 209283 bytes, SHA256 `c47c6c1f30af017c4af3fbd6104c4cfff63416ace3651aebf7f2c97831bf2399`
+- `outputs\geometry_aggregation_v5\run1\nested\seed2\fold0\ABC_manifest.json`: 83412 bytes, SHA256 `7923e4732c4d8ad5e0c6c6d7e8d5146a4267d4268f53e911006d4324a65e5379`
+- `outputs\geometry_aggregation_v5\run1\nested\seed2\fold0\head_manifest.json`: 4644 bytes, SHA256 `1f03c8126020c23e118aa3773eb86e1c205e90c75a6fbb1e893db3dd6d38422a`
+- `outputs\geometry_aggregation_v5\run1\nested\seed2\fold0\B_only_normalizer.json`: 17803 bytes, SHA256 `8faad817f8f95e098ee638a3ceec46c00c2a390a333e532601784332b9899e8b`
+- `outputs\geometry_aggregation_v5\run1\nested\seed2\fold1\member_predictions.npz`: 208558 bytes, SHA256 `cc7675a5b60e5983b49890f86c6be449a808806567586da9853e08a2458f98f8`
+- `outputs\geometry_aggregation_v5\run1\nested\seed2\fold1\ABC_manifest.json`: 83412 bytes, SHA256 `4553d26ac4fda620aac0081ec4b30d3b6e649038892700ab9b07da2bceecc65f`
+- `outputs\geometry_aggregation_v5\run1\nested\seed2\fold1\head_manifest.json`: 4644 bytes, SHA256 `cc431bae03dcecfdb702a6283682350031255b8d25f4aabbda198fa41a982049`
+- `outputs\geometry_aggregation_v5\run1\nested\seed2\fold1\B_only_normalizer.json`: 17673 bytes, SHA256 `d13862e4da87d8e45747c37437b48b6c57e75fe83f85f1046664d1163f744e2a`
+- `outputs\geometry_aggregation_v5\run1\nested\seed2\fold2\member_predictions.npz`: 208558 bytes, SHA256 `b09cd42c5cb09d299bde725986bae2f1ba57d21a7de10ae0633f9bda53dcfc0e`
+- `outputs\geometry_aggregation_v5\run1\nested\seed2\fold2\ABC_manifest.json`: 83412 bytes, SHA256 `d5e8499f3615b6e44745984d7cec695a36e58ff8b03d3d1219a6f42c0260d221`
+- `outputs\geometry_aggregation_v5\run1\nested\seed2\fold2\head_manifest.json`: 4644 bytes, SHA256 `605b1be6508c6ab5454e3b839ef81f773fd35f532efdc44b8c0fe9d78bb1919e`
+- `outputs\geometry_aggregation_v5\run1\nested\seed2\fold2\B_only_normalizer.json`: 17666 bytes, SHA256 `066997cdb37d26e2cfc3d3e60bcd7c1d6e7f3e191f868339fd3afba7a8c82009`
+- `baselines\dpe4subpop\src\dpe\core.py`: 28615 bytes, SHA256 `cd99e622a1327c47e5bf034aa75ad2eb2091666daa8b320a00861f4c4a79cbc4`
+- `baselines\dpe4subpop\src\dpe\geometry.py`: 3009 bytes, SHA256 `633bafea68550f143ef330b639020abe7b6c2e5d51351c01545c6c27e3c60a05`
+- `baselines\dpe4subpop\src\dpe\verified_distance_v1.json`: 1094 bytes, SHA256 `1cd15c7696e7f55c7f45cf96b9eba3a128b9ecb50aabe4fb804aeae54e4a48c4`
+
+All original C data are reused exploratory development. No untouched cohort is assumed from a new filename.

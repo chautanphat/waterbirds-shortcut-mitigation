@@ -1,0 +1,85 @@
+{
+  "advantage": {
+    "delta_AA_pp": 0.027800945232115737,
+    "delta_WGA_pp": 0.0,
+    "max_absolute_probability_shift": 0.0014398235668641735,
+    "max_absolute_weight_change": 0.040081973056491804,
+    "mean_absolute_probability_shift": 0.00011109395623050092,
+    "prediction_flips": 1,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seed_image_rows": 3597,
+    "top_expert_changes": 134,
+    "unique_images_flipped": 1,
+    "weight_TV_max": 0.04008197305649179,
+    "weight_TV_mean": 0.006880885671061568
+  },
+  "baseline_worst_groups": [
+    {
+      "broken": 1,
+      "corrected": 1,
+      "delta_pp": 0.0,
+      "full_accuracy_pct": 90.97744360902256,
+      "group": 2,
+      "n": 133,
+      "reference": "U0",
+      "reference_accuracy_pct": 90.97744360902256,
+      "seed": 0
+    },
+    {
+      "broken": 0,
+      "corrected": 0,
+      "delta_pp": 0.0,
+      "full_accuracy_pct": 90.97744360902256,
+      "group": 2,
+      "n": 133,
+      "reference": "G1_frozen",
+      "reference_accuracy_pct": 90.97744360902256,
+      "seed": 0
+    },
+    {
+      "broken": 0,
+      "corrected": 1,
+      "delta_pp": 0.7518796992481258,
+      "full_accuracy_pct": 93.98496240601504,
+      "group": 2,
+      "n": 133,
+      "reference": "U0",
+      "reference_accuracy_pct": 93.23308270676691,
+      "seed": 1
+    },
+    {
+      "broken": 0,
+      "corrected": 0,
+      "delta_pp": 0.0,
+      "full_accuracy_pct": 93.98496240601504,
+      "group": 2,
+      "n": 133,
+      "reference": "G1_frozen",
+      "reference_accuracy_pct": 93.98496240601504,
+      "seed": 1
+    },
+    {
+      "broken": 0,
+      "corrected": 1,
+      "delta_pp": 0.7518796992481258,
+      "full_accuracy_pct": 93.98496240601504,
+      "group": 2,
+      "n": 133,
+      "reference": "U0",
+      "reference_accuracy_pct": 93.23308270676691,
+      "seed": 2
+    },
+    {
+      "broken": 0,
+      "corrected": 0,
+      "delta_pp": 0.0,
+      "full_accuracy_pct": 93.98496240601504,
+      "group": 2,
+      "n": 133,
+      "reference": "G1_frozen",
+      "reference_accuracy_pct": 93.98496240601504,
+      "seed": 2
+    }
+  ],
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+}

@@ -1,0 +1,23 @@
+{
+  "artifacts": {
+    "FULL_RESUME_CHECK.json": {
+      "bytes": 207,
+      "sha256": "321938226f9a880e52abde6d9b4296d24c61d51dddc846a7f3a5340e21724969"
+    },
+    "FULL_RESUME_CHECK.log": {
+      "bytes": 174,
+      "sha256": "493aa3f22116dbe6918065c976e2789a9049ce9e6e76f2fb33d8c2cb94d163c3"
+    }
+  },
+  "completed_utc": "2026-11-15T03:28:55.292361+00:00",
+  "dependencies": [
+    "complete"
+  ],
+  "id": "delivery_resume_check",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "new_tasks": 0,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "PASS"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "group_fields_in_B": false,
+  "head_order_and_disjointness": true,
+  "images_per_fold": 240,
+  "matching_B_caches": 9,
+  "new_head_training": false,
+  "status": "PASS"
+}

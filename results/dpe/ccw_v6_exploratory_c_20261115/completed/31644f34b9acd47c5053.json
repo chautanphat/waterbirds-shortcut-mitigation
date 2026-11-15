@@ -1,0 +1,21 @@
+{
+  "artifacts": {
+    "evaluations/seed2/CCW_A.json": {
+      "bytes": 2328,
+      "sha256": "ea6b0a262322d97e9c8f45efb1c1d568e869d1799b0ace48b980630e8bfcb1bf"
+    }
+  },
+  "completed_utc": "2026-11-15T03:25:11.811031+00:00",
+  "dependencies": [
+    "inference_complete"
+  ],
+  "id": "eval:2:CCW_A",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "AA": 0.9557964970809008,
+    "WGA": 0.9398496240601504,
+    "method": "CCW_A",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seed": 2
+  }
+}

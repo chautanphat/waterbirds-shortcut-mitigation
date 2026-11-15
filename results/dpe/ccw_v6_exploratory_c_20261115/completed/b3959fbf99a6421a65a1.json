@@ -1,0 +1,21 @@
+{
+  "artifacts": {
+    "evaluations/seed2/G2_z.json": {
+      "bytes": 2324,
+      "sha256": "b899048d8dab6ebd253cd8fe0a057a57793459f5fb0ea10218e497b7522d25c6"
+    }
+  },
+  "completed_utc": "2026-11-15T03:25:10.667727+00:00",
+  "dependencies": [
+    "inference_complete"
+  ],
+  "id": "eval:2:G2_z",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "AA": 0.9557964970809008,
+    "WGA": 0.9398496240601504,
+    "method": "G2_z",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seed": 2
+  }
+}

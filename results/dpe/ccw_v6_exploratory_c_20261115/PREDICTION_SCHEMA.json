@@ -1,0 +1,97 @@
+{
+  "axes": {
+    "head_sha256": "seed, outer fold, expert",
+    "member_probs": "seed, canonical image, expert, class",
+    "probs": "method, seed, canonical image, class",
+    "r": "unmixed softmax router weights",
+    "weights": "method, seed, canonical image, expert"
+  },
+  "full_per_fold_internals": "predictions/seedS/foldF/METHOD.npz",
+  "head_order": "head_sha256[seed, fold[seed,image], expert]",
+  "label_policy": "Original official labels; evaluation only",
+  "probability_precision": "Original float32 baselines preserved numerically when stacked with float64 CCW outputs",
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+  "shapes": {
+    "B_model_sha256": [
+      3,
+      3
+    ],
+    "classes": [
+      2
+    ],
+    "fold": [
+      3,
+      1199
+    ],
+    "group": [
+      1199
+    ],
+    "head_sha256": [
+      3,
+      3,
+      15
+    ],
+    "member_distances": [
+      3,
+      1199,
+      15,
+      2
+    ],
+    "member_probs": [
+      3,
+      1199,
+      15,
+      2
+    ],
+    "methods": [
+      5
+    ],
+    "original_NO_GO_sha256": [],
+    "probability_shift_vs_g1": [
+      5,
+      3,
+      1199,
+      2
+    ],
+    "probability_shift_vs_uniform": [
+      5,
+      3,
+      1199,
+      2
+    ],
+    "probs": [
+      5,
+      3,
+      1199,
+      2
+    ],
+    "r": [
+      5,
+      3,
+      1199,
+      15
+    ],
+    "role": [],
+    "sample_id": [
+      1199
+    ],
+    "seeds": [
+      3
+    ],
+    "weight_shift_vs_g1": [
+      5,
+      3,
+      1199,
+      15
+    ],
+    "weights": [
+      5,
+      3,
+      1199,
+      15
+    ],
+    "y": [
+      1199
+    ]
+  }
+}

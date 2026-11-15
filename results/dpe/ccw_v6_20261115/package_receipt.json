@@ -1,0 +1,8 @@
+{
+  "bytes": 18366215,
+  "excluded": "Original images, DPE head/backbone checkpoints, redundant recovery controls and original C analysis package. Workspace original v5 inputs remain necessary for source-hash resume.",
+  "members": 1595,
+  "path": "outputs\\ccw_v6\\DPE_CCW_v6_results.zip",
+  "sha256": "f822b0063d5eabdf80ff1aedfb29e51d41338a8fa0bc467cc3d6294ab417cdeb",
+  "zip_CRC": "PASS"
+}

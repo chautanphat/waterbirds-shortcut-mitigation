@@ -1,0 +1,17 @@
+{
+  "artifacts": {
+    "INPUT_AUDIT.json": {
+      "bytes": 2074,
+      "sha256": "5a51a5c6f0c04ce280319507f156de5585954b45133d5dd9eb4f077fc6aa67b3"
+    }
+  },
+  "completed_utc": "2026-11-15T03:24:18.256735+00:00",
+  "dependencies": [],
+  "id": "input_audit",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "caches": 9,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "PASS"
+  }
+}

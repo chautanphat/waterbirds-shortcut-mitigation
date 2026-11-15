@@ -1,0 +1,28 @@
+{
+  "artifacts": {
+    "baseline/seed1/fold2/G1_frozen.npz": {
+      "bytes": 159840,
+      "sha256": "887e3b4e3f0ffeb4c3c2c98eac2a643139d91fa49678416175de83601b6db530"
+    },
+    "baseline/seed1/fold2/U0.npz": {
+      "bytes": 81786,
+      "sha256": "b81b6f8127efd95408d03d03bf9a6c42976326e1b956c4484ea4c415e3416e4b"
+    }
+  },
+  "completed_utc": "2026-11-15T03:24:20.088861+00:00",
+  "dependencies": [
+    "input_audit"
+  ],
+  "id": "baseline:1:2",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "fold": 2,
+    "max_probability_errors": {
+      "G1_frozen": 0.0,
+      "U0": 0.0
+    },
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seed": 1,
+    "status": "PASS"
+  }
+}

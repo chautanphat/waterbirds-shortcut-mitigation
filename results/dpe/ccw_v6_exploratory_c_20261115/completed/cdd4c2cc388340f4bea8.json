@@ -1,0 +1,28 @@
+{
+  "artifacts": {
+    "BASELINE_REPRODUCTION.json": {
+      "bytes": 3874,
+      "sha256": "4bf88e0aa4d5cb36dfb941e52bf0c544ce8e87dcbcff393cde5b6bbdea093c01"
+    }
+  },
+  "completed_utc": "2026-11-15T03:24:21.124723+00:00",
+  "dependencies": [
+    "baseline:0:0",
+    "baseline:0:1",
+    "baseline:0:2",
+    "baseline:1:0",
+    "baseline:1:1",
+    "baseline:1:2",
+    "baseline:2:0",
+    "baseline:2:1",
+    "baseline:2:2"
+  ],
+  "id": "baseline_gate",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "AA_WGA_match": true,
+    "predictions_exact": true,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "PASS"
+  }
+}

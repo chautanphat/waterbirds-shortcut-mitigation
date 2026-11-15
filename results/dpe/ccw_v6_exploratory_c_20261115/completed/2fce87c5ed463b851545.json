@@ -1,0 +1,22 @@
+{
+  "artifacts": {
+    "predictions/seed0/fold1/U0.npz": {
+      "bytes": 81481,
+      "sha256": "6dbdfd7621e9731ca344458b864cbf2605e7bbb42697821443cee5c43cf5c016"
+    }
+  },
+  "completed_utc": "2026-11-15T03:24:54.957903+00:00",
+  "dependencies": [
+    "fit:0:1"
+  ],
+  "id": "infer:0:1:U0",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "fold": 1,
+    "labels_or_groups_loaded": false,
+    "method": "U0",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "samples": 400,
+    "seed": 0
+  }
+}

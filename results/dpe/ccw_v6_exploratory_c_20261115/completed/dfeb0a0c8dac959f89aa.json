@@ -1,0 +1,27 @@
+{
+  "artifacts": {
+    "DELIVERY_VALIDATION.json": {
+      "bytes": 611,
+      "sha256": "50498075a39a8a5f2b0f07399822fddcc426e93387b08f711f98cf57f23aae0f"
+    }
+  },
+  "completed_utc": "2026-11-15T03:29:29.241897+00:00",
+  "dependencies": [
+    "delivery_resume_check"
+  ],
+  "id": "delivery_independent_audit",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "all_inference_committed_before_CCW_evaluation": true,
+    "audit_source_sha256": "c0bcd3bdfa707eca449ee0e5a716e93fc146ef5461af6ffc88719b321a8c1cf5",
+    "full_B_fits_audited": 9,
+    "full_probability_shifts_and_weights_verified": true,
+    "inference_caches_verified": 45,
+    "normalizers_bins_boundary_quantile_tables_sigmaA_reconstructed": true,
+    "original_NO_GO_unchanged": true,
+    "pooled_samples_aligned": true,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "PASS",
+    "test_suite": "12 passed in 6.12s: test_ccw_v6.py and test_ccw_exploratory_c.py"
+  }
+}

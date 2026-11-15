@@ -1,0 +1,28 @@
+{
+  "artifacts": {
+    "uncertainty/bootstrap.npz": {
+      "bytes": 178716,
+      "sha256": "8c667abf5bf251e7b942e502cfc1e6a33bec34f6ec07334a265c784615ba7007"
+    },
+    "uncertainty/paired_CI.json": {
+      "bytes": 12836,
+      "sha256": "bcf5b9150521f2244c8ab8aed5a79df48d4505f1cd0f80ec6f22aefeaa6de3b1"
+    },
+    "uncertainty/rng_state.json": {
+      "bytes": 928,
+      "sha256": "5680cbb801a3c2d1562d0b1e06712147953bfc7722d59da91e651d07644b238f"
+    }
+  },
+  "completed_utc": "2026-11-15T03:25:16.005335+00:00",
+  "dependencies": [
+    "prediction_export"
+  ],
+  "id": "uncertainty",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "repeats": 2000,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "PASS",
+    "unique_image_clustered": true
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "artifacts": {
+    "EXPLORATORY_C_RESULTS.csv": {
+      "bytes": 19845,
+      "sha256": "23a3be4ed8aa1d95a2d5e0bcd8d0483423ca72460c4ef8bf685e6431f9e750f1"
+    }
+  },
+  "completed_utc": "2026-11-15T03:25:16.574807+00:00",
+  "dependencies": [
+    "uncertainty"
+  ],
+  "id": "table:RESULTS",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "rows": 65,
+    "table": "RESULTS"
+  }
+}

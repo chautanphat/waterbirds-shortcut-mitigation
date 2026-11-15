@@ -1,0 +1,22 @@
+{
+  "artifacts": {
+    "predictions/seed0/fold1/CCW_A.npz": {
+      "bytes": 348998,
+      "sha256": "e84649b63968099855d5a51b851513ebba78fcc1fd8d109f845b52fb9faecd7c"
+    }
+  },
+  "completed_utc": "2026-11-15T03:24:55.691628+00:00",
+  "dependencies": [
+    "fit:0:1"
+  ],
+  "id": "infer:0:1:CCW_A",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "fold": 1,
+    "labels_or_groups_loaded": false,
+    "method": "CCW_A",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "samples": 400,
+    "seed": 0
+  }
+}

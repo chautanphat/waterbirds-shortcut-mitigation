@@ -1,0 +1,27 @@
+{
+  "artifacts": {
+    "CONTENTS.md": {
+      "bytes": 1755,
+      "sha256": "54dd22474e4f53ba59645e7ed45127b4779ada0ee974497784e08de4b0c52137"
+    },
+    "DPE_CCW_v6_Exploratory_C.zip": {
+      "bytes": 19580992,
+      "sha256": "b66032f87dc7c67c0f73135edf430798174f44cffd4ac27da6a3f443c65cfec4"
+    },
+    "PACKAGE_RECEIPT.json": {
+      "bytes": 298,
+      "sha256": "ffe825452362980870007cfc857ae92886446c891d34246048aa8f1dfa86be99"
+    }
+  },
+  "completed_utc": "2026-11-15T03:29:32.033386+00:00",
+  "dependencies": [
+    "delivery_independent_audit"
+  ],
+  "id": "delivery_package",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "bytes": 19580992,
+    "files": 267,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+  }
+}

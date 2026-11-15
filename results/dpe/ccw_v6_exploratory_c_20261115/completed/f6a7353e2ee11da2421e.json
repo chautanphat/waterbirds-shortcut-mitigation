@@ -1,0 +1,44 @@
+{
+  "artifacts": {
+    "acceptance/interrupted/fold0/model.json": {
+      "bytes": 24143,
+      "sha256": "9687381aba3b0d08b28e86d6227c8b4da86f5bbb5b3b1d6cd9c5440519239553"
+    },
+    "acceptance/interrupted/fold1/model.json": {
+      "bytes": 24222,
+      "sha256": "a867d40c2437174e95f2e34df115dcca25f11e7ec0c31aff5453e3314a759a64"
+    },
+    "acceptance/recovery.log": {
+      "bytes": 68,
+      "sha256": "922296fb807376fecb37e6602d6eeecea30767d659c16bfe6052a4650f7aa9c1"
+    },
+    "acceptance/recovery_receipt.json": {
+      "bytes": 345,
+      "sha256": "a787d38e3a72a17d5a5ea8a7573a7ff7469bf00b07f5c62474d72a8de655cf07"
+    },
+    "acceptance/uninterrupted/fold0/model.json": {
+      "bytes": 24143,
+      "sha256": "9687381aba3b0d08b28e86d6227c8b4da86f5bbb5b3b1d6cd9c5440519239553"
+    },
+    "acceptance/uninterrupted/fold1/model.json": {
+      "bytes": 24222,
+      "sha256": "a867d40c2437174e95f2e34df115dcca25f11e7ec0c31aff5453e3314a759a64"
+    }
+  },
+  "completed_utc": "2026-11-15T03:24:24.566175+00:00",
+  "dependencies": [
+    "baseline_gate"
+  ],
+  "id": "recovery",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "completed_first_fit_unchanged": true,
+    "completed_fit_recomputed": false,
+    "forced_kill_mid_second_full_B_fit": true,
+    "resumed_equal_uninterrupted": true,
+    "reuse_fits_in_main_run": true,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "PASS",
+    "unfinished_fit_replayed": true
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "core_decision": "NO_GO",
+  "fresh_confirmation": "BLOCKED_NO_FRESH_DATA",
+  "full_resume_log_sha256": "b96ea9e2273ad9b83f7cb949b17e9348036c2c764de54de0870dfafeed52d821",
+  "full_resume_new_experiment_tasks": 0,
+  "production_integration": false,
+  "source_revision2": "Report dictionary serialization fix only; all completed models/results retained",
+  "status": "PASS",
+  "unit_tests": 9,
+  "verified_original_tasks": 493
+}

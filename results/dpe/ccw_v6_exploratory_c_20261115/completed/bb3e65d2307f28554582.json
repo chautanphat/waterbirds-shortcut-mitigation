@@ -1,0 +1,36 @@
+{
+  "artifacts": {
+    "EXPLORATORY_C_PREDICTIONS.npz": {
+      "bytes": 5655894,
+      "sha256": "dda10ba25f249120892db71f13ab40a29cb9bcce76107d92331de0004234369e"
+    },
+    "PREDICTION_SCHEMA.json": {
+      "bytes": 1638,
+      "sha256": "37155839a4e8c2ef924e7dba8464fcf9514f726a08e8e7d2eb2ca6332c2b51b2"
+    }
+  },
+  "completed_utc": "2026-11-15T03:25:14.995619+00:00",
+  "dependencies": [
+    "evaluation_complete"
+  ],
+  "id": "prediction_export",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "methods": 5,
+    "probs_shape": [
+      5,
+      3,
+      1199,
+      2
+    ],
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "samples": 1199,
+    "seeds": 3,
+    "weights_shape": [
+      5,
+      3,
+      1199,
+      15
+    ]
+  }
+}

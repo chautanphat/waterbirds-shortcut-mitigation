@@ -1,0 +1,14 @@
+{
+  "distinct_train_validation_IDs": true,
+  "head_retraining": false,
+  "inner_fits_verified": 36,
+  "method_validation_caches_verified": 180,
+  "new_CCW_C_replay": false,
+  "normalizer_quantile_boundary_weights_sigma_and_all_cells_reconstructed": true,
+  "production_source_hashes_unchanged": {
+    "baselines\\dpe4subpop\\src\\dpe\\core.py": "cd99e622a1327c47e5bf034aa75ad2eb2091666daa8b320a00861f4c4a79cbc4",
+    "baselines\\dpe4subpop\\src\\dpe\\geometry.py": "633bafea68550f143ef330b639020abe7b6c2e5d51351c01545c6c27e3c60a05",
+    "baselines\\dpe4subpop\\src\\dpe\\verified_distance_v1.json": "1cd15c7696e7f55c7f45cf96b9eba3a128b9ecb50aabe4fb804aeae54e4a48c4"
+  },
+  "status": "PASS"
+}

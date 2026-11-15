@@ -1,0 +1,22 @@
+{
+  "artifacts": {
+    "predictions/seed2/fold1/G2_z.npz": {
+      "bytes": 356220,
+      "sha256": "dc1bf48726591ec227b402a05d41eed413c29a346000987bffc7c63da7326fd6"
+    }
+  },
+  "completed_utc": "2026-11-15T03:25:04.932830+00:00",
+  "dependencies": [
+    "fit:2:1"
+  ],
+  "id": "infer:2:1:G2_z",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "fold": 1,
+    "labels_or_groups_loaded": false,
+    "method": "G2_z",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "samples": 400,
+    "seed": 2
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "B_data_hashes": {
+    "experiments\\ccw_v6\\inputs\\B\\seed0\\fold0.npz": "d8d23d95a5128a1157711d56fff36da073bac1d7e86fb5e3f3d1fa9ff97e2c6a",
+    "experiments\\ccw_v6\\inputs\\B\\seed0\\fold1.npz": "9c77ecac94ddc20abc24675cf4ed57cc6148a83057629c0a9f03f4e4a242b8ee",
+    "experiments\\ccw_v6\\inputs\\B\\seed0\\fold2.npz": "bb069f9a8f3c5e674917b336505caff8e70c16f9c109dc2b45da58237eb04940",
+    "experiments\\ccw_v6\\inputs\\B\\seed1\\fold0.npz": "615ffaee06dd207cc77af5bc3d141cb783f8cb2318ab0b3bb43dda9b889f3516",
+    "experiments\\ccw_v6\\inputs\\B\\seed1\\fold1.npz": "4c483e43bf90b30e9fd926e6421b830aec57ca81ee733c067300f0d193e48613",
+    "experiments\\ccw_v6\\inputs\\B\\seed1\\fold2.npz": "46b8c596e92c6a1baebe3cf8654af92ff2b6f0e62c06b7361528b86cb2b189e9",
+    "experiments\\ccw_v6\\inputs\\B\\seed2\\fold0.npz": "718b6a8de7c18677d608706f5357c5ecda37251ab9ff3d38e1bac58ace48e97b",
+    "experiments\\ccw_v6\\inputs\\B\\seed2\\fold1.npz": "0b02b2c3451bb7d6ada3d77da2d6533749af44faa3b9ac601c9b73c301ab1943",
+    "experiments\\ccw_v6\\inputs\\B\\seed2\\fold2.npz": "b10061a03aadbd4f99d25d2930deca2679765927ed12f506995d36bf3d5fd88d"
+  },
+  "C_used": false,
+  "code_manifest_sha256": "226bb5993e52227422fc14c78b18fe669a1e6e141ac1b3cf307fec48c1c14fcd",
+  "config": {
+    "alpha": 0.25,
+    "beta": 1.0,
+    "boundary_quantile": 0.2,
+    "gamma": 50.0,
+    "kappa": 25.0,
+    "rho": 0.5,
+    "schema_version": 1,
+    "sigma_floor": 0.02,
+    "std_ddof": 0,
+    "z_quantiles": [
+      0.3333333333333333,
+      0.6666666666666666
+    ]
+  },
+  "group_blind": true,
+  "primary": "CCW_FULL",
+  "primary_beats_G1": false,
+  "ranking": [
+    {
+      "AA": 0.9577598559615458,
+      "concentration": 0.096267222530312,
+      "delta_AA_U0_pp_by_seed": [
+        -0.32626427406199365,
+        -0.1615508885298933,
+        -0.1626016260162677
+      ],
+      "eligible": true,
+      "method": "G1_frozen",
+      "proxy": 0.6206343240208096,
+      "worst_class_accuracy": 0.933362481642171
+    },
+    {
+      "AA": 0.9583018613816,
+      "concentration": 0.08103563259160527,
+      "delta_AA_U0_pp_by_seed": [
+        -0.32626427406199365,
+        -0.1615508885298933,
+        0.0
+      ],
+      "eligible": true,
+      "method": "CCW_FULL",
+      "proxy": 0.625182722301899,
+      "worst_class_accuracy": 0.9339566587069361
+    },
+    {
+      "AA": 0.9588456351717033,
+      "concentration": 0.0805208808661841,
+      "delta_AA_U0_pp_by_seed": [
+        -0.16313213703099683,
+        -0.1615508885298933,
+        0.0
+      ],
+      "eligible": true,
+      "method": "CCW_A",
+      "proxy": 0.6252081646264792,
+      "worst_class_accuracy": 0.9339566587069361
+    },
+    {
+      "AA": 0.9593859065035186,
+      "concentration": 0.06921092345439282,
+      "delta_AA_U0_pp_by_seed": [
+        0.0,
+        0.0,
+        -0.1626016260162677
+      ],
+      "eligible": true,
+      "method": "G2_z",
+      "proxy": 0.6325348161981164,
+      "worst_class_accuracy": 0.9339566587069361
+    },
+    {
+      "AA": 0.959927911923573,
+      "concentration": 0.06666666666666667,
+      "delta_AA_U0_pp_by_seed": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "eligible": true,
+      "method": "U0",
+      "proxy": 0.6360100309054056,
+      "worst_class_accuracy": 0.9351450128364669
+    }
+  ],
+  "reason": "Primary loses to G1 / violates AA floor, or a fixed control ranks best; no rescue grid",
+  "selected_method": null,
+  "status": "NO_GO"
+}

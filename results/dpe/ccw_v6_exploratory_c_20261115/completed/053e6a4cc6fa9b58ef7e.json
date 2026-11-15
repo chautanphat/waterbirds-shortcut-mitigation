@@ -1,0 +1,22 @@
+{
+  "artifacts": {
+    "predictions/seed1/fold0/G1_frozen.npz": {
+      "bytes": 159980,
+      "sha256": "db421321282841ee9ab57002c901fc98a9c3b47fed7798a68108c437036fc248"
+    }
+  },
+  "completed_utc": "2026-11-15T03:24:58.235904+00:00",
+  "dependencies": [
+    "fit:1:0"
+  ],
+  "id": "infer:1:0:G1_frozen",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "fold": 0,
+    "labels_or_groups_loaded": false,
+    "method": "G1_frozen",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "samples": 400,
+    "seed": 1
+  }
+}

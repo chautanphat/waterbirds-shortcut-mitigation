@@ -1,0 +1,65 @@
+{
+  "package_manifest_sha256": "7db1632df151f190ab590eea325e790bb054691685abdad5a61f20d1cab38f3d",
+  "package_verifier_sha256": "951d16587a23472591e57b6fc3adfbee42dbd7ce70437e2bba054855f388791b",
+  "source_label_policy": "Original official labels, known three-species caveat retained; no silent relabeling",
+  "status": "PASS",
+  "training_or_selection_used_C": false,
+  "verification": {
+    "caches": 9,
+    "distinct_images": 1199,
+    "experiments_rerun": 0,
+    "folds": [
+      {
+        "fold": 0,
+        "samples": 400,
+        "seed": 0
+      },
+      {
+        "fold": 1,
+        "samples": 400,
+        "seed": 0
+      },
+      {
+        "fold": 2,
+        "samples": 399,
+        "seed": 0
+      },
+      {
+        "fold": 0,
+        "samples": 400,
+        "seed": 1
+      },
+      {
+        "fold": 1,
+        "samples": 400,
+        "seed": 1
+      },
+      {
+        "fold": 2,
+        "samples": 399,
+        "seed": 1
+      },
+      {
+        "fold": 0,
+        "samples": 400,
+        "seed": 2
+      },
+      {
+        "fold": 1,
+        "samples": 400,
+        "seed": 2
+      },
+      {
+        "fold": 2,
+        "samples": 399,
+        "seed": 2
+      }
+    ],
+    "frozen_g1_reproduction": "PASS",
+    "heldout_labels_for_tuning": false,
+    "models_trained": 0,
+    "seed_image_rows": 3597,
+    "shapes_labels_splits_and_head_order": "PASS",
+    "status": "PASS"
+  }
+}

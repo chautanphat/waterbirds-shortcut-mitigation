@@ -1,0 +1,27 @@
+{
+  "after": {
+    "bit_generator": "PCG64",
+    "has_uint32": 0,
+    "state": {
+      "inc": 25430028613951997772685166149547640857,
+      "state": 37542344592144221338402940325376912679
+    },
+    "uinteger": 2839864517
+  },
+  "before": {
+    "bit_generator": "PCG64",
+    "has_uint32": 0,
+    "state": {
+      "inc": 25430028613951997772685166149547640857,
+      "state": 183886724880885094135196624874041842719
+    },
+    "uinteger": 0
+  },
+  "independent_rows_not_3597": true,
+  "limitation": "Does not estimate variance across newly trained backbones, new cohorts or head seeds beyond these three.",
+  "repeats": 2000,
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+  "sampling": "Same sampled image IDs in every seed and every method; paired conditional fixed-pipeline image bootstrap",
+  "stratification": "C groups for evaluation uncertainty only",
+  "unique_images": 1199
+}

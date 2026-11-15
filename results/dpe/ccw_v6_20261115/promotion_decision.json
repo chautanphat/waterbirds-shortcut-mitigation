@@ -1,0 +1,10 @@
+{
+  "B_decision": "NO_GO",
+  "C_metrics_are_confirmatory": false,
+  "default_Uniform": "UNCHANGED",
+  "existing_G1": "UNCHANGED",
+  "fresh_cohort_supplied": false,
+  "production_integration": false,
+  "reason": "NO FRESH DATA",
+  "status": "BLOCKED"
+}

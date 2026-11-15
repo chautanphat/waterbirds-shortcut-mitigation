@@ -1,0 +1,19 @@
+{
+  "artifacts": {
+    "ORIGINAL_PRESERVATION_AUDIT.json": {
+      "bytes": 246,
+      "sha256": "22e17d4ca59e0d3bf8a2d940abe137c9104ab51f270ab744b3e6362d1a8e544f"
+    }
+  },
+  "completed_utc": "2026-11-15T03:25:22.142558+00:00",
+  "dependencies": [
+    "report"
+  ],
+  "id": "preservation_audit",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "original_NO_GO_unchanged": true,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "PASS"
+  }
+}

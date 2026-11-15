@@ -1,0 +1,62 @@
+{
+  "artifacts": {
+    "phases/inference_complete.json": {
+      "bytes": 151,
+      "sha256": "dbc550d056c5252640b59f4999b8c78bc7eeb64f6f0127d8d1ac4ccc2ab35201"
+    }
+  },
+  "completed_utc": "2026-11-15T03:25:07.386726+00:00",
+  "dependencies": [
+    "infer:0:0:U0",
+    "infer:0:0:G1_frozen",
+    "infer:0:0:G2_z",
+    "infer:0:0:CCW_A",
+    "infer:0:0:CCW_FULL",
+    "infer:0:1:U0",
+    "infer:0:1:G1_frozen",
+    "infer:0:1:G2_z",
+    "infer:0:1:CCW_A",
+    "infer:0:1:CCW_FULL",
+    "infer:0:2:U0",
+    "infer:0:2:G1_frozen",
+    "infer:0:2:G2_z",
+    "infer:0:2:CCW_A",
+    "infer:0:2:CCW_FULL",
+    "infer:1:0:U0",
+    "infer:1:0:G1_frozen",
+    "infer:1:0:G2_z",
+    "infer:1:0:CCW_A",
+    "infer:1:0:CCW_FULL",
+    "infer:1:1:U0",
+    "infer:1:1:G1_frozen",
+    "infer:1:1:G2_z",
+    "infer:1:1:CCW_A",
+    "infer:1:1:CCW_FULL",
+    "infer:1:2:U0",
+    "infer:1:2:G1_frozen",
+    "infer:1:2:G2_z",
+    "infer:1:2:CCW_A",
+    "infer:1:2:CCW_FULL",
+    "infer:2:0:U0",
+    "infer:2:0:G1_frozen",
+    "infer:2:0:G2_z",
+    "infer:2:0:CCW_A",
+    "infer:2:0:CCW_FULL",
+    "infer:2:1:U0",
+    "infer:2:1:G1_frozen",
+    "infer:2:1:G2_z",
+    "infer:2:1:CCW_A",
+    "infer:2:1:CCW_FULL",
+    "infer:2:2:U0",
+    "infer:2:2:G1_frozen",
+    "infer:2:2:G2_z",
+    "infer:2:2:CCW_A",
+    "infer:2:2:CCW_FULL"
+  ],
+  "id": "inference_complete",
+  "manifest_sha256": "4b640d39a96d825fb139db5ce29475bd2c39706284ffc743b038dbc60bc8366b",
+  "result": {
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "COMPLETE"
+  }
+}
