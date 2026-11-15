@@ -6,6 +6,8 @@ Runs inside the pinned environment on exactly one visible GPU:
     python train_backbone.py --subpop-root SUBPOP --data-dir DATA --dataset CelebA --seed 0 --output-dir OUT
         [--steps 300]            timing smoke only; the real run keeps SubpopBench's default (30,001)
         [--resume MODEL.pkl]     continue an interrupted run (recorded as a deviation, see below)
+        [--extract-only]         training already finished (SubpopBench `done` marker): features only
+        [--checkpoint-freq N]    timing smoke only: evaluate more often to separate evaluation time
 
 Training: `subpopbench.train --algorithm ERM --train_attr no --hparams_seed 0` at the pinned
 commit, default hyper-parameters and steps, unmodified. The backbone is SubpopBench's last
@@ -18,14 +20,21 @@ tokenisation as SubpopBench evaluation. Saved as features/{val,test}.npz with id
 identity it mentions; otherwise the id). The ERM classifier's own validation/test metrics are
 stored in backbone.json for context.
 
-Resume: SubpopBench's --resume restores weights and step count, but not optimizer state, the
-text learning-rate schedule or the data order. A resumed backbone is therefore NOT the same as an
-uninterrupted one; backbone.json records `resumed_from_step` so the deviation is reported.
+Resume: at the pinned commit SubpopBench's --resume reads checkpoint['best_val_acc'], a key its own
+checkpoints never contain (they store 'best_es_metric'), so it always fails. We resume from a copy
+of the checkpoint with that key added (the value is never used without --use_es); SubpopBench code
+is not modified. Resuming restores weights and the step count, but not the optimizer state, the
+text learning-rate schedule or the data order, so a resumed backbone is NOT the same as an
+uninterrupted one; backbone.json records `resumed_from_step` and a `deviation` note.
+
+SIGTERM (the notebook's time limit) is turned into a normal exit, so backbone.json ends as
+"interrupted" rather than "running".
 """
 import argparse
 import hashlib
 import json
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -90,20 +99,38 @@ def train(args, out):
            "--output_folder_name", "standard", "--seed", str(args.seed), "--hparams_seed", "0"]
     if args.steps:
         cmd += ["--steps", str(args.steps)]
+    if args.checkpoint_freq:
+        cmd += ["--checkpoint_freq", str(args.checkpoint_freq)]
     if args.resume:
         cmd += ["--resume", str(args.resume)]
     write_json(out / "train_command.json", dict(argv=cmd, cwd=str(args.subpop_root)))
     started = time.time()
     with open(out / "train.log", "a") as log:
         subprocess.run(cmd, cwd=args.subpop_root, stdout=log, stderr=subprocess.STDOUT, check=True)
-    run_dir = out / "subpopbench/standard_attrNo" / f"{args.dataset}_ERM_hparams0_seed{args.seed}"
+    run_dir = run_dir_of(args)
     if not (run_dir / "done").exists():
         raise RuntimeError("SubpopBench did not finish")
     return run_dir, time.time() - started
 
 
+def run_dir_of(args):
+    return args.output_dir / "subpopbench/standard_attrNo" / f"{args.dataset}_ERM_hparams0_seed{args.seed}"
+
+
+def patched_resume(source, out):
+    """Copy of a SubpopBench checkpoint with the key its --resume expects (see module docstring)."""
+    import torch
+    ckpt = torch.load(source, map_location="cpu", weights_only=False)  # our own SubpopBench output
+    ckpt.setdefault("best_val_acc", ckpt.get("best_es_metric"))
+    target = out / "resume_patched.pkl"
+    torch.save(ckpt, target)
+    return target, int(ckpt["start_step"])
+
+
 def timing(run_dir, wall_seconds, steps_requested):
-    """Per-step time from SubpopBench's results.json; evaluation time is the remainder."""
+    """Per-step time from SubpopBench's results.json. `remainder_seconds` is everything else (process
+    start, dataset construction, downloads, evaluations); the notebook separates start-up from
+    evaluation time using two smoke runs with different evaluation counts."""
     lines = [json.loads(l) for l in (run_dir / "results.json").read_text().splitlines() if l.strip()]
     steps = lines[-1]["step"] + 1
     # Each line averages step_time over the steps since the previous checkpoint.
@@ -113,9 +140,9 @@ def timing(run_dir, wall_seconds, steps_requested):
         prev = line["step"]
     step_seconds = sum(n * t for n, t in spans) / sum(n for n, _ in spans)
     evals = len(lines) + 1  # every checkpoint plus the final evaluation
-    eval_seconds = max(0., wall_seconds - steps * step_seconds) / evals
-    return dict(steps=steps, seconds_per_step=step_seconds, evaluations=evals,
-                seconds_per_evaluation=eval_seconds, wall_seconds=wall_seconds)
+    remainder = max(0., wall_seconds - steps * step_seconds)
+    return dict(steps=steps, seconds_per_step=step_seconds, evaluations=evals, remainder_seconds=remainder,
+                wall_seconds=wall_seconds)
 
 
 def extract(args, run_dir, out, device):
@@ -181,6 +208,8 @@ def main():
     p.add_argument("--workers", type=int, default=2)
     p.add_argument("--steps", type=int, default=0)
     p.add_argument("--resume", type=Path)
+    p.add_argument("--checkpoint-freq", type=int, default=0)
+    p.add_argument("--extract-only", action="store_true")
     p.add_argument("--skip-features", action="store_true", help="timing smoke: train only")
     args = p.parse_args()
     for name in ("subpop_root", "data_dir", "output_dir"):
@@ -191,31 +220,46 @@ def main():
     import torchvision
     if not torch.cuda.is_available() or torch.cuda.device_count() != 1:
         raise RuntimeError("Launch with CUDA_VISIBLE_DEVICES=<one GPU>")
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))
+    (args.output_dir / "pip-freeze.txt").write_text(
+        subprocess.check_output([sys.executable, "-m", "pip", "freeze"], text=True))
     manifest_path = args.output_dir / "backbone.json"
+    previous = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
     manifest = dict(dataset=args.dataset, seed=args.seed, status="running", smoke_steps=args.steps or None,
                     subpopbench=SUBPOP_COMMIT, runner_sha256=sha256(__file__),
                     environment=dict(python=sys.version, torch=torch.__version__, torchvision=torchvision.__version__,
-                                     cuda=torch.version.cuda, gpu=torch.cuda.get_device_name(0)),
+                                     cuda=torch.version.cuda, gpu=torch.cuda.get_device_name(0),
+                                     pip_freeze_sha256=sha256(args.output_dir / "pip-freeze.txt")),
                     data=verify_data(args.data_dir, args.dataset))
+    for key in ("resumed_from_step", "deviation", "timing"):  # keep what an earlier session recorded
+        if key in previous:
+            manifest[key] = previous[key]
     if args.resume:
-        resumed = torch.load(args.resume, map_location="cpu", weights_only=False)["start_step"]
-        manifest["resumed_from_step"] = int(resumed)
+        args.resume, resumed = patched_resume(args.resume, args.output_dir)
+        manifest["resumed_from_step"] = resumed
         manifest["deviation"] = ("resumed with SubpopBench --resume: optimizer state, text LR schedule and "
                                  "data order restart; not identical to an uninterrupted run")
     write_json(manifest_path, manifest)
     try:
-        run_dir, wall = train(args, args.output_dir)
-        manifest["timing"] = timing(run_dir, wall, args.steps)
+        if args.extract_only:
+            run_dir = run_dir_of(args)
+            if not (run_dir / "done").exists() or not (run_dir / "model.pkl").exists():
+                raise RuntimeError("--extract-only needs a finished SubpopBench run (done marker and model.pkl)")
+        else:
+            run_dir, wall = train(args, args.output_dir)
+            manifest["timing"] = timing(run_dir, wall, args.steps)
         manifest["checkpoint"] = str(run_dir / "model.pkl")
         manifest["checkpoint_sha256"] = sha256(run_dir / "model.pkl")
         write_json(manifest_path, manifest)
         if not args.skip_features:
+            started = time.time()
             files, metrics = extract(args, run_dir, args.output_dir, "cuda")
+            manifest["extraction_seconds"] = time.time() - started
             manifest["features_sha256"] = {k: sha256(v) for k, v in files.items()}
             manifest["erm_metrics"] = metrics
         manifest["status"] = "complete" if not args.steps else "smoke-complete"
     except BaseException as e:
-        manifest["status"] = "failed"
+        manifest["status"] = "interrupted" if isinstance(e, (SystemExit, KeyboardInterrupt)) else "failed"
         manifest["error"] = repr(e)
         raise
     finally:

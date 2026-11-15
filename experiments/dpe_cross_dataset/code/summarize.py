@@ -27,7 +27,7 @@ CONTRASTS = [  # (id, arm, control, role)
     ("H4", "pool_linear_sel_nll", "pool_affine_sel_nll", "head information beyond scalar recalibration"),
 ]
 GROUP_ARMS = [REFERENCE, "crossfit_affine_sel_nll", "fullval_affine_oof_sel_nll", "pool_linear_sel_nll"]
-EXPECTED_SPLITS = list(range(10))
+EXPECTED_SPLITS = list(range(10))  # declared split seeds; nested_kaggle.ipynb runs exactly these (PLAN Sect. 4)
 PRIMARY = ("CelebA", "H1")
 
 

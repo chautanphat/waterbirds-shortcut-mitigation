@@ -48,12 +48,19 @@ for `DATASET` and saves validation/test features for the CPU notebook (`nested_k
   `all_data_with_identities.csv`.
 * **MultiNLI:** only if the team accepted PLAN Sect. 9. Downloads SubpopBench's cached BERT features.
 
-The notebook first runs a timing smoke test (300 steps) and a 30-step end-to-end test with feature
-extraction and a resume check. If two 30,001-step backbones would not finish before `TIME_LIMIT_HOURS`,
-it stops before the main run unless `ALLOW_RESUME = True` (then the run is cut at the limit and the next
-session continues it from this notebook's output; resumed backbones are flagged as a deviation).
+The notebook first runs a timing smoke test (300 steps), a 30-step end-to-end test with feature
+extraction, and a resume check. If a 30,001-step backbone would not finish before `TIME_LIMIT_HOURS`, it
+does not start the main run unless `ALLOW_RESUME = True` and the resume check passed; the run is then cut
+at the limit and the next session continues it from this notebook's output (attach it as an input).
+Resumed backbones are flagged as a deviation. A backbone whose training finished but whose feature
+extraction did not is completed without retraining (no deviation).
+
+If the smoke test fails, or no timing estimate is available (`RUN_SMOKE = False` needs an attached earlier
+output with `smoke_report.json` for the same dataset), the main run is skipped and the clean-up still runs.
 
 Seeds per dataset: 0-4 (PLAN Sect. 3). Run seeds [0, 1], [2, 3] and [4] in separate sessions/accounts.
+MultiNLI keeps every cached feature in memory several times per process, so it runs one job per session
+(`PARALLEL_JOBS = 1`).
 """
 
 B_CONFIG = r"""
@@ -61,7 +68,8 @@ from pathlib import Path
 import os, sys, json, subprocess, time, shutil, glob, hashlib, signal
 T0 = time.time()
 DATASET = 'CelebA'          # 'CelebA' | 'CivilCommentsFine' | 'MultiNLI'
-SEEDS = [0, 1]              # one per GPU; at most two
+SEEDS = [0, 1]              # one per GPU; at most PARALLEL_JOBS
+PARALLEL_JOBS = 1 if DATASET == 'MultiNLI' else 2   # MultiNLI: about 4 GB of features per dataset object
 RUN_SMOKE = True
 TIMING_STEPS = 300
 TIME_LIMIT_HOURS = 11.3     # Kaggle stops at 12 h; leave time to save
@@ -75,7 +83,7 @@ RUNS = WORK / 'runs'
 SMOKE = WORK / 'smoke'
 for p in (CODE, RUNS):
     p.mkdir(parents=True, exist_ok=True)
-assert len(SEEDS) <= 2 and DATASET in ('CelebA', 'CivilCommentsFine', 'MultiNLI')
+assert len(SEEDS) <= PARALLEL_JOBS and DATASET in ('CelebA', 'CivilCommentsFine', 'MultiNLI')
 
 def hours():
     return (time.time() - T0) / 3600
@@ -83,7 +91,7 @@ print(subprocess.check_output(['nvidia-smi'], text=True))
 """
 
 B_ENV = r"""
-# Same pinned environment as the Waterbirds fresh-backbone runs (noerula/dpe-corrected-label), plus gdown.
+# Pins of the Waterbirds fresh-backbone runs (noerula/dpe-corrected-label) that SubpopBench needs, plus gdown.
 BOOT = WORK / 'bootstrap'
 subprocess.run([sys.executable, '-m', 'pip', 'install', '--quiet', '--upgrade', '--target', str(BOOT), 'uv==0.9.8'], check=True)
 UV_ENV = dict(os.environ, PYTHONPATH=str(BOOT), UV_CACHE_DIR=str(WORK / 'uv-cache'), UV_PYTHON_INSTALL_DIR=str(WORK / 'python'))
@@ -98,7 +106,7 @@ subprocess.run([str(PY), '-m', 'pip', 'install', '--quiet', 'torch==2.6.0+cu118'
                 '--index-url', 'https://download.pytorch.org/whl/cu118'], env=ISOLATED_ENV, check=True)
 PINS = ['Pillow==10.3.0', 'matplotlib==3.8.3', 'numpy==1.26.4', 'pandas==2.2.3', 'scikit-learn==1.3.2', 'scipy==1.12.0',
         'tqdm==4.66.2', 'transformers==4.46.3', 'timm==1.0.12', 'tensorboard==2.18.0', 'tensorboard-logger==0.1.0',
-        'protobuf==3.20.3', 'gdown==5.2.0']
+        'protobuf==3.20.3', 'gdown==5.2.0', 'netcal==1.3.5']
 subprocess.run([str(PY), '-m', 'pip', 'install', '--quiet', *PINS], env=ISOLATED_ENV, check=True)
 subprocess.run([str(PY), '-m', 'pip', 'check'], env=ISOLATED_ENV, check=True)
 # SubpopBench calls torch.load without weights_only on its own checkpoints (resume) and on the MultiNLI
@@ -124,6 +132,10 @@ checkout('https://github.com/YyzHarry/SubpopBench.git', SUBPOP, '4d3dbbe21029666
 steps = subprocess.check_output([str(PY), '-c', f"from subpopbench.dataset import datasets as D; print(D.{DATASET}.N_STEPS)"],
                                 cwd=SUBPOP, env=BASE_ENV, text=True).strip()
 assert int(steps) == FULL_STEPS, steps
+# Import everything SubpopBench's training entry point and metadata generators import (train.py guards its
+# main block), so a missing package fails here and not 30 minutes into the smoke test.
+subprocess.run([str(PY), '-c', 'import subpopbench.train, subpopbench.scripts.download, utils_glue'],
+               cwd=SUBPOP, env=BASE_ENV, check=True)
 """
 
 B_DATA = r"""
@@ -171,64 +183,112 @@ def wait(runs, hard_limit_hours=None):
 """
 
 B_SMOKE = r"""
-ESTIMATE_HOURS = None
-if RUN_SMOKE:
+ESTIMATE_HOURS, RESUME_OK, SKIP_MAIN = None, False, False
+
+def smoke():
+    global ESTIMATE_HOURS, RESUME_OK
     shutil.rmtree(SMOKE, ignore_errors=True)
-    timing_run = launch('timing', 99, 0, SMOKE / 'timing', ['--steps', str(TIMING_STEPS), '--skip-features'])
-    e2e_run = launch('end-to-end', 98, 1, SMOKE / 'e2e', ['--steps', '30'])
-    status = wait([timing_run, e2e_run])
-    assert status == {'timing': 'smoke-complete', 'end-to-end': 'smoke-complete'}, status
-    # Resume mechanism: continue the 30-step run to 40 steps from its model.pkl.
-    ckpt = next((SMOKE / 'e2e').rglob('model.pkl'))
-    shutil.copy(ckpt, SMOKE / 'resume_from.pkl')
-    status = wait([launch('resume', 98, 1, SMOKE / 'e2e', ['--steps', '40', '--skip-features',
-                                                         '--resume', str(SMOKE / 'resume_from.pkl')])])
-    log_text = '\n'.join(p.read_text(errors='replace') for p in (SMOKE / 'e2e').rglob('out.txt'))
-    resume_ok = status['resume'] == 'smoke-complete' and "Loaded checkpoint" in log_text
+    # The timing run evaluates 5 times (checkpoint every 100 steps), the end-to-end run 3 times; the
+    # difference of their non-step time separates evaluation time from start-up time.
+    timing_args = ['--steps', str(TIMING_STEPS), '--checkpoint-freq', '100', '--skip-features']
+    e2e_args = ['--steps', '30']
+    if PARALLEL_JOBS == 2:
+        status = wait([launch('timing', 99, 0, SMOKE / 'timing', timing_args), launch('end-to-end', 98, 1, SMOKE / 'e2e', e2e_args)])
+    else:
+        status = wait([launch('timing', 99, 0, SMOKE / 'timing', timing_args)])
+        status.update(wait([launch('end-to-end', 98, 0, SMOKE / 'e2e', e2e_args)]))
+    if status != {'timing': 'smoke-complete', 'end-to-end': 'smoke-complete'}:
+        return f'smoke runs did not complete: {status}'
+    # Resume check in its own folder: continue the 30-step run to 40 steps.
+    shutil.copytree(SMOKE / 'e2e', SMOKE / 'resume', ignore=shutil.ignore_patterns('features'))
+    shutil.copy(next((SMOKE / 'resume').rglob('model.pkl')), SMOKE / 'resume_from.pkl')
+    status = wait([launch('resume', 98, 0, SMOKE / 'resume', ['--steps', '40', '--skip-features',
+                                                               '--resume', str(SMOKE / 'resume_from.pkl')])])
+    out_txt = '\n'.join(p.read_text(errors='replace') for p in (SMOKE / 'resume').rglob('out.txt'))
+    RESUME_OK = status['resume'] == 'smoke-complete' and '(step [30])' in out_txt
     t = json.loads((SMOKE / 'timing/backbone.json').read_text())['timing']
     e2e = json.loads((SMOKE / 'e2e/backbone.json').read_text())
-    evaluations = FULL_STEPS // 1000 + 2
-    ESTIMATE_HOURS = (FULL_STEPS * t['seconds_per_step'] + evaluations * t['seconds_per_evaluation']) / 3600 + 0.3
-    report = dict(dataset=DATASET, timing=t, estimate_hours_per_backbone=ESTIMATE_HOURS, resume_mechanism_ok=resume_ok,
-                  data=e2e['data'], erm_smoke_metrics=e2e.get('erm_metrics', {}).get('val'))
+    te = e2e['timing']
+    per_eval = max(0., (t['remainder_seconds'] - te['remainder_seconds']) / (t['evaluations'] - te['evaluations']))
+    startup = max(0., te['remainder_seconds'] - te['evaluations'] * per_eval)
+    evaluations = FULL_STEPS // 1000 + 2   # checkpoints at steps 0, 1000, ..., 30000, plus the final evaluation
+    seconds = startup + FULL_STEPS * t['seconds_per_step'] + evaluations * per_eval + e2e.get('extraction_seconds', 0)
+    ESTIMATE_HOURS = 1.05 * seconds / 3600
+    report = dict(dataset=DATASET, parallel_jobs=PARALLEL_JOBS, timing=t, end_to_end_timing=te,
+                  seconds_per_evaluation=per_eval, startup_seconds=startup,
+                  extraction_seconds=e2e.get('extraction_seconds'), estimate_hours_per_backbone=ESTIMATE_HOURS,
+                  resume_mechanism_ok=RESUME_OK, data=e2e['data'], erm_smoke_metrics=e2e.get('erm_metrics', {}).get('val'))
     (WORK / 'smoke_report.json').write_text(json.dumps(report, indent=1, default=str))
-    print(json.dumps(report, indent=1, default=str)[:3000])
-    print(f'Smoke passed after {hours():.2f} h. Estimated {ESTIMATE_HOURS:.1f} h per backbone (two run in parallel).')
+    print(json.dumps(report, indent=1, default=str)[:4000])
+    print(f'Smoke passed after {hours():.2f} h. Estimated {ESTIMATE_HOURS:.1f} h per backbone '
+          f'({PARALLEL_JOBS} in parallel); resume check {"passed" if RESUME_OK else "FAILED"}.')
+
+if RUN_SMOKE:
+    problem = smoke()
+    if problem:
+        print('SMOKE TEST FAILED, main run skipped:', problem)
+        SKIP_MAIN = True
+else:
+    reports = [json.loads(Path(p).read_text()) for p in glob.glob('/kaggle/input/**/smoke_report.json', recursive=True)]
+    reports = [r for r in reports if r.get('dataset') == DATASET and r.get('parallel_jobs') == PARALLEL_JOBS]
+    if reports:
+        ESTIMATE_HOURS = max(r['estimate_hours_per_backbone'] for r in reports)
+        RESUME_OK = all(r.get('resume_mechanism_ok') for r in reports)
+        print(f'Using the attached smoke estimate: {ESTIMATE_HOURS:.1f} h per backbone; resume check ok: {RESUME_OK}')
+    else:
+        print('RUN_SMOKE = False but no attached smoke_report.json for this dataset: main run skipped.')
+        SKIP_MAIN = True
 """
 
 B_RESUME = r"""
-# Continue interrupted runs of the same dataset/seed from an attached earlier output (ALLOW_RESUME only).
-RESUME = {}
+# Earlier sessions of the same dataset and seeds, attached as inputs:
+#  * complete            -> skipped;
+#  * training finished   -> features extracted here, no retraining and no deviation;
+#  * training cut short  -> resumed only if ALLOW_RESUME and the resume check passed (recorded deviation),
+#                           otherwise retrained from scratch.
+RESUME, EXTRACT_ONLY = {}, set()
 for manifest in sorted(glob.glob('/kaggle/input/**/backbone.json', recursive=True)):
     m = json.loads(Path(manifest).read_text())
-    if m.get('dataset') != DATASET or m.get('seed') not in SEEDS or m.get('smoke_steps') or m.get('status') == 'complete':
+    if m.get('dataset') != DATASET or m.get('seed') not in SEEDS or m.get('smoke_steps'):
         continue
-    models = sorted(Path(manifest).parent.rglob('model.pkl'))
-    if models and ALLOW_RESUME:
-        target = RUNS / f"{DATASET}-seed{m['seed']}"
+    src, seed = Path(manifest).parent, m['seed']
+    if m.get('status') == 'complete':
+        print(f'seed {seed} is already complete in an attached input ({src}); skipped')
+        SEEDS = [s for s in SEEDS if s != seed]
+        continue
+    target = RUNS / f'{DATASET}-seed{seed}'
+    if list(src.rglob('done')) and list(src.rglob('model.pkl')):
         if not target.exists():
-            shutil.copytree(Path(manifest).parent, target, ignore=shutil.ignore_patterns('features'))
-        shutil.copy(models[0], target / 'resume_from.pkl')
-        RESUME[m['seed']] = target / 'resume_from.pkl'
-        print('resuming seed', m['seed'], 'from', models[0])
-for manifest in sorted(glob.glob('/kaggle/input/**/backbone.json', recursive=True)):
-    m = json.loads(Path(manifest).read_text())
-    if m.get('dataset') == DATASET and m.get('seed') in SEEDS and m.get('status') == 'complete' and not m.get('smoke_steps'):
-        print(f"seed {m['seed']} is already complete in an attached input ({manifest}); it will be skipped")
-        SEEDS = [s for s in SEEDS if s != m['seed']]
+            shutil.copytree(src, target, ignore=shutil.ignore_patterns('features'))
+        EXTRACT_ONLY.add(seed)
+        print(f'seed {seed}: training finished in {src}; extracting features only')
+    elif list(src.rglob('model.pkl')) and ALLOW_RESUME and RESUME_OK:
+        if not target.exists():
+            shutil.copytree(src, target, ignore=shutil.ignore_patterns('features'))
+        shutil.copy(next(src.rglob('model.pkl')), target / 'resume_from.pkl')
+        RESUME[seed] = target / 'resume_from.pkl'
+        print(f'seed {seed}: resuming from {src} (recorded as a deviation)')
+    else:
+        print(f'seed {seed}: earlier run in {src} not resumed (ALLOW_RESUME={ALLOW_RESUME}, resume check ok={RESUME_OK}); '
+              'retraining from scratch')
 """
 
 B_RUN = r"""
-fits = ESTIMATE_HOURS is None or hours() + 1.1 * ESTIMATE_HOURS < TIME_LIMIT_HOURS
-if not fits and not ALLOW_RESUME:
-    raise SystemExit(f'A {FULL_STEPS}-step backbone needs about {ESTIMATE_HOURS:.1f} h, which does not fit in '
-                     f'{TIME_LIMIT_HOURS} h. Set ALLOW_RESUME = True to train across two sessions (recorded as a deviation).')
-runs = []
-for gpu, seed in enumerate(SEEDS):
-    extra = ['--resume', str(RESUME[seed])] if seed in RESUME else []
-    runs.append(launch(f'{DATASET}-seed{seed}', seed, gpu, RUNS / f'{DATASET}-seed{seed}', extra))
-status = wait(runs, hard_limit_hours=TIME_LIMIT_HOURS)
-print(json.dumps(status, indent=1))
+if not SKIP_MAIN and SEEDS:
+    training = [s for s in SEEDS if s not in EXTRACT_ONLY]
+    fits = not training or hours() + 1.1 * ESTIMATE_HOURS < TIME_LIMIT_HOURS
+    if not fits and not (ALLOW_RESUME and RESUME_OK):
+        print(f'A {FULL_STEPS}-step backbone needs about {ESTIMATE_HOURS:.1f} h, which does not fit in the '
+              f'{TIME_LIMIT_HOURS - hours():.1f} h left. Main run skipped. Options: ALLOW_RESUME = True (only if the resume '
+              'check passed; recorded as a deviation), or a smaller per-session load.')
+        SKIP_MAIN = True
+if not SKIP_MAIN and SEEDS:
+    runs = []
+    for gpu, seed in enumerate(SEEDS):
+        extra = ['--extract-only'] if seed in EXTRACT_ONLY else (['--resume', str(RESUME[seed])] if seed in RESUME else [])
+        runs.append(launch(f'{DATASET}-seed{seed}', seed, gpu, RUNS / f'{DATASET}-seed{seed}', extra))
+    status = wait(runs, hard_limit_hours=TIME_LIMIT_HOURS)
+    print(json.dumps(status, indent=1))
 """
 
 B_REPORT = r"""
@@ -273,6 +333,9 @@ Plan: `experiments/dpe_cross_dataset/PLAN.md`. Select **CPU**, **Internet off** 
 **Add Input -> Notebook Output** for every backbone session of `DATASET` (the outputs of
 `backbones_kaggle.ipynb`). To continue an interrupted run, also attach this notebook's own earlier output.
 
+For runs that need several sessions, set **Settings -> Environment -> Pin to original environment**:
+the run binds its checkpoints to the Python/NumPy/SciPy/torch versions and refuses to mix them.
+
 `MODE`:
 * `'smoke'`: 3-head ensembles, 2 epochs, split 0, one backbone. Checks the pipeline; never scores the test set.
 * `'timing'`: full recipe, split 0, one backbone, test **not** scored (PLAN step 0.4). Its checkpoints are reused.
@@ -289,7 +352,6 @@ import os, sys, json, subprocess, time, shutil, glob
 DATASET = 'CelebA'          # 'CelebA' | 'CivilCommentsFine' | 'MultiNLI'
 MODE = 'smoke'              # 'smoke' | 'timing' | 'run'
 VAL_SUBSAMPLE = 0           # 1199 for the declared secondary validation-size analysis (CelebA, PLAN Sect. 7)
-SPLITS = list(range(10))
 WORKERS = os.cpu_count() or 4
 TIME_LIMIT_HOURS = 11.0
 WORK = Path('/kaggle/working/xdpe-nested')
@@ -317,6 +379,9 @@ print(json.dumps([s['id'] for s in json.loads((OUT / 'sources.json').read_text()
 """
 
 N_RUN = r"""
+sys.path.insert(0, str(CODE))
+import summarize
+SPLITS = summarize.EXPECTED_SPLITS   # the declared split seeds; one definition for the run and the analysis
 args = [sys.executable, '-m', 'xdpe.nested', 'run', '--out', str(OUT), '--workers', str(WORKERS),
         '--time-limit-hours', str(TIME_LIMIT_HOURS)]
 if MODE == 'run':
@@ -336,7 +401,6 @@ if MODE != 'run':
 """
 
 N_SUMMARY = r"""
-completion = json.loads((OUT / 'completion.json').read_text())
 sources = json.loads((OUT / 'sources.json').read_text())['sources']
 expected = len(sources) * len(SPLITS)
 done = len(list((OUT / 'results').glob('*/split*.json'))) if (OUT / 'results').exists() else 0

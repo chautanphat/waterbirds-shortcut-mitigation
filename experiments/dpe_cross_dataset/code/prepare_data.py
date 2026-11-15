@@ -140,7 +140,15 @@ def multinli(a):
                 (glue / n).symlink_to(hits[n][0].resolve())
         else:
             archive = glue / "multinli_bert_features.tar.gz"
-            download("https://nlp.stanford.edu/data/dro/multinli_bert_features.tar.gz", archive)
+            errors = []
+            for base in ("https://downloads.cs.stanford.edu/nlp/data/dro/", "https://nlp.stanford.edu/data/dro/"):
+                try:
+                    download(base + "multinli_bert_features.tar.gz", archive)
+                    break
+                except Exception as e:  # same two mirrors as the Waterbirds download
+                    errors.append(f"{base}: {e}")
+            else:
+                raise SystemExit("MultiNLI download failed: " + "; ".join(errors))
             safe_extract(archive, glue)
             archive.unlink()
     meta = root / "data/metadata_random.csv"

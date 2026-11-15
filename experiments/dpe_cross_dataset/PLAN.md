@@ -118,6 +118,12 @@ backbones with a positive difference. Analysed per dataset; no pooling across da
 H1 on CelebA is the single primary test. H2–H4 and the other datasets are
 secondary and are described as such. Every arm is reported in the supplementary tables.
 
+**Interpretation caveat, declared now:** CelebA attribute labels are known to be inconsistent
+(Wu, Bezold and Günther, "Consistency and Accuracy of CelebA Attribute Values", 2022/2023), and
+CivilComments toxicity labels are crowd-sourced. A positive H1 on official labels supports the
+paper; a null result is reported as a null result and is not explained away by label noise
+unless a separate, declared label audit is run.
+
 **Prediction from the paper's account:** H1–H3 positive on official labels. A
 result on CelebA (about 17 times more validation images than Waterbirds) may be
 smaller because holding images back costs less; Sect. 7 tests this.
@@ -137,7 +143,11 @@ smaller because holding images back costs less; Sect. 7 tests this.
 
 To separate "the procedures do not transfer" from "they help only when the
 validation set is small", repeat H1–H3 on CelebA with the validation set
-subsampled (group-stratified, fixed seed) to 1,199 images, the size of Waterbirds'.
+subsampled (fixed seed) to 1,199 images, the size of Waterbirds'. All 182 blond-male images
+are kept and the other three groups share the remaining 1,017 in proportion to their sizes
+(about 441 / 428 / 148), so the smallest group (182) is close to Waterbirds' (133). A purely
+proportional subsample would keep only 11 blond males, too few to fill one 256-row
+group-balanced DPE batch at any nesting level.
 The test set is unchanged. Run it only if Sect. 4 finishes within budget; it is
 labelled secondary in every report.
 
@@ -205,10 +215,12 @@ pipeline and analysis.
   training part, **about 10 h per backbone on one T4.** That is close to Kaggle's
   12 h session limit, so either resume across sessions must work (step 0.1) or each
   session trains one backbone per GPU with a time guard, as in the Waterbirds runner.
-  SubpopBench's `--resume` restores weights and the step counter but not the optimizer state,
-  the BERT learning-rate schedule or the data order, so a resumed backbone is a recorded
-  deviation; `backbones_kaggle.ipynb` refuses to start a run it predicts will not fit unless
-  `ALLOW_RESUME = True`.
+  SubpopBench's `--resume` is broken at the pinned commit (it reads a key its checkpoints never
+  contain); `train_backbone.py` resumes from a patched copy of the checkpoint. Resuming restores
+  weights and the step counter but not the optimizer state, the BERT learning-rate schedule or
+  the data order, so a resumed backbone is a recorded deviation; `backbones_kaggle.ipynb` refuses
+  to start a run it predicts will not fit unless `ALLOW_RESUME = True` and its resume check passed.
+- MultiNLI holds its cached features in memory several times per process: one job per session.
   Two GPUs per session → 2 backbones per session → 3 sessions for 5 backbones.
 - BERT datasets (batch 32, sequence length 220 for CivilComments): unknown; measure in step 0.1.
 - The nested pipeline runs on CPU (`dpe_independent` trains heads on CPU), so it

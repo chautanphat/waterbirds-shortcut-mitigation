@@ -68,15 +68,26 @@ def partition(rows, seed=0):
 
 
 def stratified_subsample(rows, size, seed=0):
-    """Group-stratified subsample (largest remainder), whole clusters only approximately: rows
-    are drawn per group, then any cluster partly drawn is completed. Returns sorted indices."""
+    """Smaller validation set for PLAN Sect. 7: every row of the smallest group is kept, the other
+    groups share the remaining size in proportion to their sizes (largest remainder). Keeping the
+    smallest group whole keeps DPE's group-balanced head pools able to fill a 256-row batch at every
+    nesting level (a proportional 1,199-image CelebA subsample would leave 11 blond-male rows).
+    Clusters partly drawn are completed. Returns sorted indices."""
     rng = np.random.RandomState(seed)
     names = group_names(rows)
     sizes = np.array([sum(r["group"] == g for r in rows) for g in names])
-    quotas = sizes / sizes.sum() * size
+    smallest = int(np.argmin(sizes))
+    if size <= sizes[smallest] * len(names) or size >= sizes.sum():
+        raise ValueError(f"Subsample size {size} must exceed {len(names)} x the smallest group ({sizes[smallest]})")
+    others = np.arange(len(names)) != smallest
+    quotas = np.zeros(len(names))
+    quotas[others] = sizes[others] / sizes[others].sum() * (size - sizes[smallest])
     counts = np.floor(quotas).astype(int)
+    counts[smallest] = sizes[smallest]
     for i in np.argsort(-(quotas - counts), kind="stable")[:size - counts.sum()]:
         counts[i] += 1
+    if (counts[others] < sizes[smallest] * 0.5).any():
+        raise ValueError(f"Subsample leaves a group much smaller than the kept smallest group: {dict(zip(names, counts))}")
     chosen = set()
     for g, k in zip(names, counts):
         members = sorted([i for i, r in enumerate(rows) if r["group"] == g], key=lambda i: rows[i]["id"])

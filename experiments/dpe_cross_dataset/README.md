@@ -27,7 +27,9 @@ What and why: [`PLAN.md`](PLAN.md). This folder holds everything needed to run t
    together with `code/` and the notebooks; write the commit hash into PLAN.md Sect. 12. Nothing in
    PLAN Sects. 2–7 or in `summarize.py` changes after this commit.
 4. **Backbones (step 1).** Seeds 0–4 per dataset: sessions with `SEEDS = [0, 1]`, `[2, 3]`, `[4]`, on any
-   of the four accounts. `RUN_SMOKE` can be `False` after the first session of a dataset.
+   of the four accounts. `RUN_SMOKE` can be `False` after the first session of a dataset if that session's
+   output (it holds `smoke_report.json`) is attached; otherwise the time guard has no estimate and the
+   main run is skipped. MultiNLI: one seed per session.
 5. **Nested run (step 2).** `nested_kaggle.ipynb`, `MODE = 'run'`, attach **all five** backbone outputs of
    the dataset. If the 11 h budget ends first, save the version, attach its own output as well and run again:
    finished cells and head checkpoints are reused. The analysis is printed only when all 50 cells exist.
@@ -50,6 +52,12 @@ Secondary analysis (PLAN Sect. 7): `nested_kaggle.ipynb` with `DATASET = 'CelebA
 * `tests/synthetic_summary.py`: the analysis reproduces known differences, intervals and decisions, and
   flags a partial run.
 * `prepare_data.py` (CelebA path) on full-size synthetic CSVs with SubpopBench's real generator.
+* An independent review of the code against SubpopBench's source (2026-11-15), whose findings were
+  fixed: a missing `netcal` pin that would crash every training run, SubpopBench's broken `--resume`, an
+  infeasible Sect. 7 subsample, the time guard in sessions without a smoke test, and smaller issues.
+  The notebook's control cells (smoke, estimate, resume and extract-only, time guard, clean-up) were
+  dry-run with stubbed jobs; the Sect. 7 subsample was checked on CelebA's real group sizes (smallest
+  balanced head pool at any nesting level: 356 rows, at least one 256-row batch).
 
 Not run locally: GPU training, feature extraction and the CivilComments/MultiNLI downloads. The
 backbone notebook's smoke test is the first real check of those.
@@ -67,9 +75,19 @@ backbone notebook's smoke test is the first real check of those.
 * **No DFR-lite** (it served only the label lever).
 * **MultiNLI (3 classes):** calibrators of PLAN Sect. 9, fitted with the same 400-step Adam; no exact-WGA
   threshold arms (25 arms instead of 27).
-* **Resume.** SubpopBench's `--resume` restores weights and the step counter, not the optimizer state, the
-  BERT learning-rate schedule or the data order. A resumed backbone is recorded in `backbone.json`
-  (`resumed_from_step`, `deviation`) and must be reported as such. Prefer finishing each backbone in one session.
+* **Resume.** At the pinned commit SubpopBench's `--resume` always fails (it reads a `best_val_acc` key its
+  checkpoints never contain). `train_backbone.py` resumes from a copy of the checkpoint with that key added;
+  SubpopBench itself is unchanged. Resuming restores weights and the step counter, not the optimizer state, the
+  BERT learning-rate schedule or the data order, so a resumed backbone is recorded in `backbone.json`
+  (`resumed_from_step`, `deviation`) and must be reported as such. The notebook resumes only with
+  `ALLOW_RESUME = True` and a passing resume check. Prefer finishing each backbone in one session.
+* **Extract-only.** If training finished but feature extraction did not, attaching that output lets the next
+  session extract features without retraining (not a deviation).
+* **MultiNLI memory.** SubpopBench keeps all cached MultiNLI features in every dataset object, so the
+  notebook runs one MultiNLI job per session (`PARALLEL_JOBS = 1`); the smoke test shows whether even that fits.
+* **Kaggle environment.** For nested runs spread over several sessions, pin the notebook environment
+  (Settings -> Environment -> Pin to original environment): checkpoints are bound to the package versions.
+  During step 0.4, also check that the saved output keeps all checkpoint files (about 130 per cell).
 * **torch 2.6 and pickles.** Training processes set `TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1` because SubpopBench
   loads its own checkpoints and the MultiNLI feature pickles with `torch.load` defaults.
 
