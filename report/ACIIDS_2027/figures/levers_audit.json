@@ -1,0 +1,69 @@
+{
+ "head_seed_sd": 0.405,
+ "oracle_config": {
+  "arm": "partition1",
+  "configuration": "combined-k5-T0.1-brier-maximum-l0.01"
+ },
+ "rows": [
+  {
+   "row": "affine vs.\\ matched 720-image ensemble",
+   "mean": 0.3223,
+   "lo": -0.3001,
+   "hi": 0.9447
+  },
+  {
+   "row": "affine combiner",
+   "mean": -0.0515,
+   "lo": -0.1678,
+   "hi": 0.0648
+  },
+  {
+   "row": "linear residual on head scores",
+   "mean": -0.8569,
+   "lo": -1.3219,
+   "hi": -0.392
+  },
+  {
+   "row": "best of 840 predictors, chosen on test",
+   "mean": 1.0634,
+   "lo": 0.4302,
+   "hi": 1.6965
+  },
+  {
+   "row": "five-fold uniform",
+   "mean": 0.1275,
+   "lo": -0.2791,
+   "hi": 0.5342
+  },
+  {
+   "row": "75-head bag (no held-out scores)",
+   "mean": 0.0588,
+   "lo": -0.0797,
+   "hi": 0.1973
+  },
+  {
+   "row": "five-fold + affine recalibration",
+   "mean": -0.1716,
+   "lo": -0.3275,
+   "hi": -0.0156
+  },
+  {
+   "row": "five-fold + exact WGA threshold",
+   "mean": -0.5038,
+   "lo": -1.1135,
+   "hi": 0.1059
+  },
+  {
+   "row": "DPE refit (corrected test labels)",
+   "mean": 2.4774,
+   "lo": 1.8046,
+   "hi": 3.1502
+  },
+  {
+   "row": "DFR-lite refit (corrected test labels)",
+   "mean": 1.5639,
+   "lo": 1.1921,
+   "hi": 1.9356
+  }
+ ]
+}
