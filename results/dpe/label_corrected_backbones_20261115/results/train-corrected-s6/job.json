@@ -1,0 +1,11 @@
+{
+ "kind": "train",
+ "name": "train-corrected-s6",
+ "backbone_labels": "corrected",
+ "val_labels": "corrected",
+ "backbone_seed": 6,
+ "head_seed": 6,
+ "returncode": 0,
+ "seconds": 6780.152322769165,
+ "gpu": 1
+}

@@ -1,0 +1,76 @@
+{
+  "args": {
+    "checkpoint": "/kaggle/input/notebooks/noerula/dpe-reproduction/dpe-audited/results/standard-group-5-6/seed6/ckpt_last.pt",
+    "checkpoint_provenance": "official SubpopBench ERM backbone seed 6 reused from noerula/dpe-reproduction (/kaggle/input/notebooks/noerula/dpe-reproduction/dpe-audited/results/standard-group-5-6/seed6/ckpt_last.pt); sha256 verified",
+    "data_dir": "/kaggle/working/dpe-labels/data_corrected",
+    "dpe_root": "/kaggle/working/dpe-labels/dpe-upstream",
+    "head_implementation": "official_cli",
+    "label_set": "corrected",
+    "num_stages": 16,
+    "output_dir": "/kaggle/working/dpe-labels/results/heads-bbofficial-s6-valcorrected-h6",
+    "protocol": "checkpoint",
+    "seed": 6,
+    "steps": 0,
+    "subpop_root": "/kaggle/working/dpe-labels/subpopbench-upstream",
+    "train_attr": "yes",
+    "workers": 2
+  },
+  "artifacts": {
+    "ensemble.pt": "71f87f78732827cfaf720a870908fca239f6a5f322cae1d695a0c304414c02a1",
+    "feats_test.npy": "b36043092f9632ae1133dcf2f5d2ad92a44a76dd81e529d9c61ddc2c385ddd0b",
+    "feats_val.npy": "97aa4ba83f70d176d3aa88ee52a965dc0b287be1e5111637c9c5d8f78f1f8af9",
+    "stage1/dist_scales_wga_val.pt": "fd6aba1547ec816108c372e40562cc0738a43f681923287f561afd0fed2a473d",
+    "stage1/prototype_ensemble_wga_val.pt": "1e82a02d66828eef476968fde7ab736354e6e5856557ec0dbd16e0f3a9b8c838",
+    "stage1_command.json": "c19f49654a29da6ebfd016ee286f741e328bd82cf112fa1a68b4eb190a5b9df5",
+    "subsets.json": "e7bf57c58d4e423321e13b8e012c2c8b35f8597aa4cdc389b3b8b00958ff07a3",
+    "test_predictions.npz": "12a895f1928a755fb4915cc455ef95b8c2f92491fb7077c11f1b97cb1eb32fcb"
+  },
+  "backbone": {
+    "provenance": "official SubpopBench ERM backbone seed 6 reused from noerula/dpe-reproduction (/kaggle/input/notebooks/noerula/dpe-reproduction/dpe-audited/results/standard-group-5-6/seed6/ckpt_last.pt); sha256 verified",
+    "selection": "supplied checkpoint",
+    "sha256": "e088b07b34911d3a569e252ed807490e4380cc2474cb8d36a6184537c40fb2f1",
+    "source": "/kaggle/input/notebooks/noerula/dpe-reproduction/dpe-audited/results/standard-group-5-6/seed6/ckpt_last.pt"
+  },
+  "checkpoint_sha256": "e088b07b34911d3a569e252ed807490e4380cc2474cb8d36a6184537c40fb2f1",
+  "dataset": {
+    "group_counts": {
+      "0": [
+        3502,
+        252,
+        52,
+        989
+      ],
+      "1": [
+        478,
+        473,
+        122,
+        126
+      ],
+      "2": [
+        2298,
+        2302,
+        599,
+        595
+      ]
+    },
+    "images_sha256": "7dc03408506542f676e8807de229677eb29370b38ede0b3082da3f7a95840855",
+    "label_set": "corrected",
+    "metadata_sha256": "7ec5cc6a476792f9bfc5febf93442568e0e3dafa357585f0d2136f671ab253e1",
+    "rows": 11788
+  },
+  "environment": {
+    "cuda": "11.8",
+    "cudnn": 90100,
+    "gpu": "Tesla T4",
+    "python": "3.11.17 (main, Oct 14 2026, 01:05:33) [Clang 23.1.3 ]",
+    "torch": "2.6.0+cu118",
+    "torchvision": "0.21.0+cu118",
+    "visible_devices": "1"
+  },
+  "source": {
+    "dpe": "68b811461e238d44cced6ae6c8ce75b66cad5449",
+    "runner_sha256": "17ebaf0d34c2eb3bdfbd23a033287adc93d0925d00094b9dc8f780290441ae01",
+    "subpopbench": "4d3dbbe21029666ef19d040e110ec22908640c5b"
+  },
+  "status": "complete"
+}

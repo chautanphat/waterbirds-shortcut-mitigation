@@ -1,0 +1,11 @@
+{
+ "kind": "train",
+ "name": "train-corrected-s7",
+ "backbone_labels": "corrected",
+ "val_labels": "corrected",
+ "backbone_seed": 7,
+ "head_seed": 7,
+ "returncode": 0,
+ "seconds": 6781.023092746735,
+ "gpu": 1
+}

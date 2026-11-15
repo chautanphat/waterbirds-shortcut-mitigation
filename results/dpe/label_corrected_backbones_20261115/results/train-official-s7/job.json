@@ -1,0 +1,11 @@
+{
+ "kind": "train",
+ "name": "train-official-s7",
+ "backbone_labels": "official",
+ "val_labels": "official",
+ "backbone_seed": 7,
+ "head_seed": 7,
+ "returncode": 0,
+ "seconds": 6540.41815161705,
+ "gpu": 0
+}

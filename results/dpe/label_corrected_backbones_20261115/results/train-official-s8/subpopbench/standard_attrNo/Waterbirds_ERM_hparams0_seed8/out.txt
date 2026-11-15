@@ -1,0 +1,313 @@
+Environment:
+	Python: 3.11.17
+	PyTorch: 2.6.0+cu118
+	Torchvision: 0.21.0+cu118
+	CUDA: 11.8
+	CUDNN: 90100
+	NumPy: 1.26.4
+	PIL: 10.3.0
+Args:
+	algorithm: ERM
+	checkpoint_freq: None
+	cmnist_attr_prob: 0.5
+	cmnist_flip_prob: 0.25
+	cmnist_label_prob: 0.5
+	cmnist_spur_prob: 0.2
+	data_dir: /kaggle/working/dpe-labels/data_official
+	dataset: Waterbirds
+	es_metric: min_group:accuracy
+	es_patience: 5
+	es_strategy: metric
+	hparams: None
+	hparams_seed: 0
+	image_arch: resnet_sup_in1k
+	output_dir: /kaggle/working/dpe-labels/results/train-official-s8/subpopbench/standard_attrNo/Waterbirds_ERM_hparams0_seed8
+	output_folder_name: standard_attrNo
+	pretrained: 
+	resume: 
+	seed: 8
+	skip_model_save: False
+	stage1_algo: ERM
+	stage1_folder: vanilla
+	steps: None
+	store_name: Waterbirds_ERM_hparams0_seed8
+	tb_log_all: False
+	text_arch: bert-base-uncased
+	train_attr: no
+	use_es: False
+HParams:
+	batch_size: 108
+	group_balanced: False
+	image_arch: resnet_sup_in1k
+	last_layer_dropout: 0.0
+	lr: 0.001
+	nonlinear_classifier: False
+	optimizer: sgd
+	pretrained: True
+	resnet18: False
+	text_arch: bert-base-uncased
+	weight_decay: 0.0001
+Dataset:
+	[train]	4795 (without attributes)
+	[val]	1199
+	[test]	5794
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=ResNet50_Weights.IMAGENET1K_V1`. You can also use `weights=ResNet50_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+
+
+step          epoch         loss          te_avg_acc    te_worst_acc  va_avg_acc    va_worst_acc 
+0             0.0000        0.8406        0.7199        0.2212        0.7123        0.2180       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+300           6.7570        0.0595        0.8469        0.7025        0.8482        0.6316       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+600           13.5141       0.0010        0.8821        0.6713        0.8774        0.5940       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+900           20.2711       0.0001        0.8814        0.6838        0.8757        0.5940       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+1200          27.0282       0.0001        0.8809        0.6822        0.8757        0.5940       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+1500          33.7852       0.0000        0.8806        0.6807        0.8741        0.6015       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+1800          40.5422       0.0000        0.8809        0.6854        0.8741        0.6015       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+2100          47.2993       0.0000        0.8807        0.6854        0.8749        0.6090       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+2400          54.0563       0.0000        0.8807        0.6822        0.8749        0.6015       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+2700          60.8133       0.0000        0.8804        0.6822        0.8757        0.6090       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+3000          67.5704       0.0000        0.8799        0.6885        0.8749        0.6165       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+3300          74.3274       0.0000        0.8813        0.6776        0.8749        0.6015       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+3600          81.0845       0.0000        0.8807        0.6838        0.8732        0.6015       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+3900          87.8415       0.0000        0.8802        0.6838        0.8732        0.6015       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+4200          94.5985       0.0000        0.8807        0.6776        0.8741        0.6015       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+4500          101.3556      0.0000        0.8802        0.6776        0.8732        0.6015       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+4800          108.1126      0.0000        0.8800        0.6791        0.8749        0.6015       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+5000          112.6173      0.0000        0.8794        0.6807        0.8741        0.6090       
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+/kaggle/working/dpe-labels/venv/lib/python3.11/site-packages/sklearn/metrics/_classification.py:2851: FutureWarning: Setting the eps parameter is deprecated and will be removed in 1.5. Instead eps will always havea default value of `np.finfo(y_pred.dtype).eps`.
+  warnings.warn(
+
+Test accuracy (best validation checkpoint):
+	mean:	[0.879]
+	worst:	[0.681]
+Group-wise accuracy:
+	[va] group-wise [0.996, 0.803, 0.609, 0.962]
+	[te] group-wise [0.995, 0.804, 0.681, 0.939]
