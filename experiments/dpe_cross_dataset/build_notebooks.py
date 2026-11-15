@@ -58,7 +58,9 @@ extraction did not is completed without retraining (no deviation).
 If the smoke test fails, or no timing estimate is available (`RUN_SMOKE = False` needs an attached earlier
 output with `smoke_report.json` for the same dataset), the main run is skipped and the clean-up still runs.
 
-Seeds per dataset: 0-4 (PLAN Sect. 3). Run seeds [0, 1], [2, 3] and [4] in separate sessions/accounts.
+Seeds per dataset: 0-4 (PLAN Sect. 3), spread over sessions/accounts.
+CelebA: one seed per session (`SEEDS = [0]`, then `[1]`, ...). Measured on 2026-11-15, two CelebA jobs
+sharing a session's CPUs ran at 1.90 s/step, about 18 h per backbone; one job gets all CPUs for data loading.
 MultiNLI keeps every cached feature in memory several times per process, so it runs one job per session
 (`PARALLEL_JOBS = 1`).
 """
@@ -68,13 +70,15 @@ from pathlib import Path
 import os, sys, json, subprocess, time, shutil, glob, hashlib, signal
 T0 = time.time()
 DATASET = 'CelebA'          # 'CelebA' | 'CivilCommentsFine' | 'MultiNLI'
-SEEDS = [0, 1]              # one per GPU; at most PARALLEL_JOBS
-PARALLEL_JOBS = 1 if DATASET == 'MultiNLI' else 2   # MultiNLI: about 4 GB of features per dataset object
+SEEDS = [0]                 # at most PARALLEL_JOBS seeds, one per GPU
+# CelebA: two parallel jobs measured 1.90 s/step (about 18 h per backbone), so one job per session with all CPUs.
+# MultiNLI: about 4 GB of cached features per dataset object, so one job per session.
+PARALLEL_JOBS = 1 if DATASET in ('CelebA', 'MultiNLI') else 2
 RUN_SMOKE = True
 TIMING_STEPS = 300
 TIME_LIMIT_HOURS = 11.3     # Kaggle stops at 12 h; leave time to save
 ALLOW_RESUME = False        # True: allow cutting a run at the limit and resuming it next session
-WORKERS_PER_JOB = 2
+WORKERS_PER_JOB = max(2, (os.cpu_count() or 4) // PARALLEL_JOBS)   # data-loading workers; no effect on training
 FULL_STEPS = 30001          # SubpopBench default for all three datasets (checked below)
 
 WORK = Path('/kaggle/working/xdpe-backbones')
@@ -185,9 +189,33 @@ def wait(runs, hard_limit_hours=None):
 B_SMOKE = r"""
 ESTIMATE_HOURS, RESUME_OK, SKIP_MAIN = None, False, False
 
+def utilisation_sampler(path):
+    # GPU utilisation and CPU load every 15 s during the smoke runs: shows whether the GPU or data loading limits speed.
+    code = ("import subprocess, time, os, sys\n"
+            "f = open(sys.argv[1], 'a')\n"
+            "while True:\n"
+            "    q = subprocess.run(['nvidia-smi', '--query-gpu=utilization.gpu', '--format=csv,noheader,nounits'],"
+            " capture_output=True, text=True).stdout.split()\n"
+            "    f.write(f'{time.time():.0f} {os.getloadavg()[0]:.2f} ' + ' '.join(q) + '\\n'); f.flush(); time.sleep(15)\n")
+    return subprocess.Popen([sys.executable, '-c', code, str(path)], start_new_session=True)
+
+def utilisation_summary(path):
+    # Diagnostic only: never let it stop the run.
+    try:
+        rows = [l.split() for l in Path(path).read_text().splitlines() if len(l.split()) >= 3]
+    except OSError:
+        return None
+    if not rows:
+        return None
+    gpus = list(zip(*[[float(v) for v in r[2:]] for r in rows]))
+    return dict(samples=len(rows), cpus=os.cpu_count(), mean_load_1min=sum(float(r[1]) for r in rows) / len(rows),
+                mean_gpu_utilisation=[sum(g) / len(g) for g in gpus])
+
 def smoke():
     global ESTIMATE_HOURS, RESUME_OK
     shutil.rmtree(SMOKE, ignore_errors=True)
+    SMOKE.mkdir(parents=True)
+    sampler = utilisation_sampler(SMOKE / 'utilisation.txt')
     # The timing run evaluates 5 times (checkpoint every 100 steps), the end-to-end run 3 times; the
     # difference of their non-step time separates evaluation time from start-up time.
     timing_args = ['--steps', str(TIMING_STEPS), '--checkpoint-freq', '100', '--skip-features']
@@ -197,6 +225,11 @@ def smoke():
     else:
         status = wait([launch('timing', 99, 0, SMOKE / 'timing', timing_args)])
         status.update(wait([launch('end-to-end', 98, 0, SMOKE / 'e2e', e2e_args)]))
+    try:
+        os.killpg(sampler.pid, signal.SIGTERM)
+    except Exception:  # diagnostic only
+        pass
+    utilisation = utilisation_summary(SMOKE / 'utilisation.txt')
     if status != {'timing': 'smoke-complete', 'end-to-end': 'smoke-complete'}:
         return f'smoke runs did not complete: {status}'
     # Resume check in its own folder: continue the 30-step run to 40 steps.
@@ -214,7 +247,8 @@ def smoke():
     evaluations = FULL_STEPS // 1000 + 2   # checkpoints at steps 0, 1000, ..., 30000, plus the final evaluation
     seconds = startup + FULL_STEPS * t['seconds_per_step'] + evaluations * per_eval + e2e.get('extraction_seconds', 0)
     ESTIMATE_HOURS = 1.05 * seconds / 3600
-    report = dict(dataset=DATASET, parallel_jobs=PARALLEL_JOBS, timing=t, end_to_end_timing=te,
+    report = dict(dataset=DATASET, parallel_jobs=PARALLEL_JOBS, workers_per_job=WORKERS_PER_JOB, utilisation=utilisation,
+                  timing=t, end_to_end_timing=te,
                   seconds_per_evaluation=per_eval, startup_seconds=startup,
                   extraction_seconds=e2e.get('extraction_seconds'), estimate_hours_per_backbone=ESTIMATE_HOURS,
                   resume_mechanism_ok=RESUME_OK, data=e2e['data'], erm_smoke_metrics=e2e.get('erm_metrics', {}).get('val'))

@@ -117,9 +117,12 @@ def run_dir_of(args):
     return args.output_dir / "subpopbench/standard_attrNo" / f"{args.dataset}_ERM_hparams0_seed{args.seed}"
 
 
-def patched_resume(source, out):
-    """Copy of a SubpopBench checkpoint with the key its --resume expects (see module docstring)."""
+def patched_resume(source, out, subpop_root):
+    """Copy of a SubpopBench checkpoint with the key its --resume expects (see module docstring).
+    The checkpoint pickles SubpopBench's EarlyStopping object, so SubpopBench must be importable."""
     import torch
+    if str(subpop_root) not in sys.path:
+        sys.path.insert(0, str(subpop_root))
     ckpt = torch.load(source, map_location="cpu", weights_only=False)  # our own SubpopBench output
     ckpt.setdefault("best_val_acc", ckpt.get("best_es_metric"))
     target = out / "resume_patched.pkl"
@@ -235,7 +238,7 @@ def main():
         if key in previous:
             manifest[key] = previous[key]
     if args.resume:
-        args.resume, resumed = patched_resume(args.resume, args.output_dir)
+        args.resume, resumed = patched_resume(args.resume, args.output_dir, args.subpop_root)
         manifest["resumed_from_step"] = resumed
         manifest["deviation"] = ("resumed with SubpopBench --resume: optimizer state, text LR schedule and "
                                  "data order restart; not identical to an uninterrupted run")

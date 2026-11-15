@@ -236,5 +236,18 @@ test result was visible at the time.)
 - 2026-11-15, Claude (for Person 4): implementation in `code/` and the two notebooks (README).
   Local checks: equivalence with the Waterbirds code, synthetic end-to-end run, synthetic analysis,
   CelebA data preparation on synthetic CSVs. No real data or test result seen.
+- 2026-11-15, CelebA smoke (Kaggle `noerula/xdpe-celeba-backbones`, version 1, T4 x2, two jobs in
+  parallel, 2 data workers each). Steps 0.1–0.2:
+  - Split and group counts verified, equal to Sect. 2: validation 8,535 / 8,276 / 2,874 / 182,
+    test 9,767 / 7,535 / 2,480 / 180 (groups 00, 01, 10, 11); train 71,629 / 66,874 / 22,880 / 1,387.
+  - 1.90 s/step (300-step timing run), 135 s per evaluation, 324 s start-up, 141 s feature extraction:
+    about 18.0 h per 30,001-step backbone. Main run skipped by the time guard; no backbone trained.
+  - Resume check failed because of a bug in our checkpoint patch (SubpopBench not importable when
+    unpickling); fixed and tested locally the same day.
+  - Visible test information: only the 30-step smoke ERM metrics (test WGA 10%), which say nothing about
+    the post-hoc procedures. Nothing in Sects. 2–7 depends on them.
+  - Change: CelebA now runs one backbone per session with all CPUs for data loading (two jobs at 1.90
+    s/step suggest data loading, not the GPU, limits speed; Waterbirds ran at about 1.2 s/step). The next
+    smoke records GPU utilisation to confirm. Data-loading workers do not change training.
 - Freeze commit: _not yet_
 - Deadline / go–no-go date for MultiNLI: _to be set by the team_

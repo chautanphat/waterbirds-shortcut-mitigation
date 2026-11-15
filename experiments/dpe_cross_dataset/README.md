@@ -26,8 +26,9 @@ What and why: [`PLAN.md`](PLAN.md). This folder holds everything needed to run t
 3. **Freeze (step 0.5).** Commit PLAN.md with the measured numbers and the final split-seed count,
    together with `code/` and the notebooks; write the commit hash into PLAN.md Sect. 12. Nothing in
    PLAN Sects. 2–7 or in `summarize.py` changes after this commit.
-4. **Backbones (step 1).** Seeds 0–4 per dataset: sessions with `SEEDS = [0, 1]`, `[2, 3]`, `[4]`, on any
-   of the four accounts. `RUN_SMOKE` can be `False` after the first session of a dataset if that session's
+4. **Backbones (step 1).** Seeds 0–4 per dataset. CelebA and MultiNLI: one seed per session
+   (`SEEDS = [0]`, `[1]`, ...). CivilCommentsFine: two per session (`[0, 1]`, `[2, 3]`, `[4]`). Any of the
+   four accounts; each has 30 GPU hours per week. `RUN_SMOKE` can be `False` after the first session of a dataset if that session's
    output (it holds `smoke_report.json`) is attached; otherwise the time guard has no estimate and the
    main run is skipped. MultiNLI: one seed per session.
 5. **Nested run (step 2).** `nested_kaggle.ipynb`, `MODE = 'run'`, attach **all five** backbone outputs of
