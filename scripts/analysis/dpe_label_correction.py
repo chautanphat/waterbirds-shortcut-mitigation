@@ -60,6 +60,18 @@ def condition_rows(rows, cond):
     if cond == "drop":
         keep = np.flatnonzero(~mask)
         return keep, [dict(rows[i]) for i in keep]
+    if cond.startswith("randdrop"):
+        # Control: drop as many correctly labelled images from each official group as the
+        # misannotated images occupy there (11 waterbird-on-land, 7 waterbird-on-water).
+        rng = np.random.RandomState(500 + int(cond.removeprefix("randdrop")))
+        drop = []
+        for group in GROUPS:
+            need = int(sum(m and r["group"] == group for r, m in zip(rows, mask)))
+            pool = sorted([i for i, (r, m) in enumerate(zip(rows, mask)) if r["group"] == group and not m],
+                          key=lambda i: rows[i]["id"])
+            drop += [pool[i] for i in rng.choice(len(pool), need, replace=False)] if need else []
+        keep = np.setdiff1d(np.arange(len(rows)), drop)
+        return keep, [dict(rows[i]) for i in keep]
     out = []
     for r, m in zip(rows, mask):
         r = dict(r)
@@ -165,10 +177,13 @@ def dfr_task(args):
     return str(path), "done"
 
 
-def run(sources, out, seeds, workers):
+def run(sources, out, seeds, workers, conditions=CONDITIONS, dfr=True, only=None):
     specs = json.loads(Path(sources).read_text())["sources"]
-    tasks = [(dpe_task, (spec, c, s, str(out))) for spec in specs for c in CONDITIONS for s in seeds]
-    tasks += [(dfr_task, (spec, c, 0, str(out))) for spec in specs for c in CONDITIONS]
+    if only:
+        specs = [s for s in specs if s["id"] in only]
+    tasks = [(dpe_task, (spec, c, s, str(out))) for spec in specs for c in conditions for s in seeds]
+    if dfr:
+        tasks += [(dfr_task, (spec, c, 0, str(out))) for spec in specs for c in conditions]
     # ERM* heads are slower; start them first.
     tasks.sort(key=lambda t: (t[1][0]["recipe"] != "ermstar", t[0] is dfr_task))
     with ProcessPoolExecutor(workers) as pool:
@@ -268,6 +283,8 @@ if __name__ == "__main__":
     sub = p.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run"); r.add_argument("--sources", required=True); r.add_argument("--output", required=True)
     r.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2, 3, 4]); r.add_argument("--workers", type=int, default=6)
+    r.add_argument("--conditions", nargs="+", default=list(CONDITIONS)); r.add_argument("--no-dfr", action="store_true")
+    r.add_argument("--only", nargs="*")
     s = sub.add_parser("summarize"); s.add_argument("--output", required=True)
     s.add_argument("--results", default="results/dpe/label_correction_20261115")
     q = sub.add_parser("rescore"); q.add_argument("--sources", required=True)
@@ -275,7 +292,7 @@ if __name__ == "__main__":
     q.add_argument("--results", default="results/dpe/label_correction_20261115")
     a = p.parse_args()
     if a.cmd == "run":
-        run(a.sources, a.output, a.seeds, a.workers)
+        run(a.sources, a.output, a.seeds, a.workers, a.conditions, not a.no_dfr, a.only)
     elif a.cmd == "rescore":
         rescore(a.sources, a.controls, a.results)
     else:
