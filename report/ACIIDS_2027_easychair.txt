@@ -1,0 +1,27 @@
+ACIIDS 2027 - EasyChair submission metadata
+(generated from report/ACIIDS_2027/main.tex; check before pasting)
+
+TITLE
+Label Errors Hide Real Gains: Post-hoc Calibration and Aggregation for Prototype Ensembles on Waterbirds
+
+AUTHORS (order as in the paper; confirm the corresponding author)
+1. Chau Tan Phat - ctphat2519@apcs.fitus.edu.vn
+2. Nguyen Phu Trong - nptrong2530@apcs.fitus.edu.vn
+3. Nguyen Dinh Minh Huy - ndmhuy2521@apcs.fitus.edu.vn
+4. Nguyen Dang Khang - ndkhang2535@apcs.fitus.edu.vn
+Affiliation (all): Faculty of Information Technology, University of Science, Ho Chi Minh City, Vietnam;
+Vietnam National University, Ho Chi Minh City, Vietnam
+
+KEYWORDS (one per line)
+Subpopulation shift
+Worst-group accuracy
+Ensemble aggregation
+Cross-fitting
+Label errors
+Waterbirds
+
+ABSTRACT (plain text)
+Last-layer methods such as diverse prototypical ensembles (DPE) fit their heads on the 1,199 group-annotated validation images of Waterbirds. We evaluate post-hoc procedures that use these images more carefully—learned combiners of the heads, cross-fitted recalibration, and a map learnt on out-of-fold scores—with settings chosen on validation data only, strictly nested inner cross-validation, ten split seeds and paired statistics over seven ResNet-50 backbones. On the official test labels these procedures appear to fail, scoring 0.2–0.9 percentage points (pp) below DPE fitted on all images. This is largely an artefact of a known label error: the dataset generator labels three landbird species as waterbirds because "tern" occurs in "Eastern" and "Western". On the 5,704 test images whose labels are correct, the same predictions improve worst-group accuracy over DPE by 1.1–1.7 pp on all five standard-ERM backbones, and a linear combiner of the head scores also beats scalar recalibration. The 90 mislabelled test images make waterbird-on-land look like DPE's worst group, whereas on correctly labelled images it is landbird-on-water, the group these procedures improve. Fixing the 18 mislabelled validation images is a separate lever (+2.3 pp, replicated on four fresh backbones trained with the authors' code). Comparisons of last-layer methods on Waterbirds at the scale of one point should report results on correctly labelled test images alongside the official ones.
+
+FILE
+report/ACIIDS_2027/main.pdf (13 pages, Springer LNCS)
