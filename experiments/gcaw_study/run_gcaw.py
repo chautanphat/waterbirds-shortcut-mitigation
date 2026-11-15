@@ -51,50 +51,6 @@ def atomic_write_csv(df: pd.DataFrame, path: Path) -> None:
         raise
 
 
-def generate_synthetic_gcaw_data(eval_dir: Path, seeds: list[int], n_samples: int = 1200) -> None:
-    eval_dir.mkdir(parents=True, exist_ok=True)
-    for seed in seeds:
-        target_path = eval_dir / f"seed{seed}_test_predictions.npz"
-        if target_path.exists():
-            continue
-        rng = np.random.default_rng(500 + seed)
-        group = rng.choice([0, 1, 2, 3], size=n_samples, p=[0.40, 0.10, 0.10, 0.40])
-        y = np.where((group == 2) | (group == 3), 1, 0)
-
-        probs = np.zeros((n_samples, 15, 2), dtype=np.float64)
-        distances = np.zeros((n_samples, 15, 2), dtype=np.float64)
-
-        head_base_offset = np.linspace(0.05, 0.60, 15)
-
-        for i in range(n_samples):
-            ty = y[i]
-            g = group[i]
-            for h in range(15):
-                if h < 10:
-                    if g == 2:
-                        probs[i, h, 1 - ty] = rng.uniform(0.62, 0.75)
-                        probs[i, h, ty] = 1.0 - probs[i, h, 1 - ty]
-                        d_val = head_base_offset[h] + rng.uniform(0.18, 0.30)
-                    else:
-                        probs[i, h, ty] = rng.uniform(0.70, 0.88)
-                        probs[i, h, 1 - ty] = 1.0 - probs[i, h, ty]
-                        d_val = head_base_offset[h] + rng.uniform(0.02, 0.10)
-                else:
-                    probs[i, h, ty] = rng.uniform(0.72, 0.86)
-                    probs[i, h, 1 - ty] = 1.0 - probs[i, h, ty]
-                    d_val = head_base_offset[h] + rng.uniform(0.01, 0.05)
-
-                distances[i, h, :] = d_val + rng.uniform(0.0, 0.05, size=2)
-
-        np.savez_compressed(
-            target_path,
-            probs=probs,
-            distances=distances,
-            y=y,
-            group=group,
-        )
-
-
 def load_seed_pair(
     cfg: Dict[str, Any], seed: int
 ) -> Tuple[Dict[str, np.ndarray], Dict[str, np.ndarray]]:
@@ -108,10 +64,6 @@ def load_seed_pair(
     bundle_zip = Path(cfg["paths"]["prediction_bundle_zip"])
 
     eval_npz = eval_dir / f"seed{seed}_test_predictions.npz"
-    if not eval_npz.exists() and not bundle_zip.exists():
-        print(f"[GCAW PROTOCOL] No external test cache found at {eval_npz}; auto-generating Waterbirds synthetic benchmark cache.")
-        generate_synthetic_gcaw_data(eval_dir, cfg["data"]["seeds"], n_samples=1200)
-
     if eval_npz.exists():
         raw_eval = np.load(eval_npz, allow_pickle=False)
         eval_data = {k: raw_eval[k] for k in raw_eval.files}
@@ -124,7 +76,15 @@ def load_seed_pair(
                 raw_eval = np.load(f, allow_pickle=False)
                 eval_data = {k: raw_eval[k] for k in raw_eval.files}
     else:
-        raise FileNotFoundError(f"Không tìm thấy dữ liệu đánh giá tại {eval_npz}")
+        raise FileNotFoundError(f"Không tìm thấy dữ liệu đánh giá tại {eval_npz} hoặc {bundle_zip}")
+
+    n_eval = len(eval_data["y"])
+    if n_eval < 2000 and not cfg.get("is_unit_test", False):
+        raise RuntimeError(
+            f"[FATAL DATA GUARD] Tập dữ liệu nạp vào cho seed{seed} chỉ có N={n_eval} mẫu (< 2000). "
+            f"Nghi ngờ đang nạp nhầm dữ liệu synthetic (N=1200/360) thay vì tập test Waterbirds thật (N=4974). "
+            f"Hãy kiểm tra lại đường dẫn eval_cache_dir / prediction_bundle_zip!"
+        )
 
     oof_npz = oof_dir / f"seed{seed}_oof_predictions.npz"
     if oof_npz.exists():

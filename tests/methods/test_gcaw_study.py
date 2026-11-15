@@ -69,6 +69,7 @@ def test_gcaw_full_pipeline_execution(tmp_path: Path):
     cfg = {
         "study_name": "GCAW Test",
         "watermark": WATERMARK,
+        "is_unit_test": True,
         "paths": {
             "oof_cache_dir": str(tmp_path / "nonexistent_oof"),
             "eval_cache_dir": str(eval_dir),

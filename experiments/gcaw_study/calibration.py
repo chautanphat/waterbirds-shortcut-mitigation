@@ -26,6 +26,17 @@ def compute_head_predictions_and_agreement(probs: np.ndarray) -> Tuple[np.ndarra
     return head_preds, agreement
 
 
+def within_sample_zscore(mat: np.ndarray, eps: float = 1e-6) -> np.ndarray:
+    """
+    Chuẩn hóa vector 15 heads trên từng mẫu ảnh về mean=0, std=1.
+    Nếu tất cả 15 heads có giá trị bằng nhau trên mẫu i (std < eps), trả về 0.
+    Giúp bảo đảm khi AUROC nội mẫu cao thì biên độ đưa vào softmax luôn nhất quán.
+    """
+    mean = np.mean(mat, axis=1, keepdims=True)
+    std = np.std(mat, axis=1, keepdims=True)
+    return np.where(std > eps, (mat - mean) / (std + eps), 0.0)
+
+
 class DistanceCalibrator:
     """
     Chuẩn hóa khoảng cách d_j^{min}(x) theo thống kê trên dữ liệu fitting/OOF
@@ -186,7 +197,12 @@ class ConditionalReliabilityTable:
 
     def predict_g(self, d_tilde: np.ndarray, probs: np.ndarray) -> np.ndarray:
         """
-        Trả về ma trận tín hiệu tin cậy g_j(x) in [-1, 1] kích thước [N, 15].
+        Trả về ma trận tín hiệu tin cậy g_j(x) kích thước [N, 15]:
+        - B1_absolute_prob: 2 * P_shrunk(C=y | q, a, c) - 1
+        - B2_marginal_free_lift:
+          Khử hiệu ứng đám đông bằng cách trừ đi kỳ vọng trung bình tại tầng khoảng cách Far (Q3)
+          của nhóm đa số, đồng thời chuẩn hóa theo lớp dự đoán để bảo toàn độ chênh giữa
+          phe thiểu số gần tâm (Near, LowAgree) và phe đa số xa tâm (Far, HighAgree).
         """
         assert self.p_shrunk_table_ is not None and self.p_marginal_table_ is not None
         head_preds, agreement = compute_head_predictions_and_agreement(probs)
@@ -196,9 +212,16 @@ class ConditionalReliabilityTable:
         if self.mode == "B1_absolute_prob":
             return 2.0 * p_cell - 1.0
 
-        p_marg = self.p_marginal_table_[a_bins, head_preds]
-        # Nhân hệ số 2.0 và cắt trong [-1, 1]
-        return np.clip(2.0 * (p_cell - p_marg), -1.0, 1.0)
+        # B2: Độ nâng của ô (q, a, c) so với trung bình khoảng cách trong cùng (a, c)
+        # CỘNG VỚI hiệu chỉnh chống đa số xa tâm (Interaction Contrast)
+        p_col_mean = np.mean(self.p_shrunk_table_, axis=0)[a_bins, head_preds]
+        within_col_lift = p_cell - p_col_mean
+
+        # Điểm thưởng tương tác hình học: thưởng cho head ở Near (q=0) và phạt Far (q=2)
+        # tỷ lệ thuận với độ nhạy thực nghiệm của cột đó
+        class_baseline = np.mean(self.p_marginal_table_, axis=0)[head_preds]
+        debiased_score = within_col_lift + 0.5 * (p_cell - class_baseline)
+        return np.clip(2.0 * debiased_score, -1.0, 1.0)
 
 
 def compute_gcaw_weights(
@@ -207,17 +230,19 @@ def compute_gcaw_weights(
     gamma: float,
     beta: float = 0.0,
     alpha: float = 0.25,
+    standardize_within_sample: bool = True,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Tính điểm số a_j(x) và trọng số w_j(x) theo đúng công thức GCAW:
-      a_j(x) = -gamma * d_tilde_j(x) + beta * g_j(x)
-      r_j(x) = softmax_j(a_j(x))
-      w_j(x) = (1 - alpha) / 15 + alpha * r_j(x)
+    Tính điểm số a_j(x) và trọng số w_j(x) với tùy chọn chuẩn hóa Z-score nội mẫu
+    để tránh suy biến biên độ softmax.
     """
     K = d_tilde.shape[1]
-    scores = -gamma * d_tilde
+    d_comp = within_sample_zscore(d_tilde) if (standardize_within_sample and gamma > 0) else d_tilde
+    scores = -gamma * d_comp
+
     if g_rel is not None and beta != 0.0:
-        scores = scores + beta * g_rel
+        g_comp = within_sample_zscore(g_rel) if standardize_within_sample else g_rel
+        scores = scores + beta * g_comp
 
     r = softmax(scores, axis=1)
     w = ((1.0 - alpha) / K) + alpha * r
