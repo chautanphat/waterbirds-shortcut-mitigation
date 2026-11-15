@@ -31,7 +31,9 @@ comes from a bug specific to the Waterbirds generator and has no counterpart her
 - Group definitions, splits and metadata are the SubpopBench ones that DPE uses
   (`baselines/dpe4subpop/utils/datasets.py`). For CivilComments this means the
   SubpopBench "fine" groups, not the overlapping WILDS identity groups, because
-  group-balanced head training and stratified folds need disjoint groups.
+  group-balanced head training and stratified folds need disjoint groups. The fine version
+  repeats a comment once per identity it mentions; rows with the same comment text are kept in
+  the same fold and on the same side of the 60/40 split (README, "Things that differ").
 - Expected CelebA split sizes (train / val / test): 162,770 / 19,867 / 19,962,
   smallest group blond male (val 182, test 180). Step 0.2 verifies these numbers and
   records the actual group sizes for every dataset; if they differ, the
@@ -61,8 +63,9 @@ Everything below is identical to the strictly nested Waterbirds run
 `strict-nested-postmean-v2`) except for the items marked **[dataset]**.
 
 **Heads.** 15 two-prototype DPE heads trained in sequence on group-balanced
-subsets of the validation features, using our `src/methods/dpe_independent`
-trainer with the authors' per-dataset head settings **[dataset]**, taken from
+subsets of the validation features, using the dataset-agnostic port of the Waterbirds
+pipeline in `code/xdpe` (bit-for-bit equal to the original on Waterbirds features,
+`code/tests/equivalence.py`) with the authors' per-dataset head settings **[dataset]**, taken from
 `baselines/dpe4subpop/scripts/train_all_pe.sh`:
 
 | Dataset | lr | cov_reg | entropic scale | epochs | batch |
@@ -164,7 +167,10 @@ this 3-class version is accepted **before the freeze**:
 - Linear residual: adds a linear function of the per-class head disagreements
   q_jk − q̄_k.
 - Exact WGA thresholds are dropped for MultiNLI (no single threshold exists);
-  those arms are reported as not applicable.
+  those arms are reported as not applicable (25 arms instead of 27).
+- All three maps, including offset-only, are fitted with the same 400 full-batch Adam steps
+  (lr 0.01); the binary offset-only map keeps its bounded scalar search. Implemented in
+  `code/xdpe/multiclass.py`.
 
 If the team does not accept this by the freeze date, MultiNLI is left out
 of the paper and named as future work.
@@ -178,9 +184,9 @@ step 0.1 passes.
 | --- | --- | --- | --- |
 | 0.1 | Timing smoke test: 300 SubpopBench steps per dataset on T4 x2; check whether SubpopBench can resume from a checkpoint | Persons 1–3 | s/step and resume behaviour recorded in Sect. 12 |
 | 0.2 | Data setup and verification of split and group counts | Persons 1–3 | Counts in Sect. 12; matches Sect. 2 or the difference noted |
-| 0.3 | Generalise `src/methods/dpe_independent` (dataset config: sizes, groups, classes, head settings) | Person 4 | **Waterbirds regression:** the generalised code reproduces the saved strict nested official-label WGA for every cell and arm, exactly |
-| 0.4 | One-cell timing of the nested pipeline on CelebA features (smoke mode) | Person 4 | CPU time per cell recorded; split-seed count confirmed (Sect. 4) |
-| 0.5 | Write `summarize.py`, test it on synthetic results; **freeze commit** of this plan + `summarize.py` | Person 4 | Commit hash recorded below |
+| 0.3 | Generalise the nested pipeline (dataset config: sizes, groups, classes, head settings) | Person 4 | **Done 2026-11-15** (`code/xdpe`): identical to the original code, bit for bit, on one Waterbirds cell (all arms, settings, inner scores, head-score caches). The saved Kaggle features of the strict nested run are not available locally, so the check is against the original code, not the saved numbers |
+| 0.4 | One-cell timing of the nested pipeline on CelebA features (`nested_kaggle.ipynb`, `MODE = 'timing'`: full recipe, test not scored) | Person 4 | CPU time per cell recorded; split-seed count confirmed (Sect. 4) |
+| 0.5 | `summarize.py` tested on synthetic results (**done 2026-11-15**, `code/tests/synthetic_summary.py`); **freeze commit** of this plan + `code/` + notebooks | Person 4 | Commit hash recorded below |
 | 1 | Train 5 backbones per dataset, extract val/test features | Persons 1–3 | Checkpoint hashes + feature caches on Kaggle outputs |
 | 2 | Run the nested pipeline (CPU sessions) | Person 4 + whoever is free | All cells complete, self-tests pass |
 | 3 | `summarize.py` → results folder `results/dpe/cross_dataset_<date>/` | Person 4 | Report + per-group tables |
@@ -199,6 +205,10 @@ pipeline and analysis.
   training part, **about 10 h per backbone on one T4.** That is close to Kaggle's
   12 h session limit, so either resume across sessions must work (step 0.1) or each
   session trains one backbone per GPU with a time guard, as in the Waterbirds runner.
+  SubpopBench's `--resume` restores weights and the step counter but not the optimizer state,
+  the BERT learning-rate schedule or the data order, so a resumed backbone is a recorded
+  deviation; `backbones_kaggle.ipynb` refuses to start a run it predicts will not fit unless
+  `ALLOW_RESUME = True`.
   Two GPUs per session → 2 backbones per session → 3 sessions for 5 backbones.
 - BERT datasets (batch 32, sequence length 220 for CivilComments): unknown; measure in step 0.1.
 - The nested pipeline runs on CPU (`dpe_independent` trains heads on CPU), so it
@@ -211,5 +221,8 @@ pipeline and analysis.
 (Filled in during steps 0–3. Each entry: date, who, what, why, and whether any
 test result was visible at the time.)
 
+- 2026-11-15, Claude (for Person 4): implementation in `code/` and the two notebooks (README).
+  Local checks: equivalence with the Waterbirds code, synthetic end-to-end run, synthetic analysis,
+  CelebA data preparation on synthetic CSVs. No real data or test result seen.
 - Freeze commit: _not yet_
 - Deadline / go–no-go date for MultiNLI: _to be set by the team_
