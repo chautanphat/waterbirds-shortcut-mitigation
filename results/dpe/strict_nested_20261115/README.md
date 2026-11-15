@@ -38,5 +38,6 @@ Reading:
 * DFR-lite moves from -1.51 to -1.73 pp once its preprocessing stays inside the folds.
 
 Interval and table numbers above were recomputed from `results/*/split*.json` by
-`report/ACIIDS_2027/build_levers.py` and an inline check. The test set and backbones were
+`report/ACIIDS_2027/build_levers.py` (removed from the report folder after commit `cd13c6b`;
+restore with `git show cd13c6b:report/ACIIDS_2027/build_levers.py`) and an inline check. The test set and backbones were
 inspected before this run, so it remains exploratory.
