@@ -1,0 +1,21 @@
+{
+  "artifacts": {
+    "metrics/C_seed/seed1/U0.json": {
+      "bytes": 687,
+      "sha256": "dff267d994c83275314d2979abad4b19095836516f3656dd7c5adfe861b3d2ed"
+    }
+  },
+  "completed_utc": "2026-11-15T04:19:52.431568+00:00",
+  "dependencies": [
+    "C_inference_complete#6196fe1bb0cba16f89ad"
+  ],
+  "id": "C_eval:1:U0#5c9f155d04db5c3b5909",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "AA": 0.9591326105087573,
+    "WGA": 0.9323308270676691,
+    "method": "U0",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seed": 1
+  }
+}

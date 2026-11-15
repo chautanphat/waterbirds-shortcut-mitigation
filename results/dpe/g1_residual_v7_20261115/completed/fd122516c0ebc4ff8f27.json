@@ -1,0 +1,38 @@
+{
+  "artifacts": {
+    "CONFIRMATION_BLOCKED.md": {
+      "bytes": 213,
+      "sha256": "a635ef0fd4838baeafbbf675b6d21be00ac2752978cb5cb8a226f110c57bebfc"
+    },
+    "EXPLORATORY_C_REPORT.md": {
+      "bytes": 15425,
+      "sha256": "9dd139b8b23a93ef84284831e51b6ad7c1414be9f3f5b66c26cadd9f74a96410"
+    },
+    "LIMITATIONS_AND_NEXT_STEPS.md": {
+      "bytes": 702,
+      "sha256": "d8073fa6d15436bd558aecb58a48995bd53d8eef92223c15aa1994ba11f8f6a9"
+    },
+    "metrics/FINAL_VERDICT.json": {
+      "bytes": 347,
+      "sha256": "b138606445fd7525c902f2019cb84ee0eef8fcf49d3ef19a0ea22f39820b2390"
+    },
+    "metrics/FITTED_SCALE_SUMMARY.csv": {
+      "bytes": 17980,
+      "sha256": "577b5232dfd009e01e541d71f21d2c1c5e1a4bc00a36c47d0448716b49997ef5"
+    }
+  },
+  "completed_utc": "2026-11-15T04:20:56.825092+00:00",
+  "dependencies": [
+    "C_tables#a1cb1ba7fa001ff78d8a",
+    "oracle#84134f86a63389498e50",
+    "B_gate#b0028e3bf12705721fab"
+  ],
+  "id": "report#6cdee3b64d0b2860df29",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "B_verdict": "B_DIRECTION_NO_GO",
+    "C_verdict": "EXPLORATORY_C_WGA_EQUAL",
+    "primary": "G1_RH",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+  }
+}

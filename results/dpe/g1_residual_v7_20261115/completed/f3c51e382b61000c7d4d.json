@@ -1,0 +1,28 @@
+{
+  "artifacts": {
+    "BASELINE_REPRODUCTION.csv": {
+      "bytes": 2516,
+      "sha256": "c58a0bdab8123643d0e739a6d73ec39718e349b8d2e1e90d2f75a7891492e078"
+    }
+  },
+  "completed_utc": "2026-11-15T04:17:21.205136+00:00",
+  "dependencies": [
+    "baseline:0:0#53c7d9028cd641393d90",
+    "baseline:0:1#b394daa138d9f3c10a92",
+    "baseline:0:2#8f1c691ed38e0b107f18",
+    "baseline:1:0#78180a0994131ddcbf5d",
+    "baseline:1:1#203d7ff10c0d0b6bc06f",
+    "baseline:1:2#11ae284fda8657089898",
+    "baseline:2:0#b86c51ba4842da8ff419",
+    "baseline:2:1#ebe1633744f6fdee61b0",
+    "baseline:2:2#543041ed13e758fce31a"
+  ],
+  "id": "baseline_gate#30c6956fa642c2d3996c",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "ensembles": 9,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seeds": 3,
+    "status": "PASS"
+  }
+}

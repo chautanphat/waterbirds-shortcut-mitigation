@@ -1,0 +1,23 @@
+{
+  "artifacts": {
+    "checkpoints/seed2/fold2/b_inner1/B_inference/G1_RH.npz": {
+      "bytes": 61484,
+      "sha256": "b5d80d99a4cb82628fb2f2d5e4fefbfd0842f438e0c559db2766ae873da18905"
+    }
+  },
+  "completed_utc": "2026-11-15T04:19:11.561028+00:00",
+  "dependencies": [
+    "fit:2:2:1#099de5ec347c44248199"
+  ],
+  "id": "B_infer:2:2:1:G1_RH#a38329ac2ec2b8798392",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "fold": 2,
+    "labels_in_inference": false,
+    "method": "G1_RH",
+    "part": 1,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "samples": 60,
+    "seed": 2
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "B_uncertainty": "DIRECTIONAL_IMAGE_BOOTSTRAP_INTERVAL",
+  "B_verdict": "B_DIRECTION_NO_GO",
+  "C_verdict": "EXPLORATORY_C_WGA_EQUAL",
+  "independent_confirmation": "INDEPENDENT_CONFIRMATION_NOT_PERFORMED",
+  "primary": "G1_RH",
+  "promotion": false,
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+}

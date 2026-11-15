@@ -1,0 +1,24 @@
+{
+  "artifacts": {
+    "acceptance/store/atomic_payload": {
+      "bytes": 12,
+      "sha256": "0403ea3fd82badde65685a9c7a1831986f2c6750fdb57aac895fec03e94f9a99"
+    },
+    "acceptance/store/journal/data.json": {
+      "bytes": 114,
+      "sha256": "0db3b6dbaf882c416f0fabeb6010c47fbed74897b1ecac35f58b8f0da88af8c7"
+    },
+    "acceptance/store/receipt.json": {
+      "bytes": 315,
+      "sha256": "c31abc86ff1910fba7fb57ff3d168524643d726178dd766fd615f7ccc2325f7d"
+    }
+  },
+  "completed_utc": "2026-11-15T04:17:17.901851+00:00",
+  "dependencies": [],
+  "id": "recovery_store#36adef3e8136535943a9",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "PASS"
+  }
+}

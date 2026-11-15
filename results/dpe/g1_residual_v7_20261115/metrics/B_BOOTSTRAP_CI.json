@@ -1,0 +1,47 @@
+[
+  {
+    "CI95": [
+      0.008486014334166462,
+      0.02114607773827258
+    ],
+    "gain_difference_Uwrong_mean": 0.014579389833495602,
+    "method": "U0",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+  },
+  {
+    "CI95": [
+      0.0,
+      0.0
+    ],
+    "gain_difference_Uwrong_mean": 0.0,
+    "method": "G1_frozen",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+  },
+  {
+    "CI95": [
+      -0.002742432242543156,
+      -0.0016127689411893622
+    ],
+    "gain_difference_Uwrong_mean": -0.00217159498599846,
+    "method": "G1_R",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+  },
+  {
+    "CI95": [
+      -0.002486722185398428,
+      -0.0012001044465132853
+    ],
+    "gain_difference_Uwrong_mean": -0.00186525055530677,
+    "method": "G1_RH",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+  },
+  {
+    "CI95": [
+      -0.001482495812203481,
+      -0.0006111473772222654
+    ],
+    "gain_difference_Uwrong_mean": -0.001065814246900332,
+    "method": "G1_RHM",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+  }
+]

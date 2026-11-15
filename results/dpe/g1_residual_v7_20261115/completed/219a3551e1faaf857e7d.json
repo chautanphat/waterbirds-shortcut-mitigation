@@ -1,0 +1,43 @@
+{
+  "artifacts": {
+    "metrics/CACHE_SCHEMA.json": {
+      "bytes": 1666,
+      "sha256": "27b38c4b9b9ef37f116f02cbc3fbc367cba4c6e13426ce822abd38ba40679c4a"
+    },
+    "metrics/C_EVALUATION_LABELS.npz": {
+      "bytes": 19024,
+      "sha256": "8e629f1803d820ca5b947ce185a19b7d3ef9c28344f7fcd7191c241f6a7ae10c"
+    },
+    "metrics/WEIGHT_AND_SCORE_DECOMPOSITION.npz": {
+      "bytes": 12297574,
+      "sha256": "a003091a6240fe6bdcb8e052e57a4eb2bdec59f22ebd55aab1fb85e5ead30691"
+    }
+  },
+  "completed_utc": "2026-11-15T04:19:55.292689+00:00",
+  "dependencies": [
+    "C_eval:0:U0#2b40fed16609e875a89b",
+    "C_eval:0:G1_frozen#e063655a3ceac97a0998",
+    "C_eval:0:G1_R#5042dbb8835e682bcccc",
+    "C_eval:0:G1_RH#f8b6dbf49f1d4ef32888",
+    "C_eval:0:G1_RHM#3438d4f4c4282c6e8af3",
+    "C_eval:1:U0#5c9f155d04db5c3b5909",
+    "C_eval:1:G1_frozen#493b3387af5a2fddf92d",
+    "C_eval:1:G1_R#ce50db0ed6e87a391369",
+    "C_eval:1:G1_RH#c8ee9d7288f4e10ebf33",
+    "C_eval:1:G1_RHM#6e43d403522ee500794e",
+    "C_eval:2:U0#6cdd872ecbe26aa20d08",
+    "C_eval:2:G1_frozen#be0a8e5f85911760d4ad",
+    "C_eval:2:G1_R#62fb389277e0f862b162",
+    "C_eval:2:G1_RH#5988c25e91df5262ca38",
+    "C_eval:2:G1_RHM#3feefaa80caf1992af0a"
+  ],
+  "id": "C_export#3a3ad95fd2d509f4ba62",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "label_free_decomposition": true,
+    "methods": 5,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "samples": 1199,
+    "seeds": 3
+  }
+}

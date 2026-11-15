@@ -1,0 +1,28 @@
+{
+  "all_completed_mtimes_and_hashes_unchanged": true,
+  "artifacts_checked": 1191,
+  "completed_before_delivery": 588,
+  "new_scientific_tasks": 0,
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+  "source_sha256": "9577fd4afbdf2c25fdc8c862bcc4f8d79145431524e69a12b4f0cc05297c80e4",
+  "status": "PASS",
+  "subprocesses": [
+    {
+      "command": [
+        "--phase",
+        "all",
+        "--resume"
+      ],
+      "stderr": "",
+      "stdout": "{\"status\": \"DONE_EXPLORATORY\", \"completed\": 588, \"new_scientific_tasks\": 0, \"B_decision\": \"B_DIRECTION_NO_GO\", \"independent_confirmation\": \"INDEPENDENT_CONFIRMATION_NOT_PERFORMED\"}\n"
+    },
+    {
+      "command": [
+        "--resume",
+        "--verify"
+      ],
+      "stderr": "",
+      "stdout": "{\"status\": \"PASS\", \"completed\": 588, \"new_scientific_tasks\": 0, \"all_receipt_and_input_hashes_verified\": true, \"role\": \"EXPLORATORY_ONLY \\u2014 REUSED DEVELOPMENT \\u2014 NOT INDEPENDENT CONFIRMATION\"}\n"
+    }
+  ]
+}

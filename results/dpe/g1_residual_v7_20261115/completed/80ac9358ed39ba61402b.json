@@ -1,0 +1,24 @@
+{
+  "artifacts": {
+    "CHECKSUMS.sha256": {
+      "bytes": 141146,
+      "sha256": "f8ac0d1db068e40a85b9684c8cada6919996aa28616593e8077e2100f3f07681"
+    },
+    "DELIVERY_VALIDATION.json": {
+      "bytes": 429,
+      "sha256": "ff5c21b5646dcd4881749cdbad255e465fdd21ad6902428c7dbb90f8083f48a7"
+    }
+  },
+  "completed_utc": "2026-11-15T04:21:15.264236+00:00",
+  "dependencies": [
+    "preservation#6b67a8a999979bdeb4ab"
+  ],
+  "id": "complete#aeebff064cf2b8bd00fb",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "audited_fits": 180,
+    "receipt_count_before_final": 587,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "DONE_EXPLORATORY"
+  }
+}

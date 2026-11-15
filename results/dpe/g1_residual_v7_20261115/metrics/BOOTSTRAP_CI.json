@@ -1,0 +1,568 @@
+{
+  "comparisons": [
+    {
+      "delta_AA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "method": "U0",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0
+    },
+    {
+      "delta_AA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "method": "U0",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "method": "U0",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2
+    },
+    {
+      "delta_AA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "method": "U0",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": -1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.4170141784820669,
+        0.4170141784820669
+      ],
+      "delta_WGA_CI95_pp": [
+        -2.2556390977443552,
+        2.2556390977443663
+      ],
+      "method": "U0",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.5004170141784892,
+        0.16680567139282232
+      ],
+      "delta_WGA_CI95_pp": [
+        -2.2556390977443663,
+        0.0
+      ],
+      "method": "U0",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.5004170141784892,
+        0.16680567139282232
+      ],
+      "delta_WGA_CI95_pp": [
+        -3.007518796992481,
+        0.0
+      ],
+      "method": "U0",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.305810397553515,
+        0.08340283569641116
+      ],
+      "delta_WGA_CI95_pp": [
+        -1.2531328320802024,
+        0.17909580818999968
+      ],
+      "method": "U0",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": -1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.4170141784820669,
+        0.4170141784820669
+      ],
+      "delta_WGA_CI95_pp": [
+        -2.2556390977443663,
+        2.2556390977443552
+      ],
+      "method": "G1_frozen",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.16680567139282232,
+        0.5004170141784892
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        2.2556390977443663
+      ],
+      "method": "G1_frozen",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.16680567139282232,
+        0.5004170141784892
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        3.007518796992481
+      ],
+      "method": "G1_frozen",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.08340283569641116,
+        0.305810397553515
+      ],
+      "delta_WGA_CI95_pp": [
+        -0.17909580818999968,
+        1.2531328320802024
+      ],
+      "method": "G1_frozen",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": -1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "method": "G1_frozen",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0
+    },
+    {
+      "delta_AA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "method": "G1_frozen",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "method": "G1_frozen",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2
+    },
+    {
+      "delta_AA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "method": "G1_frozen",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": -1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.2502085070892446,
+        0.5004170141784781
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        2.2556390977443663
+      ],
+      "method": "G1_R",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.33361134278565574,
+        0.33361134278565574
+      ],
+      "delta_WGA_CI95_pp": [
+        -0.31890348188066364,
+        2.2556390977443663
+      ],
+      "method": "G1_R",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.16680567139282232,
+        0.5004170141784892
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        3.007518796992481
+      ],
+      "method": "G1_R",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.11120378092854821,
+        0.27800945232138163
+      ],
+      "delta_WGA_CI95_pp": [
+        -0.06995761937031636,
+        1.6492949110974835
+      ],
+      "method": "G1_R",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": -1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        0.0,
+        0.2502085070892446
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        2.2556390977443663
+      ],
+      "method": "G1_R",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.4170141784820669,
+        0.0
+      ],
+      "delta_WGA_CI95_pp": [
+        -0.42918454935623185,
+        0.0
+      ],
+      "method": "G1_R",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "method": "G1_R",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.11120378092855192,
+        0.055601890464277805
+      ],
+      "delta_WGA_CI95_pp": [
+        -0.1430615164520736,
+        0.751879699248122
+      ],
+      "method": "G1_R",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": -1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.2502085070892446,
+        0.5004170141784781
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        2.2556390977443663
+      ],
+      "method": "G1_RH",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.2502085070892446,
+        0.5004170141784781
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        2.2556390977443663
+      ],
+      "method": "G1_RH",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.2502085070892446,
+        0.417014178482078
+      ],
+      "delta_WGA_CI95_pp": [
+        -1.839322017490082,
+        2.2556390977443663
+      ],
+      "method": "G1_RH",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.11120378092854821,
+        0.2780094523213853
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        1.2531328320802024
+      ],
+      "method": "G1_RH",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": -1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        0.0,
+        0.2502085070892446
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        2.2556390977443663
+      ],
+      "method": "G1_RH",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.2502085070892446,
+        0.0
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "method": "G1_RH",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.33361134278565574,
+        0.16680567139283342
+      ],
+      "delta_WGA_CI95_pp": [
+        -2.2556390977443663,
+        0.42918454935622075
+      ],
+      "method": "G1_RH",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.13900472616069265,
+        0.08340283569641485
+      ],
+      "delta_WGA_CI95_pp": [
+        -0.7518796992481185,
+        0.751879699248122
+      ],
+      "method": "G1_RH",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": -1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.2502085070892446,
+        0.5004170141784781
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        2.2556390977443663
+      ],
+      "method": "G1_RHM",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.16680567139282232,
+        0.5004170141784892
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        2.2556390977443663
+      ],
+      "method": "G1_RHM",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.2502085070892446,
+        0.417014178482078
+      ],
+      "delta_WGA_CI95_pp": [
+        -1.839322017490082,
+        2.2556390977443663
+      ],
+      "method": "G1_RHM",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.055601890464277805,
+        0.3058103975535187
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        1.2531328320802024
+      ],
+      "method": "G1_RHM",
+      "reference": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": -1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        0.0,
+        0.2502085070892446
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        2.2556390977443663
+      ],
+      "method": "G1_RHM",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0
+    },
+    {
+      "delta_AA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "delta_WGA_CI95_pp": [
+        0.0,
+        0.0
+      ],
+      "method": "G1_RHM",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.33361134278565574,
+        0.16680567139283342
+      ],
+      "delta_WGA_CI95_pp": [
+        -2.2556390977443663,
+        0.42918454935622075
+      ],
+      "method": "G1_RHM",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2
+    },
+    {
+      "delta_AA_CI95_pp": [
+        -0.11120378092855192,
+        0.11120378092855192
+      ],
+      "delta_WGA_CI95_pp": [
+        -0.7518796992481185,
+        0.751879699248122
+      ],
+      "method": "G1_RHM",
+      "reference": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": -1
+    }
+  ],
+  "limitation": "Conditional fixed pipelines, one backbone; does not quantify independent cohort or backbone variability",
+  "repeats": 2000,
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+  "unit": "1199 distinct image IDs, shared across all methods/seeds"
+}

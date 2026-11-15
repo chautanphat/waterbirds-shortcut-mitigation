@@ -1,0 +1,23 @@
+{
+  "artifacts": {
+    "RESUME_VERIFICATION.json": {
+      "bytes": 1040,
+      "sha256": "a544433929f537b140781aeb5d03a27961f234890ba74ca84b491c6858fe9c0b"
+    },
+    "RESUME_VERIFICATION.log": {
+      "bytes": 456,
+      "sha256": "f2076584d6b944a2263363a54fb076a8bb921fbec7de14e3c86d1e1a89867e5d"
+    }
+  },
+  "completed_utc": "2026-11-15T04:23:59.768969+00:00",
+  "dependencies": [
+    "complete#aeebff064cf2b8bd00fb"
+  ],
+  "id": "delivery_resume_verification#75cb02b69a63dc710abb",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "new_scientific_tasks": 0,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "PASS"
+  }
+}

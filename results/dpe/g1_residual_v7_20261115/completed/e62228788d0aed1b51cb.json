@@ -1,0 +1,31 @@
+{
+  "artifacts": {
+    "checkpoints/seed0/fold2/b_inner1/scale_subcv/sub1/OOF_predictions.npz": {
+      "bytes": 17629,
+      "sha256": "67ae1547579ee299a3fdacaade237d686b3048b1a013eee753ad6fe0ceff476b"
+    },
+    "checkpoints/seed0/fold2/b_inner1/scale_subcv/sub1/model.json": {
+      "bytes": 26619,
+      "sha256": "09027c2591bf3a356a200e4c71522935015a1e38cef646be898c022d6517ef34"
+    },
+    "checkpoints/seed0/fold2/b_inner1/scale_subcv/sub1/split.json": {
+      "bytes": 11405,
+      "sha256": "f5537d20a78fc0f27c257a2f755a77fdf58f4aa0c625767760adc07eedf6a449"
+    }
+  },
+  "completed_utc": "2026-11-15T04:18:21.251671+00:00",
+  "dependencies": [
+    "B_splits:0:2#2ba806295730bf9be920"
+  ],
+  "id": "scale_fit:0:2:1:1#f5a981d41554bdf36b28",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "fold": 2,
+    "part": 1,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "secondary": 1,
+    "seed": 0,
+    "train_images": 120,
+    "validation_images": 60
+  }
+}

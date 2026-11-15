@@ -1,0 +1,130 @@
+{
+  "axes": "method, seed, canonical sorted image ID, expert/class",
+  "evaluation_labels": "C_EVALUATION_LABELS.npz only; not supplied to any model/inference API",
+  "head_order": "head_sha256[seed, fold[seed,image], expert]",
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+  "shapes": {
+    "Ahat": [
+      5,
+      3,
+      1199,
+      15
+    ],
+    "B_model_sha256": [
+      3,
+      3
+    ],
+    "classes": [
+      2
+    ],
+    "delta": [
+      5,
+      3,
+      1199,
+      15
+    ],
+    "distances": [
+      3,
+      1199,
+      15,
+      2
+    ],
+    "fold": [
+      3,
+      1199
+    ],
+    "gate": [
+      5,
+      3,
+      1199
+    ],
+    "geom_scores": [
+      5,
+      3,
+      1199,
+      15
+    ],
+    "head_sha256": [
+      3,
+      3,
+      15
+    ],
+    "member_probs": [
+      3,
+      1199,
+      15,
+      2
+    ],
+    "methods": [
+      5
+    ],
+    "pooled_Ahat": [
+      5,
+      3,
+      1199,
+      15
+    ],
+    "probability_shift_G1": [
+      5,
+      3,
+      1199,
+      2
+    ],
+    "probability_shift_U0": [
+      5,
+      3,
+      1199,
+      2
+    ],
+    "probs": [
+      5,
+      3,
+      1199,
+      2
+    ],
+    "r": [
+      5,
+      3,
+      1199,
+      15
+    ],
+    "residual_scores": [
+      5,
+      3,
+      1199,
+      15
+    ],
+    "role": [],
+    "sample_id": [
+      1199
+    ],
+    "scores": [
+      5,
+      3,
+      1199,
+      15
+    ],
+    "seeds": [
+      3
+    ],
+    "split": [],
+    "uniform": [
+      5,
+      3,
+      1199,
+      2
+    ],
+    "weights": [
+      5,
+      3,
+      1199,
+      15
+    ],
+    "z": [
+      5,
+      3,
+      1199,
+      15
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "controls": [
+    {
+      "AA_mean": 0.9585619497729587,
+      "WGA_mean": 0.9301562238930657,
+      "control": "RH_residual_slot_permutation",
+      "mean_AA_quantiles": [
+        0.9580205726994718,
+        0.9585765916041146,
+        0.9591326105087573
+      ],
+      "mean_WGA_at_least_observed_RH_fraction": 0.9283333333333333,
+      "mean_WGA_quantiles": [
+        0.9273182957393483,
+        0.9298245614035089,
+        0.9323308270676692
+      ],
+      "mean_WGA_strictly_above_observed_RH_fraction": 0.204,
+      "mean_WGA_tie_observed_RH_fraction": 0.7243333333333334,
+      "mean_concentration": 0.09571540139442569,
+      "mean_gain_Uwrong": -0.013309687883993053,
+      "per_seed_WGA_at_least_RH_fraction": [
+        0.228,
+        1.0,
+        1.0
+      ],
+      "repeats": 3000,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+    },
+    {
+      "AA_mean": 0.9576484107126307,
+      "WGA_mean": 0.9252402465390945,
+      "control": "G1_weight_slot_permutation",
+      "mean_AA_quantiles": [
+        0.9560745065332221,
+        0.9577425632471503,
+        0.9591326105087573
+      ],
+      "mean_WGA_at_least_observed_RH_fraction": 0.17233333333333334,
+      "mean_WGA_quantiles": [
+        0.9172932330827068,
+        0.9248120300751879,
+        0.9323308270676692
+      ],
+      "mean_WGA_strictly_above_observed_RH_fraction": 0.05333333333333334,
+      "mean_WGA_tie_observed_RH_fraction": 0.119,
+      "mean_concentration": 0.09690877493510404,
+      "mean_gain_Uwrong": -4.231963656982369e-06,
+      "per_seed_WGA_at_least_RH_fraction": [
+        0.4756666666666667,
+        0.30666666666666664,
+        0.4886666666666667
+      ],
+      "repeats": 3000,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+    }
+  ],
+  "interpretation": "Descriptive nulls only; no independent significance or selection. Residual multisets preserve strength but final mixture concentration can change; G1 weight permutation preserves final concentration.",
+  "observed_RH_AA": 0.9582985821517932,
+  "observed_RH_WGA": 0.9298245614035089,
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+}

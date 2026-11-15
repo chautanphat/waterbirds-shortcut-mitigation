@@ -1,0 +1,28 @@
+{
+  "artifacts": {
+    "CONTENTS.md": {
+      "bytes": 2202,
+      "sha256": "9aece7954b9c4eeaa96408b423c394126a1b9f798bf0e072da1fdc251e668ed5"
+    },
+    "DPE_G1_Residual_v7_Results.zip": {
+      "bytes": 54433694,
+      "sha256": "a5f5aac435030d1dff1b445008f7e0d6254a790bfeacb9e94dcae0710a3995a6"
+    },
+    "PACKAGE_RECEIPT.json": {
+      "bytes": 299,
+      "sha256": "83d8d99f2bb6de8712a6d350b874b8a218f873566b656dfc0b58701442c06cd2"
+    }
+  },
+  "completed_utc": "2026-11-15T04:24:04.022169+00:00",
+  "dependencies": [
+    "delivery_mechanism_supplement#1ef2a351dc0bd95d252e"
+  ],
+  "id": "delivery_package#5429610d39bbf2e13949",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "bytes": 54433694,
+    "files": 1875,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "PASS"
+  }
+}

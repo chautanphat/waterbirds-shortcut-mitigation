@@ -10,3 +10,8 @@ scripts/finalize_ccw_v6.py -text
 scripts/finalize_ccw_exploratory_c.py -text
 tests/methods/test_ccw_v6.py -text
 tests/methods/test_ccw_exploratory_c.py -text
+results/dpe/g1_residual_v7_20261115/** -text
+experiments/g1_residual_v7/** -text
+baselines/dpe4subpop/DPE_G1_Precision_Weighting_v7_Codex_Handoff.md -text
+scripts/finalize_g1_residual_v7.py -text
+scripts/export_g1_residual_v7_branch.py -text

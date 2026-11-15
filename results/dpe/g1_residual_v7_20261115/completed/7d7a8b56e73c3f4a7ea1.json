@@ -1,0 +1,87 @@
+{
+  "artifacts": {
+    "metrics/B_ENSEMBLE_METRICS.csv": {
+      "bytes": 11528,
+      "sha256": "fefdcc6d2f27091dbbec653b9ee5bb1b3fe37e73c184fe4de6c40a4bb468e0a2"
+    },
+    "metrics/B_HEAD_EFFECTS.csv": {
+      "bytes": 319412,
+      "sha256": "d98a6a195bd230f7cc4267e779497bd8bdd4d861176c784eebe928ac76c58d30"
+    },
+    "metrics/B_HEAD_EFFECT_STABILITY.csv": {
+      "bytes": 54182,
+      "sha256": "825d74c8422cd2428caec7dd9caac7b2e1b4596bf41660ac12d3e39e13eec2bd"
+    },
+    "metrics/B_MARGIN_DIAGNOSTICS.csv": {
+      "bytes": 2202,
+      "sha256": "cc4f317b008f798553457d20a576eba8672fe00cf3864961bd256a5b6236c59e"
+    },
+    "metrics/B_OOF_MECHANISM.csv": {
+      "bytes": 8681831,
+      "sha256": "47dd08d1ff91d75301a9800828a4710a2808e5466fd6a416ab6059d3d52eac17"
+    },
+    "metrics/B_OOF_SIGNED_GAIN.csv": {
+      "bytes": 3266719,
+      "sha256": "599948e65a870b739dee3390fdd4f8d5c2c775a0b7993da984fac5cf054ae12b"
+    },
+    "metrics/B_SEED_METRICS.csv": {
+      "bytes": 7152,
+      "sha256": "925916f8029804204e863cdac526fc4d737547c581e353a77dc02729c8f449c7"
+    },
+    "metrics/B_SEED_UNIQUE_IMAGE_PREDICTIONS.csv": {
+      "bytes": 3599855,
+      "sha256": "6046a9ff6bd99333761be832fc717af1f2a4adeb3732b67cea7906061ccc5c69"
+    }
+  },
+  "completed_utc": "2026-11-15T04:19:18.437079+00:00",
+  "dependencies": [
+    "B_eval:0:0:0#e8839d8c5cf439620300",
+    "B_eval:0:0:1#3000bcd2dd50a161c7ee",
+    "B_eval:0:0:2#9933e6f6d983a924de56",
+    "B_eval:0:0:3#1166f870d90de77ff16a",
+    "B_eval:0:1:0#17ba915e1496a66709ad",
+    "B_eval:0:1:1#52328fdb462f7144b5d5",
+    "B_eval:0:1:2#c761fa5e1aae7df50c77",
+    "B_eval:0:1:3#0a7592dd318a9b0d3e3f",
+    "B_eval:0:2:0#74e5fd25b2add366ccee",
+    "B_eval:0:2:1#6909b7d769328cea369b",
+    "B_eval:0:2:2#00fa02f420ac7af57a12",
+    "B_eval:0:2:3#70550175370cc06dd392",
+    "B_eval:1:0:0#75f7aff957080a1d3122",
+    "B_eval:1:0:1#52f73a61481a4f541958",
+    "B_eval:1:0:2#5d10838fbf94e627baa2",
+    "B_eval:1:0:3#f535c6449665279d7bfe",
+    "B_eval:1:1:0#34c7950a903479e468dd",
+    "B_eval:1:1:1#b3696ebe9c96cc664b91",
+    "B_eval:1:1:2#fa650952aa72a57eb882",
+    "B_eval:1:1:3#1bcb807b82c8afe7bbbc",
+    "B_eval:1:2:0#31cef4330aad3d641bf0",
+    "B_eval:1:2:1#36be0130ec4705d9c1f6",
+    "B_eval:1:2:2#945ab3b048bce2ebaf92",
+    "B_eval:1:2:3#ba433dfb7bd9c119f92d",
+    "B_eval:2:0:0#062b6dbd4d96eaddc2c7",
+    "B_eval:2:0:1#617bfa1156a25a89e804",
+    "B_eval:2:0:2#9a50b68df39f18794688",
+    "B_eval:2:0:3#3519df4130cac0a33b36",
+    "B_eval:2:1:0#0277b2f0261cd04a844f",
+    "B_eval:2:1:1#07436727494ec857c052",
+    "B_eval:2:1:2#b0b3026c00d759c8472d",
+    "B_eval:2:1:3#27f35530a9bcbeade776",
+    "B_eval:2:2:0#8f6f7a2b54f2fe245dd4",
+    "B_eval:2:2:1#de7f5ef2464a217fb94d",
+    "B_eval:2:2:2#a9968bf0c51b676a7d0d",
+    "B_eval:2:2:3#5bf1f552d842b9285d03"
+  ],
+  "id": "B_tables#0802a51e373f2c60161d",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "B_rows": 10800,
+    "methods": 5,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seed_unique_images": [
+      613,
+      619,
+      615
+    ]
+  }
+}

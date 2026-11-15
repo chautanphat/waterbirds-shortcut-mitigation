@@ -1,0 +1,214 @@
+{
+  "limitation": "Uses C labels/group2 retrospectively. Not a learned model, deployable candidate, selection criterion or future WGA target.",
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+  "seeds": [
+    {
+      "G1_RHM_correct_on_Uniform_wrong_group2": 1,
+      "G1_RH_correct_on_Uniform_wrong_group2": 1,
+      "G1_R_correct_on_Uniform_wrong_group2": 1,
+      "G1_frozen_correct_on_Uniform_wrong_group2": 1,
+      "G1_plus_label_oracle_group2": {
+        "AA": 0.9624687239366139,
+        "BA": 0.9611025151302695,
+        "NLL": 0.6158620232031964,
+        "WCA": 0.9586466165413534,
+        "WGA": 0.9473684210526315,
+        "class0_NLL": 0.6182526846640023,
+        "class0_accuracy": 0.9635584137191854,
+        "class1_NLL": 0.6074767331921741,
+        "class1_accuracy": 0.9586466165413534,
+        "group_accuracy": [
+          0.974304068522484,
+          0.9527896995708155,
+          0.9473684210526315,
+          0.9699248120300752
+        ],
+        "group_count": [
+          467,
+          466,
+          133,
+          133
+        ],
+        "n": 1199,
+        "worst_class_NLL": 0.6182526846640023,
+        "worst_groups": [
+          2
+        ]
+      },
+      "U0_correct_on_Uniform_wrong_group2": 0,
+      "all_image_label_oracle": {
+        "AA": 0.9774812343619683,
+        "BA": 0.9734364045161135,
+        "NLL": 0.6123517301846826,
+        "WCA": 0.9661654135338346,
+        "WGA": 0.9548872180451128,
+        "class0_NLL": 0.6142845892874891,
+        "class0_accuracy": 0.9807073954983923,
+        "class1_NLL": 0.6055721905496505,
+        "class1_accuracy": 0.9661654135338346,
+        "group_accuracy": [
+          0.987152034261242,
+          0.9742489270386266,
+          0.9548872180451128,
+          0.9774436090225563
+        ],
+        "group_count": [
+          467,
+          466,
+          133,
+          133
+        ],
+        "n": 1199,
+        "worst_class_NLL": 0.6142845892874891,
+        "worst_groups": [
+          2
+        ]
+      },
+      "label_aware_undeployable": true,
+      "oracle_correctable": 6,
+      "oracle_not_correctable": 6,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 0,
+      "uniform_wrong_group2": 12
+    },
+    {
+      "G1_RHM_correct_on_Uniform_wrong_group2": 1,
+      "G1_RH_correct_on_Uniform_wrong_group2": 1,
+      "G1_R_correct_on_Uniform_wrong_group2": 1,
+      "G1_frozen_correct_on_Uniform_wrong_group2": 1,
+      "G1_plus_label_oracle_group2": {
+        "AA": 0.9624687239366139,
+        "BA": 0.9611025151302695,
+        "NLL": 0.6139428198777434,
+        "WCA": 0.9586466165413534,
+        "WGA": 0.9484978540772532,
+        "class0_NLL": 0.6160866326789028,
+        "class0_accuracy": 0.9635584137191854,
+        "class1_NLL": 0.6064233561804429,
+        "class1_accuracy": 0.9586466165413534,
+        "group_accuracy": [
+          0.9785867237687366,
+          0.9484978540772532,
+          0.9548872180451128,
+          0.9624060150375939
+        ],
+        "group_count": [
+          467,
+          466,
+          133,
+          133
+        ],
+        "n": 1199,
+        "worst_class_NLL": 0.6160866326789028,
+        "worst_groups": [
+          1
+        ]
+      },
+      "U0_correct_on_Uniform_wrong_group2": 0,
+      "all_image_label_oracle": {
+        "AA": 0.9766472060050042,
+        "BA": 0.9729004988355132,
+        "NLL": 0.6104496752644065,
+        "WCA": 0.9661654135338346,
+        "WGA": 0.9548872180451128,
+        "class0_NLL": 0.6121601642577231,
+        "class0_accuracy": 0.9796355841371919,
+        "class1_NLL": 0.6044501029683,
+        "class1_accuracy": 0.9661654135338346,
+        "group_accuracy": [
+          0.9892933618843683,
+          0.9699570815450643,
+          0.9548872180451128,
+          0.9774436090225563
+        ],
+        "group_count": [
+          467,
+          466,
+          133,
+          133
+        ],
+        "n": 1199,
+        "worst_class_NLL": 0.6121601642577231,
+        "worst_groups": [
+          2
+        ]
+      },
+      "label_aware_undeployable": true,
+      "oracle_correctable": 3,
+      "oracle_not_correctable": 6,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 1,
+      "uniform_wrong_group2": 9
+    },
+    {
+      "G1_RHM_correct_on_Uniform_wrong_group2": 1,
+      "G1_RH_correct_on_Uniform_wrong_group2": 1,
+      "G1_R_correct_on_Uniform_wrong_group2": 1,
+      "G1_frozen_correct_on_Uniform_wrong_group2": 1,
+      "G1_plus_label_oracle_group2": {
+        "AA": 0.9582985821517932,
+        "BA": 0.9597667802947885,
+        "NLL": 0.6199637968026003,
+        "WCA": 0.9571275455519829,
+        "WGA": 0.9527896995708155,
+        "class0_NLL": 0.6240017127510799,
+        "class0_accuracy": 0.9571275455519829,
+        "class1_NLL": 0.605800730712632,
+        "class1_accuracy": 0.9624060150375939,
+        "group_accuracy": [
+          0.961456102783726,
+          0.9527896995708155,
+          0.9548872180451128,
+          0.9699248120300752
+        ],
+        "group_count": [
+          467,
+          466,
+          133,
+          133
+        ],
+        "n": 1199,
+        "worst_class_NLL": 0.6240017127510799,
+        "worst_groups": [
+          1
+        ]
+      },
+      "U0_correct_on_Uniform_wrong_group2": 0,
+      "all_image_label_oracle": {
+        "AA": 0.9741451209341118,
+        "BA": 0.9712927817937126,
+        "NLL": 0.6161193417482295,
+        "WCA": 0.9661654135338346,
+        "WGA": 0.9548872180451128,
+        "class0_NLL": 0.6195856023339419,
+        "class0_accuracy": 0.9764201500535906,
+        "class1_NLL": 0.6039613675885689,
+        "class1_accuracy": 0.9661654135338346,
+        "group_accuracy": [
+          0.9785867237687366,
+          0.9742489270386266,
+          0.9548872180451128,
+          0.9774436090225563
+        ],
+        "group_count": [
+          467,
+          466,
+          133,
+          133
+        ],
+        "n": 1199,
+        "worst_class_NLL": 0.6195856023339419,
+        "worst_groups": [
+          2
+        ]
+      },
+      "label_aware_undeployable": true,
+      "oracle_correctable": 3,
+      "oracle_not_correctable": 6,
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+      "seed": 2,
+      "uniform_wrong_group2": 9
+    }
+  ],
+  "unique_Uniform_wrong_group2_images": 13
+}

@@ -1,0 +1,130 @@
+{
+  "artifacts": {
+    "metrics/BOOTSTRAP_CI.json": {
+      "bytes": 14006,
+      "sha256": "cb8951847a6a05dab18077023cc383d5011ab083d83df1a6087a090d70320aab"
+    },
+    "metrics/C_PER_SEED_METRICS.csv": {
+      "bytes": 5930,
+      "sha256": "2ee75b9a2c1f7f4c6c88e67791498630bbb6d7dfa042b34a417bc8bcfbfaf4c6"
+    },
+    "metrics/C_SCORE_MECHANISM.csv": {
+      "bytes": 14409581,
+      "sha256": "23a0e09dfff7bf717741b0eb054b7b549585a3ccd080b6d1721491d950aea3be"
+    },
+    "metrics/FLIP_AUDIT.csv": {
+      "bytes": 2398939,
+      "sha256": "78a06f08ab57fe0d116e8eb8011d07ecac0bf15c9768bc995151763dd7ca3914"
+    },
+    "metrics/HISTORICAL_V6_CONTEXT.csv": {
+      "bytes": 2712,
+      "sha256": "487462215db39738c0e51a9fa4e349d4700cceb045e95b858c6183d51d165b05"
+    },
+    "metrics/MEAN_AA_WGA_COMPARISON.csv": {
+      "bytes": 4204,
+      "sha256": "2922c0664f49e539839d904327a3a35fe6541732894dea5e74d647c345a07114"
+    },
+    "metrics/PERMUTATION_CONTROLS.json": {
+      "bytes": 2227,
+      "sha256": "c087e288e10e15c5d51881aa74d52c6701dfe4ab76d8e7ae83b3fb3518881e4d"
+    },
+    "metrics/PER_SEED_AND_GROUP_METRICS.csv": {
+      "bytes": 12240,
+      "sha256": "d601911dfbf61523766f8c3e9f3872b33b0e694a60f6e2c5369329acd90edf99"
+    }
+  },
+  "completed_utc": "2026-11-15T04:20:55.869456+00:00",
+  "dependencies": [
+    "C_bootstrap:0#af0f7f3eb075c90fe446",
+    "C_bootstrap:1#92db777129049dd836be",
+    "C_bootstrap:2#4982ae5213061ea5e0cc",
+    "C_bootstrap:3#98ff11e42574b335c840",
+    "C_bootstrap:4#0271cf8559740a8dca22",
+    "C_bootstrap:5#7ab7b4f70b2dda22007c",
+    "C_bootstrap:6#eb040f1c3db8b3f5395e",
+    "C_bootstrap:7#6dfc297ce2ea907615a7",
+    "C_bootstrap:8#fd8a62246eeb5462a215",
+    "C_bootstrap:9#baeb96a7f341ed62dbf3",
+    "C_bootstrap:10#01eb01c93b0234e8ed8d",
+    "C_bootstrap:11#9be074b48f2e96cfdf54",
+    "C_bootstrap:12#81fcc94934113bd5379e",
+    "C_bootstrap:13#70ebf49a62679f28145d",
+    "C_bootstrap:14#07c0b61dcf360938de22",
+    "C_bootstrap:15#f8a2fbd7733e1425383d",
+    "C_bootstrap:16#c8933932e2c6657db614",
+    "C_bootstrap:17#3c019c8cb5d6f99e1d23",
+    "C_bootstrap:18#c3bbc8212ad57886cb6f",
+    "C_bootstrap:19#2c67b6111370be093e32",
+    "C_permutation:0#41fea61ba11020477ef6",
+    "C_permutation:1#4861283d701bf3d8bb54",
+    "C_permutation:2#5e8240ecc5a0bc8d9096",
+    "C_permutation:3#b4a0e0104be0a719675a",
+    "C_permutation:4#0252b9bcb02ead50b919",
+    "C_permutation:5#d2526bb8dd8791673a6a",
+    "C_permutation:6#423acf1ac34fdae1b027",
+    "C_permutation:7#9ad5fdc2ff190fffc3be",
+    "C_permutation:8#e66adb2bc32df47df95a",
+    "C_permutation:9#18089039740afb1d26fc",
+    "C_permutation:10#b18243f32214f4783855",
+    "C_permutation:11#6ad7d6226e8911100903",
+    "C_permutation:12#a1538a102a91d6c6d2b3",
+    "C_permutation:13#22557eded58d1b8a9781",
+    "C_permutation:14#01489944b545eac4674d",
+    "C_permutation:15#fa4b401153a984055ee6",
+    "C_permutation:16#59052345a7d2641f4b54",
+    "C_permutation:17#1b13911fbe9916f1c7ba",
+    "C_permutation:18#d316e6edfc027fd051fd",
+    "C_permutation:19#50a54f05638706eb6890",
+    "C_permutation:20#1f0f7b4c7541f901b5aa",
+    "C_permutation:21#f34e599d16d90c8e6b31",
+    "C_permutation:22#891910a42876d8e1c6cc",
+    "C_permutation:23#65049525a10d27eecc76",
+    "C_permutation:24#c7da213665d77e594dbb",
+    "C_permutation:25#3c88c60d048656819023",
+    "C_permutation:26#03389c2bdd7febeac8ec",
+    "C_permutation:27#ada8e5b50826cd97f5b0",
+    "C_permutation:28#064ca887ecd01bc58c76",
+    "C_permutation:29#766005eebada641ab94a",
+    "C_permutation:30#a2b3db96f3ec11d06d7c",
+    "C_permutation:31#c9f224f090810015cd24",
+    "C_permutation:32#3959b1437a942772fcdb",
+    "C_permutation:33#c514e971e8bd8bcb35d4",
+    "C_permutation:34#fcffdb1068a49dd96836",
+    "C_permutation:35#e9f696952b878dce6029",
+    "C_permutation:36#5a6ed3c2c219c8f897db",
+    "C_permutation:37#ea6b15b2c25212d4c600",
+    "C_permutation:38#e26bb739a7ed5c441069",
+    "C_permutation:39#695557dee4584b177698",
+    "C_permutation:40#e2c5f44890881557ce99",
+    "C_permutation:41#2ff11429b043d01d8f59",
+    "C_permutation:42#1c4c9de35217cf3c3ff1",
+    "C_permutation:43#d7895eda34fca1bf39ab",
+    "C_permutation:44#4b76cae32971eaf1f442",
+    "C_permutation:45#8dc2de34f12a06ab51f2",
+    "C_permutation:46#a1a0eba8739bed31725e",
+    "C_permutation:47#bf0ad68ae259f03f7481",
+    "C_permutation:48#70f6272df1d1936a3ac7",
+    "C_permutation:49#aa20f75aeab92c71920e",
+    "C_permutation:50#35e3bc47178698cdcc26",
+    "C_permutation:51#722d49eeecc80d3a3e54",
+    "C_permutation:52#f24902faa36809905cdb",
+    "C_permutation:53#a7e67cd2597cd0cee8f2",
+    "C_permutation:54#d7cd971a5c74f73d239f",
+    "C_permutation:55#6f08b67b087df5166f7e",
+    "C_permutation:56#f3e309f4c9623e8f69fd",
+    "C_permutation:57#f2e7a4df366d65bfe704",
+    "C_permutation:58#e9079b80802881cce021",
+    "C_permutation:59#ae09e8f56628c8f8d32d"
+  ],
+  "id": "C_tables#a1cb1ba7fa001ff78d8a",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "all_image_flip_audit_rows": 3597,
+    "bootstrap": 2000,
+    "groups": 60,
+    "methods": 5,
+    "permutation": 3000,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seed_metrics": 15
+  }
+}

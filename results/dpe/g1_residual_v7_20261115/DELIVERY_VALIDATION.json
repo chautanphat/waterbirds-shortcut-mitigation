@@ -1,0 +1,11 @@
+{
+  "C_predictions_before_evaluation": true,
+  "all_existing_receipt_artifacts_verified": true,
+  "all_nested_scale_OOF_ownership_verified": true,
+  "receipt_count_before_final": 587,
+  "ridge_and_head_fits_independently_audited": 180,
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+  "status": "PASS",
+  "train_only_stats_and_normal_equations": true,
+  "unchanged_production": true
+}

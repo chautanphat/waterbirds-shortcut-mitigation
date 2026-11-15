@@ -1,0 +1,4072 @@
+{
+  "B_decision": {
+    "AA_floor_every_seed": true,
+    "C_permitted_regardless": true,
+    "direction_pass": false,
+    "gain_CI95": [
+      -0.002486722185398428,
+      -0.0012001044465132853
+    ],
+    "mean_gain_difference_Uwrong": -0.00186525055530677,
+    "mean_worst_class_NLL": {
+      "G1_R": 0.6192495454227579,
+      "G1_RH": 0.6191920585331361,
+      "G1_RHM": 0.6202393594825689,
+      "G1_frozen": 0.6206343304304318,
+      "U0": 0.6360100111456725
+    },
+    "per_seed_delta_AA_G1_pp": [
+      0.16313213703099683,
+      -0.1615508885298822,
+      0.3252032520325243
+    ],
+    "per_seed_delta_AA_U0_pp": [
+      -0.16313213703099683,
+      -0.3231017770597755,
+      0.1626016260162566
+    ],
+    "per_seed_gain_difference": [
+      -0.002206993463940641,
+      -0.0018597604226813864,
+      -0.001528997779298282
+    ],
+    "positive_seeds": 0,
+    "primary": "G1_RH",
+    "promotion": false,
+    "proxy_pass": true,
+    "proxy_tolerance": 0.003,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "B_DIRECTION_NO_GO",
+    "uncertainty": "DIRECTIONAL_IMAGE_BOOTSTRAP_INTERVAL",
+    "worst_class_NLL_delta": -0.0014422718972957327
+  },
+  "active_phase": "complete",
+  "active_task": null,
+  "best_B_only_observation": {
+    "AA_floor_every_seed": true,
+    "C_permitted_regardless": true,
+    "direction_pass": false,
+    "gain_CI95": [
+      -0.002486722185398428,
+      -0.0012001044465132853
+    ],
+    "mean_gain_difference_Uwrong": -0.00186525055530677,
+    "mean_worst_class_NLL": {
+      "G1_R": 0.6192495454227579,
+      "G1_RH": 0.6191920585331361,
+      "G1_RHM": 0.6202393594825689,
+      "G1_frozen": 0.6206343304304318,
+      "U0": 0.6360100111456725
+    },
+    "per_seed_delta_AA_G1_pp": [
+      0.16313213703099683,
+      -0.1615508885298822,
+      0.3252032520325243
+    ],
+    "per_seed_delta_AA_U0_pp": [
+      -0.16313213703099683,
+      -0.3231017770597755,
+      0.1626016260162566
+    ],
+    "per_seed_gain_difference": [
+      -0.002206993463940641,
+      -0.0018597604226813864,
+      -0.001528997779298282
+    ],
+    "positive_seeds": 0,
+    "primary": "G1_RH",
+    "promotion": false,
+    "proxy_pass": true,
+    "proxy_tolerance": 0.003,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "B_DIRECTION_NO_GO",
+    "uncertainty": "DIRECTIONAL_IMAGE_BOOTSTRAP_INTERVAL",
+    "worst_class_NLL_delta": -0.0014422718972957327
+  },
+  "completed": 591,
+  "error": null,
+  "independent_confirmation": "INDEPENDENT_CONFIRMATION_NOT_PERFORMED",
+  "last_completed": "delivery_package#5429610d39bbf2e13949",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "next_pending": "All existing-data research and delivery complete; read report/supplement; no tuning or promotion.",
+  "original_v6_NO_GO": "UNCHANGED",
+  "package": "experiments\\g1_residual_v7\\DPE_G1_Residual_v7_Results.zip",
+  "production_promotion": false,
+  "report": "experiments\\g1_residual_v7\\EXPLORATORY_C_REPORT.md",
+  "resume_command": ".venv/Scripts/python.exe -m experiments.g1_residual_v7.run --phase all --resume",
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+  "status": "DONE_EXPLORATORY",
+  "supplement": "experiments\\g1_residual_v7\\DELIVERY_SUPPLEMENT.md",
+  "task_DAG": {
+    "B_bootstrap:0": {
+      "dependencies": [
+        "B_tables"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:1": {
+      "dependencies": [
+        "B_bootstrap:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:10": {
+      "dependencies": [
+        "B_bootstrap:9"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:11": {
+      "dependencies": [
+        "B_bootstrap:10"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:12": {
+      "dependencies": [
+        "B_bootstrap:11"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:13": {
+      "dependencies": [
+        "B_bootstrap:12"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:14": {
+      "dependencies": [
+        "B_bootstrap:13"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:15": {
+      "dependencies": [
+        "B_bootstrap:14"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:16": {
+      "dependencies": [
+        "B_bootstrap:15"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:17": {
+      "dependencies": [
+        "B_bootstrap:16"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:18": {
+      "dependencies": [
+        "B_bootstrap:17"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:19": {
+      "dependencies": [
+        "B_bootstrap:18"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:2": {
+      "dependencies": [
+        "B_bootstrap:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:3": {
+      "dependencies": [
+        "B_bootstrap:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:4": {
+      "dependencies": [
+        "B_bootstrap:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:5": {
+      "dependencies": [
+        "B_bootstrap:4"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:6": {
+      "dependencies": [
+        "B_bootstrap:5"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:7": {
+      "dependencies": [
+        "B_bootstrap:6"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:8": {
+      "dependencies": [
+        "B_bootstrap:7"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_bootstrap:9": {
+      "dependencies": [
+        "B_bootstrap:8"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:0:0:0": {
+      "dependencies": [
+        "B_infer:0:0:0:U0",
+        "B_infer:0:0:0:G1_frozen",
+        "B_infer:0:0:0:G1_R",
+        "B_infer:0:0:0:G1_RH",
+        "B_infer:0:0:0:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:0:0:1": {
+      "dependencies": [
+        "B_infer:0:0:1:U0",
+        "B_infer:0:0:1:G1_frozen",
+        "B_infer:0:0:1:G1_R",
+        "B_infer:0:0:1:G1_RH",
+        "B_infer:0:0:1:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:0:0:2": {
+      "dependencies": [
+        "B_infer:0:0:2:U0",
+        "B_infer:0:0:2:G1_frozen",
+        "B_infer:0:0:2:G1_R",
+        "B_infer:0:0:2:G1_RH",
+        "B_infer:0:0:2:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:0:0:3": {
+      "dependencies": [
+        "B_infer:0:0:3:U0",
+        "B_infer:0:0:3:G1_frozen",
+        "B_infer:0:0:3:G1_R",
+        "B_infer:0:0:3:G1_RH",
+        "B_infer:0:0:3:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:0:1:0": {
+      "dependencies": [
+        "B_infer:0:1:0:U0",
+        "B_infer:0:1:0:G1_frozen",
+        "B_infer:0:1:0:G1_R",
+        "B_infer:0:1:0:G1_RH",
+        "B_infer:0:1:0:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:0:1:1": {
+      "dependencies": [
+        "B_infer:0:1:1:U0",
+        "B_infer:0:1:1:G1_frozen",
+        "B_infer:0:1:1:G1_R",
+        "B_infer:0:1:1:G1_RH",
+        "B_infer:0:1:1:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:0:1:2": {
+      "dependencies": [
+        "B_infer:0:1:2:U0",
+        "B_infer:0:1:2:G1_frozen",
+        "B_infer:0:1:2:G1_R",
+        "B_infer:0:1:2:G1_RH",
+        "B_infer:0:1:2:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:0:1:3": {
+      "dependencies": [
+        "B_infer:0:1:3:U0",
+        "B_infer:0:1:3:G1_frozen",
+        "B_infer:0:1:3:G1_R",
+        "B_infer:0:1:3:G1_RH",
+        "B_infer:0:1:3:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:0:2:0": {
+      "dependencies": [
+        "B_infer:0:2:0:U0",
+        "B_infer:0:2:0:G1_frozen",
+        "B_infer:0:2:0:G1_R",
+        "B_infer:0:2:0:G1_RH",
+        "B_infer:0:2:0:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:0:2:1": {
+      "dependencies": [
+        "B_infer:0:2:1:U0",
+        "B_infer:0:2:1:G1_frozen",
+        "B_infer:0:2:1:G1_R",
+        "B_infer:0:2:1:G1_RH",
+        "B_infer:0:2:1:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:0:2:2": {
+      "dependencies": [
+        "B_infer:0:2:2:U0",
+        "B_infer:0:2:2:G1_frozen",
+        "B_infer:0:2:2:G1_R",
+        "B_infer:0:2:2:G1_RH",
+        "B_infer:0:2:2:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:0:2:3": {
+      "dependencies": [
+        "B_infer:0:2:3:U0",
+        "B_infer:0:2:3:G1_frozen",
+        "B_infer:0:2:3:G1_R",
+        "B_infer:0:2:3:G1_RH",
+        "B_infer:0:2:3:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:1:0:0": {
+      "dependencies": [
+        "B_infer:1:0:0:U0",
+        "B_infer:1:0:0:G1_frozen",
+        "B_infer:1:0:0:G1_R",
+        "B_infer:1:0:0:G1_RH",
+        "B_infer:1:0:0:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:1:0:1": {
+      "dependencies": [
+        "B_infer:1:0:1:U0",
+        "B_infer:1:0:1:G1_frozen",
+        "B_infer:1:0:1:G1_R",
+        "B_infer:1:0:1:G1_RH",
+        "B_infer:1:0:1:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:1:0:2": {
+      "dependencies": [
+        "B_infer:1:0:2:U0",
+        "B_infer:1:0:2:G1_frozen",
+        "B_infer:1:0:2:G1_R",
+        "B_infer:1:0:2:G1_RH",
+        "B_infer:1:0:2:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:1:0:3": {
+      "dependencies": [
+        "B_infer:1:0:3:U0",
+        "B_infer:1:0:3:G1_frozen",
+        "B_infer:1:0:3:G1_R",
+        "B_infer:1:0:3:G1_RH",
+        "B_infer:1:0:3:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:1:1:0": {
+      "dependencies": [
+        "B_infer:1:1:0:U0",
+        "B_infer:1:1:0:G1_frozen",
+        "B_infer:1:1:0:G1_R",
+        "B_infer:1:1:0:G1_RH",
+        "B_infer:1:1:0:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:1:1:1": {
+      "dependencies": [
+        "B_infer:1:1:1:U0",
+        "B_infer:1:1:1:G1_frozen",
+        "B_infer:1:1:1:G1_R",
+        "B_infer:1:1:1:G1_RH",
+        "B_infer:1:1:1:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:1:1:2": {
+      "dependencies": [
+        "B_infer:1:1:2:U0",
+        "B_infer:1:1:2:G1_frozen",
+        "B_infer:1:1:2:G1_R",
+        "B_infer:1:1:2:G1_RH",
+        "B_infer:1:1:2:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:1:1:3": {
+      "dependencies": [
+        "B_infer:1:1:3:U0",
+        "B_infer:1:1:3:G1_frozen",
+        "B_infer:1:1:3:G1_R",
+        "B_infer:1:1:3:G1_RH",
+        "B_infer:1:1:3:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:1:2:0": {
+      "dependencies": [
+        "B_infer:1:2:0:U0",
+        "B_infer:1:2:0:G1_frozen",
+        "B_infer:1:2:0:G1_R",
+        "B_infer:1:2:0:G1_RH",
+        "B_infer:1:2:0:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:1:2:1": {
+      "dependencies": [
+        "B_infer:1:2:1:U0",
+        "B_infer:1:2:1:G1_frozen",
+        "B_infer:1:2:1:G1_R",
+        "B_infer:1:2:1:G1_RH",
+        "B_infer:1:2:1:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:1:2:2": {
+      "dependencies": [
+        "B_infer:1:2:2:U0",
+        "B_infer:1:2:2:G1_frozen",
+        "B_infer:1:2:2:G1_R",
+        "B_infer:1:2:2:G1_RH",
+        "B_infer:1:2:2:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:1:2:3": {
+      "dependencies": [
+        "B_infer:1:2:3:U0",
+        "B_infer:1:2:3:G1_frozen",
+        "B_infer:1:2:3:G1_R",
+        "B_infer:1:2:3:G1_RH",
+        "B_infer:1:2:3:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:2:0:0": {
+      "dependencies": [
+        "B_infer:2:0:0:U0",
+        "B_infer:2:0:0:G1_frozen",
+        "B_infer:2:0:0:G1_R",
+        "B_infer:2:0:0:G1_RH",
+        "B_infer:2:0:0:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:2:0:1": {
+      "dependencies": [
+        "B_infer:2:0:1:U0",
+        "B_infer:2:0:1:G1_frozen",
+        "B_infer:2:0:1:G1_R",
+        "B_infer:2:0:1:G1_RH",
+        "B_infer:2:0:1:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:2:0:2": {
+      "dependencies": [
+        "B_infer:2:0:2:U0",
+        "B_infer:2:0:2:G1_frozen",
+        "B_infer:2:0:2:G1_R",
+        "B_infer:2:0:2:G1_RH",
+        "B_infer:2:0:2:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:2:0:3": {
+      "dependencies": [
+        "B_infer:2:0:3:U0",
+        "B_infer:2:0:3:G1_frozen",
+        "B_infer:2:0:3:G1_R",
+        "B_infer:2:0:3:G1_RH",
+        "B_infer:2:0:3:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:2:1:0": {
+      "dependencies": [
+        "B_infer:2:1:0:U0",
+        "B_infer:2:1:0:G1_frozen",
+        "B_infer:2:1:0:G1_R",
+        "B_infer:2:1:0:G1_RH",
+        "B_infer:2:1:0:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:2:1:1": {
+      "dependencies": [
+        "B_infer:2:1:1:U0",
+        "B_infer:2:1:1:G1_frozen",
+        "B_infer:2:1:1:G1_R",
+        "B_infer:2:1:1:G1_RH",
+        "B_infer:2:1:1:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:2:1:2": {
+      "dependencies": [
+        "B_infer:2:1:2:U0",
+        "B_infer:2:1:2:G1_frozen",
+        "B_infer:2:1:2:G1_R",
+        "B_infer:2:1:2:G1_RH",
+        "B_infer:2:1:2:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:2:1:3": {
+      "dependencies": [
+        "B_infer:2:1:3:U0",
+        "B_infer:2:1:3:G1_frozen",
+        "B_infer:2:1:3:G1_R",
+        "B_infer:2:1:3:G1_RH",
+        "B_infer:2:1:3:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:2:2:0": {
+      "dependencies": [
+        "B_infer:2:2:0:U0",
+        "B_infer:2:2:0:G1_frozen",
+        "B_infer:2:2:0:G1_R",
+        "B_infer:2:2:0:G1_RH",
+        "B_infer:2:2:0:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:2:2:1": {
+      "dependencies": [
+        "B_infer:2:2:1:U0",
+        "B_infer:2:2:1:G1_frozen",
+        "B_infer:2:2:1:G1_R",
+        "B_infer:2:2:1:G1_RH",
+        "B_infer:2:2:1:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:2:2:2": {
+      "dependencies": [
+        "B_infer:2:2:2:U0",
+        "B_infer:2:2:2:G1_frozen",
+        "B_infer:2:2:2:G1_R",
+        "B_infer:2:2:2:G1_RH",
+        "B_infer:2:2:2:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_eval:2:2:3": {
+      "dependencies": [
+        "B_infer:2:2:3:U0",
+        "B_infer:2:2:3:G1_frozen",
+        "B_infer:2:2:3:G1_R",
+        "B_infer:2:2:3:G1_RH",
+        "B_infer:2:2:3:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_gate": {
+      "dependencies": [
+        "B_bootstrap:0",
+        "B_bootstrap:1",
+        "B_bootstrap:2",
+        "B_bootstrap:3",
+        "B_bootstrap:4",
+        "B_bootstrap:5",
+        "B_bootstrap:6",
+        "B_bootstrap:7",
+        "B_bootstrap:8",
+        "B_bootstrap:9",
+        "B_bootstrap:10",
+        "B_bootstrap:11",
+        "B_bootstrap:12",
+        "B_bootstrap:13",
+        "B_bootstrap:14",
+        "B_bootstrap:15",
+        "B_bootstrap:16",
+        "B_bootstrap:17",
+        "B_bootstrap:18",
+        "B_bootstrap:19"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:0:G1_R": {
+      "dependencies": [
+        "fit:0:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:0:G1_RH": {
+      "dependencies": [
+        "fit:0:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:0:G1_RHM": {
+      "dependencies": [
+        "fit:0:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:0:G1_frozen": {
+      "dependencies": [
+        "fit:0:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:0:U0": {
+      "dependencies": [
+        "fit:0:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:1:G1_R": {
+      "dependencies": [
+        "fit:0:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:1:G1_RH": {
+      "dependencies": [
+        "fit:0:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:1:G1_RHM": {
+      "dependencies": [
+        "fit:0:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:1:G1_frozen": {
+      "dependencies": [
+        "fit:0:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:1:U0": {
+      "dependencies": [
+        "fit:0:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:2:G1_R": {
+      "dependencies": [
+        "fit:0:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:2:G1_RH": {
+      "dependencies": [
+        "fit:0:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:2:G1_RHM": {
+      "dependencies": [
+        "fit:0:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:2:G1_frozen": {
+      "dependencies": [
+        "fit:0:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:2:U0": {
+      "dependencies": [
+        "fit:0:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:3:G1_R": {
+      "dependencies": [
+        "fit:0:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:3:G1_RH": {
+      "dependencies": [
+        "fit:0:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:3:G1_RHM": {
+      "dependencies": [
+        "fit:0:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:3:G1_frozen": {
+      "dependencies": [
+        "fit:0:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:0:3:U0": {
+      "dependencies": [
+        "fit:0:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:0:G1_R": {
+      "dependencies": [
+        "fit:0:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:0:G1_RH": {
+      "dependencies": [
+        "fit:0:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:0:G1_RHM": {
+      "dependencies": [
+        "fit:0:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:0:G1_frozen": {
+      "dependencies": [
+        "fit:0:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:0:U0": {
+      "dependencies": [
+        "fit:0:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:1:G1_R": {
+      "dependencies": [
+        "fit:0:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:1:G1_RH": {
+      "dependencies": [
+        "fit:0:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:1:G1_RHM": {
+      "dependencies": [
+        "fit:0:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:1:G1_frozen": {
+      "dependencies": [
+        "fit:0:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:1:U0": {
+      "dependencies": [
+        "fit:0:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:2:G1_R": {
+      "dependencies": [
+        "fit:0:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:2:G1_RH": {
+      "dependencies": [
+        "fit:0:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:2:G1_RHM": {
+      "dependencies": [
+        "fit:0:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:2:G1_frozen": {
+      "dependencies": [
+        "fit:0:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:2:U0": {
+      "dependencies": [
+        "fit:0:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:3:G1_R": {
+      "dependencies": [
+        "fit:0:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:3:G1_RH": {
+      "dependencies": [
+        "fit:0:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:3:G1_RHM": {
+      "dependencies": [
+        "fit:0:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:3:G1_frozen": {
+      "dependencies": [
+        "fit:0:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:1:3:U0": {
+      "dependencies": [
+        "fit:0:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:0:G1_R": {
+      "dependencies": [
+        "fit:0:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:0:G1_RH": {
+      "dependencies": [
+        "fit:0:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:0:G1_RHM": {
+      "dependencies": [
+        "fit:0:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:0:G1_frozen": {
+      "dependencies": [
+        "fit:0:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:0:U0": {
+      "dependencies": [
+        "fit:0:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:1:G1_R": {
+      "dependencies": [
+        "fit:0:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:1:G1_RH": {
+      "dependencies": [
+        "fit:0:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:1:G1_RHM": {
+      "dependencies": [
+        "fit:0:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:1:G1_frozen": {
+      "dependencies": [
+        "fit:0:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:1:U0": {
+      "dependencies": [
+        "fit:0:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:2:G1_R": {
+      "dependencies": [
+        "fit:0:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:2:G1_RH": {
+      "dependencies": [
+        "fit:0:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:2:G1_RHM": {
+      "dependencies": [
+        "fit:0:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:2:G1_frozen": {
+      "dependencies": [
+        "fit:0:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:2:U0": {
+      "dependencies": [
+        "fit:0:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:3:G1_R": {
+      "dependencies": [
+        "fit:0:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:3:G1_RH": {
+      "dependencies": [
+        "fit:0:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:3:G1_RHM": {
+      "dependencies": [
+        "fit:0:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:3:G1_frozen": {
+      "dependencies": [
+        "fit:0:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:0:2:3:U0": {
+      "dependencies": [
+        "fit:0:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:0:G1_R": {
+      "dependencies": [
+        "fit:1:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:0:G1_RH": {
+      "dependencies": [
+        "fit:1:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:0:G1_RHM": {
+      "dependencies": [
+        "fit:1:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:0:G1_frozen": {
+      "dependencies": [
+        "fit:1:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:0:U0": {
+      "dependencies": [
+        "fit:1:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:1:G1_R": {
+      "dependencies": [
+        "fit:1:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:1:G1_RH": {
+      "dependencies": [
+        "fit:1:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:1:G1_RHM": {
+      "dependencies": [
+        "fit:1:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:1:G1_frozen": {
+      "dependencies": [
+        "fit:1:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:1:U0": {
+      "dependencies": [
+        "fit:1:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:2:G1_R": {
+      "dependencies": [
+        "fit:1:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:2:G1_RH": {
+      "dependencies": [
+        "fit:1:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:2:G1_RHM": {
+      "dependencies": [
+        "fit:1:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:2:G1_frozen": {
+      "dependencies": [
+        "fit:1:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:2:U0": {
+      "dependencies": [
+        "fit:1:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:3:G1_R": {
+      "dependencies": [
+        "fit:1:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:3:G1_RH": {
+      "dependencies": [
+        "fit:1:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:3:G1_RHM": {
+      "dependencies": [
+        "fit:1:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:3:G1_frozen": {
+      "dependencies": [
+        "fit:1:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:0:3:U0": {
+      "dependencies": [
+        "fit:1:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:0:G1_R": {
+      "dependencies": [
+        "fit:1:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:0:G1_RH": {
+      "dependencies": [
+        "fit:1:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:0:G1_RHM": {
+      "dependencies": [
+        "fit:1:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:0:G1_frozen": {
+      "dependencies": [
+        "fit:1:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:0:U0": {
+      "dependencies": [
+        "fit:1:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:1:G1_R": {
+      "dependencies": [
+        "fit:1:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:1:G1_RH": {
+      "dependencies": [
+        "fit:1:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:1:G1_RHM": {
+      "dependencies": [
+        "fit:1:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:1:G1_frozen": {
+      "dependencies": [
+        "fit:1:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:1:U0": {
+      "dependencies": [
+        "fit:1:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:2:G1_R": {
+      "dependencies": [
+        "fit:1:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:2:G1_RH": {
+      "dependencies": [
+        "fit:1:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:2:G1_RHM": {
+      "dependencies": [
+        "fit:1:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:2:G1_frozen": {
+      "dependencies": [
+        "fit:1:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:2:U0": {
+      "dependencies": [
+        "fit:1:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:3:G1_R": {
+      "dependencies": [
+        "fit:1:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:3:G1_RH": {
+      "dependencies": [
+        "fit:1:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:3:G1_RHM": {
+      "dependencies": [
+        "fit:1:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:3:G1_frozen": {
+      "dependencies": [
+        "fit:1:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:1:3:U0": {
+      "dependencies": [
+        "fit:1:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:0:G1_R": {
+      "dependencies": [
+        "fit:1:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:0:G1_RH": {
+      "dependencies": [
+        "fit:1:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:0:G1_RHM": {
+      "dependencies": [
+        "fit:1:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:0:G1_frozen": {
+      "dependencies": [
+        "fit:1:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:0:U0": {
+      "dependencies": [
+        "fit:1:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:1:G1_R": {
+      "dependencies": [
+        "fit:1:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:1:G1_RH": {
+      "dependencies": [
+        "fit:1:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:1:G1_RHM": {
+      "dependencies": [
+        "fit:1:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:1:G1_frozen": {
+      "dependencies": [
+        "fit:1:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:1:U0": {
+      "dependencies": [
+        "fit:1:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:2:G1_R": {
+      "dependencies": [
+        "fit:1:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:2:G1_RH": {
+      "dependencies": [
+        "fit:1:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:2:G1_RHM": {
+      "dependencies": [
+        "fit:1:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:2:G1_frozen": {
+      "dependencies": [
+        "fit:1:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:2:U0": {
+      "dependencies": [
+        "fit:1:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:3:G1_R": {
+      "dependencies": [
+        "fit:1:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:3:G1_RH": {
+      "dependencies": [
+        "fit:1:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:3:G1_RHM": {
+      "dependencies": [
+        "fit:1:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:3:G1_frozen": {
+      "dependencies": [
+        "fit:1:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:1:2:3:U0": {
+      "dependencies": [
+        "fit:1:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:0:G1_R": {
+      "dependencies": [
+        "fit:2:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:0:G1_RH": {
+      "dependencies": [
+        "fit:2:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:0:G1_RHM": {
+      "dependencies": [
+        "fit:2:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:0:G1_frozen": {
+      "dependencies": [
+        "fit:2:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:0:U0": {
+      "dependencies": [
+        "fit:2:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:1:G1_R": {
+      "dependencies": [
+        "fit:2:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:1:G1_RH": {
+      "dependencies": [
+        "fit:2:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:1:G1_RHM": {
+      "dependencies": [
+        "fit:2:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:1:G1_frozen": {
+      "dependencies": [
+        "fit:2:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:1:U0": {
+      "dependencies": [
+        "fit:2:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:2:G1_R": {
+      "dependencies": [
+        "fit:2:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:2:G1_RH": {
+      "dependencies": [
+        "fit:2:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:2:G1_RHM": {
+      "dependencies": [
+        "fit:2:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:2:G1_frozen": {
+      "dependencies": [
+        "fit:2:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:2:U0": {
+      "dependencies": [
+        "fit:2:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:3:G1_R": {
+      "dependencies": [
+        "fit:2:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:3:G1_RH": {
+      "dependencies": [
+        "fit:2:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:3:G1_RHM": {
+      "dependencies": [
+        "fit:2:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:3:G1_frozen": {
+      "dependencies": [
+        "fit:2:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:0:3:U0": {
+      "dependencies": [
+        "fit:2:0:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:0:G1_R": {
+      "dependencies": [
+        "fit:2:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:0:G1_RH": {
+      "dependencies": [
+        "fit:2:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:0:G1_RHM": {
+      "dependencies": [
+        "fit:2:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:0:G1_frozen": {
+      "dependencies": [
+        "fit:2:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:0:U0": {
+      "dependencies": [
+        "fit:2:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:1:G1_R": {
+      "dependencies": [
+        "fit:2:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:1:G1_RH": {
+      "dependencies": [
+        "fit:2:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:1:G1_RHM": {
+      "dependencies": [
+        "fit:2:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:1:G1_frozen": {
+      "dependencies": [
+        "fit:2:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:1:U0": {
+      "dependencies": [
+        "fit:2:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:2:G1_R": {
+      "dependencies": [
+        "fit:2:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:2:G1_RH": {
+      "dependencies": [
+        "fit:2:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:2:G1_RHM": {
+      "dependencies": [
+        "fit:2:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:2:G1_frozen": {
+      "dependencies": [
+        "fit:2:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:2:U0": {
+      "dependencies": [
+        "fit:2:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:3:G1_R": {
+      "dependencies": [
+        "fit:2:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:3:G1_RH": {
+      "dependencies": [
+        "fit:2:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:3:G1_RHM": {
+      "dependencies": [
+        "fit:2:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:3:G1_frozen": {
+      "dependencies": [
+        "fit:2:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:1:3:U0": {
+      "dependencies": [
+        "fit:2:1:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:0:G1_R": {
+      "dependencies": [
+        "fit:2:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:0:G1_RH": {
+      "dependencies": [
+        "fit:2:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:0:G1_RHM": {
+      "dependencies": [
+        "fit:2:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:0:G1_frozen": {
+      "dependencies": [
+        "fit:2:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:0:U0": {
+      "dependencies": [
+        "fit:2:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:1:G1_R": {
+      "dependencies": [
+        "fit:2:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:1:G1_RH": {
+      "dependencies": [
+        "fit:2:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:1:G1_RHM": {
+      "dependencies": [
+        "fit:2:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:1:G1_frozen": {
+      "dependencies": [
+        "fit:2:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:1:U0": {
+      "dependencies": [
+        "fit:2:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:2:G1_R": {
+      "dependencies": [
+        "fit:2:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:2:G1_RH": {
+      "dependencies": [
+        "fit:2:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:2:G1_RHM": {
+      "dependencies": [
+        "fit:2:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:2:G1_frozen": {
+      "dependencies": [
+        "fit:2:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:2:U0": {
+      "dependencies": [
+        "fit:2:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:3:G1_R": {
+      "dependencies": [
+        "fit:2:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:3:G1_RH": {
+      "dependencies": [
+        "fit:2:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:3:G1_RHM": {
+      "dependencies": [
+        "fit:2:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:3:G1_frozen": {
+      "dependencies": [
+        "fit:2:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_infer:2:2:3:U0": {
+      "dependencies": [
+        "fit:2:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_splits:0:0": {
+      "dependencies": [
+        "recovery_secondary"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_splits:0:1": {
+      "dependencies": [
+        "recovery_secondary"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_splits:0:2": {
+      "dependencies": [
+        "recovery_secondary"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_splits:1:0": {
+      "dependencies": [
+        "recovery_secondary"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_splits:1:1": {
+      "dependencies": [
+        "recovery_secondary"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_splits:1:2": {
+      "dependencies": [
+        "recovery_secondary"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_splits:2:0": {
+      "dependencies": [
+        "recovery_secondary"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_splits:2:1": {
+      "dependencies": [
+        "recovery_secondary"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_splits:2:2": {
+      "dependencies": [
+        "recovery_secondary"
+      ],
+      "status": "COMPLETE"
+    },
+    "B_tables": {
+      "dependencies": [
+        "B_eval:0:0:0",
+        "B_eval:0:0:1",
+        "B_eval:0:0:2",
+        "B_eval:0:0:3",
+        "B_eval:0:1:0",
+        "B_eval:0:1:1",
+        "B_eval:0:1:2",
+        "B_eval:0:1:3",
+        "B_eval:0:2:0",
+        "B_eval:0:2:1",
+        "B_eval:0:2:2",
+        "B_eval:0:2:3",
+        "B_eval:1:0:0",
+        "B_eval:1:0:1",
+        "B_eval:1:0:2",
+        "B_eval:1:0:3",
+        "B_eval:1:1:0",
+        "B_eval:1:1:1",
+        "B_eval:1:1:2",
+        "B_eval:1:1:3",
+        "B_eval:1:2:0",
+        "B_eval:1:2:1",
+        "B_eval:1:2:2",
+        "B_eval:1:2:3",
+        "B_eval:2:0:0",
+        "B_eval:2:0:1",
+        "B_eval:2:0:2",
+        "B_eval:2:0:3",
+        "B_eval:2:1:0",
+        "B_eval:2:1:1",
+        "B_eval:2:1:2",
+        "B_eval:2:1:3",
+        "B_eval:2:2:0",
+        "B_eval:2:2:1",
+        "B_eval:2:2:2",
+        "B_eval:2:2:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:0": {
+      "dependencies": [
+        "C_export"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:1": {
+      "dependencies": [
+        "C_bootstrap:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:10": {
+      "dependencies": [
+        "C_bootstrap:9"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:11": {
+      "dependencies": [
+        "C_bootstrap:10"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:12": {
+      "dependencies": [
+        "C_bootstrap:11"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:13": {
+      "dependencies": [
+        "C_bootstrap:12"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:14": {
+      "dependencies": [
+        "C_bootstrap:13"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:15": {
+      "dependencies": [
+        "C_bootstrap:14"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:16": {
+      "dependencies": [
+        "C_bootstrap:15"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:17": {
+      "dependencies": [
+        "C_bootstrap:16"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:18": {
+      "dependencies": [
+        "C_bootstrap:17"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:19": {
+      "dependencies": [
+        "C_bootstrap:18"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:2": {
+      "dependencies": [
+        "C_bootstrap:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:3": {
+      "dependencies": [
+        "C_bootstrap:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:4": {
+      "dependencies": [
+        "C_bootstrap:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:5": {
+      "dependencies": [
+        "C_bootstrap:4"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:6": {
+      "dependencies": [
+        "C_bootstrap:5"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:7": {
+      "dependencies": [
+        "C_bootstrap:6"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:8": {
+      "dependencies": [
+        "C_bootstrap:7"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_bootstrap:9": {
+      "dependencies": [
+        "C_bootstrap:8"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:0:G1_R": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:0:G1_RH": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:0:G1_RHM": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:0:G1_frozen": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:0:U0": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:1:G1_R": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:1:G1_RH": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:1:G1_RHM": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:1:G1_frozen": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:1:U0": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:2:G1_R": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:2:G1_RH": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:2:G1_RHM": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:2:G1_frozen": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_eval:2:U0": {
+      "dependencies": [
+        "C_inference_complete"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_export": {
+      "dependencies": [
+        "C_eval:0:U0",
+        "C_eval:0:G1_frozen",
+        "C_eval:0:G1_R",
+        "C_eval:0:G1_RH",
+        "C_eval:0:G1_RHM",
+        "C_eval:1:U0",
+        "C_eval:1:G1_frozen",
+        "C_eval:1:G1_R",
+        "C_eval:1:G1_RH",
+        "C_eval:1:G1_RHM",
+        "C_eval:2:U0",
+        "C_eval:2:G1_frozen",
+        "C_eval:2:G1_R",
+        "C_eval:2:G1_RH",
+        "C_eval:2:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:0:4:G1_R": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:0:4:G1_RH": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:0:4:G1_RHM": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:0:4:G1_frozen": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:0:4:U0": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:1:4:G1_R": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:1:4:G1_RH": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:1:4:G1_RHM": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:1:4:G1_frozen": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:1:4:U0": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:2:4:G1_R": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:2:4:G1_RH": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:2:4:G1_RHM": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:2:4:G1_frozen": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:0:2:4:U0": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:0:4:G1_R": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:0:4:G1_RH": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:0:4:G1_RHM": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:0:4:G1_frozen": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:0:4:U0": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:1:4:G1_R": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:1:4:G1_RH": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:1:4:G1_RHM": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:1:4:G1_frozen": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:1:4:U0": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:2:4:G1_R": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:2:4:G1_RH": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:2:4:G1_RHM": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:2:4:G1_frozen": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:1:2:4:U0": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:0:4:G1_R": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:0:4:G1_RH": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:0:4:G1_RHM": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:0:4:G1_frozen": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:0:4:U0": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:1:4:G1_R": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:1:4:G1_RH": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:1:4:G1_RHM": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:1:4:G1_frozen": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:1:4:U0": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:2:4:G1_R": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:2:4:G1_RH": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:2:4:G1_RHM": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:2:4:G1_frozen": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_infer:2:2:4:U0": {
+      "dependencies": [
+        "recovery_C"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_inference_complete": {
+      "dependencies": [
+        "C_infer:0:0:4:U0",
+        "C_infer:0:0:4:G1_frozen",
+        "C_infer:0:0:4:G1_R",
+        "C_infer:0:0:4:G1_RH",
+        "C_infer:0:0:4:G1_RHM",
+        "C_infer:0:1:4:U0",
+        "C_infer:0:1:4:G1_frozen",
+        "C_infer:0:1:4:G1_R",
+        "C_infer:0:1:4:G1_RH",
+        "C_infer:0:1:4:G1_RHM",
+        "C_infer:0:2:4:U0",
+        "C_infer:0:2:4:G1_frozen",
+        "C_infer:0:2:4:G1_R",
+        "C_infer:0:2:4:G1_RH",
+        "C_infer:0:2:4:G1_RHM",
+        "C_infer:1:0:4:U0",
+        "C_infer:1:0:4:G1_frozen",
+        "C_infer:1:0:4:G1_R",
+        "C_infer:1:0:4:G1_RH",
+        "C_infer:1:0:4:G1_RHM",
+        "C_infer:1:1:4:U0",
+        "C_infer:1:1:4:G1_frozen",
+        "C_infer:1:1:4:G1_R",
+        "C_infer:1:1:4:G1_RH",
+        "C_infer:1:1:4:G1_RHM",
+        "C_infer:1:2:4:U0",
+        "C_infer:1:2:4:G1_frozen",
+        "C_infer:1:2:4:G1_R",
+        "C_infer:1:2:4:G1_RH",
+        "C_infer:1:2:4:G1_RHM",
+        "C_infer:2:0:4:U0",
+        "C_infer:2:0:4:G1_frozen",
+        "C_infer:2:0:4:G1_R",
+        "C_infer:2:0:4:G1_RH",
+        "C_infer:2:0:4:G1_RHM",
+        "C_infer:2:1:4:U0",
+        "C_infer:2:1:4:G1_frozen",
+        "C_infer:2:1:4:G1_R",
+        "C_infer:2:1:4:G1_RH",
+        "C_infer:2:1:4:G1_RHM",
+        "C_infer:2:2:4:U0",
+        "C_infer:2:2:4:G1_frozen",
+        "C_infer:2:2:4:G1_R",
+        "C_infer:2:2:4:G1_RH",
+        "C_infer:2:2:4:G1_RHM"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:0": {
+      "dependencies": [
+        "C_export"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:1": {
+      "dependencies": [
+        "C_permutation:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:10": {
+      "dependencies": [
+        "C_permutation:9"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:11": {
+      "dependencies": [
+        "C_permutation:10"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:12": {
+      "dependencies": [
+        "C_permutation:11"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:13": {
+      "dependencies": [
+        "C_permutation:12"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:14": {
+      "dependencies": [
+        "C_permutation:13"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:15": {
+      "dependencies": [
+        "C_permutation:14"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:16": {
+      "dependencies": [
+        "C_permutation:15"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:17": {
+      "dependencies": [
+        "C_permutation:16"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:18": {
+      "dependencies": [
+        "C_permutation:17"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:19": {
+      "dependencies": [
+        "C_permutation:18"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:2": {
+      "dependencies": [
+        "C_permutation:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:20": {
+      "dependencies": [
+        "C_permutation:19"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:21": {
+      "dependencies": [
+        "C_permutation:20"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:22": {
+      "dependencies": [
+        "C_permutation:21"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:23": {
+      "dependencies": [
+        "C_permutation:22"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:24": {
+      "dependencies": [
+        "C_permutation:23"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:25": {
+      "dependencies": [
+        "C_permutation:24"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:26": {
+      "dependencies": [
+        "C_permutation:25"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:27": {
+      "dependencies": [
+        "C_permutation:26"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:28": {
+      "dependencies": [
+        "C_permutation:27"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:29": {
+      "dependencies": [
+        "C_permutation:28"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:3": {
+      "dependencies": [
+        "C_permutation:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:30": {
+      "dependencies": [
+        "C_permutation:29"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:31": {
+      "dependencies": [
+        "C_permutation:30"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:32": {
+      "dependencies": [
+        "C_permutation:31"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:33": {
+      "dependencies": [
+        "C_permutation:32"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:34": {
+      "dependencies": [
+        "C_permutation:33"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:35": {
+      "dependencies": [
+        "C_permutation:34"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:36": {
+      "dependencies": [
+        "C_permutation:35"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:37": {
+      "dependencies": [
+        "C_permutation:36"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:38": {
+      "dependencies": [
+        "C_permutation:37"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:39": {
+      "dependencies": [
+        "C_permutation:38"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:4": {
+      "dependencies": [
+        "C_permutation:3"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:40": {
+      "dependencies": [
+        "C_permutation:39"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:41": {
+      "dependencies": [
+        "C_permutation:40"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:42": {
+      "dependencies": [
+        "C_permutation:41"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:43": {
+      "dependencies": [
+        "C_permutation:42"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:44": {
+      "dependencies": [
+        "C_permutation:43"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:45": {
+      "dependencies": [
+        "C_permutation:44"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:46": {
+      "dependencies": [
+        "C_permutation:45"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:47": {
+      "dependencies": [
+        "C_permutation:46"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:48": {
+      "dependencies": [
+        "C_permutation:47"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:49": {
+      "dependencies": [
+        "C_permutation:48"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:5": {
+      "dependencies": [
+        "C_permutation:4"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:50": {
+      "dependencies": [
+        "C_permutation:49"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:51": {
+      "dependencies": [
+        "C_permutation:50"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:52": {
+      "dependencies": [
+        "C_permutation:51"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:53": {
+      "dependencies": [
+        "C_permutation:52"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:54": {
+      "dependencies": [
+        "C_permutation:53"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:55": {
+      "dependencies": [
+        "C_permutation:54"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:56": {
+      "dependencies": [
+        "C_permutation:55"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:57": {
+      "dependencies": [
+        "C_permutation:56"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:58": {
+      "dependencies": [
+        "C_permutation:57"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:59": {
+      "dependencies": [
+        "C_permutation:58"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:6": {
+      "dependencies": [
+        "C_permutation:5"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:7": {
+      "dependencies": [
+        "C_permutation:6"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:8": {
+      "dependencies": [
+        "C_permutation:7"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_permutation:9": {
+      "dependencies": [
+        "C_permutation:8"
+      ],
+      "status": "COMPLETE"
+    },
+    "C_tables": {
+      "dependencies": [
+        "C_bootstrap:0",
+        "C_bootstrap:1",
+        "C_bootstrap:2",
+        "C_bootstrap:3",
+        "C_bootstrap:4",
+        "C_bootstrap:5",
+        "C_bootstrap:6",
+        "C_bootstrap:7",
+        "C_bootstrap:8",
+        "C_bootstrap:9",
+        "C_bootstrap:10",
+        "C_bootstrap:11",
+        "C_bootstrap:12",
+        "C_bootstrap:13",
+        "C_bootstrap:14",
+        "C_bootstrap:15",
+        "C_bootstrap:16",
+        "C_bootstrap:17",
+        "C_bootstrap:18",
+        "C_bootstrap:19",
+        "C_permutation:0",
+        "C_permutation:1",
+        "C_permutation:2",
+        "C_permutation:3",
+        "C_permutation:4",
+        "C_permutation:5",
+        "C_permutation:6",
+        "C_permutation:7",
+        "C_permutation:8",
+        "C_permutation:9",
+        "C_permutation:10",
+        "C_permutation:11",
+        "C_permutation:12",
+        "C_permutation:13",
+        "C_permutation:14",
+        "C_permutation:15",
+        "C_permutation:16",
+        "C_permutation:17",
+        "C_permutation:18",
+        "C_permutation:19",
+        "C_permutation:20",
+        "C_permutation:21",
+        "C_permutation:22",
+        "C_permutation:23",
+        "C_permutation:24",
+        "C_permutation:25",
+        "C_permutation:26",
+        "C_permutation:27",
+        "C_permutation:28",
+        "C_permutation:29",
+        "C_permutation:30",
+        "C_permutation:31",
+        "C_permutation:32",
+        "C_permutation:33",
+        "C_permutation:34",
+        "C_permutation:35",
+        "C_permutation:36",
+        "C_permutation:37",
+        "C_permutation:38",
+        "C_permutation:39",
+        "C_permutation:40",
+        "C_permutation:41",
+        "C_permutation:42",
+        "C_permutation:43",
+        "C_permutation:44",
+        "C_permutation:45",
+        "C_permutation:46",
+        "C_permutation:47",
+        "C_permutation:48",
+        "C_permutation:49",
+        "C_permutation:50",
+        "C_permutation:51",
+        "C_permutation:52",
+        "C_permutation:53",
+        "C_permutation:54",
+        "C_permutation:55",
+        "C_permutation:56",
+        "C_permutation:57",
+        "C_permutation:58",
+        "C_permutation:59"
+      ],
+      "status": "COMPLETE"
+    },
+    "baseline:0:0": {
+      "dependencies": [
+        "inventory"
+      ],
+      "status": "COMPLETE"
+    },
+    "baseline:0:1": {
+      "dependencies": [
+        "inventory"
+      ],
+      "status": "COMPLETE"
+    },
+    "baseline:0:2": {
+      "dependencies": [
+        "inventory"
+      ],
+      "status": "COMPLETE"
+    },
+    "baseline:1:0": {
+      "dependencies": [
+        "inventory"
+      ],
+      "status": "COMPLETE"
+    },
+    "baseline:1:1": {
+      "dependencies": [
+        "inventory"
+      ],
+      "status": "COMPLETE"
+    },
+    "baseline:1:2": {
+      "dependencies": [
+        "inventory"
+      ],
+      "status": "COMPLETE"
+    },
+    "baseline:2:0": {
+      "dependencies": [
+        "inventory"
+      ],
+      "status": "COMPLETE"
+    },
+    "baseline:2:1": {
+      "dependencies": [
+        "inventory"
+      ],
+      "status": "COMPLETE"
+    },
+    "baseline:2:2": {
+      "dependencies": [
+        "inventory"
+      ],
+      "status": "COMPLETE"
+    },
+    "baseline_gate": {
+      "dependencies": [
+        "baseline:0:0",
+        "baseline:0:1",
+        "baseline:0:2",
+        "baseline:1:0",
+        "baseline:1:1",
+        "baseline:1:2",
+        "baseline:2:0",
+        "baseline:2:1",
+        "baseline:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "complete": {
+      "dependencies": [
+        "preservation"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:0:0": {
+      "dependencies": [
+        "scale_fit:0:0:0:0",
+        "scale_fit:0:0:0:1",
+        "scale_fit:0:0:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:0:1": {
+      "dependencies": [
+        "scale_fit:0:0:1:0",
+        "scale_fit:0:0:1:1",
+        "scale_fit:0:0:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:0:2": {
+      "dependencies": [
+        "scale_fit:0:0:2:0",
+        "scale_fit:0:0:2:1",
+        "scale_fit:0:0:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:0:3": {
+      "dependencies": [
+        "scale_fit:0:0:3:0",
+        "scale_fit:0:0:3:1",
+        "scale_fit:0:0:3:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:0:4": {
+      "dependencies": [
+        "scale_fit:0:0:4:0",
+        "scale_fit:0:0:4:1",
+        "scale_fit:0:0:4:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:1:0": {
+      "dependencies": [
+        "scale_fit:0:1:0:0",
+        "scale_fit:0:1:0:1",
+        "scale_fit:0:1:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:1:1": {
+      "dependencies": [
+        "scale_fit:0:1:1:0",
+        "scale_fit:0:1:1:1",
+        "scale_fit:0:1:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:1:2": {
+      "dependencies": [
+        "scale_fit:0:1:2:0",
+        "scale_fit:0:1:2:1",
+        "scale_fit:0:1:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:1:3": {
+      "dependencies": [
+        "scale_fit:0:1:3:0",
+        "scale_fit:0:1:3:1",
+        "scale_fit:0:1:3:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:1:4": {
+      "dependencies": [
+        "scale_fit:0:1:4:0",
+        "scale_fit:0:1:4:1",
+        "scale_fit:0:1:4:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:2:0": {
+      "dependencies": [
+        "scale_fit:0:2:0:0",
+        "scale_fit:0:2:0:1",
+        "scale_fit:0:2:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:2:1": {
+      "dependencies": [
+        "scale_fit:0:2:1:0",
+        "scale_fit:0:2:1:1",
+        "scale_fit:0:2:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:2:2": {
+      "dependencies": [
+        "scale_fit:0:2:2:0",
+        "scale_fit:0:2:2:1",
+        "scale_fit:0:2:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:2:3": {
+      "dependencies": [
+        "scale_fit:0:2:3:0",
+        "scale_fit:0:2:3:1",
+        "scale_fit:0:2:3:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:0:2:4": {
+      "dependencies": [
+        "scale_fit:0:2:4:0",
+        "scale_fit:0:2:4:1",
+        "scale_fit:0:2:4:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:0:0": {
+      "dependencies": [
+        "scale_fit:1:0:0:0",
+        "scale_fit:1:0:0:1",
+        "scale_fit:1:0:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:0:1": {
+      "dependencies": [
+        "scale_fit:1:0:1:0",
+        "scale_fit:1:0:1:1",
+        "scale_fit:1:0:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:0:2": {
+      "dependencies": [
+        "scale_fit:1:0:2:0",
+        "scale_fit:1:0:2:1",
+        "scale_fit:1:0:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:0:3": {
+      "dependencies": [
+        "scale_fit:1:0:3:0",
+        "scale_fit:1:0:3:1",
+        "scale_fit:1:0:3:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:0:4": {
+      "dependencies": [
+        "scale_fit:1:0:4:0",
+        "scale_fit:1:0:4:1",
+        "scale_fit:1:0:4:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:1:0": {
+      "dependencies": [
+        "scale_fit:1:1:0:0",
+        "scale_fit:1:1:0:1",
+        "scale_fit:1:1:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:1:1": {
+      "dependencies": [
+        "scale_fit:1:1:1:0",
+        "scale_fit:1:1:1:1",
+        "scale_fit:1:1:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:1:2": {
+      "dependencies": [
+        "scale_fit:1:1:2:0",
+        "scale_fit:1:1:2:1",
+        "scale_fit:1:1:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:1:3": {
+      "dependencies": [
+        "scale_fit:1:1:3:0",
+        "scale_fit:1:1:3:1",
+        "scale_fit:1:1:3:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:1:4": {
+      "dependencies": [
+        "scale_fit:1:1:4:0",
+        "scale_fit:1:1:4:1",
+        "scale_fit:1:1:4:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:2:0": {
+      "dependencies": [
+        "scale_fit:1:2:0:0",
+        "scale_fit:1:2:0:1",
+        "scale_fit:1:2:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:2:1": {
+      "dependencies": [
+        "scale_fit:1:2:1:0",
+        "scale_fit:1:2:1:1",
+        "scale_fit:1:2:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:2:2": {
+      "dependencies": [
+        "scale_fit:1:2:2:0",
+        "scale_fit:1:2:2:1",
+        "scale_fit:1:2:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:2:3": {
+      "dependencies": [
+        "scale_fit:1:2:3:0",
+        "scale_fit:1:2:3:1",
+        "scale_fit:1:2:3:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:1:2:4": {
+      "dependencies": [
+        "scale_fit:1:2:4:0",
+        "scale_fit:1:2:4:1",
+        "scale_fit:1:2:4:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:0:0": {
+      "dependencies": [
+        "scale_fit:2:0:0:0",
+        "scale_fit:2:0:0:1",
+        "scale_fit:2:0:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:0:1": {
+      "dependencies": [
+        "scale_fit:2:0:1:0",
+        "scale_fit:2:0:1:1",
+        "scale_fit:2:0:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:0:2": {
+      "dependencies": [
+        "scale_fit:2:0:2:0",
+        "scale_fit:2:0:2:1",
+        "scale_fit:2:0:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:0:3": {
+      "dependencies": [
+        "scale_fit:2:0:3:0",
+        "scale_fit:2:0:3:1",
+        "scale_fit:2:0:3:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:0:4": {
+      "dependencies": [
+        "scale_fit:2:0:4:0",
+        "scale_fit:2:0:4:1",
+        "scale_fit:2:0:4:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:1:0": {
+      "dependencies": [
+        "scale_fit:2:1:0:0",
+        "scale_fit:2:1:0:1",
+        "scale_fit:2:1:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:1:1": {
+      "dependencies": [
+        "scale_fit:2:1:1:0",
+        "scale_fit:2:1:1:1",
+        "scale_fit:2:1:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:1:2": {
+      "dependencies": [
+        "scale_fit:2:1:2:0",
+        "scale_fit:2:1:2:1",
+        "scale_fit:2:1:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:1:3": {
+      "dependencies": [
+        "scale_fit:2:1:3:0",
+        "scale_fit:2:1:3:1",
+        "scale_fit:2:1:3:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:1:4": {
+      "dependencies": [
+        "scale_fit:2:1:4:0",
+        "scale_fit:2:1:4:1",
+        "scale_fit:2:1:4:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:2:0": {
+      "dependencies": [
+        "scale_fit:2:2:0:0",
+        "scale_fit:2:2:0:1",
+        "scale_fit:2:2:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:2:1": {
+      "dependencies": [
+        "scale_fit:2:2:1:0",
+        "scale_fit:2:2:1:1",
+        "scale_fit:2:2:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:2:2": {
+      "dependencies": [
+        "scale_fit:2:2:2:0",
+        "scale_fit:2:2:2:1",
+        "scale_fit:2:2:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:2:3": {
+      "dependencies": [
+        "scale_fit:2:2:3:0",
+        "scale_fit:2:2:3:1",
+        "scale_fit:2:2:3:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "fit:2:2:4": {
+      "dependencies": [
+        "scale_fit:2:2:4:0",
+        "scale_fit:2:2:4:1",
+        "scale_fit:2:2:4:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "inventory": {
+      "dependencies": [
+        "recovery_store"
+      ],
+      "status": "COMPLETE"
+    },
+    "oracle": {
+      "dependencies": [
+        "C_export"
+      ],
+      "status": "COMPLETE"
+    },
+    "preservation": {
+      "dependencies": [
+        "report"
+      ],
+      "status": "COMPLETE"
+    },
+    "recovery_C": {
+      "dependencies": [
+        "fit:0:0:4",
+        "fit:0:1:4",
+        "fit:0:2:4",
+        "fit:1:0:4",
+        "fit:1:1:4",
+        "fit:1:2:4",
+        "fit:2:0:4",
+        "fit:2:1:4",
+        "fit:2:2:4"
+      ],
+      "status": "COMPLETE"
+    },
+    "recovery_secondary": {
+      "dependencies": [
+        "baseline_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "recovery_store": {
+      "dependencies": [],
+      "status": "COMPLETE"
+    },
+    "report": {
+      "dependencies": [
+        "C_tables",
+        "oracle",
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:0:0": {
+      "dependencies": [
+        "B_splits:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:0:1": {
+      "dependencies": [
+        "B_splits:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:0:2": {
+      "dependencies": [
+        "B_splits:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:1:0": {
+      "dependencies": [
+        "B_splits:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:1:1": {
+      "dependencies": [
+        "B_splits:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:1:2": {
+      "dependencies": [
+        "B_splits:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:2:0": {
+      "dependencies": [
+        "B_splits:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:2:1": {
+      "dependencies": [
+        "B_splits:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:2:2": {
+      "dependencies": [
+        "B_splits:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:3:0": {
+      "dependencies": [
+        "B_splits:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:3:1": {
+      "dependencies": [
+        "B_splits:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:3:2": {
+      "dependencies": [
+        "B_splits:0:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:4:0": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:4:1": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:0:4:2": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:0:0": {
+      "dependencies": [
+        "B_splits:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:0:1": {
+      "dependencies": [
+        "B_splits:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:0:2": {
+      "dependencies": [
+        "B_splits:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:1:0": {
+      "dependencies": [
+        "B_splits:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:1:1": {
+      "dependencies": [
+        "B_splits:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:1:2": {
+      "dependencies": [
+        "B_splits:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:2:0": {
+      "dependencies": [
+        "B_splits:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:2:1": {
+      "dependencies": [
+        "B_splits:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:2:2": {
+      "dependencies": [
+        "B_splits:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:3:0": {
+      "dependencies": [
+        "B_splits:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:3:1": {
+      "dependencies": [
+        "B_splits:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:3:2": {
+      "dependencies": [
+        "B_splits:0:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:4:0": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:4:1": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:1:4:2": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:0:0": {
+      "dependencies": [
+        "B_splits:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:0:1": {
+      "dependencies": [
+        "B_splits:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:0:2": {
+      "dependencies": [
+        "B_splits:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:1:0": {
+      "dependencies": [
+        "B_splits:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:1:1": {
+      "dependencies": [
+        "B_splits:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:1:2": {
+      "dependencies": [
+        "B_splits:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:2:0": {
+      "dependencies": [
+        "B_splits:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:2:1": {
+      "dependencies": [
+        "B_splits:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:2:2": {
+      "dependencies": [
+        "B_splits:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:3:0": {
+      "dependencies": [
+        "B_splits:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:3:1": {
+      "dependencies": [
+        "B_splits:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:3:2": {
+      "dependencies": [
+        "B_splits:0:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:4:0": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:4:1": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:0:2:4:2": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:0:0": {
+      "dependencies": [
+        "B_splits:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:0:1": {
+      "dependencies": [
+        "B_splits:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:0:2": {
+      "dependencies": [
+        "B_splits:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:1:0": {
+      "dependencies": [
+        "B_splits:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:1:1": {
+      "dependencies": [
+        "B_splits:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:1:2": {
+      "dependencies": [
+        "B_splits:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:2:0": {
+      "dependencies": [
+        "B_splits:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:2:1": {
+      "dependencies": [
+        "B_splits:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:2:2": {
+      "dependencies": [
+        "B_splits:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:3:0": {
+      "dependencies": [
+        "B_splits:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:3:1": {
+      "dependencies": [
+        "B_splits:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:3:2": {
+      "dependencies": [
+        "B_splits:1:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:4:0": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:4:1": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:0:4:2": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:0:0": {
+      "dependencies": [
+        "B_splits:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:0:1": {
+      "dependencies": [
+        "B_splits:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:0:2": {
+      "dependencies": [
+        "B_splits:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:1:0": {
+      "dependencies": [
+        "B_splits:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:1:1": {
+      "dependencies": [
+        "B_splits:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:1:2": {
+      "dependencies": [
+        "B_splits:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:2:0": {
+      "dependencies": [
+        "B_splits:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:2:1": {
+      "dependencies": [
+        "B_splits:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:2:2": {
+      "dependencies": [
+        "B_splits:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:3:0": {
+      "dependencies": [
+        "B_splits:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:3:1": {
+      "dependencies": [
+        "B_splits:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:3:2": {
+      "dependencies": [
+        "B_splits:1:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:4:0": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:4:1": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:1:4:2": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:0:0": {
+      "dependencies": [
+        "B_splits:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:0:1": {
+      "dependencies": [
+        "B_splits:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:0:2": {
+      "dependencies": [
+        "B_splits:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:1:0": {
+      "dependencies": [
+        "B_splits:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:1:1": {
+      "dependencies": [
+        "B_splits:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:1:2": {
+      "dependencies": [
+        "B_splits:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:2:0": {
+      "dependencies": [
+        "B_splits:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:2:1": {
+      "dependencies": [
+        "B_splits:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:2:2": {
+      "dependencies": [
+        "B_splits:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:3:0": {
+      "dependencies": [
+        "B_splits:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:3:1": {
+      "dependencies": [
+        "B_splits:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:3:2": {
+      "dependencies": [
+        "B_splits:1:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:4:0": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:4:1": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:1:2:4:2": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:0:0": {
+      "dependencies": [
+        "B_splits:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:0:1": {
+      "dependencies": [
+        "B_splits:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:0:2": {
+      "dependencies": [
+        "B_splits:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:1:0": {
+      "dependencies": [
+        "B_splits:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:1:1": {
+      "dependencies": [
+        "B_splits:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:1:2": {
+      "dependencies": [
+        "B_splits:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:2:0": {
+      "dependencies": [
+        "B_splits:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:2:1": {
+      "dependencies": [
+        "B_splits:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:2:2": {
+      "dependencies": [
+        "B_splits:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:3:0": {
+      "dependencies": [
+        "B_splits:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:3:1": {
+      "dependencies": [
+        "B_splits:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:3:2": {
+      "dependencies": [
+        "B_splits:2:0"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:4:0": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:4:1": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:0:4:2": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:0:0": {
+      "dependencies": [
+        "B_splits:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:0:1": {
+      "dependencies": [
+        "B_splits:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:0:2": {
+      "dependencies": [
+        "B_splits:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:1:0": {
+      "dependencies": [
+        "B_splits:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:1:1": {
+      "dependencies": [
+        "B_splits:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:1:2": {
+      "dependencies": [
+        "B_splits:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:2:0": {
+      "dependencies": [
+        "B_splits:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:2:1": {
+      "dependencies": [
+        "B_splits:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:2:2": {
+      "dependencies": [
+        "B_splits:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:3:0": {
+      "dependencies": [
+        "B_splits:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:3:1": {
+      "dependencies": [
+        "B_splits:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:3:2": {
+      "dependencies": [
+        "B_splits:2:1"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:4:0": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:4:1": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:1:4:2": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:0:0": {
+      "dependencies": [
+        "B_splits:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:0:1": {
+      "dependencies": [
+        "B_splits:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:0:2": {
+      "dependencies": [
+        "B_splits:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:1:0": {
+      "dependencies": [
+        "B_splits:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:1:1": {
+      "dependencies": [
+        "B_splits:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:1:2": {
+      "dependencies": [
+        "B_splits:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:2:0": {
+      "dependencies": [
+        "B_splits:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:2:1": {
+      "dependencies": [
+        "B_splits:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:2:2": {
+      "dependencies": [
+        "B_splits:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:3:0": {
+      "dependencies": [
+        "B_splits:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:3:1": {
+      "dependencies": [
+        "B_splits:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:3:2": {
+      "dependencies": [
+        "B_splits:2:2"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:4:0": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:4:1": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    },
+    "scale_fit:2:2:4:2": {
+      "dependencies": [
+        "B_gate"
+      ],
+      "status": "COMPLETE"
+    }
+  },
+  "updated_utc": "2026-11-15T04:25:08.338854+00:00"
+}

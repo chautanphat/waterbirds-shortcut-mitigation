@@ -1,0 +1,20 @@
+{
+  "artifacts": {
+    "checkpoints/seed2/fold1/B_INNER_SPLITS.json": {
+      "bytes": 74362,
+      "sha256": "6d2f1e60a64ea021bfbfc3dd7aee7129fd74322f8ef23f5e5c0ac7b987747dd5"
+    }
+  },
+  "completed_utc": "2026-11-15T04:18:59.883306+00:00",
+  "dependencies": [
+    "recovery_secondary#ad173402f3f95c0c3e27"
+  ],
+  "id": "B_splits:2:1#70ec392b93ca08ab7430",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "fold": 1,
+    "images": 240,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seed": 2
+  }
+}

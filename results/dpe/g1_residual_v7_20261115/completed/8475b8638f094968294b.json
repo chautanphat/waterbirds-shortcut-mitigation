@@ -1,0 +1,23 @@
+{
+  "artifacts": {
+    "DATA_PROVENANCE.md": {
+      "bytes": 651,
+      "sha256": "c9a7aa87fa9f80e034b184d55e63b2faf5c31afb51743f55f23caad371ba0bbf"
+    },
+    "INPUT_INVENTORY.json": {
+      "bytes": 124115,
+      "sha256": "7e41c49dbebefcc25090ebc2b355eb839f684c48d6847a171f1ce10a2761c218"
+    }
+  },
+  "completed_utc": "2026-11-15T04:17:18.619347+00:00",
+  "dependencies": [
+    "recovery_store#36adef3e8136535943a9"
+  ],
+  "id": "inventory#188219595911497991a8",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "files": 196,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "PASS"
+  }
+}

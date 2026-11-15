@@ -1,0 +1,27 @@
+{
+  "artifacts": {
+    "metrics/C_permutation/batch055.json": {
+      "bytes": 4282,
+      "sha256": "5415f55e88f260ffe70758b80615a122f21513a7fa4be1ac6664bac944d6e60b"
+    },
+    "metrics/C_permutation/batch055.npz": {
+      "bytes": 6191,
+      "sha256": "62aa1f989c541eda31cf14155fc0b35e3cca4430a7a7de0c505613c21ce3b766"
+    }
+  },
+  "completed_utc": "2026-11-15T04:20:43.862915+00:00",
+  "dependencies": [
+    "C_permutation:54#d7cd971a5c74f73d239f"
+  ],
+  "id": "C_permutation:55#6f08b67b087df5166f7e",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "batch": 55,
+    "controls": [
+      "RH_residual_slot_permutation",
+      "G1_weight_slot_permutation"
+    ],
+    "repeats": 50,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+  }
+}

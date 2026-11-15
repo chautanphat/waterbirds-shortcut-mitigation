@@ -1,0 +1,10 @@
+{
+  "OS_single_writer": true,
+  "atomic_replace_retry": true,
+  "corrupt_artifact_rejected": true,
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+  "stale_state_rebuilt": true,
+  "status": "PASS",
+  "truncated_receipt_rejected": true,
+  "valid_checkpoint_reused": true
+}

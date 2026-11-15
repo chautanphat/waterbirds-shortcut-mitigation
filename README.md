@@ -1,5 +1,7 @@
 # Background Shortcut Learning Mitigation
 
+**DPE v5 — G1 là baseline; G1 + R là phương pháp tham khảo.** So sánh matched trên 9 cache C: G1 đạt **AA 95,8577% / WGA 92,9825%**; G1 + R đạt **AA 95,8299% / WGA 93,2331%** (**ΔWGA +0,2506 điểm %**, ΔAA −0,0278 điểm %). Đọc [**báo cáo G1 baseline và G1 + R ở thư mục gốc**](DPE_V5_G1_BASELINE_AND_R_REFERENCE.md). Đây là exploratory trên development đã khảo sát; vai trò tham khảo của R không thay đổi primary RH hay NO-GO đã khóa trong nghiên cứu v7.
+
 **DPE v4 — tạm dừng mở rộng biến thể weighting, chuyển sang điểm yếu của G1.** Trong so sánh CCW cố định trên 9 cache C, G2, CCW-A và CCW-Full đều bằng WGA của G1; CCW-Full cũng không vượt proxy chọn mô hình trên B. Giữ nguyên **B-selection NO-GO** và inference hiện có. Đọc [**trạng thái nghiên cứu v4 và hướng tiếp theo**](DPE_V4_RESEARCH_STATUS.md). Kết quả C là exploratory trên development đã khảo sát, không phải xác nhận độc lập.
 
 **DPE v3 — hướng aggregation có vẻ khởi sắc nhất trong chuỗi nghiên cứu v3–v5:** G1 geometry đạt gate nested với **WGA +0,5013 điểm %**, **AA +0,1112 điểm %**, tăng WGA ở **2/3 seed**. Đã có chế độ `aggregation="distance"` opt-in; Uniform vẫn mặc định. Kết quả còn tạm thời, trên development dùng ERM*, với khoảng tin cậy WGA chứa 0. Đọc ngay [**báo cáo thực nghiệm ở thư mục gốc**](DPE_V3_EXPERIMENT_RESULTS.md), gồm cả giới hạn và liên hệ với audit lỗi nhãn.

@@ -1,0 +1,24 @@
+{
+  "artifacts": {
+    "metrics/C_bootstrap/batch009.json": {
+      "bytes": 7902,
+      "sha256": "2c09cc187fc5cc361b5ef7015765f6513e0f24adf141a01a58c07bd02854056c"
+    },
+    "metrics/C_bootstrap/batch009.npz": {
+      "bytes": 8568,
+      "sha256": "b452f0fec258e0201c9676cfefa66f495e2b93da6ab9fbed51e8e584ce0b73cd"
+    }
+  },
+  "completed_utc": "2026-11-15T04:19:58.372575+00:00",
+  "dependencies": [
+    "C_bootstrap:8#fd8a62246eeb5462a215"
+  ],
+  "id": "C_bootstrap:9#baeb96a7f341ed62dbf3",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "batch": 9,
+    "repeats": 100,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "shared_unique_IDs": true
+  }
+}

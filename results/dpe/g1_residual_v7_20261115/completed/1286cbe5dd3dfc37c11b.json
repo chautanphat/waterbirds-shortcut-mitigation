@@ -1,0 +1,21 @@
+{
+  "artifacts": {
+    "metrics/C_seed/seed1/G1_RHM.json": {
+      "bytes": 692,
+      "sha256": "fa4662c177ef9a0a7d16e77e5a3b0455d9a704847df384973d915b4d802d573e"
+    }
+  },
+  "completed_utc": "2026-11-15T04:19:53.074141+00:00",
+  "dependencies": [
+    "C_inference_complete#6196fe1bb0cba16f89ad"
+  ],
+  "id": "C_eval:1:G1_RHM#6e43d403522ee500794e",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "AA": 0.9608006672226855,
+    "WGA": 0.9398496240601504,
+    "method": "G1_RHM",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seed": 1
+  }
+}

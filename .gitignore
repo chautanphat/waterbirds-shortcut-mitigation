@@ -57,6 +57,9 @@ Thumbs.db
 *.npz
 # Curated compact CCW diagnostic export (five methods, probabilities and weights).
 !/results/dpe/ccw_v6_exploratory_c_20261115/EXPLORATORY_C_PREDICTIONS.npz
+# Curated v7 score/weight cache with evaluator labels in a separate file.
+!/results/dpe/g1_residual_v7_20261115/metrics/WEIGHT_AND_SCORE_DECOMPOSITION.npz
+!/results/dpe/g1_residual_v7_20261115/metrics/C_EVALUATION_LABELS.npz
 
 # Model weights and checkpoints
 *.pt

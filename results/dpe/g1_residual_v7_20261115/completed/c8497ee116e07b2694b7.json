@@ -1,0 +1,30 @@
+{
+  "artifacts": {
+    "checkpoints/seed1/fold0/b_inner0/B_validation_diagnostics.csv": {
+      "bytes": 241147,
+      "sha256": "c79266fe292b940d5a170a46dc73d850e0d79c913d54834441df62686249a551"
+    },
+    "checkpoints/seed1/fold0/b_inner0/B_validation_metrics.json": {
+      "bytes": 2477,
+      "sha256": "b5f48bf25c167af467738976899a2818f27da4372c62975d4d4e7c4f0837af59"
+    }
+  },
+  "completed_utc": "2026-11-15T04:18:29.618896+00:00",
+  "dependencies": [
+    "B_infer:1:0:0:U0#54aff6a3e4b8e9fac9be",
+    "B_infer:1:0:0:G1_frozen#55e71b5c2547dff75496",
+    "B_infer:1:0:0:G1_R#ae4754296de9caf2f843",
+    "B_infer:1:0:0:G1_RH#dff9497dcc5023a89a3a",
+    "B_infer:1:0:0:G1_RHM#c29a04fb91e54d961d8f"
+  ],
+  "id": "B_eval:1:0:0#75f7aff957080a1d3122",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "fold": 0,
+    "images": 60,
+    "inner": 0,
+    "methods": 5,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seed": 1
+  }
+}

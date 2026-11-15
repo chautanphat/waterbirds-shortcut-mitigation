@@ -1,0 +1,71 @@
+{
+  "artifacts": {
+    "acceptance/secondary/interrupted/job0/OOF_predictions.npz": {
+      "bytes": 17775,
+      "sha256": "0a28c022452a93637dc89640a51db2a7a1d9a998bac650c4cfd3757ce10ef5d6"
+    },
+    "acceptance/secondary/interrupted/job0/model.json": {
+      "bytes": 26694,
+      "sha256": "1e51ebe1a6bed64a82ac93471a108670c82188e29df7c93052b470066889d704"
+    },
+    "acceptance/secondary/interrupted/job0/split.json": {
+      "bytes": 11392,
+      "sha256": "88a58106bbebc7f87a457b05af3fd4200fa59094eb79c4e80c67b262eb5e0aa1"
+    },
+    "acceptance/secondary/interrupted/job1/OOF_predictions.npz": {
+      "bytes": 17730,
+      "sha256": "5cba134ec9a5df4273349c26376069402af796c858853f8da3782dbe5776ae8b"
+    },
+    "acceptance/secondary/interrupted/job1/model.json": {
+      "bytes": 26627,
+      "sha256": "7788ac0cb9173563c2d85c2ef706453a651d0870a4003f8e40ff94205ee14e8f"
+    },
+    "acceptance/secondary/interrupted/job1/split.json": {
+      "bytes": 11392,
+      "sha256": "4e01226de459ebcd9cbbe3e3f1874edd6dc1292824bf6ee077af83730985b96d"
+    },
+    "acceptance/secondary/receipt.json": {
+      "bytes": 364,
+      "sha256": "02aa0d314f6aa0b2144c45c82fc066fa7fde1e2533404b6159c84362d8dd8253"
+    },
+    "acceptance/secondary/recovery.log": {
+      "bytes": 152,
+      "sha256": "91717324dbaf502f7647eb863814a5cb38b15b8684a85a18b55bffa60301c59b"
+    },
+    "acceptance/secondary/uninterrupted/job0/OOF_predictions.npz": {
+      "bytes": 17775,
+      "sha256": "0a28c022452a93637dc89640a51db2a7a1d9a998bac650c4cfd3757ce10ef5d6"
+    },
+    "acceptance/secondary/uninterrupted/job0/model.json": {
+      "bytes": 26694,
+      "sha256": "1e51ebe1a6bed64a82ac93471a108670c82188e29df7c93052b470066889d704"
+    },
+    "acceptance/secondary/uninterrupted/job0/split.json": {
+      "bytes": 11392,
+      "sha256": "88a58106bbebc7f87a457b05af3fd4200fa59094eb79c4e80c67b262eb5e0aa1"
+    },
+    "acceptance/secondary/uninterrupted/job1/OOF_predictions.npz": {
+      "bytes": 17730,
+      "sha256": "5cba134ec9a5df4273349c26376069402af796c858853f8da3782dbe5776ae8b"
+    },
+    "acceptance/secondary/uninterrupted/job1/model.json": {
+      "bytes": 26627,
+      "sha256": "7788ac0cb9173563c2d85c2ef706453a651d0870a4003f8e40ff94205ee14e8f"
+    },
+    "acceptance/secondary/uninterrupted/job1/split.json": {
+      "bytes": 11392,
+      "sha256": "4e01226de459ebcd9cbbe3e3f1874edd6dc1292824bf6ee077af83730985b96d"
+    }
+  },
+  "completed_utc": "2026-11-15T04:18:02.486917+00:00",
+  "dependencies": [
+    "baseline_gate#30c6956fa642c2d3996c"
+  ],
+  "id": "recovery_secondary#ad173402f3f95c0c3e27",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "kind": "secondary",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "PASS"
+  }
+}

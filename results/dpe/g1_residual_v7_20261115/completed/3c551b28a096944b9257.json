@@ -1,0 +1,24 @@
+{
+  "artifacts": {
+    "metrics/B_bootstrap/batch009.json": {
+      "bytes": 7902,
+      "sha256": "ad6ea5a8543a0b589e31c2ca8c0c12b3660896990ca97846161c6e2aef6ad71c"
+    },
+    "metrics/B_bootstrap/batch009.npz": {
+      "bytes": 12010,
+      "sha256": "c5caa91d52a92ad94665b1135577d0caebc9d2c762998c261b2080d5207efba8"
+    }
+  },
+  "completed_utc": "2026-11-15T04:19:21.845560+00:00",
+  "dependencies": [
+    "B_bootstrap:8#f39a8a835870926112f1"
+  ],
+  "id": "B_bootstrap:9#b5bf9f50d5f0ce88171d",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "batch": 9,
+    "repeats": 100,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "unique_images": 1060
+  }
+}

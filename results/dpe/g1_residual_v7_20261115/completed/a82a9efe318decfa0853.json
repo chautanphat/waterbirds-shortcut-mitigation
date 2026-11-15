@@ -1,0 +1,78 @@
+{
+  "artifacts": {
+    "metrics/B_BOOTSTRAP_CI.json": {
+      "bytes": 1251,
+      "sha256": "63f5121353ee7a62aac304914da96010790655c4890b40763794c76fd3d2540a"
+    },
+    "metrics/B_DIRECTION_DECISION.json": {
+      "bytes": 1110,
+      "sha256": "4fbe566057b1f7c6e691c20e3ad86b776fb5e95eb09840b0ffbcd2b0543dbda5"
+    }
+  },
+  "completed_utc": "2026-11-15T04:19:25.237227+00:00",
+  "dependencies": [
+    "B_bootstrap:0#b6cf09ee242ba5a0cd95",
+    "B_bootstrap:1#a1ed4bbf9a3424c84797",
+    "B_bootstrap:2#202f9dcdf860466590de",
+    "B_bootstrap:3#9422e2339e7e36cf07ba",
+    "B_bootstrap:4#3fe02e6f9587e162a38e",
+    "B_bootstrap:5#6a79cd88cfa920d42f2b",
+    "B_bootstrap:6#4ab3e3adeb1456fbaacc",
+    "B_bootstrap:7#bbc8824be6df1e1eb69f",
+    "B_bootstrap:8#f39a8a835870926112f1",
+    "B_bootstrap:9#b5bf9f50d5f0ce88171d",
+    "B_bootstrap:10#040d982e6c4c7e4e175c",
+    "B_bootstrap:11#cd1ab3f917fa35d2e98e",
+    "B_bootstrap:12#c9a1d1345c7fd0d85d3b",
+    "B_bootstrap:13#5c3d9fe2c883234e0264",
+    "B_bootstrap:14#218e339c3fa8db623d99",
+    "B_bootstrap:15#789fd5b8ef022a3fd13c",
+    "B_bootstrap:16#bad232f9398de08438b0",
+    "B_bootstrap:17#7033bcc0d3d99cca0e7e",
+    "B_bootstrap:18#b88097b2061e78998766",
+    "B_bootstrap:19#cd460960fc775f7d62ed"
+  ],
+  "id": "B_gate#b0028e3bf12705721fab",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "AA_floor_every_seed": true,
+    "C_permitted_regardless": true,
+    "direction_pass": false,
+    "gain_CI95": [
+      -0.002486722185398428,
+      -0.0012001044465132853
+    ],
+    "mean_gain_difference_Uwrong": -0.00186525055530677,
+    "mean_worst_class_NLL": {
+      "G1_R": 0.6192495454227579,
+      "G1_RH": 0.6191920585331361,
+      "G1_RHM": 0.6202393594825689,
+      "G1_frozen": 0.6206343304304318,
+      "U0": 0.6360100111456725
+    },
+    "per_seed_delta_AA_G1_pp": [
+      0.16313213703099683,
+      -0.1615508885298822,
+      0.3252032520325243
+    ],
+    "per_seed_delta_AA_U0_pp": [
+      -0.16313213703099683,
+      -0.3231017770597755,
+      0.1626016260162566
+    ],
+    "per_seed_gain_difference": [
+      -0.002206993463940641,
+      -0.0018597604226813864,
+      -0.001528997779298282
+    ],
+    "positive_seeds": 0,
+    "primary": "G1_RH",
+    "promotion": false,
+    "proxy_pass": true,
+    "proxy_tolerance": 0.003,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "B_DIRECTION_NO_GO",
+    "uncertainty": "DIRECTIONAL_IMAGE_BOOTSTRAP_INTERVAL",
+    "worst_class_NLL_delta": -0.0014422718972957327
+  }
+}

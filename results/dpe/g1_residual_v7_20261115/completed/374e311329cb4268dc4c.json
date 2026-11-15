@@ -1,0 +1,29 @@
+{
+  "artifacts": {
+    "checkpoints/baseline/seed0/fold1/G1_frozen.npz": {
+      "bytes": 121912,
+      "sha256": "ab6fc048b3042d923c377f7b8180e8fe79b8f25eafe7c4b1e9b0a4615ec774fe"
+    },
+    "checkpoints/baseline/seed0/fold1/U0.npz": {
+      "bytes": 41271,
+      "sha256": "1c12bc5cc7cf83da5e13777bc8eee9ee9e15fe365478dfa53ba6394eb1a93bdc"
+    },
+    "checkpoints/baseline/seed0/fold1/audit.json": {
+      "bytes": 427,
+      "sha256": "81bb664e2b498642529d8000df10848f65d3b5d5c0634c2cdf8c973afb9150f7"
+    }
+  },
+  "completed_utc": "2026-11-15T04:17:19.140740+00:00",
+  "dependencies": [
+    "inventory#188219595911497991a8"
+  ],
+  "id": "baseline:0:1#b394daa138d9f3c10a92",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "baseline": "BIT_EXACT",
+    "fold": 1,
+    "lambda0": "BIT_EXACT",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seed": 0
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "artifacts": {
+    "phases/C_inference_complete.json": {
+      "bytes": 152,
+      "sha256": "6b021c36fda251f54bbb1ce40ffc4c12b118c9c49dd6efd09c4c8ee09b262333"
+    }
+  },
+  "completed_utc": "2026-11-15T04:19:51.561768+00:00",
+  "dependencies": [
+    "C_infer:0:0:4:U0#c84334962a10ccdf8909",
+    "C_infer:0:0:4:G1_frozen#314a860f00595b609f39",
+    "C_infer:0:0:4:G1_R#cd59927e398fb9d8fd14",
+    "C_infer:0:0:4:G1_RH#a0c39ce1b63fbc80647f",
+    "C_infer:0:0:4:G1_RHM#95e633131a46b411c774",
+    "C_infer:0:1:4:U0#d3b296b906c6bc04d356",
+    "C_infer:0:1:4:G1_frozen#3efca9c4b3be232df773",
+    "C_infer:0:1:4:G1_R#90a9faada2530e33dc43",
+    "C_infer:0:1:4:G1_RH#91153cf6073f7a8769ea",
+    "C_infer:0:1:4:G1_RHM#3ea25bf731eeb4352301",
+    "C_infer:0:2:4:U0#51b46777ca09a3ba02d3",
+    "C_infer:0:2:4:G1_frozen#890f4e7d09ed2e720796",
+    "C_infer:0:2:4:G1_R#238bd675cc5b5b545a1e",
+    "C_infer:0:2:4:G1_RH#a85d0d2c9b66d1df8074",
+    "C_infer:0:2:4:G1_RHM#293785f6aba4c3779882",
+    "C_infer:1:0:4:U0#edb20f89dfe707b2b0c4",
+    "C_infer:1:0:4:G1_frozen#2f3a74f01774748040ad",
+    "C_infer:1:0:4:G1_R#7a6f9413b1d3f4916e8e",
+    "C_infer:1:0:4:G1_RH#24a3549998a2db7cc50e",
+    "C_infer:1:0:4:G1_RHM#bb63c0a9e4557675080e",
+    "C_infer:1:1:4:U0#1f5123cf5b9be806f0a3",
+    "C_infer:1:1:4:G1_frozen#05b488e2f38dfa1bbfae",
+    "C_infer:1:1:4:G1_R#070be413826466a9f884",
+    "C_infer:1:1:4:G1_RH#9ae1cb51da3174ed8c81",
+    "C_infer:1:1:4:G1_RHM#16f835e8fe850fd5e78b",
+    "C_infer:1:2:4:U0#0eb50dca03ecf55b2bde",
+    "C_infer:1:2:4:G1_frozen#7af47f1d0940d0247cac",
+    "C_infer:1:2:4:G1_R#b7b69616e4dac0d9312f",
+    "C_infer:1:2:4:G1_RH#7f7e3677d8c9e8f42c0f",
+    "C_infer:1:2:4:G1_RHM#878d3f954c881e449072",
+    "C_infer:2:0:4:U0#59be8295da45079f6e2c",
+    "C_infer:2:0:4:G1_frozen#a4d35e47f2889491c9b8",
+    "C_infer:2:0:4:G1_R#c16099ea161fe67c219d",
+    "C_infer:2:0:4:G1_RH#70a5052e4de8cdc8af4f",
+    "C_infer:2:0:4:G1_RHM#7a1ceee39ff290346697",
+    "C_infer:2:1:4:U0#6590aa1477e3f95a2d91",
+    "C_infer:2:1:4:G1_frozen#03ff5d7515216af637a5",
+    "C_infer:2:1:4:G1_R#3f5674cd242ddbed158f",
+    "C_infer:2:1:4:G1_RH#d913b08fcaee21b08aa2",
+    "C_infer:2:1:4:G1_RHM#10fa6a5b2ad0ece46419",
+    "C_infer:2:2:4:U0#9737707833e75033fa58",
+    "C_infer:2:2:4:G1_frozen#65cce2b04079e95e3f3b",
+    "C_infer:2:2:4:G1_R#cd95e8b1d43d18fe2a6d",
+    "C_infer:2:2:4:G1_RH#f88a322719b9e4d39163",
+    "C_infer:2:2:4:G1_RHM#5b4dc7b4646d873ecd16"
+  ],
+  "id": "C_inference_complete#6196fe1bb0cba16f89ad",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "status": "COMPLETE"
+  }
+}

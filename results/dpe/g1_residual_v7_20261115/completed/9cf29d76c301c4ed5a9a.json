@@ -1,0 +1,23 @@
+{
+  "artifacts": {
+    "checkpoints/seed0/fold2/b_inner3/B_inference/G1_frozen.npz": {
+      "bytes": 23075,
+      "sha256": "b8c7bfac4e6e0a563d18a3942925d6cf8bf3382024b605747540d37749ba9b45"
+    }
+  },
+  "completed_utc": "2026-11-15T04:18:26.663844+00:00",
+  "dependencies": [
+    "fit:0:2:3#3b64bef2679a155cc30b"
+  ],
+  "id": "B_infer:0:2:3:G1_frozen#8e3a371218bc17d74dbc",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "fold": 2,
+    "labels_in_inference": false,
+    "method": "G1_frozen",
+    "part": 3,
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "samples": 60,
+    "seed": 0
+  }
+}

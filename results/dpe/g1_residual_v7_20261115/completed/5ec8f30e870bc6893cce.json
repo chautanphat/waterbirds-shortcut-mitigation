@@ -1,0 +1,21 @@
+{
+  "artifacts": {
+    "metrics/C_seed/seed2/G1_frozen.json": {
+      "bytes": 694,
+      "sha256": "fee8b88747dfa8b8c90bccc4cc4b5943572c3a77ba4d68db88702275e48d836b"
+    }
+  },
+  "completed_utc": "2026-11-15T04:19:53.353903+00:00",
+  "dependencies": [
+    "C_inference_complete#6196fe1bb0cba16f89ad"
+  ],
+  "id": "C_eval:2:G1_frozen#be0a8e5f85911760d4ad",
+  "manifest_sha256": "b4460f6681bd3eddc29356a8ce10deb5ca0b29962d0d06aa37ce68f4f8bdc4c8",
+  "result": {
+    "AA": 0.9566305254378649,
+    "WGA": 0.9398496240601504,
+    "method": "G1_frozen",
+    "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+    "seed": 2
+  }
+}

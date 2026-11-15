@@ -1,0 +1,86 @@
+{
+  "methods": [
+    {
+      "B_AA_floor_every_seed": true,
+      "B_delta_AA_U0_pp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "C_AA_floor_every_seed": true,
+      "C_delta_AA_U0_pp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "method": "U0",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+    },
+    {
+      "B_AA_floor_every_seed": true,
+      "B_delta_AA_U0_pp": [
+        -0.32626427406199365,
+        -0.1615508885298933,
+        -0.1626016260162677
+      ],
+      "C_AA_floor_every_seed": true,
+      "C_delta_AA_U0_pp": [
+        0.0,
+        0.16680567139282232,
+        0.16680567139282232
+      ],
+      "method": "G1_frozen",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+    },
+    {
+      "B_AA_floor_every_seed": true,
+      "B_delta_AA_U0_pp": [
+        -0.16313213703099683,
+        -0.3231017770597755,
+        -0.1626016260162677
+      ],
+      "C_AA_floor_every_seed": true,
+      "C_delta_AA_U0_pp": [
+        0.08340283569641116,
+        0.0,
+        0.16680567139282232
+      ],
+      "method": "G1_R",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+    },
+    {
+      "B_AA_floor_every_seed": true,
+      "B_delta_AA_U0_pp": [
+        -0.16313213703099683,
+        -0.3231017770597755,
+        0.1626016260162566
+      ],
+      "C_AA_floor_every_seed": true,
+      "C_delta_AA_U0_pp": [
+        0.08340283569641116,
+        0.08340283569641116,
+        0.08340283569641116
+      ],
+      "method": "G1_RH",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+    },
+    {
+      "B_AA_floor_every_seed": true,
+      "B_delta_AA_U0_pp": [
+        -0.16313213703099683,
+        -0.3231017770597755,
+        0.1626016260162566
+      ],
+      "C_AA_floor_every_seed": true,
+      "C_delta_AA_U0_pp": [
+        0.08340283569641116,
+        0.16680567139282232,
+        0.08340283569641116
+      ],
+      "method": "G1_RHM",
+      "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION"
+    }
+  ],
+  "role": "EXPLORATORY_ONLY \u2014 REUSED DEVELOPMENT \u2014 NOT INDEPENDENT CONFIRMATION",
+  "strict_rule": "each seed delta_AA_U0_pp > -1"
+}
