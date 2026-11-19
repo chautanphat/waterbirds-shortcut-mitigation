@@ -1,0 +1,24 @@
+{
+  "executive_verdict": "INCONCLUSIVE",
+  "stage_A": {
+    "global_sufficient": false,
+    "most_gain_definition": 0.8,
+    "scope": "TEST ORACLE / IN-SAMPLE"
+  },
+  "stage_B": {
+    "verdict": "INCONCLUSIVE",
+    "sigma2_oof_wga_gain_pp": 28.000000000000007,
+    "folds_meeting8pp": 5,
+    "folds_total": 5,
+    "clean_original_loss_criterion_measurable": false,
+    "clean_original_loss_criterion_passed": null,
+    "incremental_wga_vs_gray_only_pp": 0.0,
+    "positive_gain_species": 9,
+    "top2_positive_species_share": 0.35714285714285715,
+    "uncapped_ablation_included_in_transfer": true
+  },
+  "stage_C_deployable_publishable": "BLOCKED",
+  "training": false,
+  "new_model_inference": false,
+  "recommended_next_action": "Stop FDAT-specific method/training expansion. If continuing, obtain genuinely paired original-gray scores and compare the already-fixed AND and gray-only rules before investing in algorithm changes."
+}

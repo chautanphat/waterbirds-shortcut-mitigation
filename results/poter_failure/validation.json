@@ -1,0 +1,32 @@
+{
+  "replication": {
+    "rows": 7500,
+    "unique_images": 2500,
+    "unique_raw_images": 2104,
+    "models": [
+      "POTER",
+      "ERM_enhanced",
+      "DPE_legacy"
+    ],
+    "exact_model_input_match": true,
+    "complete_factorial_design": true
+  },
+  "original_test": {
+    "rows": 17382,
+    "unique_images": 5794,
+    "unique_raw_images": 5794,
+    "models": [
+      "POTER",
+      "ERM_enhanced",
+      "DPE_legacy"
+    ],
+    "exact_model_input_match": true,
+    "complete_factorial_design": true
+  },
+  "all_original_source_files_sha256_verified": 5794,
+  "canonical_metadata_labels_and_groups_verified": true,
+  "mask_and_example_inspection": {
+    "example_model_view_hashes_verified": 50,
+    "masks_verified": 100
+  }
+}

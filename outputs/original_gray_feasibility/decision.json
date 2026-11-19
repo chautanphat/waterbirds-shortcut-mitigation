@@ -1,0 +1,62 @@
+{
+  "executive_verdict": "PASS",
+  "criterion": "Observed original WGA(policy)-WGA(full05)>=-2.0pp; deterministic triage, not safety guarantee",
+  "policies": {
+    "full_05": {
+      "gate": "PASS",
+      "wga_pct": 91.04212860310422,
+      "aa_pct": 91.99171556782879,
+      "delta_wga_pp": 0.0,
+      "worst_group": 1,
+      "most_harmed_group": 0,
+      "worst_individual_group_change_pp": 0.0
+    },
+    "gray_05": {
+      "gate": "PASS",
+      "wga_pct": 91.58878504672897,
+      "aa_pct": 94.7186744908526,
+      "delta_wga_pp": 0.5466564436247552,
+      "worst_group": 3,
+      "most_harmed_group": 2,
+      "worst_individual_group_change_pp": -0.7788161993769336
+    },
+    "locked_FDAT": {
+      "gate": "PASS",
+      "wga_pct": 90.34267912772586,
+      "aa_pct": 95.13289609941319,
+      "delta_wga_pp": -0.6994494753783584,
+      "worst_group": 2,
+      "most_harmed_group": 2,
+      "worst_individual_group_change_pp": -2.1806853582554453
+    },
+    "boolean_AND": {
+      "gate": "PASS",
+      "wga_pct": 90.34267912772586,
+      "aa_pct": 95.13289609941319,
+      "delta_wga_pp": -0.6994494753783584,
+      "worst_group": 2,
+      "most_harmed_group": 2,
+      "worst_individual_group_change_pp": -2.1806853582554453
+    },
+    "historical_full_065": {
+      "gate": "HISTORICAL_DIAGNOSTIC",
+      "wga_pct": 82.71028037383178,
+      "aa_pct": 94.54608215395236,
+      "delta_wga_pp": -8.331848229272438,
+      "worst_group": 3,
+      "most_harmed_group": 2,
+      "worst_individual_group_change_pp": -8.878504672897193
+    }
+  },
+  "paired_sources": 5794,
+  "exclusions": 0,
+  "fdAT_minus_gray_WGA_pp": -1.2461059190031136,
+  "FDAT_gray_agreement": 5738,
+  "FDAT_AND_disagreements": 0,
+  "one_next_action": "STOP FDAT expansion: gray-only ties/exceeds FDAT WGA. Next validate foreground isolation with independent development/final data and realistic masks.",
+  "training": false,
+  "threshold_search": false,
+  "ot_changed": false,
+  "already_inspected_test": true,
+  "independent_final_test": false
+}

@@ -1,5 +1,18 @@
 # Notebooks
 
+## Cost-limited Experiment 2
+
+[experiment2_poter_cost_optimized.ipynb](experiment2_poter_cost_optimized.ipynb)
+prioritizes only POTER seed2, retaining completed seed1 and the existing ERM/DPE baselines.
+It embeds audited Waterbirds sources, keeps 300 epochs/batch128/FP32 and supports original
+epoch-boundary resume, optional phase timing and full-state ZIP backups. Training is disabled
+by default and requires prior user confirmation. A third POTER seed and baseline training are deferred.
+The exact historical OT cache must be recovered: the local similarly named cache has a different hash.
+One unused CelebA module source deviation is explicitly recorded; CUB algorithm sources match.
+The notebook exports training progress/checkpoints; locked counterfactual evaluation remains a separate step.
+See `outputs/experiment2_interim/interim_report.md` for measured input-pipeline timing,
+cost estimates, completed single-checkpoint results and remaining evidence.
+
 | Notebook | Purpose |
 | --- | --- |
 | [dpe_head_aggregation.ipynb](dpe_head_aggregation.ipynb) | **Current DPE weighting comparison:** all 30 global-rule/neural configurations, fitted on a dedicated combiner-training split and evaluated independently across three seeds. |

@@ -1,0 +1,16 @@
+{
+  "output_root": "outputs/experiment2_interim",
+  "existing_verification_root": "outputs/failure_verification",
+  "priority": {"POTER": [1, 2], "ERM_enhanced": [0], "DPE_legacy": [0]},
+  "next_training_seed": 2,
+  "deferred": {"POTER": [0], "ERM_enhanced": [1, 2], "DPE_legacy": [1, 2]},
+  "epochs": 300,
+  "batch_size": 128,
+  "precision": "FP32",
+  "allow_training": false,
+  "training_policy": "Notify user and obtain confirmation before launching training; notebook generation is not authorization to launch.",
+  "profile_samples": 256,
+  "profile_workers": [0, 2],
+  "profile_seed": 20261118,
+  "remote_job_status": "unverified: no active cloud runtime or job ID supplied"
+}

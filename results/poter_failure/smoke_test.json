@@ -1,0 +1,17 @@
+{
+  "images": 2,
+  "models": [
+    "POTER",
+    "ERM_enhanced",
+    "DPE_legacy"
+  ],
+  "dpe_legacy_max_probability_error": 1.1920928955078125e-07,
+  "repeat_max_probability_error": 0.0,
+  "identical_input_tensors": true,
+  "poter_reference": "Unmodified shared ModelAdapter / existing Runner; previous live HTTP parity verified",
+  "model_seeds": {
+    "POTER": 1,
+    "ERM_enhanced": 0,
+    "DPE_legacy": 0
+  }
+}

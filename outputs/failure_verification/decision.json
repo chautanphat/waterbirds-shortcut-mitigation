@@ -1,0 +1,9 @@
+{
+  "decision": "NO-GO / INCONCLUSIVE",
+  "experiment1": "completed",
+  "experiment2": "incomplete",
+  "independent_seed_replication_confirmed": false,
+  "training_started": false,
+  "new_inference_rows": 0,
+  "next_action": "Notify and obtain user confirmation for cloud training of missing independently trained seeds"
+}

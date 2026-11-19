@@ -1,0 +1,36 @@
+{
+  "foreground_ids": [
+    "hf-fg-179",
+    "hf-fg-180",
+    "hf-fg-183",
+    "hf-fg-185",
+    "hf-fg-186",
+    "hf-fg-190",
+    "hf-fg-191",
+    "hf-fg-192",
+    "hf-fg-1",
+    "hf-fg-3",
+    "hf-fg-6",
+    "hf-fg-10",
+    "hf-fg-12",
+    "hf-fg-13",
+    "hf-fg-14",
+    "hf-fg-16"
+  ],
+  "backgrounds_per_category": 2,
+  "seed": 2026,
+  "severities": {
+    "clean": 0.0,
+    "mild": 1.5,
+    "moderate": 4.0,
+    "strong": 9.0
+  },
+  "opacity": 1.0,
+  "background_fit": "cover",
+  "include_background_only": true,
+  "include_neutral": true,
+  "include_original": true,
+  "allow_approximate": false,
+  "batch_size": 16,
+  "cohort_definition": "first eight official test IDs numerically per canonical class, fixed before inference; retrospective exploratory"
+}

@@ -1,0 +1,64 @@
+{
+  "status": "blocked_exact_historical_OT_cache_and_user_confirmation",
+  "current_finished_poter_seeds": [
+    1
+  ],
+  "priority_poter_seeds": [
+    1,
+    2
+  ],
+  "additional_poter_seeds_to_train": [
+    2
+  ],
+  "baseline_seeds_to_reuse": {
+    "ERM_enhanced": [
+      0
+    ],
+    "DPE_legacy": [
+      0
+    ]
+  },
+  "deferred": {
+    "POTER": [
+      0
+    ],
+    "ERM_enhanced": [
+      1,
+      2
+    ],
+    "DPE_legacy": [
+      1,
+      2
+    ]
+  },
+  "training_started": false,
+  "training_authorized": false,
+  "fixed_poter_recipe": {
+    "batch_size": 128,
+    "epochs": 300,
+    "lr": 1e-05,
+    "weight_decay": 1.0,
+    "f_power": 0.1,
+    "clip_cap": 20.0,
+    "reg_scale": 0.03,
+    "augmentation": true,
+    "pretrained": "torchvision pretrained=True / ImageNet V1",
+    "selection": "strictly best validation WGA; supplied baseline epoch258"
+  },
+  "precision": "FP32",
+  "workers": 0,
+  "old_plan_poter_training_hours": 18.108166666666673,
+  "new_plan_poter_training_hours": 9.054083333333336,
+  "savings_poter_gpu_hours": 9.054083333333336,
+  "relative_poter_training_reduction": 0.5,
+  "estimate_scope": "Historical comparable T4 throughput; excludes setup, interruptions and final inference. Baseline training also deferred, cost not measured.",
+  "new_inference_needed": 2100,
+  "reusable_prediction_rows": 6300,
+  "priority_target_prediction_rows": 8400,
+  "current_independent_seed_validation": "incomplete; one finished POTER seed",
+  "after_second_seed": "preliminary two-seed stability check only, not complete original three-seed validation",
+  "no_test_selection": true,
+  "training_policy": "Notify user and obtain confirmation before launching training; notebook generation is not authorization to launch.",
+  "historical_feature_cache_available": false,
+  "deferred_source_asset": "Historical unused CelebA module bytes not recovered; CUB sources preserved and deviation recorded in notebook"
+}

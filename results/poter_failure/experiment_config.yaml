@@ -1,0 +1,46 @@
+version: 1
+sampling_seed: 20261118
+bootstrap_samples: 2000
+batch_size: 32
+device: cuda
+data_root: data/waterbirds
+output_root: results/poter_failure
+poter_checkpoint: checkpoints/poter_kaggle_recovered/CUB/Clean/POTER_CUB_seed1_kaggle/best_validation.pt
+legacy_root: C:/Users/ADMIN/OneDrive - KonTum01/Desktop/waterbirds-shortcut-mitigation
+erm_checkpoint: checkpoints/kaggle_exploration/seed0/ckpt_last.pt
+dpe_ensemble: checkpoints/kaggle_exploration/seed0/ensemble.pt
+expected_erm_sha256: bce28dc72c3737ae19ffa057ba056e03d3f531180e7ad55e0b3c93bf4ea4bcaa
+expected_heads_sha256: 3324222c85537d5db2fe3509b13b2e3481c609d2c1745b68da8f114f281e34da
+preliminary_run: experiments/counterfactual_lab/20261118T123059Z_48f0272960
+foregrounds_per_class: 50
+species_per_class: 10
+background_ids:
+- hf-bg-11699
+- hf-bg-7032
+- hf-bg-4121
+- hf-bg-7173
+severities:
+  clean: 0.0
+  mild: 1.5
+  moderate: 4.0
+  strong: 9.0
+exclude_preliminary_foregrounds: true
+exclude_known_mislabeled_species_from_replication: true
+known_mislabeled_species:
+- 021.Eastern_Towhee
+- 088.Western_Meadowlark
+- 102.Western_Wood_Pewee
+save_example_foregrounds_per_class: 1
+full_original_test: true
+training: forbidden
+started_utc: '2026-11-18T14:47:53.565099+00:00'
+storage: Compact streaming predictions; deterministic recipes/hashes; two preselected
+  foregrounds saved as PNG examples
+cohort_sha256: c9ed3396d52f608f50441507cc9c40e4a7105c19bee40b6748788cba5665a5c9
+source_code_sha256:
+  scripts\investigate_poter_failure.py: ee0f40f0e42526eb7a36478a0d7a42c2e9ade593e740bd98a5c9428635dc2e47
+  src\counterfactual\investigation.py: 43fe93dcfeee6fcc750ab15073c630be4693f5909b11e40e4ee5df4001eb34b6
+  src\counterfactual\compositor.py: 9060fdf200f5bd09605c3b379e2545e01542c94aae62f4f4a10467d22c8fb2c1
+  src\counterfactual\model.py: d74dc2e7dbdde42e4de305cc0646d8c6b68c6b5cdab84a7e210a058a3d95839a
+  src\methods\dpe_head_reweighting\ensemble.py: c6700c53aff413a86fd73f6d2b532a3b5f8417fa8a340b46880571bd8f8b0e4c
+  src\evaluation\dpe_export.py: f67d47743d15a861791e6d86414013afd335017de0630c74788d0a40e1e0036c

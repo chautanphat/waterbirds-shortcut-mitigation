@@ -1,0 +1,259 @@
+{
+  "version": 1,
+  "sampling_seed": 20261118,
+  "bootstrap_samples": 2000,
+  "batch_size": 32,
+  "device": "cuda",
+  "data_root": "data/waterbirds",
+  "output_root": "outputs/mild_blur_v2",
+  "poter_checkpoint": "checkpoints/poter_kaggle_recovered/CUB/Clean/POTER_CUB_seed1_kaggle/best_validation.pt",
+  "legacy_root": "C:/Users/ADMIN/OneDrive - KonTum01/Desktop/waterbirds-shortcut-mitigation",
+  "erm_checkpoint": "checkpoints/kaggle_exploration/seed0/ckpt_last.pt",
+  "dpe_ensemble": "checkpoints/kaggle_exploration/seed0/ensemble.pt",
+  "expected_erm_sha256": "bce28dc72c3737ae19ffa057ba056e03d3f531180e7ad55e0b3c93bf4ea4bcaa",
+  "expected_heads_sha256": "3324222c85537d5db2fe3509b13b2e3481c609d2c1745b68da8f114f281e34da",
+  "preliminary_run": "experiments/counterfactual_lab/20261118T123059Z_48f0272960",
+  "foregrounds_per_class": 50,
+  "species_per_class": 10,
+  "background_ids": [
+    "hf-bg-11699",
+    "hf-bg-7032",
+    "hf-bg-4121",
+    "hf-bg-7173"
+  ],
+  "severities": {
+    "clean": 0.0,
+    "mild": 0.5,
+    "moderate": 1.0,
+    "strong": 2.0,
+    "extreme": 4.0
+  },
+  "exclude_preliminary_foregrounds": true,
+  "exclude_known_mislabeled_species_from_replication": true,
+  "known_mislabeled_species": [
+    "021.Eastern_Towhee",
+    "088.Western_Meadowlark",
+    "102.Western_Wood_Pewee"
+  ],
+  "save_example_foregrounds_per_class": 1,
+  "full_original_test": true,
+  "training": "forbidden",
+  "started_utc": "2026-11-18T15:44:04.584372+00:00",
+  "storage": "Compact streaming predictions; deterministic recipes/hashes; two preselected foregrounds saved as PNG examples",
+  "cohort_sha256": "c9ed3396d52f608f50441507cc9c40e4a7105c19bee40b6748788cba5665a5c9",
+  "source_code_sha256": {
+    "scripts\\run_mild_blur_v2.py": "37474796039666098075aadbe7665df7d6b5a4048cb7af5a048afd50c07d5e36",
+    "src\\counterfactual\\investigation.py": "4e98398b2f0bdf92534fd8909ace57a0eb228652b8559e3bbcdbf8ca9da901dd",
+    "src\\counterfactual\\compositor.py": "9060fdf200f5bd09605c3b379e2545e01542c94aae62f4f4a10467d22c8fb2c1",
+    "src\\counterfactual\\model.py": "d74dc2e7dbdde42e4de305cc0646d8c6b68c6b5cdab84a7e210a058a3d95839a",
+    "src\\datasets\\waterbirds.py": "eaf6b7f77b4d1ca5d93db4020971597db7444010df1047b46382b32ec484415c",
+    "src\\evaluation\\dpe_export.py": "f67d47743d15a861791e6d86414013afd335017de0630c74788d0a40e1e0036c",
+    "src\\methods\\dpe_head_reweighting\\ensemble.py": "c6700c53aff413a86fd73f6d2b532a3b5f8417fa8a340b46880571bd8f8b0e4c"
+  },
+  "previous_results": "results/poter_failure",
+  "main_severities": [
+    "clean",
+    "mild",
+    "moderate",
+    "strong"
+  ],
+  "supplementary_severities": [
+    "extreme"
+  ],
+  "reuse_identical_predictions": true,
+  "human_recognizability_review": "pending_independent_review",
+  "previous_predictions_sha256": "09745b053e81c0b3e9b2ec08188aff4815c6d03ff8b410c9fc1516c5d9eb9f21",
+  "previous_config_sha256": "229be89acdee9ec3b8158a3de6c2f4195c3629c47fd49e14a4d05446023806e1",
+  "previous_source_code_sha256": {
+    "scripts\\investigate_poter_failure.py": "ee0f40f0e42526eb7a36478a0d7a42c2e9ade593e740bd98a5c9428635dc2e47",
+    "src\\counterfactual\\investigation.py": "43fe93dcfeee6fcc750ab15073c630be4693f5909b11e40e4ee5df4001eb34b6",
+    "src\\counterfactual\\compositor.py": "9060fdf200f5bd09605c3b379e2545e01542c94aae62f4f4a10467d22c8fb2c1",
+    "src\\counterfactual\\model.py": "d74dc2e7dbdde42e4de305cc0646d8c6b68c6b5cdab84a7e210a058a3d95839a",
+    "src\\methods\\dpe_head_reweighting\\ensemble.py": "c6700c53aff413a86fd73f6d2b532a3b5f8417fa8a340b46880571bd8f8b0e4c",
+    "src\\evaluation\\dpe_export.py": "f67d47743d15a861791e6d86414013afd335017de0630c74788d0a40e1e0036c"
+  },
+  "effective_sigma": {
+    "stage": "After fixed premultiplied bilinear foreground resize to 256x256; before composition and center crop",
+    "canvas": [
+      256,
+      256
+    ],
+    "model_view": [
+      224,
+      224
+    ],
+    "scale": "1 canvas pixel = 1 model-crop pixel; no later rescale",
+    "mask": "Unchanged alpha; normalized Gaussian RGB convolution with masked numerator/denominator",
+    "interpolation": "PIL bilinear; same as previous",
+    "neutral_rgb": [
+      127,
+      127,
+      127
+    ]
+  },
+  "requested_previous_filename": "predictions(2).csv",
+  "requested_previous_file_supplied": false,
+  "previous_csv_resolution": "Audited canonical saved results/poter_failure/predictions.csv (34 columns); no unprovided browser-renamed CSV is assumed identical",
+  "qc_selection": [
+    {
+      "source_image_id": "616",
+      "foreground_id": "hf-fg-616",
+      "species_id": "012.Yellow_headed_Blackbird",
+      "true_y": 0,
+      "background_id": "hf-bg-4121",
+      "mask_sha256": "451d7da033dd8214dd966f07b84dfc17325dac7c4230fa4fb501d2a9f2d4c079"
+    },
+    {
+      "source_image_id": "999",
+      "foreground_id": "hf-fg-999",
+      "species_id": "019.Gray_Catbird",
+      "true_y": 0,
+      "background_id": "hf-bg-11699",
+      "mask_sha256": "4a6f50c884dcf656361d4f0611d21ddacfcec07dcfd26cd2b0a3a208879a0fe3"
+    },
+    {
+      "source_image_id": "1715",
+      "foreground_id": "hf-fg-1715",
+      "species_id": "031.Black_billed_Cuckoo",
+      "true_y": 0,
+      "background_id": "hf-bg-7032",
+      "mask_sha256": "8c5c9f769a5bed6d484e6bf099f9cd0922fb4b0eca56a73dd0a2374679eeca8c"
+    },
+    {
+      "source_image_id": "4766",
+      "foreground_id": "hf-fg-4766",
+      "species_id": "082.Ringed_Kingfisher",
+      "true_y": 0,
+      "background_id": "hf-bg-7173",
+      "mask_sha256": "31a42e1e563bbff0509e81657db120ef95cc13235902865139411a2f6813e0fd"
+    },
+    {
+      "source_image_id": "5390",
+      "foreground_id": "hf-fg-5390",
+      "species_id": "093.Clark_Nutcracker",
+      "true_y": 0,
+      "background_id": "hf-bg-7032",
+      "mask_sha256": "94095aceebdb8611d5ff784a4ddd0ec9d59369ca8ce4356094943576cb2ad448"
+    },
+    {
+      "source_image_id": "6999",
+      "foreground_id": "hf-fg-6999",
+      "species_id": "120.Fox_Sparrow",
+      "true_y": 0,
+      "background_id": "hf-bg-7032",
+      "mask_sha256": "f45357b375de5af8897915222c3ad5327d34585873ec82d59cdc6464f2f67953"
+    },
+    {
+      "source_image_id": "7441",
+      "foreground_id": "hf-fg-7441",
+      "species_id": "127.Savannah_Sparrow",
+      "true_y": 0,
+      "background_id": "hf-bg-7032",
+      "mask_sha256": "13e09066309ea211f63c7f5205cd5b0d41e47ac9a50dd7b2364f4ee35bf5c13c"
+    },
+    {
+      "source_image_id": "8027",
+      "foreground_id": "hf-fg-8027",
+      "species_id": "137.Cliff_Swallow",
+      "true_y": 0,
+      "background_id": "hf-bg-11699",
+      "mask_sha256": "c5ec89fd086a6ff9f2dc598d50cfae59db2f349222df0e0debb30cb3c0f0eb58"
+    },
+    {
+      "source_image_id": "9099",
+      "foreground_id": "hf-fg-9099",
+      "species_id": "155.Warbling_Vireo",
+      "true_y": 0,
+      "background_id": "hf-bg-7173",
+      "mask_sha256": "1254e47a3e43fecae251e6bad75afcee09277acf80416e6420bf8af5a82039be"
+    },
+    {
+      "source_image_id": "10185",
+      "foreground_id": "hf-fg-10185",
+      "species_id": "173.Orange_crowned_Warbler",
+      "true_y": 0,
+      "background_id": "hf-bg-7173",
+      "mask_sha256": "286a7328182ceb949c41f61b4c57ffb9181b248c0f1bc9a19c5b0104df66d377"
+    },
+    {
+      "source_image_id": "1268",
+      "foreground_id": "hf-fg-1268",
+      "species_id": "023.Brandt_Cormorant",
+      "true_y": 1,
+      "background_id": "hf-bg-7032",
+      "mask_sha256": "97f3d12363af53ed0863a356271f0d5688a352db05ebe7c8cce0d8af254164d2"
+    },
+    {
+      "source_image_id": "1399",
+      "foreground_id": "hf-fg-1399",
+      "species_id": "025.Pelagic_Cormorant",
+      "true_y": 1,
+      "background_id": "hf-bg-11699",
+      "mask_sha256": "a21bbe70e13e34c36323bace4b4ab1b4cfe0279b7623f292f1778f897ea03a6b"
+    },
+    {
+      "source_image_id": "2599",
+      "foreground_id": "hf-fg-2599",
+      "species_id": "046.Gadwall",
+      "true_y": 1,
+      "background_id": "hf-bg-7173",
+      "mask_sha256": "46df25121070e2c0c327f2cdd4c8d7e29cd960827ffefa374e335f15fbd3295c"
+    },
+    {
+      "source_image_id": "3329",
+      "foreground_id": "hf-fg-3329",
+      "species_id": "058.Pigeon_Guillemot",
+      "true_y": 1,
+      "background_id": "hf-bg-7032",
+      "mask_sha256": "b905f09804799554ccfd9fc3b635e0ca610926f4e8913971ead2f0b3b9625053"
+    },
+    {
+      "source_image_id": "3549",
+      "foreground_id": "hf-fg-3549",
+      "species_id": "062.Herring_Gull",
+      "true_y": 1,
+      "background_id": "hf-bg-4121",
+      "mask_sha256": "f23e74b625683b7378fe335f03d33ff610b2eb6652397874d5c435ab623d62b8"
+    },
+    {
+      "source_image_id": "3766",
+      "foreground_id": "hf-fg-3766",
+      "species_id": "065.Slaty_backed_Gull",
+      "true_y": 1,
+      "background_id": "hf-bg-7032",
+      "mask_sha256": "188e31f8b01aa76db7b9851c0d6d14351bb1c11c1a8e8b313c0da176f0cb8e1e"
+    },
+    {
+      "source_image_id": "3796",
+      "foreground_id": "hf-fg-3796",
+      "species_id": "066.Western_Gull",
+      "true_y": 1,
+      "background_id": "hf-bg-7173",
+      "mask_sha256": "f055f90601ede36ca896135b3b9aba7d0b1b0c328e3daa2c8765205665bb9c5a"
+    },
+    {
+      "source_image_id": "8362",
+      "foreground_id": "hf-fg-8362",
+      "species_id": "143.Caspian_Tern",
+      "true_y": 1,
+      "background_id": "hf-bg-7173",
+      "mask_sha256": "cddb35ab98500953c65d578357521079f655516632199d23d7bbce42f6ef6617"
+    },
+    {
+      "source_image_id": "8578",
+      "foreground_id": "hf-fg-8578",
+      "species_id": "146.Forsters_Tern",
+      "true_y": 1,
+      "background_id": "hf-bg-4121",
+      "mask_sha256": "e70264a77b2f9308857528f8863b848a02cb05c239b43ee6b144f70966603552"
+    },
+    {
+      "source_image_id": "8590",
+      "foreground_id": "hf-fg-8590",
+      "species_id": "147.Least_Tern",
+      "true_y": 1,
+      "background_id": "hf-bg-11699",
+      "mask_sha256": "2bcea6eda71c5a80dbf39f95c5e6c8c2441d6df037a17938d62e877e2f0ed5a2"
+    }
+  ]
+}

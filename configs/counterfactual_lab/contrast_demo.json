@@ -1,0 +1,26 @@
+{
+  "foreground_ids": [
+    "hf-fg-1"
+  ],
+  "backgrounds_per_category": 1,
+  "seed": 2026,
+  "severities": {
+    "clean": 0.0,
+    "mild": 0.0,
+    "moderate": 0.0,
+    "strong": 0.0
+  },
+  "opacity": 1.0,
+  "background_fit": "cover",
+  "include_background_only": true,
+  "include_neutral": true,
+  "allow_approximate": false,
+  "batch_size": 16,
+  "operator": "contrast",
+  "operator_strengths": {
+    "clean": 1.0,
+    "mild": 0.75,
+    "moderate": 0.4,
+    "strong": 0.1
+  }
+}

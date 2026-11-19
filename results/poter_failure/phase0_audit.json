@@ -1,0 +1,205 @@
+{
+  "source": "C:\\Users\\ADMIN\\OneDrive - KonTum01\\Desktop\\POTER\\experiments\\counterfactual_lab\\20261118T123059Z_48f0272960\\predictions.csv",
+  "csv_sha256": "5e633a116e3f23aa4d3d4c7b47fd0a3d4d3b15aba3253876c92b4839d114cbde",
+  "requested_filename": "predictions(1).csv",
+  "requested_file_available": false,
+  "substitution": "Existing immutable 400-row original preliminary run; no claim of auditing absent attachment",
+  "rows": 400,
+  "foregrounds": 16,
+  "species": 2,
+  "background_ids": [
+    "hf-bg-11699",
+    "hf-bg-4121",
+    "hf-bg-7032",
+    "hf-bg-7173"
+  ],
+  "unique_raw_images": 340,
+  "unique_predictions": 400,
+  "repeated_background_only_rows": 64,
+  "source_label_consistent": true,
+  "metrics": [
+    {
+      "severity": "clean",
+      "n": 64,
+      "accuracy": 0.96875,
+      "wga": 0.9375,
+      "landbird_accuracy": 0.9375,
+      "waterbird_accuracy": 1.0
+    },
+    {
+      "severity": "mild",
+      "n": 64,
+      "accuracy": 0.703125,
+      "wga": 0.3125,
+      "landbird_accuracy": 0.40625,
+      "waterbird_accuracy": 1.0
+    },
+    {
+      "severity": "moderate",
+      "n": 64,
+      "accuracy": 0.53125,
+      "wga": 0.0,
+      "landbird_accuracy": 0.0625,
+      "waterbird_accuracy": 1.0
+    },
+    {
+      "severity": "strong",
+      "n": 64,
+      "accuracy": 0.546875,
+      "wga": 0.0,
+      "landbird_accuracy": 0.09375,
+      "waterbird_accuracy": 1.0
+    }
+  ],
+  "masks": [
+    {
+      "foreground_id": "hf-fg-1",
+      "species": "001.Black_footed_Albatross",
+      "alpha_support_fraction": 0.3343223880597015,
+      "alpha_mean": 0.32157373134328354,
+      "mask_sha256": "26dce293e992bacf30f7adf6eabc248d726955d284687fbf530f8023a9da2a89",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-10",
+      "species": "001.Black_footed_Albatross",
+      "alpha_support_fraction": 0.43667307692307694,
+      "alpha_mean": 0.3254076923076923,
+      "mask_sha256": "07d240c324520e94c36f29600a6605d27243de5adb5e20dd22640823e6bef7d1",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-12",
+      "species": "001.Black_footed_Albatross",
+      "alpha_support_fraction": 0.14715986394557823,
+      "alpha_mean": 0.11123299319727892,
+      "mask_sha256": "b74c2826533e476a954d9294c8f22ab0005eab4458b054d28d018f502a1fcd73",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-13",
+      "species": "001.Black_footed_Albatross",
+      "alpha_support_fraction": 0.3729055374592834,
+      "alpha_mean": 0.2848990228013029,
+      "mask_sha256": "c6c206991c825efe49f60c7033c4f924a620741be18a2b26c5966241436d1a27",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-14",
+      "species": "001.Black_footed_Albatross",
+      "alpha_support_fraction": 0.12411428571428572,
+      "alpha_mean": 0.08132081632653061,
+      "mask_sha256": "b40e50ebb86ccecc448f7c3fe139fb13e29302c60fe34632ec40a6fbd5924f16",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-16",
+      "species": "001.Black_footed_Albatross",
+      "alpha_support_fraction": 0.17470588235294118,
+      "alpha_mean": 0.12451652661064426,
+      "mask_sha256": "a6dc3007da81e0c778b928ba6e12d3dd429ecf121547f0c25a8b022cece27ba6",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-179",
+      "species": "004.Groove_billed_Ani",
+      "alpha_support_fraction": 0.10687096774193548,
+      "alpha_mean": 0.09448172043010752,
+      "mask_sha256": "bd58f2bee20cfcc831a12a477ce59ecf2eb28bfa2e00e10ad5418684c49f38d3",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-180",
+      "species": "004.Groove_billed_Ani",
+      "alpha_support_fraction": 0.204445,
+      "alpha_mean": 0.181747,
+      "mask_sha256": "605e209f3c93dee0f62ed886c3c589547f3fae1ca31279e6a5d036b095000d75",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-183",
+      "species": "004.Groove_billed_Ani",
+      "alpha_support_fraction": 0.1878375350140056,
+      "alpha_mean": 0.12995854341736696,
+      "mask_sha256": "ef6769a239b24beedc8320e6afd8d65358255318de11baa7a925664f2f3b8abe",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-185",
+      "species": "004.Groove_billed_Ani",
+      "alpha_support_fraction": 0.03156156156156156,
+      "alpha_mean": 0.02629069069069069,
+      "mask_sha256": "51bd80596c172ff9e8c58695a9d4889174e30676c410e9311b1c4acbe9271cc5",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-186",
+      "species": "004.Groove_billed_Ani",
+      "alpha_support_fraction": 0.17877866666666667,
+      "alpha_mean": 0.15676693333333333,
+      "mask_sha256": "4642585f7d114890ee350ed5a2d1caea5ecd07765bfe5d418a95108bd2b69862",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-190",
+      "species": "004.Groove_billed_Ani",
+      "alpha_support_fraction": 0.08530538922155688,
+      "alpha_mean": 0.07304431137724551,
+      "mask_sha256": "d24b9bbbf2392a8a8ac2388b6864d60d0cb757f2198749500cc017fd3b1c7d7d",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-191",
+      "species": "004.Groove_billed_Ani",
+      "alpha_support_fraction": 0.084848,
+      "alpha_mean": 0.07047573333333333,
+      "mask_sha256": "f048e1937cbce9d916cb882581d68ae829c005139ae6dbd3b3b44b18957f38e6",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-192",
+      "species": "004.Groove_billed_Ani",
+      "alpha_support_fraction": 0.19853421633554083,
+      "alpha_mean": 0.17583046357615895,
+      "mask_sha256": "69fa206983bd63ede477f9ae75cf5071939bdb7bc6226506823303b66403ffda",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-3",
+      "species": "001.Black_footed_Albatross",
+      "alpha_support_fraction": 0.20252449567723343,
+      "alpha_mean": 0.18742247838616716,
+      "mask_sha256": "5277a4dc39c55035b99ec0e46f22eee9c0e6c6244b4dda6cd018f827569cdfb8",
+      "alpha_unchanged_all_severities": true
+    },
+    {
+      "foreground_id": "hf-fg-6",
+      "species": "001.Black_footed_Albatross",
+      "alpha_support_fraction": 0.19243829787234043,
+      "alpha_mean": 0.1314723404255319,
+      "mask_sha256": "41dc368e9685f8763614d250a34d58f8ea8ee2c31e2b8ace147d3657d337a435",
+      "alpha_unchanged_all_severities": true
+    }
+  ],
+  "severities": {
+    "clean": 0.0,
+    "mild": 1.5,
+    "moderate": 4.0,
+    "strong": 9.0
+  },
+  "known_label_errors": {
+    "species": [
+      "021.Eastern_Towhee",
+      "088.Western_Meadowlark",
+      "102.Western_Wood_Pewee"
+    ],
+    "counts_by_split": {
+      "2": 90,
+      "0": 72,
+      "1": 18
+    },
+    "preliminary_affected": 0,
+    "reference": "C:\\Users\\ADMIN\\OneDrive - KonTum01\\Desktop\\waterbirds-shortcut-mitigation\\scripts\\analysis\\dpe_label_correction.py",
+    "mechanism": "Generator substring Tern matches Eastern / Western; official and corrected labels reported separately"
+  }
+}

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Failure Case Explorer — POTER / ERM / DPE</title>
+<style>
+*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;color:#213047;background:#eef2f6;font-size:14px;line-height:1.5}main{max-width:1500px;margin:auto;padding:24px}h1{font-size:25px;margin:0 0 7px}h2{font-size:19px}h3{font-size:14px;margin:7px 0}section,header{background:#fff;padding:20px;margin-bottom:18px;border-radius:8px}label{display:flex;flex-direction:column;font-size:12px;color:#4a5e75;gap:4px}.filters{display:flex;flex-wrap:wrap;gap:12px}select,input,button{font:inherit;padding:7px;border:1px solid #bdc9d6;border-radius:4px}button{background:#294563;color:white;cursor:pointer}button:disabled{opacity:.4;cursor:default}input{width:210px}.muted{color:#607084;font-size:12px}#error{color:#a52626;white-space:pre-wrap}table{border-collapse:collapse;width:100%;font-size:12px}th{background:#294563;color:white;text-align:left;padding:9px}td{padding:7px 9px;border-bottom:1px solid #e2e8ef}tbody tr:nth-child(even){background:#f6f8fa}.gallery tbody tr{cursor:pointer}.gallery tbody tr:hover{background:#e5eef7}.wrong{color:#a32626;font-weight:bold}.right{color:#246644}.ood{color:#607084}.scroll{overflow-x:auto}.pager{display:flex;gap:14px;align-items:center;margin:14px 0}.panes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.panes img{height:260px;max-width:100%;object-fit:contain;background:#eef0f3}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{border:1px solid #d5dee7;padding:9px;border-radius:5px;background:white}.card img{width:100%;max-height:224px;object-fit:contain}.card table{font-size:11px}.card td{padding:3px}.heading{display:flex;justify-content:space-between;gap:20px;align-items:center}a{color:#215e91}details{margin-top:12px}pre{white-space:pre-wrap;font-size:11px;max-height:350px;overflow:auto}@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.panes{grid-template-columns:1fr}main{padding:12px}.panes img{height:224px}}
+</style>
+<main><header><h1>Failure Case Explorer: POTER / ERM / DPE</h1>
+<p>Dự đoán thật đã lưu. Xem ảnh đầu vào chung, mask và so sánh cả ba model trên cùng một case.</p>
+<p class="muted">POTER seed1; ERM enhanced và DPE legacy seed0. Recipe chưa khớp, DPE thiếu hash liên kết backbone lịch sử. Xác suất chưa được calibration chung.</p>
+<div class="filters">
+<label>Bộ kết quả<select id="cohort"><option value="replication">Gaussian: 100 foreground, 20 loài</option><option value="original">Test gốc: đủ 5.794 ảnh</option></select></label>
+<label>Loại ảnh<select id="control"><option value="natural">Chim ghép nền tự nhiên</option><option value="original">Ảnh gốc</option><option value="foreground_only">Chim trên nền xám</option><option value="background_only">Chỉ nền, không có chim</option><option value="all">Tất cả</option></select></label>
+<label>Case<select id="mode"><option value="failure">Dự đoán sai</option><option value="all">Tất cả dự đoán</option><option value="disagree">Các model không đồng ý</option><option value="degraded">Clean đúng, blur sai</option></select></label>
+<label>Model dùng để lọc lỗi<select id="model"><option value="any">Bất kỳ model nào</option><option value="POTER">POTER</option><option value="ERM_enhanced">ERM enhanced</option><option value="DPE_legacy">DPE legacy</option></select></label>
+<label>Lớp chim<select id="class"><option value="">Cả hai lớp</option><option value="0">Landbird</option><option value="1">Waterbird</option></select></label>
+<label>Mức mờ<select id="severity"><option value="">Tất cả</option><option value="clean">Không mờ</option><option value="mild">Nhẹ</option><option value="moderate">Vừa</option><option value="strong">Mạnh</option><option value="original">Ảnh gốc</option></select></label>
+<label>Nền<select id="background"><option value="">Tất cả</option><option value="land">Land</option><option value="water">Water</option><option value="neutral">Xám</option></select></label>
+<label>Tìm ID / species<input id="search" placeholder="Ví dụ: 654 hoặc Cormorant"></label>
+</div><p id="status" class="muted">Đang đọc kết quả đã lưu…</p><p id="error"></p>
+</header>
+<section><div class="heading"><h2>Danh sách case</h2><a id="download" download>CSV đầy đủ của bộ đang xem</a></div>
+<p class="muted">Chọn một hàng để xem ảnh và so sánh. Mỗi hàng là một ảnh đầu vào chung với ba dự đoán. Background-only không có nhãn chim hay semantic accuracy.</p>
+<div class="scroll"><table class="gallery"><thead><tr><th>ID</th><th>Species</th><th>Lớp thật</th><th>Mức mờ</th><th>Nền</th><th>POTER</th><th>ERM enhanced</th><th>DPE legacy</th></tr></thead><tbody id="gallery"></tbody></table></div>
+<div class="pager"><button id="previous">Trước</button><span id="page"></span><button id="next">Sau</button></div></section>
+<section id="detail" hidden><div class="heading"><h2 id="case-title"></h2><a id="case-csv" download>CSV của source này, cả ba model</a></div>
+<div class="panes" id="panes"></div><div id="comparison"></div>
+<p class="muted">Ảnh 224 × 224 là đúng pixel model đã nhận, được kiểm hash với file dự đoán. Các ảnh được tái tạo bằng pipeline cũ, không inference lại.</p>
+<h3>Các mức mờ và nền của cùng foreground</h3><div class="grid" id="variants"></div>
+<details><summary>Provenance và score của case</summary><pre id="provenance"></pre></details></section>
+</main><script type="module" src="/comparison.js"></script></html>

@@ -1,0 +1,5 @@
+severity,n,accuracy,wga,landbird_accuracy,waterbird_accuracy
+clean,64,0.96875,0.9375,0.9375,1.0
+mild,64,0.703125,0.3125,0.40625,1.0
+moderate,64,0.53125,0.0,0.0625,1.0
+strong,64,0.546875,0.0,0.09375,1.0

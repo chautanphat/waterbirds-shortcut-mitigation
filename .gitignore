@@ -71,6 +71,12 @@ Thumbs.db
 /outputs/
 # Generated per-example evaluation artifacts; keep experiment configs/records tracked.
 /experiments/*/predictions/
+/experiments/counterfactual_lab/
+/experiments/counterfactual_verification/
+/.test_tmp/
+/results/poter_failure/examples/
+/results/poter_failure/predictions.csv
+/results/poter_failure/original_test_predictions.csv
 
 # Temporary files
 *.log

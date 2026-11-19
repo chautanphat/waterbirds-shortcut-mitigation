@@ -1,0 +1,13 @@
+model_name,control,severity,label_policy,true_y,bg_type,n,correct,accuracy,source_foregrounds
+POTER,original,original,official,0,land,2255,2095,0.9290465631929047,2255
+POTER,original,original,official,0,water,2255,2053,0.9104212860310421,2255
+POTER,original,original,official,1,land,642,594,0.9252336448598131,642
+POTER,original,original,official,1,water,642,588,0.9158878504672897,642
+ERM_enhanced,original,original,official,0,land,2255,2252,0.998669623059867,2255
+ERM_enhanced,original,original,official,0,water,2255,2001,0.8873614190687361,2255
+ERM_enhanced,original,original,official,1,land,642,478,0.7445482866043613,642
+ERM_enhanced,original,original,official,1,water,642,619,0.9641744548286605,642
+DPE_legacy,original,original,official,0,land,2255,2211,0.9804878048780488,2255
+DPE_legacy,original,original,official,0,water,2255,2137,0.9476718403547671,2255
+DPE_legacy,original,original,official,1,land,642,606,0.9439252336448598,642
+DPE_legacy,original,original,official,1,water,642,611,0.9517133956386293,642

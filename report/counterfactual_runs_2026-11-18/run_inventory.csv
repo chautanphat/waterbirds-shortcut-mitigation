@@ -1,0 +1,8 @@
+run_id,operator,source_birds,rows,status,role
+20261118T120628Z_ebf2840e00,gaussian,1,14,completed,repeated_QA
+20261118T123059Z_48f0272960,gaussian,16,400,completed,main_cohort
+20261118T123339Z_06e2f340ac,gaussian,1,15,completed,representative_smoke
+20261118T123846Z_1f31a11c5f,gaussian,1,15,completed,repeated_QA
+20261118T125909Z_f754cb571a,contrast,1,15,completed,representative_smoke
+20261118T125922Z_7cc3576177,occlusion,1,15,completed,representative_smoke
+20261118T130858Z_17c1fdb45d,contrast,1,15,completed,repeated_QA

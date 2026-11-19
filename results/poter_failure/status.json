@@ -1,0 +1,6 @@
+{
+  "status": "completed",
+  "inference_rows": 24882,
+  "statistical_unit": "source foreground; class-stratified paired bootstrap",
+  "model_seeds_per_method": 1
+}

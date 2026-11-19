@@ -1,0 +1,37 @@
+{
+  "epoch": 258,
+  "groups": [
+    {
+      "group_id": 0,
+      "n": 2255,
+      "current_correct": 2095,
+      "historical_correct": 2096,
+      "difference_correct": -1
+    },
+    {
+      "group_id": 1,
+      "n": 2255,
+      "current_correct": 2053,
+      "historical_correct": 2053,
+      "difference_correct": 0
+    },
+    {
+      "group_id": 2,
+      "n": 642,
+      "current_correct": 594,
+      "historical_correct": 594,
+      "difference_correct": 0
+    },
+    {
+      "group_id": 3,
+      "n": 642,
+      "current_correct": 588,
+      "historical_correct": 588,
+      "difference_correct": 0
+    }
+  ],
+  "current_correct": 5330,
+  "historical_correct": 5331,
+  "interpretation": "One image correctness discrepancy with historical Kaggle log; cause unresolved. Current Runner parity passes; no predictions altered.",
+  "historical_log_sha256": "bdb7a052805ce28ecf74bbe3f3fe96d5d1af9ad0f8fcf55ba9f33cfb6b02b0df"
+}

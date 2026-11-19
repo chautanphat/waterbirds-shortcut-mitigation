@@ -1,0 +1,7 @@
+# Train/development vulnerability readiness
+
+**`BLOCKED_TRAIN_DEV_VULNERABILITY`.** The repository has the canonical Waterbirds metadata and all 4,795 train and 1,199 validation original images. The [prior provenance audit](../ot_vulnerability_complementarity/audit.md) found no registered or raw CUB masks for those two splits, no registered train/development backgrounds, and no cached natural-background counterfactual predictions for train/development. Registered foregrounds and backgrounds are test-sourced. The existing blur bank uses 100 test foregrounds. Seed 1 used the official labels with no injected label noise. An independently verified clean/noisy mapping is unavailable.
+
+The minimum inputs for the next experiment are pixel-aligned train/development masks keyed by canonical image ID, provenance-tracked Land/Water background banks independently assigned to score construction and evaluation, and a development protocol with held-out foreground groups. The historical validation set was used for checkpoint selection, and its two conflicting groups supplied the OT reference images. Any reuse of those IDs needs to be documented. An independent clean/noisy label mapping is also required to test label-noise enrichment.
+
+After those inputs are available, the existing non-generative compositor and frozen checkpoint can be evaluated on separately registered train/development images. This audit created no new images or predictions and performed no test-to-train joins.

@@ -1,0 +1,64 @@
+{
+  "locked_utc": "2026-11-18T17:44:58.290488+00:00",
+  "models": {
+    "POTER": {
+      "model_seed": 1,
+      "fixed_threshold": 0.5,
+      "clean_wga_threshold": null,
+      "joint_threshold": null,
+      "status": "BLOCKED: no independent four-group development data for threshold selection",
+      "reason": "599 canonical validation rows used to construct OT training reference; remaining600 cover only groups0/3. All1199 also monitored for checkpoint selection.",
+      "selection_rule": "clean validation WGA desc, AA desc, abs(t-0.5) asc, t asc",
+      "selection_split": "val",
+      "selection_dataset": "canonical_validation1199",
+      "selection_input_sha256": "0d3e7ecae8a0d44e4fe0b08699404e9fe5137e16370778ee99003748845622eb",
+      "checkpoint_sha256": "4f405e0e9ec34420aeae5fc2452635c6bc700d714fd033c4c289bea9d2434a9e",
+      "training_seed_n": 1
+    },
+    "ERM_enhanced": {
+      "model_seed": 0,
+      "fixed_threshold": 0.5,
+      "clean_wga_threshold": 0.13,
+      "joint_threshold": null,
+      "status": "clean-validation diagnostic allowed",
+      "reason": "Backbone fitting uses canonical train4795; fixed last400 checkpoint. Validation1199 has four groups and no gradient-fitting overlap; historical validation monitoring disclosed.",
+      "selection_rule": "clean validation WGA desc, AA desc, abs(t-0.5) asc, t asc",
+      "selection_split": "val",
+      "selection_dataset": "canonical_validation1199",
+      "selection_input_sha256": "0d3e7ecae8a0d44e4fe0b08699404e9fe5137e16370778ee99003748845622eb",
+      "checkpoint_sha256": "bce28dc72c3737ae19ffa057ba056e03d3f531180e7ad55e0b3c93bf4ea4bcaa",
+      "training_seed_n": 1,
+      "validation_selected_wga": 0.8454935622317596,
+      "validation_selected_accuracy": 0.920767306088407
+    },
+    "DPE_legacy": {
+      "model_seed": 0,
+      "fixed_threshold": 0.5,
+      "clean_wga_threshold": null,
+      "joint_threshold": null,
+      "status": "BLOCKED: no independent development data for threshold selection",
+      "reason": "Prototype heads were fitted on all1199 canonical validation images; no held-out calibration rows remain.",
+      "selection_rule": "clean validation WGA desc, AA desc, abs(t-0.5) asc, t asc",
+      "selection_split": "val",
+      "selection_dataset": "canonical_validation1199",
+      "selection_input_sha256": "0d3e7ecae8a0d44e4fe0b08699404e9fe5137e16370778ee99003748845622eb",
+      "checkpoint_sha256": "bce28dc72c3737ae19ffa057ba056e03d3f531180e7ad55e0b3c93bf4ea4bcaa",
+      "training_seed_n": 1
+    }
+  },
+  "grid": {
+    "start": 0.05,
+    "stop": 0.95,
+    "step": 0.01,
+    "count": 91
+  },
+  "tie_rule": "clean validation WGA desc, AA desc, abs(t-0.5) asc, t asc",
+  "selection_datasets": [
+    "canonical_validation1199"
+  ],
+  "test_labels_used_for_selection": false,
+  "training_or_ot_changes": false,
+  "joint_status": "not run: no independent development foreground-blur image bank",
+  "untouched_evaluation_available": false,
+  "evaluation_caveat": "Previously inspected test only; no new unbiased final-test claim. Validation CIs conditional on selected threshold, not selection-adjusted."
+}

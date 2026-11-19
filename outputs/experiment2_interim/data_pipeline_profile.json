@@ -1,0 +1,48 @@
+{
+  "training_executed": false,
+  "model_loaded": false,
+  "device": "CPU",
+  "split": "train only",
+  "samples": 256,
+  "seed": 20261118,
+  "torch_threads": 2,
+  "torch": "2.5.1",
+  "numpy": "1.26.4",
+  "loader": [
+    {
+      "workers": 0,
+      "images": 256,
+      "batches": 2,
+      "wall_seconds": 2.7214414999980363,
+      "batch_wait_seconds": [
+        1.3100346999999601,
+        1.411323700005596
+      ],
+      "includes_worker_startup": true
+    },
+    {
+      "workers": 2,
+      "images": 256,
+      "batches": 2,
+      "wall_seconds": 8.26536599999963,
+      "batch_wait_seconds": [
+        5.068020999999135,
+        2.255526100001589
+      ],
+      "includes_worker_startup": true
+    }
+  ],
+  "compressed_byte_cache": {
+    "images": 64,
+    "decoded_pixels_equal": true,
+    "file_read_seconds": 0.02398139997239923,
+    "file_decode_seconds": 0.09498949997214368,
+    "memory_decode_seconds": 0.09018280002783285
+  },
+  "limitations": [
+    "Local CPU/disk microbenchmark, not cloud end-to-end throughput.",
+    "Worker startup included; short measurement cannot establish steady-state speedup.",
+    "Worker count changes augmentation RNG streams; default production workers stays zero.",
+    "No CUDA forward/backward, AMP, or training timing was executed."
+  ]
+}

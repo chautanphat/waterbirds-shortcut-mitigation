@@ -1,0 +1,17 @@
+severity,group_id,group_name,n,correct,accuracy
+clean,0,Landbird / Land,16,15,0.9375
+clean,1,Landbird / Water,16,15,0.9375
+clean,2,Waterbird / Land,16,16,1.0
+clean,3,Waterbird / Water,16,16,1.0
+mild,0,Landbird / Land,16,5,0.3125
+mild,1,Landbird / Water,16,8,0.5
+mild,2,Waterbird / Land,16,16,1.0
+mild,3,Waterbird / Water,16,16,1.0
+moderate,0,Landbird / Land,16,0,0.0
+moderate,1,Landbird / Water,16,2,0.125
+moderate,2,Waterbird / Land,16,16,1.0
+moderate,3,Waterbird / Water,16,16,1.0
+strong,0,Landbird / Land,16,0,0.0
+strong,1,Landbird / Water,16,3,0.1875
+strong,2,Waterbird / Land,16,16,1.0
+strong,3,Waterbird / Water,16,16,1.0

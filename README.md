@@ -88,3 +88,10 @@ See [`docs/`](docs/) and [`CONTRIBUTING.md`](CONTRIBUTING.md) for detailed proje
 ## DPE experiment evidence
 
 The [five-seed verification report](results/dpe/five_seed_verification_20261112/README.md) gives the current results, uncertainty and supported claims. The [results index](results/dpe/README.md) separates current evidence from historical checks; [notebook notes](notebooks/README.md) describe available workflows.
+## Local counterfactual research tools
+
+Local [Counterfactual Lab](README_COUNTERFACTUAL_LAB.md) and [Failure Case Explorer](README_FAILURE_EXPLORER.md) reuse the existing POTER Runner and Mixer. See [dataset provenance](DATASET_PROVENANCE.md), [integration map](INTEGRATION_MAP.md), and [limitations](KNOWN_LIMITATIONS.md). They measure fixed-checkpoint interventions without training or generative image editing.
+
+The [three-checkpoint failure investigation](results/poter_failure/summary.md) evaluates all 5,794 original test images and a deterministic 100-foreground, 20-species Gaussian replication. [Configuration](configs/poter_failure.yaml) and `scripts/investigate_poter_failure.py` reuse saved weights without training; `scripts/report_poter_failure.py` rebuilds metrics, paired foreground-cluster bootstrap intervals and plots. The available ERM is enhanced ERM, seeds are unmatched, and the explicitly frozen legacy DPE pair lacks historical hash binding; these are exploratory comparisons, not a matched multi-seed algorithm benchmark.
+
+The paired mild-blur re-evaluation uses [configs/mild_blur_v2.yaml](configs/mild_blur_v2.yaml) and `scripts/run_mild_blur_v2.py`. Run `--stage qc`, then `--stage infer`, then `--stage report` (or `--stage all` for a fresh output directory). It preserves the same cohort, masks, backgrounds, checkpoints and 34-column prediction schema. Main sigmas are 0, 0.5, 1 and 2 model-view pixels; sigma4 is supplementary only. The contact sheets, 9,000 prediction rows, clustered bootstrap intervals and final report are saved locally in `outputs/mild_blur_v2/`. Independent human recognizability review remains pending.

@@ -1,0 +1,27 @@
+{
+  "status": "passed_before_model_inference",
+  "images": 3000,
+  "model_view": [
+    224,
+    224
+  ],
+  "all_masks_unchanged": true,
+  "all_outside_foreground_background_pixels_unchanged": true,
+  "shared_previous_prediction_rows": 4500,
+  "shared_counts": {
+    "original@0.0": 300,
+    "natural@0.0": 1200,
+    "background_only@0.0": 1200,
+    "foreground_only@0.0": 300,
+    "natural@4.0": 1200,
+    "foreground_only@4.0": 300
+  },
+  "clean_and_sigma4_hashes_identical": true,
+  "contact_foregrounds": 20,
+  "classes": {
+    "landbird": 10,
+    "waterbird": 10
+  },
+  "species": 20,
+  "human_recognizability": "Not independently reviewed; automated invariance/dimension checks do not establish recognizability"
+}

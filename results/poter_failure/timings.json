@@ -1,0 +1,14 @@
+{
+  "full_original_test": {
+    "sources": 5794,
+    "predictions": 17382,
+    "elapsed_seconds": 111.28402379999898,
+    "csv_sha256": "f871798bdd6a29e2d6e2250a22a4ac46d34f25ef7af5430de5b4ac50ff795705"
+  },
+  "replication100": {
+    "sources": 100,
+    "predictions": 7500,
+    "elapsed_seconds": 45.80994479999936,
+    "csv_sha256": "09745b053e81c0b3e9b2ec08188aff4815c6d03ff8b410c9fc1516c5d9eb9f21"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "generated_utc": "2026-11-18T15:00:03.400492+00:00",
+  "command": [
+    "scripts\\report_poter_failure.py",
+    "--output",
+    "results/poter_failure"
+  ],
+  "python": "3.10.22",
+  "torch": "2.5.1",
+  "torchvision": "0.20.1",
+  "pandas": "2.3.3",
+  "numpy": "1.26.4",
+  "matplotlib": "3.10.9",
+  "source_code_sha256": {
+    "scripts\\report_poter_failure.py": "95a6cae75a9ed8200520d0bda54d4dc3b6a2e1e9a88d4dd193bb9a33b953cd3c",
+    "src\\counterfactual\\failure_statistics.py": "e2c1227774f55d1b4d663548ec312b5ae384a7af94abf3e41bf57e7698be8b6d",
+    "tests\\test_failure_investigation.py": "16ba13023f7b54cfb1400f9113dba790ca793a1cb62a6f88d7031923e4b284af"
+  },
+  "tests_log_sha256": "529c9f9ae9e2a8ba1e3b50348b10b0a0e46aecbd35d0e7aa438621b4348fa260",
+  "checkpoint_and_input_provenance": "checkpoint_audit.json; experiment_config.yaml; timings.json; validation.json",
+  "inference_predictions_changed": false
+}

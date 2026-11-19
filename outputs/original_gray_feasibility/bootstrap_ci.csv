@@ -1,0 +1,91 @@
+policy,comparison,metric,estimate_pct_or_pp,ci95_low_pct_or_pp,ci95_high_pct_or_pp,bootstrap_samples,bootstrap_seed,n_sources,resampling,parameter_reselected,independent_final_test
+full_05,absolute,aa_pct,91.99171556782879,91.31860545391784,92.68208491542975,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,minus_full05,aa_pct,0.0,0.0,0.0,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,absolute,wga_pct,91.04212860310422,89.40133037694014,91.79711751662971,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,minus_full05,wga_pct,0.0,0.0,0.0,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,absolute,landbird_accuracy_pct,91.97339246119734,91.17516629711751,92.74944567627495,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,minus_full05,landbird_accuracy_pct,0.0,0.0,0.0,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,absolute,waterbird_accuracy_pct,92.05607476635514,90.57632398753894,93.45794392523365,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,minus_full05,waterbird_accuracy_pct,0.0,0.0,0.0,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,absolute,group0_accuracy_pct,92.90465631929047,91.84035476718404,93.9689578713969,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,minus_full05,group0_accuracy_pct,0.0,0.0,0.0,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,absolute,group1_accuracy_pct,91.04212860310422,89.84478935698448,92.23946784922394,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,minus_full05,group1_accuracy_pct,0.0,0.0,0.0,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,absolute,group2_accuracy_pct,92.5233644859813,90.49844236760126,94.39641744548284,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,minus_full05,group2_accuracy_pct,0.0,0.0,0.0,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,absolute,group3_accuracy_pct,91.58878504672897,89.40809968847351,93.61370716510903,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,minus_full05,group3_accuracy_pct,0.0,0.0,0.0,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,absolute,landbird_to_waterbird_rate_pct,8.026607538802665,7.250554323725055,8.824833702882486,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,minus_full05,landbird_to_waterbird_rate_pct,0.0,0.0,0.0,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,absolute,waterbird_to_landbird_rate_pct,7.943925233644862,6.54205607476635,9.423676012461058,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+full_05,minus_full05,waterbird_to_landbird_rate_pct,0.0,0.0,0.0,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,absolute,aa_pct,94.7186744908526,94.16637901277183,95.2882292026234,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,minus_full05,aa_pct,2.7269589230238154,2.17466344494305,3.2792544011045948,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,absolute,wga_pct,91.58878504672897,89.09657320872275,92.83489096573209,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,minus_full05,wga_pct,0.5466564436247552,-1.2461059190031136,2.10100089106243,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,absolute,landbird_accuracy_pct,95.58758314855876,95.01053215077606,96.18680709534368,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,minus_full05,landbird_accuracy_pct,3.614190687361429,2.949002217294904,4.257206208425728,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,absolute,waterbird_accuracy_pct,91.66666666666666,90.18691588785046,93.14641744548287,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,minus_full05,waterbird_accuracy_pct,-0.389408099688481,-1.3239875389407985,0.5451713395638649,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,absolute,group0_accuracy_pct,95.78713968957871,94.94456762749446,96.54212860310422,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,minus_full05,group0_accuracy_pct,2.8824833702882415,1.9955654101995606,3.8137472283813736,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,absolute,group1_accuracy_pct,95.3880266075388,94.50110864745011,96.2749445676275,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,minus_full05,group1_accuracy_pct,4.345898004434588,3.370288248337033,5.366962305986698,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,absolute,group2_accuracy_pct,91.74454828660437,89.56386292834891,93.76947040498442,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,minus_full05,group2_accuracy_pct,-0.7788161993769336,-2.1806853582554595,0.6230529595015639,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,absolute,group3_accuracy_pct,91.58878504672897,89.40809968847351,93.61370716510903,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,minus_full05,group3_accuracy_pct,0.0,-1.0903426791277298,1.0903426791277298,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,absolute,landbird_to_waterbird_rate_pct,4.412416851441236,3.813192904656318,4.9894678492239395,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,minus_full05,landbird_to_waterbird_rate_pct,-3.614190687361429,-4.257206208425728,-2.949002217294904,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,absolute,waterbird_to_landbird_rate_pct,8.333333333333343,6.853582554517132,9.81308411214954,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+gray_05,minus_full05,waterbird_to_landbird_rate_pct,0.389408099688481,-0.5451713395638649,1.3239875389407985,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,absolute,aa_pct,95.13289609941319,94.63194684156024,95.68519157749395,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,minus_full05,aa_pct,3.1411805315843964,2.6579219882637233,3.6421297894373583,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,absolute,wga_pct,90.34267912772586,87.85046728971963,91.58878504672897,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,minus_full05,wga_pct,-0.6994494753783584,-2.6479750778816253,0.9003460637834915,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,absolute,landbird_accuracy_pct,96.47450110864744,95.96452328159646,97.00720620842571,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,minus_full05,landbird_accuracy_pct,4.50110864745011,3.9246119733924587,5.0997782705099866,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,absolute,waterbird_accuracy_pct,90.42056074766354,88.86292834890966,91.97819314641744,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,minus_full05,waterbird_accuracy_pct,-1.6355140186915946,-2.3364485981308434,-0.9345794392523459,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,absolute,group0_accuracy_pct,96.71840354767184,96.0088691796009,97.42793791574279,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,minus_full05,group0_accuracy_pct,3.8137472283813736,3.059866962305975,4.611973392461195,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,absolute,group1_accuracy_pct,96.23059866962306,95.43237250554324,96.98447893569845,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,minus_full05,group1_accuracy_pct,5.188470066518846,4.301552106430151,6.164079822616415,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,absolute,group2_accuracy_pct,90.34267912772586,88.00623052959502,92.5233644859813,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,minus_full05,group2_accuracy_pct,-2.1806853582554453,-3.271028037383175,-1.0903426791277298,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,absolute,group3_accuracy_pct,90.49844236760126,88.3177570093458,92.6791277258567,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,minus_full05,group3_accuracy_pct,-1.0903426791277155,-1.8691588785046775,-0.31152647975078196,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,absolute,landbird_to_waterbird_rate_pct,3.525498891352555,2.992793791574285,4.035476718403544,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,minus_full05,landbird_to_waterbird_rate_pct,-4.50110864745011,-5.0997782705099866,-3.9246119733924587,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,absolute,waterbird_to_landbird_rate_pct,9.579439252336456,8.02180685358256,11.137071651090338,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,minus_full05,waterbird_to_landbird_rate_pct,1.6355140186915946,0.9345794392523459,2.3364485981308434,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,absolute,aa_pct,95.13289609941319,94.63194684156024,95.68519157749395,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,minus_full05,aa_pct,3.1411805315843964,2.6579219882637233,3.6421297894373583,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,absolute,wga_pct,90.34267912772586,87.85046728971963,91.58878504672897,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,minus_full05,wga_pct,-0.6994494753783584,-2.6479750778816253,0.9003460637834915,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,absolute,landbird_accuracy_pct,96.47450110864744,95.96452328159646,97.00720620842571,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,minus_full05,landbird_accuracy_pct,4.50110864745011,3.9246119733924587,5.0997782705099866,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,absolute,waterbird_accuracy_pct,90.42056074766354,88.86292834890966,91.97819314641744,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,minus_full05,waterbird_accuracy_pct,-1.6355140186915946,-2.3364485981308434,-0.9345794392523459,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,absolute,group0_accuracy_pct,96.71840354767184,96.0088691796009,97.42793791574279,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,minus_full05,group0_accuracy_pct,3.8137472283813736,3.059866962305975,4.611973392461195,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,absolute,group1_accuracy_pct,96.23059866962306,95.43237250554324,96.98447893569845,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,minus_full05,group1_accuracy_pct,5.188470066518846,4.301552106430151,6.164079822616415,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,absolute,group2_accuracy_pct,90.34267912772586,88.00623052959502,92.5233644859813,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,minus_full05,group2_accuracy_pct,-2.1806853582554453,-3.271028037383175,-1.0903426791277298,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,absolute,group3_accuracy_pct,90.49844236760126,88.3177570093458,92.6791277258567,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,minus_full05,group3_accuracy_pct,-1.0903426791277155,-1.8691588785046775,-0.31152647975078196,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,absolute,landbird_to_waterbird_rate_pct,3.525498891352555,2.992793791574285,4.035476718403544,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,minus_full05,landbird_to_waterbird_rate_pct,-4.50110864745011,-5.0997782705099866,-3.9246119733924587,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,absolute,waterbird_to_landbird_rate_pct,9.579439252336456,8.02180685358256,11.137071651090338,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+boolean_AND,minus_full05,waterbird_to_landbird_rate_pct,1.6355140186915946,0.9345794392523459,2.3364485981308434,2000,20261119,5794,source image within each of four official original groups; all policies paired,False,False
+locked_FDAT,minus_gray05,aa_pct,0.414221608560581,0.17259233690023734,0.6903693476009636,2000,20261119,5794,source image within four original groups; full/gray/FDAT paired,False,False
+locked_FDAT,minus_gray05,wga_pct,-1.2461059190031136,-2.1806853582554595,-0.46728971962616583,2000,20261119,5794,source image within four original groups; full/gray/FDAT paired,False,False
+locked_FDAT,minus_gray05,landbird_accuracy_pct,0.886917960088681,0.620842572062088,1.1751662971175136,2000,20261119,5794,source image within four original groups; full/gray/FDAT paired,False,False
+locked_FDAT,minus_gray05,waterbird_accuracy_pct,-1.2461059190031136,-1.8691588785046775,-0.7009345794392488,2000,20261119,5794,source image within four original groups; full/gray/FDAT paired,False,False
+locked_FDAT,minus_gray05,group0_accuracy_pct,0.9312638580931321,0.5321507760532285,1.3747228381374725,2000,20261119,5794,source image within four original groups; full/gray/FDAT paired,False,False
+locked_FDAT,minus_gray05,group1_accuracy_pct,0.8425720620842583,0.48780487804877737,1.241685144124176,2000,20261119,5794,source image within four original groups; full/gray/FDAT paired,False,False
+locked_FDAT,minus_gray05,group2_accuracy_pct,-1.4018691588785117,-2.3364485981308434,-0.6230529595015497,2000,20261119,5794,source image within four original groups; full/gray/FDAT paired,False,False
+locked_FDAT,minus_gray05,group3_accuracy_pct,-1.0903426791277155,-1.8691588785046775,-0.31152647975078196,2000,20261119,5794,source image within four original groups; full/gray/FDAT paired,False,False
+locked_FDAT,minus_gray05,landbird_to_waterbird_rate_pct,-0.886917960088681,-1.1751662971175136,-0.620842572062088,2000,20261119,5794,source image within four original groups; full/gray/FDAT paired,False,False
+locked_FDAT,minus_gray05,waterbird_to_landbird_rate_pct,1.2461059190031136,0.7009345794392488,1.8691588785046775,2000,20261119,5794,source image within four original groups; full/gray/FDAT paired,False,False

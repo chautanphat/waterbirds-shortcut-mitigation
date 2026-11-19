@@ -1,0 +1,26 @@
+{
+  "source_root": "outputs/mild_blur_v2",
+  "output_root": "outputs/failure_verification",
+  "sampling_seed": 20261118,
+  "primary_sigmas": [0.0, 0.5, 1.0, 2.0],
+  "bootstrap_samples": 2000,
+  "target_seeds": {"POTER": [0, 1, 2], "ERM_enhanced": [0, 1, 2], "DPE_legacy": [0, 1, 2]},
+  "training_policy": "Do not start training. Notify the user first and wait for confirmation; the user cannot train locally.",
+  "allow_training": false,
+  "allow_new_inference": false,
+  "additional_species_bootstrap": true,
+  "training_data_root": "D:/POTER_data/cub/data/waterbird_complete95_forest2water2",
+  "checkpoint_search_roots": [
+    "checkpoints",
+    "C:/Users/ADMIN/OneDrive - KonTum01/Desktop/waterbirds-shortcut-mitigation/checkpoints",
+    "C:/Users/ADMIN/OneDrive - KonTum01/Desktop/waterbirds-shortcut-mitigation/outputs",
+    "D:/POTER_logs",
+    "D:/DPE_Research"
+  ],
+  "additional_checkpoint_candidates": [
+    "C:/Users/ADMIN/Downloads/ckpt_last.zip",
+    "C:/Users/ADMIN/Downloads/ckpt_last (1).zip",
+    "C:/Users/ADMIN/Downloads/ensemble.zip",
+    "C:/Users/ADMIN/Downloads/ensemble (1).zip"
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "source_run": "20261118T123059Z_48f0272960",
+  "representative_demos": {
+    "gaussian": "20261118T123339Z_06e2f340ac",
+    "contrast": "20261118T125909Z_f754cb571a",
+    "occlusion": "20261118T125922Z_7cc3576177"
+  },
+  "all_runs": [
+    {
+      "run_id": "20261118T120628Z_ebf2840e00",
+      "operator": "gaussian",
+      "source_birds": 1,
+      "rows": 14,
+      "status": "completed",
+      "role": "repeated_QA"
+    },
+    {
+      "run_id": "20261118T123059Z_48f0272960",
+      "operator": "gaussian",
+      "source_birds": 16,
+      "rows": 400,
+      "status": "completed",
+      "role": "main_cohort"
+    },
+    {
+      "run_id": "20261118T123339Z_06e2f340ac",
+      "operator": "gaussian",
+      "source_birds": 1,
+      "rows": 15,
+      "status": "completed",
+      "role": "representative_smoke"
+    },
+    {
+      "run_id": "20261118T123846Z_1f31a11c5f",
+      "operator": "gaussian",
+      "source_birds": 1,
+      "rows": 15,
+      "status": "completed",
+      "role": "repeated_QA"
+    },
+    {
+      "run_id": "20261118T125909Z_f754cb571a",
+      "operator": "contrast",
+      "source_birds": 1,
+      "rows": 15,
+      "status": "completed",
+      "role": "representative_smoke"
+    },
+    {
+      "run_id": "20261118T125922Z_7cc3576177",
+      "operator": "occlusion",
+      "source_birds": 1,
+      "rows": 15,
+      "status": "completed",
+      "role": "representative_smoke"
+    },
+    {
+      "run_id": "20261118T130858Z_17c1fdb45d",
+      "operator": "contrast",
+      "source_birds": 1,
+      "rows": 15,
+      "status": "completed",
+      "role": "repeated_QA"
+    }
+  ],
+  "script_sha256": "c3ecf0842d9856cb131b98fff8a0dea14e5159cce97bd2d53bfd5a62aa934e1e",
+  "no_new_inference": true,
+  "source_files_sha256": {
+    "predictions.csv": "5e633a116e3f23aa4d3d4c7b47fd0a3d4d3b15aba3253876c92b4839d114cbde",
+    "paired_metrics.csv": "f47943a4af87f425a15e1d457d167965432c8ae7fdbaa23af390712b57c54931",
+    "summary.json": "8db63ce30ea536fb8731d1fdeb3f17edcf68bad9a7e49e50d19c4e33645d6ea0",
+    "run_config.json": "4f4fd5e6f47e58a6ce701276f13327890bd4136cc358547c4579a1619b5a9539"
+  },
+  "source_species": {
+    "004.Groove_billed_Ani": 8,
+    "001.Black_footed_Albatross": 8
+  },
+  "unique_raw_inputs": 340,
+  "natural_failures": 80,
+  "paired_flips": 10,
+  "flip_source_birds": [
+    "179",
+    "183",
+    "186",
+    "190",
+    "191",
+    "192"
+  ]
+}

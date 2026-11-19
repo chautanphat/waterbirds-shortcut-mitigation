@@ -1,0 +1,35 @@
+version: 1
+sampling_seed: 20261118
+bootstrap_samples: 2000
+batch_size: 32
+device: cuda
+data_root: data/waterbirds
+output_root: experiments/counterfactual_verification/failure_smoke
+poter_checkpoint: checkpoints/poter_kaggle_recovered/CUB/Clean/POTER_CUB_seed1_kaggle/best_validation.pt
+legacy_root: C:/Users/ADMIN/OneDrive - KonTum01/Desktop/waterbirds-shortcut-mitigation
+erm_checkpoint: checkpoints/kaggle_exploration/seed0/ckpt_last.pt
+dpe_ensemble: checkpoints/kaggle_exploration/seed0/ensemble.pt
+expected_erm_sha256: bce28dc72c3737ae19ffa057ba056e03d3f531180e7ad55e0b3c93bf4ea4bcaa
+expected_heads_sha256: 3324222c85537d5db2fe3509b13b2e3481c609d2c1745b68da8f114f281e34da
+preliminary_run: experiments/counterfactual_lab/20261118T123059Z_48f0272960
+foregrounds_per_class: 50
+species_per_class: 10
+background_ids:
+- hf-bg-11699
+- hf-bg-7032
+- hf-bg-4121
+- hf-bg-7173
+severities:
+  clean: 0.0
+  mild: 1.5
+  moderate: 4.0
+  strong: 9.0
+exclude_preliminary_foregrounds: true
+exclude_known_mislabeled_species_from_replication: true
+known_mislabeled_species:
+- 021.Eastern_Towhee
+- 088.Western_Meadowlark
+- 102.Western_Wood_Pewee
+save_example_foregrounds_per_class: 1
+full_original_test: true
+training: forbidden

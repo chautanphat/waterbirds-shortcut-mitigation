@@ -1,0 +1,169 @@
+{
+  "POTER": {
+    "model_id": "POTER",
+    "method": "poter",
+    "checkpoint": "C:\\Users\\ADMIN\\OneDrive - KonTum01\\Desktop\\POTER\\checkpoints\\poter_kaggle_recovered\\CUB\\Clean\\POTER_CUB_seed1_kaggle\\best_validation.pt",
+    "checkpoint_sha256": "4f405e0e9ec34420aeae5fc2452635c6bc700d714fd033c4c289bea9d2434a9e",
+    "epoch": 258,
+    "device": "cuda",
+    "class_index_to_name": {
+      "0": "landbird",
+      "1": "waterbird"
+    },
+    "preprocess": {
+      "resize": [
+        256,
+        256
+      ],
+      "interpolation": "PIL bilinear",
+      "center_crop": [
+        224,
+        224
+      ],
+      "color": "EXIF transpose then RGB",
+      "tensor": "float32 RGB / 255 CHW",
+      "mean": [
+        0.485,
+        0.456,
+        0.406
+      ],
+      "std": [
+        0.229,
+        0.224,
+        0.225
+      ]
+    },
+    "preprocess_fingerprint": "80291833910bbc87ea6a169b6ab66849e031141109f0382c5bd4805f28bfea41",
+    "heads_sha256": null,
+    "numeric_runtime": {
+      "torch": "2.5.1",
+      "cudnn": 90100,
+      "cudnn_allow_tf32": false,
+      "matmul_allow_tf32": false,
+      "deterministic_algorithms": false,
+      "cudnn_benchmark": false
+    },
+    "score_type": "logit",
+    "selection": "Fixed supplied checkpoint; no fitting or test-label model selection",
+    "model_seed": 1
+  },
+  "ERM_enhanced": {
+    "model_id": "ERM_enhanced",
+    "method": "erm",
+    "checkpoint": "C:\\Users\\ADMIN\\OneDrive - KonTum01\\Desktop\\waterbirds-shortcut-mitigation\\checkpoints\\kaggle_exploration\\seed0\\ckpt_last.pt",
+    "checkpoint_sha256": "bce28dc72c3737ae19ffa057ba056e03d3f531180e7ad55e0b3c93bf4ea4bcaa",
+    "epoch": null,
+    "device": "cuda",
+    "class_index_to_name": {
+      "0": "landbird",
+      "1": "waterbird"
+    },
+    "preprocess": {
+      "resize": [
+        256,
+        256
+      ],
+      "interpolation": "PIL bilinear",
+      "center_crop": [
+        224,
+        224
+      ],
+      "color": "EXIF transpose then RGB",
+      "tensor": "float32 RGB / 255 CHW",
+      "mean": [
+        0.485,
+        0.456,
+        0.406
+      ],
+      "std": [
+        0.229,
+        0.224,
+        0.225
+      ]
+    },
+    "preprocess_fingerprint": "80291833910bbc87ea6a169b6ab66849e031141109f0382c5bd4805f28bfea41",
+    "heads_sha256": null,
+    "numeric_runtime": {
+      "torch": "2.5.1",
+      "cudnn": 90100,
+      "cudnn_allow_tf32": false,
+      "matmul_allow_tf32": false,
+      "deterministic_algorithms": false,
+      "cudnn_benchmark": false
+    },
+    "score_type": "logit",
+    "selection": "Fixed supplied checkpoint; no fitting or test-label model selection",
+    "model_seed": 0,
+    "training_recipe": {
+      "profile": "dpe_enhanced_erm",
+      "dataset": {
+        "data_dir": "/kaggle/working/dpe_ermstar/data/waterbirds",
+        "batch_size": 128,
+        "batch_size_eval": 512,
+        "workers": 1,
+        "augmentation": true
+      },
+      "model": {
+        "weights": "IMAGENET1K_V2",
+        "freeze_bn": false
+      },
+      "training": {
+        "steps": null,
+        "epochs": 400,
+        "lr": 0.001,
+        "momentum": 0.9,
+        "weight_decay": 0.0,
+        "sampling": "class_balanced",
+        "eval_every": 300,
+        "seed": 0,
+        "device": "cuda:0"
+      },
+      "output_dir": "/kaggle/working/dpe_ermstar/jobs/seed0/backbone"
+    }
+  },
+  "DPE_legacy": {
+    "model_id": "DPE_legacy",
+    "seed": 0,
+    "backbone_sha256": "bce28dc72c3737ae19ffa057ba056e03d3f531180e7ad55e0b3c93bf4ea4bcaa",
+    "heads_sha256": "3324222c85537d5db2fe3509b13b2e3481c609d2c1745b68da8f114f281e34da",
+    "heads_path": "C:\\Users\\ADMIN\\OneDrive - KonTum01\\Desktop\\waterbirds-shortcut-mitigation\\checkpoints\\kaggle_exploration\\seed0\\ensemble.pt",
+    "heads": 15,
+    "aggregation": "equal mean of 15 head probabilities; row-zscore ddof0; L2; IsoMax distance; temperature1",
+    "historical_pair_binding": "Not hash-bound in legacy ensemble; explicitly frozen co-located pair, historical association not independently verified",
+    "training_pool": "all 1199 canonical validation IDs; no test IDs",
+    "head_epochs": [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1
+    ],
+    "training": {
+      "batch_size": 256,
+      "cov_reg": 500000.0,
+      "entropic_scale": 30.0,
+      "epochs": 20,
+      "heads": 15,
+      "lr": 0.001,
+      "momentum": 0.9,
+      "wd_weight": 10.0
+    }
+  },
+  "comparison_limitations": [
+    "ERM checkpoint is enhanced/class-balanced ERM, not a standard uniform ERM baseline.",
+    "POTER seed1 versus ERM/DPE seed0; one available image backbone per method, no matched three-seed comparison.",
+    "Legacy DPE head/backbone historical hash binding is absent; exploratory pair association only.",
+    "Same ResNet50 architecture, evaluation images, preprocessing and FP32 device settings; training recipes differ.",
+    "DPE scores are log mean probabilities, not raw CNN logits; cross-model logit magnitudes are not comparable."
+  ]
+}
