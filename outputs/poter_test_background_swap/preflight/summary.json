@@ -1,0 +1,39 @@
+{
+  "sources": 16,
+  "composite_inputs": 32,
+  "composite_accuracy": 1.0,
+  "composite_wga": 1.0,
+  "original_accuracy": 1.0,
+  "original_wga": 1.0,
+  "accuracy_by_treatment": {
+    "land": {
+      "correct": 16,
+      "n": 16,
+      "accuracy": 1.0
+    },
+    "water": {
+      "correct": 16,
+      "n": 16,
+      "accuracy": 1.0
+    }
+  },
+  "paired_flips": 0,
+  "land_to_water": 0,
+  "water_to_land": 0,
+  "flips_by_class": {
+    "0": {
+      "n": 8,
+      "flips": 0,
+      "mean_delta_p": 0.040355495642870665
+    },
+    "1": {
+      "n": 8,
+      "flips": 0,
+      "mean_delta_p": -0.008282281458377838
+    }
+  },
+  "opposite_background_correct": 16,
+  "low_coverage_mask_sources": 0,
+  "original_wrong_to_opposite_correct": 0,
+  "original_correct_to_opposite_wrong": 0
+}

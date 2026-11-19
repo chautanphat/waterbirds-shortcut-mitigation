@@ -1,0 +1,5 @@
+true_y,background_type,correct,n,accuracy
+0,land,8,8,1.0
+0,water,8,8,1.0
+1,land,8,8,1.0
+1,water,8,8,1.0

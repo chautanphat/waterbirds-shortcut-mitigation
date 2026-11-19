@@ -1,0 +1,39 @@
+{
+  "sources": 5704,
+  "composite_inputs": 11408,
+  "composite_accuracy": 0.925140252454418,
+  "composite_wga": 0.8866962305986696,
+  "original_accuracy": 0.9311009817671809,
+  "original_wga": 0.9104212860310421,
+  "accuracy_by_treatment": {
+    "land": {
+      "correct": 5370,
+      "n": 5704,
+      "accuracy": 0.9414446002805049
+    },
+    "water": {
+      "correct": 5184,
+      "n": 5704,
+      "accuracy": 0.908835904628331
+    }
+  },
+  "paired_flips": 370,
+  "land_to_water": 285,
+  "water_to_land": 85,
+  "flips_by_class": {
+    "0": {
+      "n": 4510,
+      "flips": 357,
+      "mean_delta_p": 0.033509248812288506
+    },
+    "1": {
+      "n": 1194,
+      "flips": 13,
+      "mean_delta_p": 0.006038905887348169
+    }
+  },
+  "opposite_background_correct": 5293,
+  "low_coverage_mask_sources": 0,
+  "original_wrong_to_opposite_correct": 182,
+  "original_correct_to_opposite_wrong": 200
+}

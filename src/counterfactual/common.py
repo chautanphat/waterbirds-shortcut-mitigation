@@ -9,6 +9,9 @@ DEFAULT_DATA = ROOT / 'data/waterbirds'
 DEFAULT_RUNS = ROOT / 'experiments/counterfactual_lab'
 DEFAULT_CHECKPOINT = ROOT / 'checkpoints/poter_kaggle_recovered/CUB/Clean/POTER_CUB_seed1_kaggle/best_validation.pt'
 LABELS = ['landbird', 'waterbird']
+KNOWN_WATERBIRDS_LABEL_ERROR_SPECIES = frozenset({
+    '021.Eastern_Towhee', '088.Western_Meadowlark', '102.Western_Wood_Pewee',
+})
 SPLITS = {0: 'train', 1: 'val', 2: 'test'}
 SEVERITIES = {'clean': 0., 'mild': 1.5, 'moderate': 4., 'strong': 9.}
 OPERATOR_STRENGTHS = {

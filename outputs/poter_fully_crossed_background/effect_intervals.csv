@@ -1,0 +1,91 @@
+bank,true_class,method,metric,estimate,ci_low,ci_high,n_foregrounds,n_species,n_land_scenes,n_water_scenes,bootstrap_replicates,foreground_unit,scene_unit
+A,Landbird,species_cluster_fixed_scenes,margin_D,0.04612028408795599,0.017104385529032717,0.07564807843914598,80,71,10,10,2000,species within true class,scenes fixed
+A,Landbird,species_cluster_fixed_scenes,delta_p,0.007695199404843145,0.0023073663730373293,0.013135220152717241,80,71,10,10,2000,species within true class,scenes fixed
+A,Landbird,species_cluster_fixed_scenes,water_minus_land_error,0.007499999999999979,-0.008749999999999994,0.027587341197822135,80,71,10,10,2000,species within true class,scenes fixed
+A,Landbird,species_cluster_fixed_scenes,cross_type_flip_rate,0.067,0.034173434160775944,0.10649783549783548,80,71,10,10,2000,species within true class,scenes fixed
+A,Landbird,species_cluster_fixed_scenes,within_type_scene_margin_sd,0.14472701940187932,0.13352746507184504,0.15915489391141208,80,71,10,10,2000,species within true class,scenes fixed
+A,Waterbird,species_cluster_fixed_scenes,margin_D,0.0857061066804452,0.04372292225537783,0.13223827357418474,80,41,10,10,2000,species within true class,scenes fixed
+A,Waterbird,species_cluster_fixed_scenes,delta_p,0.012264524810016164,0.005472178077588069,0.01979229754443529,80,41,10,10,2000,species within true class,scenes fixed
+A,Waterbird,species_cluster_fixed_scenes,water_minus_land_error,0.0012499999999999942,-0.0037986854917234727,0.006410256410256408,80,41,10,10,2000,species within true class,scenes fixed
+A,Waterbird,species_cluster_fixed_scenes,cross_type_flip_rate,0.013749999999999998,0.0037974683544305995,0.026915740740740938,80,41,10,10,2000,species within true class,scenes fixed
+A,Waterbird,species_cluster_fixed_scenes,within_type_scene_margin_sd,0.14028654110902103,0.13119297714292563,0.15418087013777995,80,41,10,10,2000,species within true class,scenes fixed
+A,balanced,species_cluster_fixed_scenes,margin_D,0.0659131953842006,0.03966446589467125,0.0927728689258325,160,112,10,10,2000,species within true class,scenes fixed
+A,balanced,species_cluster_fixed_scenes,delta_p,0.009979862107429655,0.0056049704798482826,0.014505737781638063,160,112,10,10,2000,species within true class,scenes fixed
+A,balanced,species_cluster_fixed_scenes,water_minus_land_error,0.0043749999999999865,-0.004291795783639971,0.014858952417173724,160,112,10,10,2000,species within true class,scenes fixed
+A,balanced,species_cluster_fixed_scenes,cross_type_flip_rate,0.040375,0.022635255656773545,0.06098794796821123,160,112,10,10,2000,species within true class,scenes fixed
+A,balanced,species_cluster_fixed_scenes,within_type_scene_margin_sd,0.14250678025545016,0.13553877258596628,0.15315388517168643,160,112,10,10,2000,species within true class,scenes fixed
+A,Landbird,crossed_species_scene,margin_D,0.04612028408795599,-0.08721258374119698,0.1733486640110176,80,71,10,10,2000,species within true class,scene within bank/type
+A,Landbird,crossed_species_scene,delta_p,0.007695199404843145,-0.013545234377673642,0.02870163032919844,80,71,10,10,2000,species within true class,scene within bank/type
+A,Landbird,crossed_species_scene,water_minus_land_error,0.007499999999999979,-0.03580484330484332,0.05064615837503674,80,71,10,10,2000,species within true class,scene within bank/type
+A,Landbird,crossed_species_scene,cross_type_flip_rate,0.067,0.03487789243277049,0.10924999999999999,80,71,10,10,2000,species within true class,scene within bank/type
+A,Landbird,crossed_species_scene,within_type_scene_margin_sd,0.14472701940187932,0.0961824043715392,0.1733047115165755,80,71,10,10,2000,species within true class,scene within bank/type
+A,Waterbird,crossed_species_scene,margin_D,0.0857061066804452,-0.048376302106389935,0.2144824061905848,80,41,10,10,2000,species within true class,scene within bank/type
+A,Waterbird,crossed_species_scene,delta_p,0.012264524810016164,-0.006708933044155937,0.030223750540169507,80,41,10,10,2000,species within true class,scene within bank/type
+A,Waterbird,crossed_species_scene,water_minus_land_error,0.0012499999999999942,-0.010393028024606971,0.01579597141000646,80,41,10,10,2000,species within true class,scene within bank/type
+A,Waterbird,crossed_species_scene,cross_type_flip_rate,0.013749999999999998,0.0012345679012344564,0.03209876543209837,80,41,10,10,2000,species within true class,scene within bank/type
+A,Waterbird,crossed_species_scene,within_type_scene_margin_sd,0.14028654110902103,0.08814090654003358,0.17308576528856223,80,41,10,10,2000,species within true class,scene within bank/type
+A,balanced,crossed_species_scene,margin_D,0.0659131953842006,-0.05007356728039505,0.17860757699952726,160,112,10,10,2000,species within true class,scene within bank/type
+A,balanced,crossed_species_scene,delta_p,0.009979862107429655,-0.007811388827461329,0.026878250792764135,160,112,10,10,2000,species within true class,scene within bank/type
+A,balanced,crossed_species_scene,water_minus_land_error,0.0043749999999999865,-0.018333657903278157,0.026928995253164528,160,112,10,10,2000,species within true class,scene within bank/type
+A,balanced,crossed_species_scene,cross_type_flip_rate,0.040375,0.021981647673314394,0.06238425257647158,160,112,10,10,2000,species within true class,scene within bank/type
+A,balanced,crossed_species_scene,within_type_scene_margin_sd,0.14250678025545016,0.09783503172732065,0.16723506244335723,160,112,10,10,2000,species within true class,scene within bank/type
+B,Landbird,species_cluster_fixed_scenes,margin_D,0.0009101794229353644,-0.021973600845480612,0.026066468558136758,80,71,10,10,2000,species within true class,scenes fixed
+B,Landbird,species_cluster_fixed_scenes,delta_p,0.0011728957761079073,-0.003010541781241819,0.006065383886042083,80,71,10,10,2000,species within true class,scenes fixed
+B,Landbird,species_cluster_fixed_scenes,water_minus_land_error,0.007499999999999993,-0.008974358974358984,0.02727840909090907,80,71,10,10,2000,species within true class,scenes fixed
+B,Landbird,species_cluster_fixed_scenes,cross_type_flip_rate,0.04625,0.02023493975903615,0.07679142300194931,80,71,10,10,2000,species within true class,scenes fixed
+B,Landbird,species_cluster_fixed_scenes,within_type_scene_margin_sd,0.10875800348215418,0.09629178641054548,0.12685719420322866,80,71,10,10,2000,species within true class,scenes fixed
+B,Waterbird,species_cluster_fixed_scenes,margin_D,-0.0006787391530815867,-0.040208220281913856,0.04282781741672303,80,41,10,10,2000,species within true class,scenes fixed
+B,Waterbird,species_cluster_fixed_scenes,delta_p,0.0017132887616753134,-0.00474457750864381,0.009201594851462599,80,41,10,10,2000,species within true class,scenes fixed
+B,Waterbird,species_cluster_fixed_scenes,water_minus_land_error,0.0012499999999999942,-0.011250000000000003,0.018518518518518517,80,41,10,10,2000,species within true class,scenes fixed
+B,Waterbird,species_cluster_fixed_scenes,cross_type_flip_rate,0.018249999999999995,0.004854781771502145,0.03802920227920246,80,41,10,10,2000,species within true class,scenes fixed
+B,Waterbird,species_cluster_fixed_scenes,within_type_scene_margin_sd,0.1151840662780727,0.10724202923593272,0.12675008916506927,80,41,10,10,2000,species within true class,scenes fixed
+B,balanced,species_cluster_fixed_scenes,margin_D,0.00011572013492688882,-0.021942303469759474,0.02400738895961163,160,112,10,10,2000,species within true class,scenes fixed
+B,balanced,species_cluster_fixed_scenes,delta_p,0.0014430922688916104,-0.0025025009465688445,0.005634795297638247,160,112,10,10,2000,species within true class,scenes fixed
+B,balanced,species_cluster_fixed_scenes,water_minus_land_error,0.0043749999999999935,-0.0067903688266840465,0.016729448280928587,160,112,10,10,2000,species within true class,scenes fixed
+B,balanced,species_cluster_fixed_scenes,cross_type_flip_rate,0.03225,0.01710280389978256,0.05087414152759957,160,112,10,10,2000,species within true class,scenes fixed
+B,balanced,species_cluster_fixed_scenes,within_type_scene_margin_sd,0.11197103488011345,0.10519792744449594,0.12339766221618338,160,112,10,10,2000,species within true class,scenes fixed
+B,Landbird,crossed_species_scene,margin_D,0.0009101794229353644,-0.0969616470225133,0.10024016796774206,80,71,10,10,2000,species within true class,scene within bank/type
+B,Landbird,crossed_species_scene,delta_p,0.0011728957761079073,-0.014405882803639282,0.017960680064541965,80,71,10,10,2000,species within true class,scene within bank/type
+B,Landbird,crossed_species_scene,water_minus_land_error,0.007499999999999993,-0.022229166666666657,0.043999999999999984,80,71,10,10,2000,species within true class,scene within bank/type
+B,Landbird,crossed_species_scene,cross_type_flip_rate,0.04625,0.01809407665505226,0.08182210998877663,80,71,10,10,2000,species within true class,scene within bank/type
+B,Landbird,crossed_species_scene,within_type_scene_margin_sd,0.10875800348215418,0.06820963638161257,0.13871713452151402,80,71,10,10,2000,species within true class,scene within bank/type
+B,Waterbird,crossed_species_scene,margin_D,-0.0006787391530815867,-0.1088509905245443,0.1128268783695487,80,41,10,10,2000,species within true class,scene within bank/type
+B,Waterbird,crossed_species_scene,delta_p,0.0017132887616753134,-0.015031075472778405,0.019222072070358497,80,41,10,10,2000,species within true class,scene within bank/type
+B,Waterbird,crossed_species_scene,water_minus_land_error,0.0012499999999999942,-0.016887868229331648,0.025,80,41,10,10,2000,species within true class,scene within bank/type
+B,Waterbird,crossed_species_scene,cross_type_flip_rate,0.018249999999999995,0.0024992283950615213,0.040259493670885854,80,41,10,10,2000,species within true class,scene within bank/type
+B,Waterbird,crossed_species_scene,within_type_scene_margin_sd,0.1151840662780727,0.07479274836867478,0.14308684942219618,80,41,10,10,2000,species within true class,scene within bank/type
+B,balanced,crossed_species_scene,margin_D,0.00011572013492688882,-0.08650961632766284,0.09442369218552321,160,112,10,10,2000,species within true class,scene within bank/type
+B,balanced,crossed_species_scene,delta_p,0.0014430922688916104,-0.012790775319529052,0.016919174318152534,160,112,10,10,2000,species within true class,scene within bank/type
+B,balanced,crossed_species_scene,water_minus_land_error,0.0043749999999999935,-0.011786061931895256,0.02312515474494642,160,112,10,10,2000,species within true class,scene within bank/type
+B,balanced,crossed_species_scene,cross_type_flip_rate,0.03225,0.015436528542659929,0.05346026234567904,160,112,10,10,2000,species within true class,scene within bank/type
+B,balanced,crossed_species_scene,within_type_scene_margin_sd,0.11197103488011345,0.07828444108719405,0.1346415578285435,160,112,10,10,2000,species within true class,scene within bank/type
+ALL,Landbird,species_cluster_fixed_scenes,margin_D,0.023515231755445676,0.0013214977022989961,0.04791924523777398,80,71,20,20,2000,species within true class,scenes fixed
+ALL,Landbird,species_cluster_fixed_scenes,delta_p,0.004434047590475526,0.0005341529198532133,0.008765407923917655,80,71,20,20,2000,species within true class,scenes fixed
+ALL,Landbird,species_cluster_fixed_scenes,water_minus_land_error,0.007499999999999993,-0.0036596657633243164,0.0200030487804878,80,71,20,20,2000,species within true class,scenes fixed
+ALL,Landbird,species_cluster_fixed_scenes,cross_type_flip_rate,0.059062500000000004,0.028705767761650097,0.09276866883116874,80,71,20,20,2000,species within true class,scenes fixed
+ALL,Landbird,species_cluster_fixed_scenes,within_type_scene_margin_sd,0.13271395208710307,0.12245359649209565,0.1467106869733944,80,71,20,20,2000,species within true class,scenes fixed
+ALL,Waterbird,species_cluster_fixed_scenes,margin_D,0.04251368376368192,0.0029827881216549948,0.0890689994205586,80,41,20,20,2000,species within true class,scenes fixed
+ALL,Waterbird,species_cluster_fixed_scenes,delta_p,0.006988906785845739,0.0005168673170696331,0.014708556443351466,80,41,20,20,2000,species within true class,scenes fixed
+ALL,Waterbird,species_cluster_fixed_scenes,water_minus_land_error,0.0012500000000000011,-0.006707317073170731,0.010256410256410255,80,41,20,20,2000,species within true class,scenes fixed
+ALL,Waterbird,species_cluster_fixed_scenes,cross_type_flip_rate,0.015749999999999997,0.005128205128204683,0.032217622626581836,80,41,20,20,2000,species within true class,scenes fixed
+ALL,Waterbird,species_cluster_fixed_scenes,within_type_scene_margin_sd,0.13426263027214091,0.1262917915936523,0.1464743414955145,80,41,20,20,2000,species within true class,scenes fixed
+ALL,balanced,species_cluster_fixed_scenes,margin_D,0.0330144577595638,0.010034630142129727,0.058950742162903136,160,112,20,20,2000,species within true class,scenes fixed
+ALL,balanced,species_cluster_fixed_scenes,delta_p,0.0057114771881606324,0.001761346245214579,0.01012466083364911,160,112,20,20,2000,species within true class,scenes fixed
+ALL,balanced,species_cluster_fixed_scenes,water_minus_land_error,0.004374999999999997,-0.0025078318556348315,0.011909735212393064,160,112,20,20,2000,species within true class,scenes fixed
+ALL,balanced,species_cluster_fixed_scenes,cross_type_flip_rate,0.03740625,0.02097686312530039,0.05624902170834508,160,112,20,20,2000,species within true class,scenes fixed
+ALL,balanced,species_cluster_fixed_scenes,within_type_scene_margin_sd,0.133488291179622,0.12741507365785604,0.14323311348510961,160,112,20,20,2000,species within true class,scenes fixed
+ALL,Landbird,crossed_species_scene,margin_D,0.023515231755445676,-0.06212443178908251,0.1042519172075201,80,71,20,20,2000,species within true class,scene within bank/type
+ALL,Landbird,crossed_species_scene,delta_p,0.004434047590475526,-0.009340192124366882,0.018186875670504338,80,71,20,20,2000,species within true class,scene within bank/type
+ALL,Landbird,crossed_species_scene,water_minus_land_error,0.007499999999999993,-0.017285185185185174,0.035258333333333336,80,71,20,20,2000,species within true class,scene within bank/type
+ALL,Landbird,crossed_species_scene,cross_type_flip_rate,0.059062500000000004,0.02711249999999999,0.09652908958130471,80,71,20,20,2000,species within true class,scene within bank/type
+ALL,Landbird,crossed_species_scene,within_type_scene_margin_sd,0.13271395208710307,0.10294602773786468,0.1611219726764662,80,71,20,20,2000,species within true class,scene within bank/type
+ALL,Waterbird,crossed_species_scene,margin_D,0.04251368376368192,-0.0487035022946181,0.13034676347031782,80,41,20,20,2000,species within true class,scene within bank/type
+ALL,Waterbird,crossed_species_scene,delta_p,0.006988906785845739,-0.006607794229668004,0.020171245011035344,80,41,20,20,2000,species within true class,scene within bank/type
+ALL,Waterbird,crossed_species_scene,water_minus_land_error,0.0012500000000000011,-0.00987962962962963,0.014745370370370367,80,41,20,20,2000,species within true class,scene within bank/type
+ALL,Waterbird,crossed_species_scene,cross_type_flip_rate,0.015749999999999997,0.003658536585365629,0.03456932870370349,80,41,20,20,2000,species within true class,scene within bank/type
+ALL,Waterbird,crossed_species_scene,within_type_scene_margin_sd,0.13426263027214091,0.10501971363809467,0.1591498775414535,80,41,20,20,2000,species within true class,scene within bank/type
+ALL,balanced,crossed_species_scene,margin_D,0.0330144577595638,-0.042342240228118284,0.10677306366299084,160,112,20,20,2000,species within true class,scene within bank/type
+ALL,balanced,crossed_species_scene,delta_p,0.0057114771881606324,-0.006043528939442926,0.017718506876266294,160,112,20,20,2000,species within true class,scene within bank/type
+ALL,balanced,crossed_species_scene,water_minus_land_error,0.004374999999999997,-0.008750267094017094,0.018072085237927794,160,112,20,20,2000,species within true class,scene within bank/type
+ALL,balanced,crossed_species_scene,cross_type_flip_rate,0.03740625,0.019921181820948108,0.058243055555555534,160,112,20,20,2000,species within true class,scene within bank/type
+ALL,balanced,crossed_species_scene,within_type_scene_margin_sd,0.133488291179622,0.10893127300961641,0.15414836422099437,160,112,20,20,2000,species within true class,scene within bank/type

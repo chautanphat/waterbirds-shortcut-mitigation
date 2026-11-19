@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POTER · Gallery ảnh dự đoán sai</title>
+<style>
+  :root { color-scheme: light; --ink:#172720; --muted:#515d56; --paper:#f4f5ee; --white:#fff;
+    --line:#d7ded4; --dark:#16372f; --lime:#dceba4; --error:#92292c; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:1rem/1.5 system-ui,sans-serif; }
+  main { max-width:1260px; margin:auto; padding:clamp(16px,4vw,44px); }
+  header { background:var(--dark); color:var(--white); border-radius:20px; padding:clamp(22px,4vw,44px); }
+  h1,h2,p,dl,dd { margin:0; }
+  h1 { max-width:23ch; font-size:clamp(2rem,4.6vw,3.8rem); line-height:1.13; letter-spacing:-.04em; margin-bottom:12px; }
+  h2 { font-size:1.35rem; margin:0 0 10px; }
+  header p { color:#e2ebe6; max-width:65ch; }
+  .metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:26px; }
+  .metric { border-top:1px solid #547167; padding-top:14px; }
+  .metric strong { display:block; color:var(--lime); font-size:clamp(1.35rem,4vw,2.15rem); letter-spacing:-.035em; }
+  .metric span { font-size:.85rem; }
+  section { margin-top:28px; }
+  .group-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+  button,select,input { font:inherit; color:inherit; }
+  button,select,input[type=search] { border:1px solid var(--line); background:var(--white); border-radius:9px; }
+  button { cursor:pointer; }
+  button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid #316855; outline-offset:3px; }
+  .group-button { padding:12px; text-align:left; }
+  .group-button span,.group-button strong { display:block; }
+  .group-button .small { font-size:.8rem; color:var(--muted); }
+  .group-button[aria-pressed=true] { background:#e3eed7; border-color:#669064; }
+  .controls { display:grid; grid-template-columns:minmax(180px,1.7fr) repeat(2,minmax(145px,1fr)) auto;
+    gap:10px; align-items:end; }
+  label { display:grid; gap:5px; font-size:.87rem; font-weight:650; }
+  select,input[type=search],.action { min-height:42px; padding:8px 12px; }
+  select,input { min-width:0; width:100%; }
+  .action { white-space:nowrap; }
+  .action:disabled { cursor:default; opacity:.48; }
+  .bar { display:flex; justify-content:space-between; align-items:center; gap:10px; margin:14px 0; }
+  #status { color:var(--muted); font-size:.9rem; }
+  .pager { display:flex; gap:6px; align-items:center; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,225px),1fr)); gap:14px; }
+  .card { border:1px solid var(--line); border-radius:13px; background:var(--white); overflow:hidden; min-width:0; }
+  .card button { text-align:left; display:block; width:100%; padding:0; border:0; border-radius:0; }
+  .card button:focus-visible { outline-offset:-4px; }
+  .card img { display:block; width:100%; aspect-ratio:1.24; object-fit:contain; background:#e4e7e0; }
+  .caption { display:grid; gap:4px; padding:11px 13px 13px; }
+  .meta { color:var(--muted); font-size:.8rem; }
+  .pair { color:var(--error); font-size:.87rem; }
+  .empty { padding:20px 2px; color:var(--muted); }
+  dialog { width:min(890px,calc(100% - 24px)); max-height:calc(100% - 24px); padding:0; color:var(--ink);
+    border:1px solid var(--line); border-radius:14px; }
+  dialog::backdrop { background:rgba(7,23,19,.66); }
+  .dialog-head { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:13px 18px; }
+  .dialog-head h2 { margin:0; }
+  .detail-panel { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:18px; padding:0 18px 18px; }
+  .detail-panel img { width:100%; height:auto; max-height:520px; object-fit:contain; align-self:start; background:#e4e7e0; }
+  .detail-panel dl { display:grid; gap:14px; overflow-wrap:anywhere; }
+  .detail-panel dt { color:var(--muted); font-size:.83rem; }
+  .detail-panel dd { font-weight:650; }
+  .source { color:var(--muted); font-size:.85rem; border-top:1px solid var(--line); margin-top:24px; padding-top:12px; }
+  @media(max-width:780px) { .controls,.group-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media(max-width:440px) { .detail-panel,.controls { grid-template-columns:1fr; } .bar { flex-wrap:wrap; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>POTER dự đoán sai ảnh nào?</h1>
+    <p id="scope"></p>
+    <div class="metrics" id="metrics"></div>
+  </header>
+  <section aria-labelledby="groups-title">
+    <h2 id="groups-title">Theo nhóm</h2>
+    <div id="groups" class="group-grid"></div>
+  </section>
+  <section aria-labelledby="gallery-title">
+    <h2 id="gallery-title">Ảnh sai</h2>
+    <div class="controls">
+      <label>Tìm theo loài, tên file hoặc ID<input type="search" id="search" placeholder="Ví dụ: Gull"></label>
+      <label>Nhóm<select id="group"><option value="">Tất cả nhóm</option></select></label>
+      <label>Sắp xếp<select id="sort"><option value="high">Confidence cao trước</option>
+        <option value="low">Confidence thấp trước</option><option value="id">ID ảnh tăng dần</option></select></label>
+      <button type="button" id="download" class="action">Tải CSV kết quả lọc</button>
+    </div>
+    <div class="bar">
+      <output id="status" aria-live="polite"></output>
+      <div class="pager" aria-label="Phân trang"><button type="button" id="previous" class="action">Trước</button>
+        <button type="button" id="next" class="action">Sau</button></div>
+    </div>
+    <div class="grid" id="gallery"></div>
+  </section>
+  <p class="source" id="source"></p>
+</main>
+<dialog id="detail" aria-labelledby="detail-title">
+  <div class="dialog-head"><h2 id="detail-title"></h2>
+    <form method="dialog"><button class="action">Đóng</button></form></div>
+  <div class="detail-panel"><img id="detail-image" alt=""><dl id="detail-fields"></dl></div>
+</dialog>
+<script type="application/json" id="gallery-data">__GALLERY_DATA__</script>
+<script>
+  'use strict';
+  const {summary, images} = JSON.parse(document.getElementById('gallery-data').textContent);
+  const el = id => document.getElementById(id);
+  const node = (tag, value, className) => {
+    const element = document.createElement(tag);
+    if (value !== undefined) element.textContent = value;
+    if (className) element.className = className;
+    return element;
+  };
+  const integer = new Intl.NumberFormat('vi-VN');
+  const percent = new Intl.NumberFormat('vi-VN', {style:'percent', minimumFractionDigits:2, maximumFractionDigits:2});
+  const PAGE_SIZE = 24;
+  let page = 0;
+  let filtered = images;
+
+  el('scope').textContent = `Ảnh test gốc · POTER seed 1, epoch ${summary.epoch}. Đã loại ${summary.excluded} ảnh sai nhãn đã biết.`;
+  el('source').textContent = `Dự đoán lưu từ checkpoint ${summary.checkpoint_sha256.slice(0, 12)}. Confidence là xác suất POTER gán cho nhãn đã dự đoán.`;
+  for (const [value, label] of [[integer.format(summary.errors), 'Ảnh sai'], [percent.format(summary.accuracy), 'Accuracy'], [percent.format(summary.wga), 'WGA']]) {
+    const stat = node('div', undefined, 'metric');
+    stat.append(node('strong', value), node('span', label));
+    el('metrics').append(stat);
+  }
+  for (const g of summary.groups) {
+    const option = node('option', g.label);
+    option.value = g.group;
+    el('group').append(option);
+    const button = node('button', undefined, 'group-button');
+    button.type = 'button';
+    button.dataset.group = g.group;
+    button.append(node('strong', g.label), node('span', `${integer.format(g.errors)} sai / ${integer.format(g.total)} ảnh`, 'small'));
+    button.addEventListener('click', () => {
+      el('group').value = el('group').value === button.dataset.group ? '' : button.dataset.group;
+      refresh();
+    });
+    el('groups').append(button);
+  }
+
+  function showDetails(item) {
+    el('detail-title').textContent = `${item.species} · #${item.image_id}`;
+    el('detail-image').src = 'data:image/jpeg;base64,' + item.jpeg;
+    el('detail-image').alt = `Ảnh gốc của ${item.species}`;
+    el('detail-fields').replaceChildren();
+    const fields = [['Nhãn đúng', item.label], ['POTER dự đoán', item.prediction], ['Nền', item.background],
+      ['Xác suất Landbird', percent.format(item.p_landbird)], ['Xác suất Waterbird', percent.format(item.p_waterbird)],
+      ['Tên file gốc', item.canonical_filename]];
+    for (const [name, value] of fields) {
+      const field = node('div');
+      field.append(node('dt', name), node('dd', value));
+      el('detail-fields').append(field);
+    }
+    el('detail').showModal();
+  }
+
+  function render() {
+    const grid = el('gallery');
+    const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    grid.replaceChildren();
+    for (const item of filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)) {
+      const card = node('article', undefined, 'card');
+      const button = node('button');
+      button.type = 'button';
+      button.addEventListener('click', () => showDetails(item));
+      const image = node('img');
+      image.src = 'data:image/jpeg;base64,' + item.jpeg;
+      image.alt = `Ảnh gốc của ${item.species}`;
+      image.loading = 'lazy';
+      const caption = node('span', undefined, 'caption');
+      caption.append(node('strong', item.species), node('span', `#${item.image_id} · nền ${item.background.toLowerCase()}`, 'meta'),
+        node('span', `${item.label} → ${item.prediction} · ${percent.format(item.confidence)}`, 'pair'));
+      button.append(image, caption);
+      card.append(button);
+      grid.append(card);
+    }
+    if (!filtered.length) grid.append(node('p', 'Không có ảnh khớp bộ lọc.', 'empty'));
+    el('status').textContent = `${integer.format(filtered.length)} / ${integer.format(summary.errors)} ảnh sai · Trang ${page + 1}/${pages}`;
+    el('previous').disabled = page === 0;
+    el('next').disabled = page + 1 === pages;
+    el('download').disabled = !filtered.length;
+    for (const button of el('groups').children) button.setAttribute('aria-pressed', button.dataset.group === el('group').value);
+  }
+
+  function refresh() {
+    const term = el('search').value.trim().toLowerCase().replace(/^#/, '');
+    const exactId = /^\d+$/.test(term);
+    const group = el('group').value;
+    filtered = images.filter(item => (!group || String(item.group) === group) &&
+      (exactId ? item.image_id === Number(term) : `${item.species} ${item.canonical_filename}`.toLowerCase().includes(term)));
+    const sort = el('sort').value;
+    if (sort === 'low') filtered.sort((a,b) => a.confidence - b.confidence || a.image_id - b.image_id);
+    if (sort === 'id') filtered.sort((a,b) => a.image_id - b.image_id);
+    page = 0;
+    render();
+  }
+
+  el('download').addEventListener('click', () => {
+    const keys = Object.keys(images[0]).filter(key => key !== 'jpeg');
+    const quote = value => `"${String(value).replaceAll('"', '""')}"`;
+    const lines = [keys.join(','), ...filtered.map(item => keys.map(key => quote(item[key])).join(','))];
+    const link = node('a');
+    link.href = URL.createObjectURL(new Blob(['\ufeff', lines.join('\r\n')], {type:'text/csv;charset=utf-8'}));
+    link.download = 'poter-clean-test-errors.csv';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  });
+  el('search').addEventListener('input', refresh);
+  el('group').addEventListener('change', refresh);
+  el('sort').addEventListener('change', refresh);
+  el('previous').addEventListener('click', () => { page -= 1; render(); });
+  el('next').addEventListener('click', () => { page += 1; render(); });
+  refresh();
+</script>
+</body>
+</html>

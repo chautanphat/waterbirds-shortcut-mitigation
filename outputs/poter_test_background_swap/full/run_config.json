@@ -1,0 +1,107 @@
+{
+  "seed": 20261119,
+  "batch_size": 64,
+  "smoke": false,
+  "masks": "verified_original_cub",
+  "sigma": 0,
+  "mask_threshold": 204,
+  "low_coverage_mask_policy": "retain maximum native coverage when below threshold",
+  "scene_pairs": [
+    [
+      "train-bg-7127",
+      "train-bg-5143"
+    ],
+    [
+      "train-bg-6661",
+      "train-bg-1324"
+    ]
+  ],
+  "backgrounds": [
+    {
+      "background_id": "train-bg-7127",
+      "source_bird_id": "7127",
+      "source_split": "train",
+      "place_filename": "/f/forest/broadleaf/00003993.jpg",
+      "scene": "forest/broadleaf",
+      "background_type": "land",
+      "pixel_sha256": "66604da18f2bdc47f60a2d7adb0c0666ef026e091f2fe5e0a7adad82023ffd81"
+    },
+    {
+      "background_id": "train-bg-5143",
+      "source_bird_id": "5143",
+      "source_split": "train",
+      "place_filename": "/l/lake/natural/00000123.jpg",
+      "scene": "lake/natural",
+      "background_type": "water",
+      "pixel_sha256": "92f3aa69b805bd38f5a5e424e448a45d5c170e42993b9f425ffb8580fb8e96e2"
+    },
+    {
+      "background_id": "train-bg-6661",
+      "source_bird_id": "6661",
+      "source_split": "train",
+      "place_filename": "/b/bamboo_forest/00001075.jpg",
+      "scene": "bamboo_forest",
+      "background_type": "land",
+      "pixel_sha256": "3e167bcb195675803d84eb90f3bffffea7ac3571793fcf6c184a146957975923"
+    },
+    {
+      "background_id": "train-bg-1324",
+      "source_bird_id": "1324",
+      "source_split": "train",
+      "place_filename": "/o/ocean/00002076.jpg",
+      "scene": "ocean",
+      "background_type": "water",
+      "pixel_sha256": "6a9092f0c7819a122ee98551176c1ff6d943c24b661025071814606dfdd2c37f"
+    }
+  ],
+  "model": {
+    "model_id": "POTER",
+    "method": "poter",
+    "checkpoint": "C:\\Users\\ADMIN\\OneDrive - KonTum01\\Desktop\\POTER\\checkpoints\\poter_kaggle_recovered\\CUB\\Clean\\POTER_CUB_seed1_kaggle\\best_validation.pt",
+    "checkpoint_sha256": "4f405e0e9ec34420aeae5fc2452635c6bc700d714fd033c4c289bea9d2434a9e",
+    "epoch": 258,
+    "device": "cuda:0",
+    "class_index_to_name": {
+      "0": "landbird",
+      "1": "waterbird"
+    },
+    "preprocess": {
+      "resize": [
+        256,
+        256
+      ],
+      "interpolation": "PIL bilinear",
+      "center_crop": [
+        224,
+        224
+      ],
+      "color": "EXIF transpose then RGB",
+      "tensor": "float32 RGB / 255 CHW",
+      "mean": [
+        0.485,
+        0.456,
+        0.406
+      ],
+      "std": [
+        0.229,
+        0.224,
+        0.225
+      ]
+    },
+    "preprocess_fingerprint": "80291833910bbc87ea6a169b6ab66849e031141109f0382c5bd4805f28bfea41",
+    "heads_sha256": null,
+    "numeric_runtime": {
+      "torch": "2.5.1",
+      "cudnn": 90100,
+      "cudnn_allow_tf32": false,
+      "matmul_allow_tf32": false,
+      "deterministic_algorithms": false,
+      "cudnn_benchmark": false
+    },
+    "score_type": "logit",
+    "selection": "Fixed supplied checkpoint; no fitting or test-label model selection"
+  },
+  "original_predictions_sha256": "f871798bdd6a29e2d6e2250a22a4ac46d34f25ef7af5430de5b4ac50ff795705",
+  "compositor_sha256": "9060fdf200f5bd09605c3b379e2545e01542c94aae62f4f4a10467d22c8fb2c1",
+  "script_sha256": "ef217e51e94de332e31b12ead17bb144f28c2d6ae14a657a9b2792c182719284"
+}

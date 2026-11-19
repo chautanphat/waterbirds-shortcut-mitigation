@@ -1,0 +1,17 @@
+source_image_id,description,background_id,model_input_sha256
+1776,G0 · positive mean water shift,train-bg-6775,1cb1c01c18a309dd8f3abf66f3a858eb39ac3f49e15c034f99aa205624eba37f
+1776,G0 · positive mean water shift,train-bg-274,8b4f4260ceef04af9034c37d1b8829e76b75a3501925524faddaa0600754cb45
+1776,G0 · positive mean water shift,train-bg-6623,b76b08187126bb87d7bfb0c6eb8657c357a193becd9621a29609e04674a3945a
+1776,G0 · positive mean water shift,train-bg-8510,380df1f507344475fb680d809fd90274f095c1e3eb0cac70542993ea98a3f9e0
+4798,G0 · negative mean water shift,train-bg-6775,8984245813abade0670f90fd9e43cb2520ca1f503a03462c8801b91a6b1edd03
+4798,G0 · negative mean water shift,train-bg-274,6b7fafdd063602c765e67b30bcfbb8cc662273cda8f13c37b39282d5e943f65d
+4798,G0 · negative mean water shift,train-bg-6623,b5059ee595ed60cb6ba2887c3cac629cda49862ddf4edd68352ef04b7600d0f2
+4798,G0 · negative mean water shift,train-bg-8510,118b0123085a722fdc8205e4c2a01dcfdb2fb28e72c9a40ff0232ebb7c2567a3
+3876,G0 · wrong on all 40 scenes,train-bg-6775,2770c1fddfae76502ae15f5b4eaaa5e3909056e2b2dcb8d9d3dd32b962705d26
+3876,G0 · wrong on all 40 scenes,train-bg-274,d65781ca790948c50e0ac186737e6c290e87cff76a08f73acab0990252b5d623
+3876,G0 · wrong on all 40 scenes,train-bg-6623,587acdb72ec12098f3907059bed796e07f49990a9c069ff83b4c0d9fc42262f4
+3876,G0 · wrong on all 40 scenes,train-bg-8510,5ae06f026c724b810600cf6667394f5a1ade4b108cdbe307c65fb966b7656330
+2442,"G1 · mostly correct on land, mostly wrong on water",train-bg-6775,97aef80514d8fdd41eca91d13a65eb41ab9b83b5c5ad6aa264b06dfba08b4ffe
+2442,"G1 · mostly correct on land, mostly wrong on water",train-bg-274,45f47d98928da7d42f859b6f91270c46e08fb46064510a00313bc0dc4ec0dece
+2442,"G1 · mostly correct on land, mostly wrong on water",train-bg-6623,702d637ab70a8fc868da0425bd59a476ec30663cc2fdd50c8726fdcfdb34c727
+2442,"G1 · mostly correct on land, mostly wrong on water",train-bg-8510,24d47c4e906abf2f93763fd891eb80cf79884077b3fdc2338fccce1a954e5f1b

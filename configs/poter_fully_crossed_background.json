@@ -1,0 +1,23 @@
+{
+  "cohort_seed": 764901,
+  "pilot_seed": 764902,
+  "bootstrap_seed": 764903,
+  "bootstrap_replicates": 2000,
+  "foregrounds_per_original_group": 40,
+  "pilot_per_original_group": 6,
+  "mask_min_coverage": 204,
+  "minimum_visible_alpha": 0.003,
+  "minimum_crop_retention": 0.65,
+  "original_probability_parity_atol": 0.00001,
+  "original_logit_parity_atol": 0.0001,
+  "banks": {
+    "A": {
+      "land": [6775, 9129, 7639, 7656, 4814, 2798, 4256, 11061, 9624, 5771],
+      "water": [2521, 8415, 5130, 1087, 5014, 2795, 8407, 274, 6918, 8339]
+    },
+    "B": {
+      "land": [6623, 7605, 11022, 8026, 872, 6480, 5726, 6042, 7038, 4302],
+      "water": [5891, 8510, 3425, 1157, 10403, 2886, 2518, 273, 1129, 2966]
+    }
+  }
+}

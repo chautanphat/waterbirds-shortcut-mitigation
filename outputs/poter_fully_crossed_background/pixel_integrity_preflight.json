@@ -1,0 +1,10 @@
+{
+  "parity_sources": 24,
+  "p_max_abs_difference": 2.980232238769531e-07,
+  "logit_max_abs_difference": 1.0728836059570312e-06,
+  "contact_sheet_sha256": "cd5f5163c4f0fd0425369a40c0b9d7b956dbc9b0dfcefe6454092fe144a7884b",
+  "manifest_sha256": {
+    "background_manifest.csv": "c999a5aca0e6ca1554e25c62edc7aac224b7a91c2e7367a65526fb4c225ff159",
+    "foreground_manifest.csv": "9ef75799348cd989b4f1d8532043f4a785a259d3f5149559bd67b544c4e3d2ff"
+  }
+}

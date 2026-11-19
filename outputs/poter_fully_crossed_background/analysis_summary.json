@@ -1,0 +1,20 @@
+{
+  "rows": 6400,
+  "birds": 160,
+  "scenes": 40,
+  "species": 112,
+  "replication": [
+    {
+      "true_class": "Landbird",
+      "spearman_A_B_D": 0.513595874355368
+    },
+    {
+      "true_class": "Waterbird",
+      "spearman_A_B_D": 0.7715658696671356
+    }
+  ],
+  "switched_birds_all": 27,
+  "all_scene_wga": 0.90125,
+  "analysis_sha256": "19e4ec0358f87a9109e2343a56c3bd6cbfe1fe0f157641b897d95c4eeacec8ca",
+  "predictions_sha256": "b477beb3a5e88619afba56caa26dcc61a6386a464b39ddb8e1db59a139ed4d62"
+}

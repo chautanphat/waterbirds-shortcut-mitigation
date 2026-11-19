@@ -33,12 +33,12 @@ def find_crop(mask, size=256, margin=16):
     return x, y, x + size, y + size
 
 
-def run(archive_path, cohort_path, output, per_scene):
+def run(archive_path, cohort_path, output, per_scene, *, data_root=DATA, crop_size=256):
     if sha256(archive_path) != MASK_SHA:
         raise ValueError("Caltech segmentation archive SHA-256 differs")
     cohort = read_csv(cohort_path)
     reserve = {r["sample_id"] for r in cohort if r["planning_role"] == "reserve"}
-    metadata = read_csv(DATA / "metadata.csv")
+    metadata = read_csv(data_root / "metadata.csv")
     place_counts = Counter(r["place_filename"] for r in metadata)
     candidates = {}
     for r in metadata:
@@ -66,7 +66,7 @@ def run(archive_path, cohort_path, output, per_scene):
             with Image.open(source_path) as image:
                 if image.size != mask.size or image.getexif().get(274, 1) != 1:
                     continue
-                bounds = find_crop(mask)
+                bounds = find_crop(mask, size=crop_size)
                 if bounds is None:
                     continue
                 crop = image.convert("RGB").crop(bounds)
@@ -109,9 +109,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archive", type=Path, default=OUTPUT / "assets/segmentations.tgz")
     parser.add_argument("--cohort", type=Path, default=OUTPUT / "cohort_manifest.csv")
+    parser.add_argument("--data-root", type=Path, default=DATA)
+    parser.add_argument("--crop-size", type=int, default=256)
     parser.add_argument("--output", type=Path, default=OUTPUT / "assets/background_review")
     parser.add_argument("--per-scene", type=int, default=12)
     args = parser.parse_args()
-    if args.per_scene < 2:
-        parser.error("--per-scene must be at least two")
-    run(args.archive, args.cohort, args.output, args.per_scene)
+    if args.per_scene < 2 or args.crop_size < 1:
+        parser.error("--per-scene must be at least two and --crop-size must be positive")
+    run(args.archive, args.cohort, args.output, args.per_scene, data_root=args.data_root, crop_size=args.crop_size)

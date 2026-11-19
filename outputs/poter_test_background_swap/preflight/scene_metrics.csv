@@ -1,0 +1,9 @@
+background_id,true_y,correct,n,accuracy
+train-bg-1324,0,4,4,1.0
+train-bg-1324,1,4,4,1.0
+train-bg-5143,0,4,4,1.0
+train-bg-5143,1,4,4,1.0
+train-bg-6661,0,4,4,1.0
+train-bg-6661,1,4,4,1.0
+train-bg-7127,0,4,4,1.0
+train-bg-7127,1,4,4,1.0

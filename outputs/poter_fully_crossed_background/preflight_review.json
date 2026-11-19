@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "contact_sheet_sha256": "cd5f5163c4f0fd0425369a40c0b9d7b956dbc9b0dfcefe6454092fe144a7884b",
+  "reviewed": 24,
+  "notes": "Reviewed originals, native-aligned mask overlay and six natural backgrounds. Small and large cuts, pre-existing edge truncation and feather-edge artifacts remain in some examples. Same position and silhouette across contexts. The donor scene sheets were screened visually before inference for clear land/water and no visible target birds."
+}

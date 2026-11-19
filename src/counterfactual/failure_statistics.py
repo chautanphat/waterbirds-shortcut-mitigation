@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 
 from .investigation import MODELS, LEVELS
+from .common import KNOWN_WATERBIRDS_LABEL_ERROR_SPECIES
 
 
 def validate_predictions(frame, foregrounds, *, original=False, severity_count=4):
@@ -65,10 +66,10 @@ def validate_predictions(frame, foregrounds, *, original=False, severity_count=4
 def metric_tables(frame, *, label_policy='official'):
     data=frame.copy()
     if label_policy=='corrected':
-        affected=data.species_id.isin(['021.Eastern_Towhee','088.Western_Meadowlark','102.Western_Wood_Pewee'])
+        affected=data.species_id.isin(KNOWN_WATERBIRDS_LABEL_ERROR_SPECIES)
         data.loc[affected & data.true_y.notna(),'true_y']=0
     elif label_policy=='exclude_known_errors':
-        data=data[~data.species_id.isin(['021.Eastern_Towhee','088.Western_Meadowlark','102.Western_Wood_Pewee'])]
+        data=data[~data.species_id.isin(KNOWN_WATERBIRDS_LABEL_ERROR_SPECIES)]
     elif label_policy!='official':
         raise ValueError('Unsupported label policy')
     group_rows,class_rows,summary=[],[],[]

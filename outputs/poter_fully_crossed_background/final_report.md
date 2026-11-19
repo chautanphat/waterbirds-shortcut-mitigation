@@ -1,0 +1,26 @@
+# POTER background reliance with 40 crossed scenes
+
+**`BACKGROUND_INFLUENCE_CONFIRMED`.** A fixed foreground could switch POTER's prediction across these backgrounds. **The directional water-background shortcut is inconclusive.** The average Landbird shift was small, uncertain when scene identities were resampled, and close to zero in the second bank. This is a `TEST-REUSED / DESCRIPTIVE ONLY` experiment.
+
+| Landbird contrasts, water minus land | Bank A, 10 + 10 scenes | Bank B, 10 + 10 scenes |
+| --- | ---: | ---: |
+| Mean Waterbird-minus-Landbird logit shift | +0.0461 [−0.0872, +0.1733] | +0.0009 [−0.0970, +0.1002] |
+| Mean p(Waterbird) shift, points | +0.77 [−1.35, +2.87] | +0.12 [−1.44, +1.80] |
+| Landbird error-rate change, points | +0.75 [−3.58, +5.06] | +0.75 [−2.22, +4.40] |
+| Hard flip rate across all land–water scene pairs | 6.70% [3.49%, 10.93%] | 4.63% [1.81%, 8.18%] |
+
+The 95% intervals are percentile summaries of 2,000 crossed bootstrap draws. Each draw resamples species within true class and scene IDs within bank and type. Every image of a selected species and every appearance of a selected scene contributes together. The 6,400 composites represent 160 foregrounds from 112 species and 40 scene identities, with every foreground shown on every scene. Intervals are conditional on the audited selection of scenes and masks.
+
+**Q1 · Does the background change predictions?** Yes. **27/160 (16.88%)** birds changed hard class at least once across the 40 scenes. That includes **15/80 Landbirds** and **12/80 Waterbirds**. For a Landbird, comparing all land–water pairs produced a **5.91%** average flip rate. Comparing scenes within land yielded **5.62%** and within water **6.17%**. The median range of p(Waterbird) across scenes was **12.37 points** for Landbirds and **12.52** for Waterbirds.
+
+**Q2 · Is the Waterbird shift consistent across water backgrounds?** The old four-scene comparison gave Landbird shifts of +7.67 and −0.99 points on its two disjoint pairs. In the crossed run, two *water* scenes in Bank A shifted mean Landbird p(Waterbird) in opposite directions relative to each bird's bank average, **−3.46 points** for ocean `274` and **+4.75** for lake `5014`. Omitting one scene moved Bank B's Landbird logit effect from −0.0244 to +0.0222. Species omission also crossed zero there. The foreground rankings of the two bank-specific margin shifts had Spearman 0.514 for Landbirds and 0.772 for Waterbirds. This supports sensitivity to individual scenes, with uncertainty about a systematic water-type effect.
+
+**Q3 · What remains wrong for Landbird-on-Land?** For the 40 foregrounds from original G0, **33 were correct on all 40 scenes**, **1 was wrong on all scenes**, and **2 others were wrong on a majority in both categories**. Three switched despite majority correctness in both categories, and one had a category tie. Original G1 had 30/40 always correct and 2/40 correct on most land scenes but wrong on most water scenes. Among just the **five original G0 errors** in the random cohort, **four** were rescued by at least one new scene, while **three** still failed on a majority of both land and water scenes. These five cases are descriptive. Persistence across these scenes does not isolate foreground confusion from other sources of error.
+
+**Q4 · Does POTER rely more on background than ERM or DPE?** This run scored POTER only. A descriptive checkpoint comparison needs ERM/DPE with verified checkpoint, preprocessing and class provenance on the exact same 6,400 inputs. A method-level excess-reliance claim also needs matched training recipes or independent seeds with uncertainty. POTER's synthetic WGA was **90.13%** on assigned `true_y × background_type` groups, which is a different evaluation from the official benchmark.
+
+**Q5 · Is this independent evidence?** The sampled birds were outside POTER's train and validation/reference splits, but all had already appeared in diagnostic test runs. The 40 backgrounds are different from the previous scored settings and disjoint across the banks. The donor Places scenes came from other official *train* examples. This establishes training-set overlap for the scenes, with individual historical sampler draws unavailable. The entire run is exploratory. No model, threshold or weighting rule was selected using these results.
+
+**Controls and limitations.** All 6,400 rows passed foreground and alpha checks. Small Landbird masks had a 9.76% cross-type flip rate in the lowest mask-area quartile versus 4.64% in the highest quartile. The soft-boundary strata are in the export. Water scenes were brighter in both banks. A five-per-type subset matched on brightness, saturation and RGB means using scene properties only; its Landbird p(Waterbird) changes were +2.25 points in A and +0.26 in B. Texture, composition artifacts and scene semantics can still co-vary. There is no claim that water semantics alone caused the changes.
+
+[Historical audit](old_two_pair_audit.md) · [Pixel and checkpoint gate](pixel_integrity_report.md) · [Representative composites](plots/representative_composites.png) · [Paired foregrounds](paired_foreground_effects.csv) · [Scene effects](background_effects.csv) · [Crossed intervals](effect_intervals.csv) · [Commands](readme.md)
