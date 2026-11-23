@@ -403,10 +403,11 @@ def main(argv=None):
                 branch_rows.append({"cohort": cohort, "seed": seed, "val_index": b["val_index"], **brow})
 
             # Collect Layer-4 FG-only vectors for Part D channel bleed analysis.
-            s_orig = base_model.extract_stage_maps(x_orig)
-            s_neu = base_model.extract_stage_maps(x_neu)
-            v_o = pool_with_spatial_masks(s_orig["layer4_map"].cpu().numpy(), b["mask_7x7"][None])[0]
-            v_n = pool_with_spatial_masks(s_neu["layer4_map"].cpu().numpy(), b["mask_7x7"][None])[0]
+            with torch.inference_mode():
+                s_orig = base_model.extract_stage_maps(x_orig)
+                s_neu = base_model.extract_stage_maps(x_neu)
+            v_o = pool_with_spatial_masks(s_orig["layer4_map"].detach().cpu().numpy(), b["mask_7x7"][None])[0]
+            v_n = pool_with_spatial_masks(s_neu["layer4_map"].detach().cpu().numpy(), b["mask_7x7"][None])[0]
             fg_orig_vecs.append(v_o)
             fg_neu_vecs.append(v_n)
             fg_ys.append(y_true)
