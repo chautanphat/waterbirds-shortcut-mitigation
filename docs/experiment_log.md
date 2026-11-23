@@ -385,3 +385,10 @@ published on `experiment/dpe-ermstar-neural`, the notebook’s default Kaggle ch
   2e-7 historical replay tolerance without changed baseline decisions. All final
   Brier fits pass the unchanged 1e-7 certificate threshold. No independent CNN
   image replay, untouched confirmation, causal shortcut-removal or novelty claim.
+
+## exp-dpe-head-diversity-20261122 — completed validation-only CPU pilot
+
+- **Date and inputs:** 2026-11-22. Saved 15-head ensembles on five standard ERM and two ERM\* backbones. Evaluated 479 validation images held out from head fitting and epoch selection.
+- **Command:** `python -B -m scripts.analysis.dpe_head_diversity --config configs/dpe_head_diversity/pilot.json --output results/dpe/head_diversity_20261122`. The [configuration](../configs/dpe_head_diversity/pilot.json) records the saved source seeds and decision thresholds. No training ran.
+- **Result:** No-go for the proposed near-identical-boundary mechanism. Zero of 735 pairs met either the primary or relaxed mismatch criteria. The rescaling and cancellation diagnostics showed the raw penalty can change while head decisions stay fixed.
+- **Artifacts:** [Pilot report, tables, plot, and run provenance](../results/dpe/head_diversity_20261122/README.md). Six focused tests passed. Guarded replay verified that the official test split stayed untouched.
