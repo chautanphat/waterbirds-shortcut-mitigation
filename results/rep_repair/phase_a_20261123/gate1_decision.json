@@ -1,0 +1,69 @@
+{
+  "study_id": "exp-rep-repair-phase-a-20261123",
+  "decision": "NO-GO",
+  "qualifying_standard_seeds": 0,
+  "required_standard_seeds": 4,
+  "criteria": {
+    "min_wga_gap_pp": 1.5,
+    "min_unresolved_fraction": 0.5,
+    "min_standard_seeds": 4
+  },
+  "ermstar_reference_wga_relabel": 95.004,
+  "per_seed": [
+    {
+      "seed": 0,
+      "best_nonlinear_method": "frozen_mlp",
+      "best_nonlinear_wga": 89.3443,
+      "ermstar_reference_wga": 95.004,
+      "wga_gap_pp": 5.6597,
+      "persistent_count": 26,
+      "unresolved_by_both_mlp_and_svm": 10,
+      "unresolved_fraction": 0.3846,
+      "qualifies": false
+    },
+    {
+      "seed": 1,
+      "best_nonlinear_method": "frozen_mlp",
+      "best_nonlinear_wga": 91.8033,
+      "ermstar_reference_wga": 95.004,
+      "wga_gap_pp": 3.2007,
+      "persistent_count": 26,
+      "unresolved_by_both_mlp_and_svm": 9,
+      "unresolved_fraction": 0.3462,
+      "qualifies": false
+    },
+    {
+      "seed": 2,
+      "best_nonlinear_method": "frozen_mlp",
+      "best_nonlinear_wga": 90.9836,
+      "ermstar_reference_wga": 95.004,
+      "wga_gap_pp": 4.0204,
+      "persistent_count": 26,
+      "unresolved_by_both_mlp_and_svm": 10,
+      "unresolved_fraction": 0.3846,
+      "qualifies": false
+    },
+    {
+      "seed": 3,
+      "best_nonlinear_method": "frozen_mlp",
+      "best_nonlinear_wga": 90.9836,
+      "ermstar_reference_wga": 95.004,
+      "wga_gap_pp": 4.0204,
+      "persistent_count": 26,
+      "unresolved_by_both_mlp_and_svm": 8,
+      "unresolved_fraction": 0.3077,
+      "qualifies": false
+    },
+    {
+      "seed": 4,
+      "best_nonlinear_method": "frozen_mlp",
+      "best_nonlinear_wga": 91.9662,
+      "ermstar_reference_wga": 95.004,
+      "wga_gap_pp": 3.0378,
+      "persistent_count": 26,
+      "unresolved_by_both_mlp_and_svm": 7,
+      "unresolved_fraction": 0.2692,
+      "qualifies": false
+    }
+  ]
+}

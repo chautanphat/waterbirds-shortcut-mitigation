@@ -1,0 +1,32 @@
+{
+  "study_id": "exp-rep-repair-phase-a-20261123",
+  "step": "phase_a_step2_frozen_readouts",
+  "split": "val_only_split1",
+  "test_files_accessed": 0,
+  "device": "cuda",
+  "workers": 1,
+  "command": [
+    "python",
+    "-B",
+    "-m",
+    "scripts.analysis.rep_repair_frozen_readouts",
+    "--config",
+    "configs/rep_repair/phase_a_audit.json",
+    "--asset-root",
+    "/kaggle/working/assets",
+    "--failure-stats",
+    "results/rep_repair/phase_a_20261123/failure_audit_stats.json",
+    "--output",
+    "/kaggle/working/rep_repair_phase_a",
+    "--device",
+    "cuda"
+  ],
+  "environment": {
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.16",
+    "numpy": "2.1.3",
+    "torch": "2.11.0+cu130"
+  },
+  "config_sha256": "86157eea14af82165db27f1ed6c2777fc5121d2211633507fe3eec91b6046b6d",
+  "gate1_decision": "NO-GO"
+}

@@ -1,0 +1,8 @@
+cohort,seed,dar_fg_mass_all_mean,uniform_gap_fg_mass_all_mean,dar_fg_mass_persistent_mean,uniform_gap_fg_mass_persistent_mean,mean_fg_pixel_area_persistent,mean_fg_pixel_area_all
+standard_erm,0,0.7308,0.2329,0.6671,0.2512,0.1853,0.1693
+standard_erm,1,0.76,0.2329,0.6113,0.2512,0.1853,0.1693
+standard_erm,2,0.727,0.2329,0.6587,0.2512,0.1853,0.1693
+standard_erm,3,0.7826,0.2329,0.63,0.2512,0.1853,0.1693
+standard_erm,4,0.8082,0.2329,0.7015,0.2512,0.1853,0.1693
+erm_star,0,0.6371,0.2329,0.703,0.2512,0.1853,0.1693
+erm_star,1,0.7272,0.2329,0.7096,0.2512,0.1853,0.1693
