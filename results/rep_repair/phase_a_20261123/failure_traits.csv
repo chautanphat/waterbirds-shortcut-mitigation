@@ -1,0 +1,13 @@
+group,trait,n_persistent_fail,n_both_pass,fail_median,pass_median,fail_mean,pass_mean
+01,aspect_ratio,13,430,1.25,1.3405,1.2662,1.3541
+01,center_border_rgb_dist,13,430,0.203,0.1427,0.2051,0.1745
+01,border_blue_minus_green,13,430,-0.0066,-0.0035,-0.0042,-0.0048
+01,center_blue_minus_green,13,430,-0.0251,-0.0348,-0.0311,-0.0439
+01,border_edge_energy,13,430,0.0587,0.0489,0.058,0.0525
+01,luminance_mean,13,430,0.4354,0.4657,0.428,0.4624
+10,aspect_ratio,13,93,1.4124,1.3889,1.4526,1.3858
+10,center_border_rgb_dist,13,93,0.0919,0.1352,0.1303,0.1611
+10,border_blue_minus_green,13,93,-0.0627,-0.0767,-0.0942,-0.0828
+10,center_blue_minus_green,13,93,-0.0244,-0.0457,-0.0442,-0.0521
+10,border_edge_energy,13,93,0.0981,0.1015,0.0971,0.1006
+10,luminance_mean,13,93,0.3946,0.4195,0.3872,0.4092
