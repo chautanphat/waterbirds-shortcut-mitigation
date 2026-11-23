@@ -1,0 +1,9 @@
+model_tag,stage,drift_orig_to_neutral_mean,drift_orig_to_matched_mean
+affine_dfr_bn_all,layer1,0.0644,0.0718
+affine_dfr_bn_all,layer2,0.1507,0.1479
+affine_dfr_bn_all,layer3,0.3557,0.3544
+affine_dfr_bn_all,layer4_map,0.7101,0.7697
+affine_dfr_bn_l3_l4,layer1,0.0643,0.0721
+affine_dfr_bn_l3_l4,layer2,0.1501,0.1501
+affine_dfr_bn_l3_l4,layer3,0.3671,0.3602
+affine_dfr_bn_l3_l4,layer4_map,0.7367,0.7831
