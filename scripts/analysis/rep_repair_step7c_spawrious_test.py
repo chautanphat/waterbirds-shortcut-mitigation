@@ -81,7 +81,9 @@ def _predict_loader(model: nn.Module, loader: DataLoader, device: str) -> np.nda
 
 
 @torch.inference_mode()
-def _extract_resnet_cache(model: nn.Module, loader: DataLoader, device: str) -> dict[str, np.ndarray]:
+def _extract_resnet_cache(
+    model: nn.Module, loader: DataLoader, device: str, *, include_l4: bool = True
+) -> dict[str, np.ndarray]:
     model.eval()
     use_amp = device.startswith("cuda")
     probs, pooled, l4_maps = [], [], []
@@ -91,12 +93,15 @@ def _extract_resnet_cache(model: nn.Module, loader: DataLoader, device: str) -> 
             logits = model[2](st["pooled"])
         probs.append(logits.float().softmax(dim=1).cpu().numpy().astype(np.float32))
         pooled.append(st["pooled"].float().cpu().numpy().astype(np.float32))
-        l4_maps.append(st["layer4_map"].float().cpu().numpy().astype(np.float32))
-    return {
+        if include_l4:
+            l4_maps.append(st["layer4_map"].float().cpu().numpy().astype(np.float32))
+    out = {
         "probs": np.concatenate(probs, axis=0),
         "pooled": np.concatenate(pooled, axis=0),
-        "layer4_map": np.concatenate(l4_maps, axis=0),
     }
+    if include_l4:
+        out["layer4_map"] = np.concatenate(l4_maps, axis=0)
+    return out
 
 
 def _fit_dfr_val_and_ood(
@@ -140,35 +145,38 @@ def _fit_dfr_val_and_ood(
 
 
 def _fit_dar_val_and_ood(
+    base_dev: nn.Module,
     F_val: np.ndarray,
     y_val: np.ndarray,
     g_val: np.ndarray,
-    F_ood: np.ndarray,
+    ood_loader: DataLoader,
     outer_folds: np.ndarray,
     *,
     seed: int,
     device: str,
 ) -> tuple[np.ndarray, np.ndarray, int]:
+    """Train 5-fold DARHeads on val_layer4_map, then stream ood_loader in 1 pass (zero 10 GB RAM cache)."""
     val_oof = np.zeros((len(y_val), 4), dtype=np.float64)
-    ood_sum = np.zeros((len(F_ood), 4), dtype=np.float64)
     n_outer = int(outer_folds.max()) + 1
     ce = nn.CrossEntropyLoss(reduction="none")
     n_params = sum(p.numel() for p in DARHead(2048, attn_dim=128, dropout=0.2, num_classes=4).parameters())
     batch_size = 256
+    trained_heads: list[tuple[nn.Module, torch.Tensor, torch.Tensor]] = []
 
     for fold in range(n_outer):
         te = outer_folds == fold
         tr = ~te
         F_tr, y_tr, g_tr = F_val[tr], y_val[tr], g_val[tr]
-        mean = F_tr.mean(axis=(0, 2, 3), keepdims=True)
-        std = np.maximum(F_tr.std(axis=(0, 2, 3), keepdims=True), 1e-6)
-        ft = torch.from_numpy(((F_tr - mean) / std).astype(np.float32))
+        mean = F_tr.mean(axis=(0, 2, 3), keepdims=True).astype(np.float32)
+        std = np.maximum(F_tr.std(axis=(0, 2, 3), keepdims=True), 1e-6).astype(np.float32)
+        ft = torch.from_numpy((F_tr - mean) / std)
         yt = torch.from_numpy(y_tr.astype(np.int64))
         wt = torch.from_numpy(spawrious_balanced_weights(g_tr).astype(np.float32))
+        mean_t = torch.from_numpy(mean).to(device)
+        std_t = torch.from_numpy(std).to(device)
 
         seeds = (seed + fold, seed + 100 + fold, seed + 200 + fold)
         val_acc_p = np.zeros((int(te.sum()), 4), dtype=np.float64)
-        ood_acc_p = np.zeros((len(F_ood), 4), dtype=np.float64)
         for s in seeds:
             torch.manual_seed(s)
             if device.startswith("cuda"):
@@ -188,15 +196,27 @@ def _fit_dar_val_and_ood(
                     opt.step()
             head.eval()
             with torch.inference_mode():
-                for target_arr, store in ((F_val[te], val_acc_p), (F_ood, ood_acc_p)):
-                    chunks = []
-                    for st in range(0, len(target_arr), batch_size):
-                        xb = torch.from_numpy(((target_arr[st : st + batch_size] - mean) / std).astype(np.float32)).to(device)
-                        chunks.append(head(xb)[0].softmax(dim=1).cpu().numpy())
-                    store += np.concatenate(chunks, axis=0)
+                chunks = []
+                for st in range(0, int(te.sum()), batch_size):
+                    xb = torch.from_numpy((F_val[te][st : st + batch_size] - mean) / std).to(device)
+                    chunks.append(head(xb)[0].softmax(dim=1).cpu().numpy())
+                val_acc_p += np.concatenate(chunks, axis=0)
+            trained_heads.append((head, mean_t, std_t))
         val_oof[te] = val_acc_p / float(len(seeds))
-        ood_sum += ood_acc_p / float(len(seeds))
-    return val_oof, ood_sum / float(n_outer), n_params
+
+    # Single streaming pass over ood_loader applying all 5*3 DARHeads in-flight (<200 MB RAM).
+    use_amp = device.startswith("cuda")
+    ood_chunks = []
+    base_dev.eval()
+    with torch.inference_mode():
+        for _, xb, _, _ in ood_loader:
+            with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
+                l4 = base_dev.extract_stage_maps(xb.to(device))["layer4_map"].float()
+            p_sum = torch.zeros((l4.shape[0], 4), device=device, dtype=torch.float32)
+            for head, mean_t, std_t in trained_heads:
+                p_sum += head((l4 - mean_t) / std_t)[0].softmax(dim=1)
+            ood_chunks.append((p_sum / float(len(trained_heads))).cpu().numpy())
+    return val_oof, np.concatenate(ood_chunks, axis=0), n_params
 
 
 def _train_5fold_repair_val_and_ood(
@@ -348,16 +368,18 @@ def run_single_seed(
 
     val_loader = DataLoader(SpawriousImageDataset(val_rows), batch_size=128, shuffle=False, num_workers=workers)
     ood_loader = DataLoader(SpawriousImageDataset(ood_rows), batch_size=128, shuffle=False, num_workers=workers)
-    v_cache = _extract_resnet_cache(base_dev, val_loader, device)
-    o_cache = _extract_resnet_cache(base_dev, ood_loader, device)
+    v_cache = _extract_resnet_cache(base_dev, val_loader, device, include_l4=True)
+    o_cache = _extract_resnet_cache(base_dev, ood_loader, device, include_l4=False)
 
     val_dfr, ood_dfr = _fit_dfr_val_and_ood(v_cache["pooled"], y_val, g_val, o_cache["pooled"], outer_folds, seed=seed)
     val_dar, ood_dar, n_dar = _fit_dar_val_and_ood(
-        v_cache["layer4_map"], y_val, g_val, o_cache["layer4_map"], outer_folds, seed=seed, device=device
+        base_dev, v_cache["layer4_map"], y_val, g_val, ood_loader, outer_folds, seed=seed, device=device
     )
+    erm_val_p, erm_ood_p = v_cache["probs"], o_cache["probs"]
+    del v_cache, o_cache
 
     arm_outputs = {
-        "erm_raw": (v_cache["probs"], o_cache["probs"], sum(p.numel() for p in base_cpu.parameters())),
+        "erm_raw": (erm_val_p, erm_ood_p, sum(p.numel() for p in base_cpu.parameters())),
         "dfr_l2": (val_dfr, ood_dfr, 2048 * 4 + 4),
         "dar": (val_dar, ood_dar, n_dar),
     }
