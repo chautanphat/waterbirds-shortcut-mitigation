@@ -407,6 +407,7 @@ def run_single_seed(
         ("affine_dfr_bn_all", False, "bn_all", False),
         ("pre_l4_repair_w005", True, "bn_all", True),
     ):
+        print(f"    [spawrious s{seed} | {device}] starting {arm_name}...", flush=True)
         v_p, o_p, n_p = _train_5fold_repair_val_and_ood(
             base_cpu, val_rows, ood_loader, outer_folds,
             use_gate=use_gate, bn_scope=bn_scope, use_inv=use_inv,
@@ -498,7 +499,7 @@ def main(argv=None):
     parser.add_argument("--adapt-epochs", type=int, default=10)
     parser.add_argument("--device", type=str, default="auto")
     parser.add_argument("--max-gpus", type=int, default=2)
-    parser.add_argument("--workers", type=int, default=2)
+    parser.add_argument("--workers", type=int, default=0)
     parser.add_argument("--worker-seed", type=int, default=None)
     args = parser.parse_args(argv)
 
@@ -530,7 +531,7 @@ def main(argv=None):
         for gid in range(n_gpus):
             gpu_q.put(f"cuda:{gid}")
         abort_event = threading.Event()
-        child_env = {**os.environ, "PYTHONUNBUFFERED": "1"}
+        child_env = {**os.environ, "PYTHONUNBUFFERED": "1", "OMP_NUM_THREADS": "2", "OPENBLAS_NUM_THREADS": "2"}
 
         def _launch(s: int):
             if abort_event.is_set():
@@ -543,7 +544,7 @@ def main(argv=None):
                     sys.executable, "-B", "-m", "scripts.analysis.rep_repair_step7c_spawrious_test",
                     "--work-dir", str(work_dir), "--output", str(out_dir),
                     "--adapt-epochs", str(args.adapt_epochs),
-                    "--device", dev_id, "--workers", str(args.workers), "--worker-seed", str(s),
+                    "--device", dev_id, "--workers", "0", "--worker-seed", str(s),
                 ]
                 print(f"Launching Spawrious OOD seed {s} on {dev_id}...", flush=True)
                 proc = subprocess.run(cmd, env=child_env)

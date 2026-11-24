@@ -549,6 +549,7 @@ def run_worker_job(
                 ("affine_dfr_linear", False, "bn_all", False, None),
                 ("pre_l4_repair_w005", True, "bn_all", True, _set_resnet_mu),
             ):
+                print(f"    [{kind} s{seed} | {device}] starting {arm_name}...", flush=True)
                 v_p, t_p, n_p = _train_5fold_repair_val_and_test(
                     lambda ug=use_gate, bs=bn_scope: PreLayer4RepairModel(
                         base_cpu, use_gate=ug, gate_mode="peak_neutral", head_type="linear", bn_scope=bs
@@ -735,7 +736,7 @@ def main(argv=None):
     parser.add_argument("--vit-seeds", type=int, nargs="+", default=[0, 1, 2])
     parser.add_argument("--device", type=str, default="auto")
     parser.add_argument("--max-gpus", type=int, default=2)
-    parser.add_argument("--workers", type=int, default=2)
+    parser.add_argument("--workers", type=int, default=0)
     parser.add_argument("--worker-kind", choices=("resnet_std", "resnet_star", "vit"), default=None)
     parser.add_argument("--worker-seed", type=int, default=None)
     args = parser.parse_args(argv)
@@ -776,7 +777,7 @@ def main(argv=None):
         for gid in range(n_gpus):
             gpu_q.put(f"cuda:{gid}")
         abort_event = threading.Event()
-        child_env = {**os.environ, "PYTHONUNBUFFERED": "1"}
+        child_env = {**os.environ, "PYTHONUNBUFFERED": "1", "OMP_NUM_THREADS": "2", "OPENBLAS_NUM_THREADS": "2"}
 
         def _launch(job: tuple[str, int]):
             k_name, s_val = job
@@ -789,7 +790,7 @@ def main(argv=None):
                 cmd = [
                     sys.executable, "-B", "-m", "scripts.analysis.rep_repair_step7c_waterbirds_test",
                     "--work-dir", str(work_dir), "--output", str(out_dir),
-                    "--device", dev_id, "--workers", str(args.workers),
+                    "--device", dev_id, "--workers", "0",
                     "--worker-kind", k_name, "--worker-seed", str(s_val),
                 ]
                 print(f"Launching ({k_name}, seed={s_val}) on {dev_id}...", flush=True)
