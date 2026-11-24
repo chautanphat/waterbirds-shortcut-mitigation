@@ -1,0 +1,6 @@
+arm,n_seeds,trainable_params,raw_wga_mean,oof_thr_wga_mean,oof_thr_wga_sd,oof_thr_acc_mean,g01_thr_mean,g10_thr_mean,min_grp_auc_mean,all_auc_mean
+erm_raw,3,85800194,54.92,62.02,4.8,89.16,83.3,62.02,80.99,94.32
+dfr_l2,3,1538,87.98,89.62,1.25,93.36,91.75,89.62,97.11,97.62
+oracle_fg_token_pool,3,1538,91.53,92.48,0.62,94.63,93.45,92.9,98.24,98.65
+ln_dfr_late,3,15362,89.34,91.16,1.29,93.63,91.75,91.26,96.98,97.45
+ln_dfr_all,3,39938,86.34,89.66,1.76,93.97,91.4,89.89,96.51,97.81

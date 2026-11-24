@@ -1,0 +1,16 @@
+arm,condition,acc_pct,mean_p_true
+dfr_l2,orig,28.15,0.3153
+dfr_l2,matched_bg,76.3,0.6967
+dfr_l2,flipped_bg,54.07,0.5628
+dfr_l2,neutral_gray,66.67,0.6594
+dfr_l2,ood_bg,65.93,0.6596
+oracle_fg_token_pool,orig,51.11,0.5122
+oracle_fg_token_pool,matched_bg,74.81,0.7029
+oracle_fg_token_pool,flipped_bg,60.74,0.5915
+oracle_fg_token_pool,neutral_gray,71.85,0.683
+oracle_fg_token_pool,ood_bg,72.59,0.6827
+ln_dfr_all,orig,38.52,0.3951
+ln_dfr_all,matched_bg,80.74,0.7637
+ln_dfr_all,flipped_bg,58.52,0.5697
+ln_dfr_all,neutral_gray,77.78,0.7631
+ln_dfr_all,ood_bg,75.56,0.7393
