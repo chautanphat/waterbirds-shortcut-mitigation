@@ -140,7 +140,7 @@ def nested_dfr_l2_oof(
 class DARHead(nn.Module):
     """Deep Attention Reweighting (arXiv:2605.20732): post-hoc spatial attention over frozen 7x7 maps."""
 
-    def __init__(self, channels: int = 2048, attn_dim: int = 128, dropout: float = 0.2):
+    def __init__(self, channels: int = 2048, attn_dim: int = 128, dropout: float = 0.2, num_classes: int = 2):
         super().__init__()
         self.norm = nn.LayerNorm(channels)
         self.attn = nn.Sequential(
@@ -149,7 +149,7 @@ class DARHead(nn.Module):
             nn.Dropout(dropout),
             nn.Linear(attn_dim, 1),
         )
-        self.classifier = nn.Linear(channels, 2)
+        self.classifier = nn.Linear(channels, num_classes)
 
     def forward(self, fmap: torch.Tensor):
         # fmap: [B, C, H, W] -> tokens [B, H*W, C]
