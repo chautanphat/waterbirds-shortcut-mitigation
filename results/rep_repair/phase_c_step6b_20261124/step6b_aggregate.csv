@@ -1,0 +1,7 @@
+arm,n_seeds,trainable_params,raw_wga_mean,oof_thr_wga_mean,oof_thr_wga_sd,delta_wga_vs_affine,wga_seed_wins,oof_thr_acc_mean,g01_thr_mean,g10_thr_mean,min_grp_auc_mean,delta_auc_vs_affine,auc_seed_wins,all_auc_mean
+affine_dfr_linear,5,57218,85.25,92.7,0.59,0.0,0/5,94.65,93.15,92.95,97.92,0.0,0/5,98.77
+pre_l4_gate_bn_ce,5,124931,88.52,92.86,0.37,0.16,2/5,94.68,93.23,92.95,97.96,0.04,2/5,98.74
+pre_l4_repair_w005,5,124931,86.56,93.28,0.9,0.58,4/5,94.71,93.7,93.28,97.94,0.02,3/5,98.72
+pre_l4_repair_w015,5,124931,86.39,92.57,0.69,-0.13,1/5,94.03,92.77,92.95,97.69,-0.23,1/5,98.54
+l4_conv2_lora_bn,5,180098,86.07,92.78,1.4,0.09,2/5,94.53,93.11,92.95,97.85,-0.07,1/5,98.68
+l4_conv2_lora_repair_w005,5,247811,86.56,92.3,0.93,-0.4,1/5,94.88,93.91,92.3,98.19,0.27,4/5,98.79
