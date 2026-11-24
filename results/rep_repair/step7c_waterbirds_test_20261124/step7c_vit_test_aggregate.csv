@@ -1,0 +1,6 @@
+cohort,arm,n_seeds,trainable_params,val_oof_wga_mean,off_val_thr_wga_mean,off_val_thr_wga_sd,off_val_thr_acc_mean,rel_raw_wga_mean,rel_val_thr_wga_mean,rel_val_thr_wga_sd,rel_val_thr_acc_mean,rel_g01_mean,rel_g10_mean,rel_min_auc_mean,rel_all_auc_mean,delta_rel_wga,wga_seed_wins,delta_rel_auc,auc_seed_wins
+vit,vit_erm_raw,3,85800194,62.02,61.32,2.07,89.0,59.71,65.55,2.22,89.89,84.2,65.55,81.03,94.12,-25.97,0/3,-17.36,0/3
+vit,vit_dfr_l2,3,1538,91.26,87.38,2.59,93.18,89.09,91.27,0.83,94.52,92.57,93.16,98.27,98.81,-0.25,2/3,-0.12,2/3
+vit,vit_ln_dfr_late,3,15362,91.16,87.8,1.51,93.37,90.26,91.52,0.6,94.6,92.14,93.54,98.39,99.02,0.0,0/3,0.0,0/3
+vit,vit_pre_b6_gate_only,3,52355,89.89,87.0,2.81,93.21,88.93,89.69,1.1,94.26,91.34,92.6,98.09,99.0,-1.83,0/3,-0.3,1/3
+vit,vit_pre_b6_repair_w005,3,66179,90.98,83.18,4.49,94.23,89.82,88.16,3.31,95.59,94.8,88.81,98.18,99.03,-3.36,1/3,-0.2,0/3

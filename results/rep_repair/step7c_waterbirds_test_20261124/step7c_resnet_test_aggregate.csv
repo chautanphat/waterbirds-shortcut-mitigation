@@ -1,0 +1,9 @@
+cohort,arm,n_seeds,trainable_params,val_oof_wga_mean,off_val_thr_wga_mean,off_val_thr_wga_sd,off_val_thr_acc_mean,rel_raw_wga_mean,rel_val_thr_wga_mean,rel_val_thr_wga_sd,rel_val_thr_acc_mean,rel_g01_mean,rel_g10_mean,rel_min_auc_mean,rel_all_auc_mean,delta_rel_wga,wga_seed_wins,delta_rel_auc,auc_seed_wins
+standard_erm,erm_raw,5,23512130,71.7,72.74,0.79,86.07,71.09,73.73,1.58,86.97,73.73,78.66,80.57,94.12,-20.03,0/5,-18.2,0/5
+standard_erm,dfr_l2,5,4098,90.54,88.5,0.59,92.46,87.95,91.49,0.3,93.69,91.49,94.32,98.18,98.81,-2.27,0/5,-0.59,0/5
+standard_erm,dar,5,270595,90.33,87.26,0.74,92.24,85.04,90.3,0.69,93.62,90.3,93.12,97.62,98.74,-3.46,0/5,-1.15,0/5
+standard_erm,pre_l4_gate_only,5,71811,90.71,88.38,0.45,93.35,90.95,92.82,0.84,94.73,92.82,94.39,98.36,99.05,-0.93,0/5,-0.42,0/5
+standard_erm,affine_dfr_linear,5,57218,91.64,89.1,0.76,93.98,90.08,93.75,0.72,95.41,93.75,95.13,98.77,99.29,0.0,0/5,0.0,0/5
+standard_erm,pre_l4_repair_w005,5,124931,91.88,89.91,1.81,93.66,91.22,92.52,1.06,95.04,93.3,95.93,98.95,99.39,-1.23,1/5,0.18,5/5
+erm_star,erm_star_raw,2,23512130,85.2,79.83,0.55,91.48,79.22,82.91,0.15,91.48,83.88,83.31,90.15,97.08,,,,
+erm_star,erm_star_dfr_l2,2,4098,94.67,90.89,0.99,95.81,91.15,95.0,0.31,96.71,95.0,95.74,99.0,99.49,,,,
