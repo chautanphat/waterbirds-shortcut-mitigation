@@ -1,9 +1,9 @@
 """Direction 2 · Phase C · Step 7c-2: Spawrious (o2o_hard) Sealed OOD Shifted Test Confirmation.
 
 Adapts all controls + frozen pre_l4_repair_w005 strictly on the 8-group validation split (3,800 rows)
-from saved ResNet-50 backbones (noerula/rep-repair-step7b-spawrious-kaggle), then evaluates once
-on the official OOD shifted-background test split (~25,344 rows across 4 shifted breed x bg combos).
-Supports dual-GPU (2x T4) parallel execution across seeds.
+pre-decoded ONCE into RAM (572 MB uint8, zero disk thrashing & zero Linux fork() deadlocks), then runs
+ONE SINGLE STREAMING PASS over the ~25,344 official shifted OOD test images evaluating all 6 arms
+simultaneously (~11-13 min total on 2x T4 GPU, < 3.5 GB peak RAM).
 """
 
 from __future__ import annotations
@@ -34,9 +34,12 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from scripts.analysis.rep_repair_phase_c_step6 import write_csv
+from scripts.analysis.rep_repair_step7c_waterbirds_test import (
+    InMemoryNormalizedDataset,
+    preload_images_uint8,
+)
 from src.datasets.spawrious_o2o import (
     CLASSES,
-    TEST_SHIFTED_BG,
     SpawriousImageDataset,
     ensure_spawrious_o2o_hard,
     load_o2o_hard_ood_test_rows,
@@ -77,61 +80,55 @@ def _predict_loader(model: nn.Module, loader: DataLoader, device: str) -> np.nda
     probs = []
     for _, xb, _, _ in loader:
         with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
-            logits = model(xb.to(device))
+            logits = model(xb.to(device, non_blocking=True))
         probs.append(logits.float().softmax(dim=1).cpu().numpy())
     return np.concatenate(probs, axis=0)
 
 
 @torch.inference_mode()
-def _extract_resnet_cache(
-    model: nn.Module, loader: DataLoader, device: str, *, include_l4: bool = True
-) -> dict[str, np.ndarray]:
+def _extract_val_cache(model: nn.Module, loader: DataLoader, device: str) -> dict[str, np.ndarray]:
     model.eval()
     use_amp = device.startswith("cuda")
     probs, pooled, l4_maps = [], [], []
     for _, xb, _, _ in loader:
         with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
-            st = model.extract_stage_maps(xb.to(device))
+            st = model.extract_stage_maps(xb.to(device, non_blocking=True))
             logits = model[2](st["pooled"])
         probs.append(logits.float().softmax(dim=1).cpu().numpy().astype(np.float32))
         pooled.append(st["pooled"].float().cpu().numpy().astype(np.float32))
-        if include_l4:
-            l4_maps.append(st["layer4_map"].float().cpu().numpy().astype(np.float32))
-    out = {
+        l4_maps.append(st["layer4_map"].float().cpu().numpy().astype(np.float32))
+    return {
         "probs": np.concatenate(probs, axis=0),
         "pooled": np.concatenate(pooled, axis=0),
+        "layer4_map": np.concatenate(l4_maps, axis=0),
     }
-    if include_l4:
-        out["layer4_map"] = np.concatenate(l4_maps, axis=0)
-    return out
 
 
-def _fit_dfr_val_and_ood(
+def _fit_dfr_5fold(
     X_val: np.ndarray,
     y_val: np.ndarray,
     g_val: np.ndarray,
-    X_ood: np.ndarray,
     outer_folds: np.ndarray,
     *,
     seed: int,
-) -> tuple[np.ndarray, np.ndarray]:
-    c_grid = (0.01, 0.03, 0.1, 0.3, 1.0, 3.0)
+) -> tuple[np.ndarray, list[tuple[StandardScaler, LogisticRegression]]]:
+    c_grid = (0.03, 0.1, 0.3, 1.0)
     val_oof = np.zeros((len(y_val), 4), dtype=np.float64)
-    ood_sum = np.zeros((len(X_ood), 4), dtype=np.float64)
+    fold_models: list[tuple[StandardScaler, LogisticRegression]] = []
     n_outer = int(outer_folds.max()) + 1
     for fold in range(n_outer):
         te = outer_folds == fold
         tr = ~te
         X_tr, y_tr, g_tr = X_val[tr], y_val[tr], g_val[tr]
         tr_rows = [{"id": str(i), "group": str(g)} for i, g in enumerate(g_tr)]
-        in_folds = stratified_8group_folds(tr_rows, n_splits=4, seed=seed + 100 + fold)
+        in_folds = stratified_8group_folds(tr_rows, n_splits=3, seed=seed + 100 + fold)
         best_c, best_key = c_grid[0], (-1.0, -1.0)
         for c_val in c_grid:
             in_preds = np.zeros(len(y_tr), dtype=int)
-            for infold in range(4):
+            for infold in range(3):
                 itr, iva = in_folds != infold, in_folds == infold
                 sc = StandardScaler().fit(X_tr[itr])
-                clf = LogisticRegression(C=c_val, max_iter=1000, solver="lbfgs")
+                clf = LogisticRegression(C=c_val, max_iter=400, solver="lbfgs")
                 clf.fit(sc.transform(X_tr[itr]), y_tr[itr], sample_weight=spawrious_balanced_weights(g_tr[itr]))
                 in_preds[iva] = clf.predict(sc.transform(X_tr[iva]))
             m = spawrious_group_metrics(y_tr, in_preds, g_tr)
@@ -139,25 +136,23 @@ def _fit_dfr_val_and_ood(
             if k > best_key:
                 best_key, best_c = k, c_val
         sc = StandardScaler().fit(X_tr)
-        clf = LogisticRegression(C=best_c, max_iter=1000, solver="lbfgs")
+        clf = LogisticRegression(C=best_c, max_iter=400, solver="lbfgs")
         clf.fit(sc.transform(X_tr), y_tr, sample_weight=spawrious_balanced_weights(g_tr))
         val_oof[te] = clf.predict_proba(sc.transform(X_val[te]))
-        ood_sum += clf.predict_proba(sc.transform(X_ood))
-    return val_oof, ood_sum / float(n_outer)
+        fold_models.append((sc, clf))
+    return val_oof, fold_models
 
 
-def _fit_dar_val_and_ood(
-    base_dev: nn.Module,
+def _fit_dar_5fold(
     F_val: np.ndarray,
     y_val: np.ndarray,
     g_val: np.ndarray,
-    ood_loader: DataLoader,
     outer_folds: np.ndarray,
     *,
     seed: int,
     device: str,
-) -> tuple[np.ndarray, np.ndarray, int]:
-    """Train 5-fold DARHeads on val_layer4_map, then stream ood_loader in 1 pass (zero 10 GB RAM cache)."""
+) -> tuple[np.ndarray, list[tuple[nn.Module, torch.Tensor, torch.Tensor]], int]:
+    """Train 5x3 DARHeads on val_layer4_map and return them for single-pass OOD streaming."""
     val_oof = np.zeros((len(y_val), 4), dtype=np.float64)
     n_outer = int(outer_folds.max()) + 1
     ce = nn.CrossEntropyLoss(reduction="none")
@@ -205,26 +200,13 @@ def _fit_dar_val_and_ood(
                 val_acc_p += np.concatenate(chunks, axis=0)
             trained_heads.append((head, mean_t, std_t))
         val_oof[te] = val_acc_p / float(len(seeds))
-
-    # Single streaming pass over ood_loader applying all 5*3 DARHeads in-flight (<200 MB RAM).
-    use_amp = device.startswith("cuda")
-    ood_chunks = []
-    base_dev.eval()
-    with torch.inference_mode():
-        for _, xb, _, _ in ood_loader:
-            with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
-                l4 = base_dev.extract_stage_maps(xb.to(device))["layer4_map"].float()
-            p_sum = torch.zeros((l4.shape[0], 4), device=device, dtype=torch.float32)
-            for head, mean_t, std_t in trained_heads:
-                p_sum += head((l4 - mean_t) / std_t)[0].softmax(dim=1)
-            ood_chunks.append((p_sum / float(len(trained_heads))).cpu().numpy())
-    return val_oof, np.concatenate(ood_chunks, axis=0), n_params
+    return val_oof, trained_heads, n_params
 
 
-def _train_5fold_repair_val_and_ood(
+def _train_5fold_repair_val(
     base_cpu: nn.Module,
+    val_u8: torch.Tensor,
     val_rows: list[dict],
-    ood_loader: DataLoader,
     outer_folds: np.ndarray,
     *,
     use_gate: bool,
@@ -233,13 +215,13 @@ def _train_5fold_repair_val_and_ood(
     epochs: int,
     seed: int,
     device: str,
-    workers: int,
-) -> tuple[np.ndarray, np.ndarray, int]:
-    """Train 5-fold validation adaptation/repair strictly on val_rows and evaluate on OOD shifted test."""
+) -> tuple[np.ndarray, list[nn.Module], int]:
+    """Train 5-fold validation repair from RAM uint8 tensor; return (val_oof, 5 eval models on device, n_params)."""
     val_oof = np.zeros((len(val_rows), 4), dtype=np.float64)
     n_outer = int(outer_folds.max()) + 1
-    ood_sum = np.zeros((len(ood_loader.dataset), 4), dtype=np.float64)
+    fold_models: list[nn.Module] = []
     ce = nn.CrossEntropyLoss()
+    use_amp = device.startswith("cuda")
     n_trainable = 0
 
     bg_names = sorted({str(r["bg"]) for r in val_rows})
@@ -249,16 +231,15 @@ def _train_5fold_repair_val_and_ood(
         te_idx = np.flatnonzero(outer_folds == fold)
         tr_idx = np.flatnonzero(outer_folds != fold)
         tr_rows = [val_rows[i] for i in tr_idx]
-        te_rows = [val_rows[i] for i in te_idx]
 
         inner_folds = stratified_8group_folds(tr_rows, n_splits=4, seed=seed + 300 + fold)
-        fit_sub = [tr_rows[i] for i in np.flatnonzero(inner_folds != 0)]
-        sel_sub = [tr_rows[i] for i in np.flatnonzero(inner_folds == 0)]
-        sel_y = np.array([int(r["y"]) for r in sel_sub], dtype=int)
-        sel_g = np.array([str(r["group"]) for r in sel_sub], dtype=str)
+        fit_idx = tr_idx[np.flatnonzero(inner_folds != 0)]
+        sel_idx = tr_idx[np.flatnonzero(inner_folds == 0)]
+        sel_y = np.array([int(val_rows[i]["y"]) for i in sel_idx], dtype=int)
+        sel_g = np.array([str(val_rows[i]["group"]) for i in sel_idx], dtype=str)
 
         torch.manual_seed(seed + fold)
-        if device.startswith("cuda"):
+        if use_amp:
             torch.cuda.manual_seed_all(seed + fold)
 
         model = PreLayer4RepairModel(
@@ -269,32 +250,31 @@ def _train_5fold_repair_val_and_ood(
             bn_scope=bn_scope,
         ).to(device)
         if use_gate:
-            fit_eval_loader = DataLoader(SpawriousImageDataset(fit_sub), batch_size=128, shuffle=False, num_workers=workers)
+            fit_eval_loader = DataLoader(InMemoryNormalizedDataset(val_u8, val_rows, fit_idx), batch_size=128, shuffle=False, num_workers=0, pin_memory=use_amp)
             model.set_neutral_c3(compute_group_balanced_layer3_mean(base_cpu, fit_eval_loader, device))
 
         params = model.trainable_parameters()
         n_trainable = sum(p.numel() for p in params)
         opt = torch.optim.AdamW(params, lr=3e-3, weight_decay=1e-2)
-        use_amp = device.startswith("cuda")
         scaler = torch.amp.GradScaler("cuda", enabled=use_amp)
 
-        w_fit = spawrious_balanced_weights([str(r["group"]) for r in fit_sub])
+        w_fit = spawrious_balanced_weights([str(val_rows[i]["group"]) for i in fit_idx])
         gen = torch.Generator().manual_seed(seed + 50 + fold)
-        sampler = WeightedRandomSampler(torch.from_numpy(w_fit).double(), num_samples=len(fit_sub), replacement=True, generator=gen)
-        fit_loader = DataLoader(SpawriousImageDataset(fit_sub), batch_size=64, sampler=sampler, num_workers=workers, pin_memory=use_amp)
-        sel_loader = DataLoader(SpawriousImageDataset(sel_sub), batch_size=128, shuffle=False, num_workers=workers, pin_memory=use_amp)
-        te_loader = DataLoader(SpawriousImageDataset(te_rows), batch_size=128, shuffle=False, num_workers=workers, pin_memory=use_amp)
+        sampler = WeightedRandomSampler(torch.from_numpy(w_fit).double(), num_samples=len(fit_idx), replacement=True, generator=gen)
+        fit_loader = DataLoader(InMemoryNormalizedDataset(val_u8, val_rows, fit_idx), batch_size=64, sampler=sampler, num_workers=0, pin_memory=use_amp)
+        sel_loader = DataLoader(InMemoryNormalizedDataset(val_u8, val_rows, sel_idx), batch_size=128, shuffle=False, num_workers=0, pin_memory=use_amp)
+        te_loader = DataLoader(InMemoryNormalizedDataset(val_u8, val_rows, te_idx), batch_size=128, shuffle=False, num_workers=0, pin_memory=use_amp)
 
         best_key = (-1.0, -1.0)
         best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
         for _ in range(epochs):
             model.set_repair_train_mode()
-            for idx_b, xb, yb, _ in fit_loader:
-                xb, yb = xb.to(device), yb.to(device)
+            for pos_b, xb, yb, _ in fit_loader:
+                xb, yb = xb.to(device, non_blocking=True), yb.to(device, non_blocking=True)
                 opt.zero_grad(set_to_none=True)
                 with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
                     if use_inv:
-                        ab = torch.tensor([bg_to_int[str(fit_sub[int(i)]["bg"])] for i in idx_b], dtype=torch.long, device=device)
+                        ab = torch.tensor([bg_to_int[str(val_rows[int(fit_idx[int(p)])]["bg"])] for p in pos_b], dtype=torch.long, device=device)
                         out = model.forward_with_context_swap(xb, ab)
                         loss_ce = ce(out["logits"].float(), yb)
                         inv = context_invariance_loss(
@@ -321,9 +301,54 @@ def _train_5fold_repair_val_and_ood(
                 best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
 
         model.load_state_dict(best_state)
+        model.eval()
         val_oof[te_idx] = _predict_loader(model, te_loader, device)
-        ood_sum += _predict_loader(model, ood_loader, device)
-    return val_oof, ood_sum / float(n_outer), n_trainable
+        fold_models.append(model)
+    return val_oof, fold_models, n_trainable
+
+
+@torch.inference_mode()
+def evaluate_all_arms_single_ood_pass(
+    base_dev: nn.Module,
+    dfr_models: list[tuple[StandardScaler, LogisticRegression]],
+    dar_heads: list[tuple[nn.Module, torch.Tensor, torch.Tensor]],
+    neural_arms: dict[str, list[nn.Module]],
+    ood_loader: DataLoader,
+    device: str,
+) -> dict[str, np.ndarray]:
+    """Evaluate ALL 6 arms in ONE SINGLE streaming pass over the ~25,344 OOD test images."""
+    use_amp = device.startswith("cuda")
+    base_dev.eval()
+    for models in neural_arms.values():
+        for m in models:
+            m.eval()
+
+    chunks: dict[str, list[np.ndarray]] = {a: [] for a in ARM_ORDER}
+    for _, xb, _, _ in ood_loader:
+        xb_dev = xb.to(device, non_blocking=True)
+        with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
+            st = base_dev.extract_stage_maps(xb_dev)
+            erm_logits = base_dev[2](st["pooled"])
+        chunks["erm_raw"].append(erm_logits.float().softmax(dim=1).cpu().numpy())
+
+        pooled_np = st["pooled"].float().cpu().numpy()
+        p_dfr = sum(clf.predict_proba(sc.transform(pooled_np)) for sc, clf in dfr_models) / float(len(dfr_models))
+        chunks["dfr_l2"].append(p_dfr.astype(np.float32))
+
+        l4 = st["layer4_map"].float()
+        p_dar = torch.zeros((l4.shape[0], 4), device=device, dtype=torch.float32)
+        for head, mean_t, std_t in dar_heads:
+            p_dar += head((l4 - mean_t) / std_t)[0].softmax(dim=1)
+        chunks["dar"].append((p_dar / float(len(dar_heads))).cpu().numpy())
+
+        for arm_name, models in neural_arms.items():
+            p_arm = torch.zeros((xb_dev.shape[0], 4), device=device, dtype=torch.float32)
+            for m in models:
+                with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
+                    p_arm += m(xb_dev).float().softmax(dim=1)
+            chunks[arm_name].append((p_arm / float(len(models))).cpu().numpy())
+
+    return {a: np.concatenate(chunks[a], axis=0) for a in ARM_ORDER}
 
 
 def eval_val_and_ood(
@@ -361,7 +386,6 @@ def run_single_seed(
     seed: int,
     adapt_epochs: int,
     device: str,
-    workers: int,
 ) -> dict:
     seed_json = out_dir / f"seed_{seed}_ood_results.json"
     seed_npz = out_dir / f"seed_{seed}_ood_probs.npz"
@@ -369,6 +393,7 @@ def run_single_seed(
         print(f"    [spawrious s{seed}] Reusing completed seed output", flush=True)
         return json.loads(seed_json.read_text(encoding="utf-8"))
 
+    t0 = time.perf_counter()
     _, val_rows = load_o2o_hard_train_val_rows(data_root, val_fraction=0.15, split_seed=0)
     ood_rows = load_o2o_hard_ood_test_rows(data_root)
     y_val = np.array([int(r["y"]) for r in val_rows], dtype=int)
@@ -382,45 +407,46 @@ def run_single_seed(
     base_cpu = load_resnet_checkpoint(ckpt_path, device="cpu", num_classes=4)
     base_dev = copy.deepcopy(base_cpu).to(device)
 
+    print(f"    [spawrious s{seed} | {device}] preloading val ({len(val_rows)}) into RAM...", flush=True)
+    val_u8 = preload_images_uint8(data_root, val_rows)
     pin = device.startswith("cuda")
-    val_loader = DataLoader(SpawriousImageDataset(val_rows), batch_size=128, shuffle=False, num_workers=workers, pin_memory=pin)
-    ood_loader = DataLoader(SpawriousImageDataset(ood_rows), batch_size=256, shuffle=False, num_workers=workers, pin_memory=pin)
-    v_cache = _extract_resnet_cache(base_dev, val_loader, device, include_l4=True)
-    o_cache = _extract_resnet_cache(base_dev, ood_loader, device, include_l4=False)
+    val_loader = DataLoader(InMemoryNormalizedDataset(val_u8, val_rows), batch_size=128, shuffle=False, num_workers=0, pin_memory=pin)
+    v_cache = _extract_val_cache(base_dev, val_loader, device)
 
-    val_dfr, ood_dfr = _fit_dfr_val_and_ood(v_cache["pooled"], y_val, g_val, o_cache["pooled"], outer_folds, seed=seed)
-    val_dar, ood_dar, n_dar = _fit_dar_val_and_ood(
-        base_dev, v_cache["layer4_map"], y_val, g_val, ood_loader, outer_folds, seed=seed, device=device
-    )
-    erm_val_p, erm_ood_p = v_cache["probs"], o_cache["probs"]
-    del v_cache, o_cache, base_dev
-    if device.startswith("cuda"):
-        torch.cuda.empty_cache()
+    print(f"    [spawrious s{seed} | {device}] fitting dfr_l2 + dar ({time.perf_counter()-t0:.0f}s)...", flush=True)
+    val_dfr, dfr_models = _fit_dfr_5fold(v_cache["pooled"], y_val, g_val, outer_folds, seed=seed)
+    val_dar, dar_heads, n_dar = _fit_dar_5fold(v_cache["layer4_map"], y_val, g_val, outer_folds, seed=seed, device=device)
+    val_probs_by_arm = {"erm_raw": v_cache["probs"], "dfr_l2": val_dfr, "dar": val_dar}
+    n_params_by_arm = {"erm_raw": sum(p.numel() for p in base_cpu.parameters()), "dfr_l2": 2048 * 4 + 4, "dar": n_dar}
+    del v_cache
 
-    arm_outputs = {
-        "erm_raw": (erm_val_p, erm_ood_p, sum(p.numel() for p in base_cpu.parameters())),
-        "dfr_l2": (val_dfr, ood_dfr, 2048 * 4 + 4),
-        "dar": (val_dar, ood_dar, n_dar),
-    }
+    neural_arms: dict[str, list[nn.Module]] = {}
     for arm_name, use_gate, bn_scope, use_inv in (
         ("affine_dfr_bn_l4", False, "bn_l4", False),
         ("affine_dfr_bn_all", False, "bn_all", False),
         ("pre_l4_repair_w005", True, "bn_all", True),
     ):
-        print(f"    [spawrious s{seed} | {device}] starting {arm_name}...", flush=True)
-        v_p, o_p, n_p = _train_5fold_repair_val_and_ood(
-            base_cpu, val_rows, ood_loader, outer_folds,
+        print(f"    [spawrious s{seed} | {device}] training {arm_name} ({time.perf_counter()-t0:.0f}s)...", flush=True)
+        v_p, models, n_p = _train_5fold_repair_val(
+            base_cpu, val_u8, val_rows, outer_folds,
             use_gate=use_gate, bn_scope=bn_scope, use_inv=use_inv,
-            epochs=adapt_epochs, seed=seed, device=device, workers=workers,
+            epochs=adapt_epochs, seed=seed, device=device,
         )
-        arm_outputs[arm_name] = (v_p, o_p, n_p)
+        val_probs_by_arm[arm_name] = v_p
+        neural_arms[arm_name] = models
+        n_params_by_arm[arm_name] = n_p
+
+    del val_u8
+    print(f"    [spawrious s{seed} | {device}] single-pass OOD test eval over {len(ood_rows):,} images ({time.perf_counter()-t0:.0f}s)...", flush=True)
+    ood_loader = DataLoader(SpawriousImageDataset(ood_rows), batch_size=256, shuffle=False, num_workers=0, pin_memory=pin)
+    ood_probs_by_arm = evaluate_all_arms_single_ood_pass(base_dev, dfr_models, dar_heads, neural_arms, ood_loader, device)
 
     rows = []
     prob_store = {}
     for arm in ARM_ORDER:
-        vp, op, n_p = arm_outputs[arm]
+        vp, op = val_probs_by_arm[arm], ood_probs_by_arm[arm]
         m = eval_val_and_ood(vp, y_val, g_val, op, y_ood)
-        rows.append({"seed": seed, "arm": arm, "trainable_params": n_p, **m})
+        rows.append({"seed": seed, "arm": arm, "trainable_params": n_params_by_arm[arm], **m})
         prob_store[f"spawrious_s{seed}__{arm}__val"] = vp.astype(np.float32)
         prob_store[f"spawrious_s{seed}__{arm}__ood"] = op.astype(np.float32)
         print(
@@ -432,11 +458,12 @@ def run_single_seed(
     payload = {
         "seed": seed, "device": device,
         "n_val": len(val_rows), "n_ood_test": len(ood_rows),
+        "elapsed_s": round(time.perf_counter() - t0, 1),
         "checkpoint": str(ckpt_path), "sha256": ckpt_sha,
         "rows": rows,
     }
-    (out_dir / f"seed_{seed}_ood_results.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    np.savez_compressed(out_dir / f"seed_{seed}_ood_probs.npz", **prob_store)
+    seed_json.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    np.savez_compressed(seed_npz, **prob_store)
     return payload
 
 
@@ -513,7 +540,7 @@ def main(argv=None):
         dev = _resolve_device(args.device)
         run_single_seed(
             data_root, ckpt_dir, out_dir,
-            seed=args.worker_seed, adapt_epochs=args.adapt_epochs, device=dev, workers=args.workers,
+            seed=args.worker_seed, adapt_epochs=args.adapt_epochs, device=dev,
         )
         return
 
@@ -561,10 +588,7 @@ def main(argv=None):
                 fut.result()
     else:
         for s in args.seeds:
-            run_single_seed(
-                data_root, ckpt_dir, out_dir,
-                seed=s, adapt_epochs=args.adapt_epochs, device=base_dev, workers=args.workers,
-            )
+            run_single_seed(data_root, ckpt_dir, out_dir, seed=s, adapt_epochs=args.adapt_epochs, device=base_dev)
 
     per_seed_rows, ckpt_records = [], []
     prob_store: dict[str, np.ndarray] = {}

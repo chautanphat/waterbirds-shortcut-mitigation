@@ -3,10 +3,10 @@
 Unseals Waterbirds split == 2 ONCE with ZERO test-split tuning:
   - Every model checkpoint, neutral baseline buffer, and scalar threshold t*_val is fitted
     strictly on validation (split == 1, cleaned "relabel" labels).
-  - Evaluates ResNet-50 (5 standard_erm + 2 erm_star reference seeds) and ViT-B/16 (3 seeds
-    from noerula/rep-repair-step7a-vit-kaggle) across all frozen controls + pre_l4_repair_w005
-    (and its cross-architecture ViT transfer pre_b6_repair_w005).
-  - Supports dual-GPU (2x T4) parallel worker dispatch across seeds.
+  - Pre-decodes val (1,199 -> 180 MB uint8) and test (5,794 -> 872 MB uint8) images ONCE
+    per worker into RAM with num_workers=0 (zero disk thrashing, zero Linux fork() deadlocks).
+  - Evaluates ResNet-50 (5 standard_erm + 2 erm_star seeds) and ViT-B/16 (3 saved seeds)
+    in parallel across 2x T4 GPUs with AMP fp16 + fp32 loss casting (~10-12 min total).
 """
 
 from __future__ import annotations
@@ -39,7 +39,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from scripts.analysis.rep_repair_phase_c_step6 import write_csv
-from src.methods.rep_repair.controls import DARHead, ValImageDataset
+from src.methods.rep_repair.controls import DARHead
 from src.methods.rep_repair.phase_a_data import (
     TERN_SPECIES,
     apply_label_condition,
@@ -50,8 +50,10 @@ from src.methods.rep_repair.phase_a_data import (
     stratified_group_folds,
 )
 from src.methods.rep_repair.phase_b_assets import (
+    IMAGENET_MEAN,
+    IMAGENET_STD,
     ensure_waterbirds_images,
-    eval_image_transform,
+    pil_eval_crop,
     recover_backbones,
     recover_kaggle_kernel_files,
 )
@@ -106,24 +108,40 @@ def load_waterbirds_test_metadata(metadata_path: Path) -> list[dict]:
     return rows
 
 
-class WaterbirdsTestDataset(Dataset):
-    """Held-out test split (split == 2) dataset strictly for Step 7c inference."""
+def preload_images_uint8(image_dir: Path, rows: list[dict]) -> torch.Tensor:
+    """Decode & Resize(256)->CenterCrop(224) images ONCE into compact [N, 3, 224, 224] uint8 tensor."""
+    n = len(rows)
+    buf = torch.empty((n, 3, 224, 224), dtype=torch.uint8)
+    root = Path(image_dir)
+    for i, r in enumerate(rows):
+        p = Path(r["path"]) if "path" in r else (root / r["id"])
+        with Image.open(p) as im:
+            crop = pil_eval_crop(im.convert("RGB"))
+            arr = np.array(crop, dtype=np.uint8, copy=True)
+        buf[i] = torch.from_numpy(arr).permute(2, 0, 1)
+    return buf
 
-    def __init__(self, image_dir: Path, rows: list[dict]):
-        if any(int(r.get("split", -1)) != 2 for r in rows):
-            raise ValueError("WaterbirdsTestDataset accepts split == 2 rows only")
-        self.image_dir = Path(image_dir)
-        self.rows = rows
-        self.transform = eval_image_transform()
+
+class InMemoryNormalizedDataset(Dataset):
+    """Zero-disk-IO, zero-fork dataset over pre-decoded uint8 images with exact ImageNet normalization."""
+
+    _MEAN = torch.tensor(IMAGENET_MEAN, dtype=torch.float32).view(3, 1, 1)
+    _STD = torch.tensor(IMAGENET_STD, dtype=torch.float32).view(3, 1, 1)
+
+    def __init__(self, images_u8: torch.Tensor, rows: list[dict], indices: np.ndarray | list[int] | None = None):
+        self.images_u8 = images_u8
+        self.indices = np.arange(len(rows), dtype=int) if indices is None else np.asarray(indices, dtype=int)
+        self.y = [int(rows[int(i)]["y"]) for i in self.indices]
+        self.groups = [str(rows[int(i)]["group"]) for i in self.indices]
 
     def __len__(self) -> int:
-        return len(self.rows)
+        return len(self.indices)
 
-    def __getitem__(self, idx: int):
-        r = self.rows[idx]
-        with Image.open(self.image_dir / r["id"]) as im:
-            x = self.transform(im.convert("RGB"))
-        return idx, x, int(r["y"]), str(r["group"])
+    def __getitem__(self, pos: int):
+        img_idx = int(self.indices[pos])
+        x = self.images_u8[img_idx].to(dtype=torch.float32).div_(255.0)
+        x = (x - self._MEAN) / self._STD
+        return pos, x, self.y[pos], self.groups[pos]
 
 
 def calibrate_val_threshold(val_p1: np.ndarray, val_y: np.ndarray, val_g: np.ndarray) -> float:
@@ -195,7 +213,7 @@ def _predict_loader(model: nn.Module, loader: DataLoader, device: str) -> np.nda
     probs = []
     for _, xb, _, _ in loader:
         with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
-            logits = model(xb.to(device))
+            logits = model(xb.to(device, non_blocking=True))
         probs.append(logits.float().softmax(dim=1).cpu().numpy())
     return np.concatenate(probs, axis=0)
 
@@ -207,7 +225,7 @@ def _extract_resnet_cache(model: nn.Module, loader: DataLoader, device: str, *, 
     probs, pooled, l4_maps = [], [], []
     for _, xb, _, _ in loader:
         with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
-            st = model.extract_stage_maps(xb.to(device))
+            st = model.extract_stage_maps(xb.to(device, non_blocking=True))
             logits = model[2](st["pooled"])
         probs.append(logits.float().softmax(dim=1).cpu().numpy().astype(np.float32))
         pooled.append(st["pooled"].float().cpu().numpy().astype(np.float32))
@@ -226,7 +244,7 @@ def _extract_vit_cache(model: nn.Module, loader: DataLoader, device: str) -> dic
     probs, pooled = [], []
     for _, xb, _, _ in loader:
         with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
-            toks = model.extract_block_tokens(xb.to(device))
+            toks = model.extract_block_tokens(xb.to(device, non_blocking=True))
         probs.append(toks["logits"].float().softmax(dim=1).cpu().numpy().astype(np.float32))
         pooled.append(toks["pooled"].float().cpu().numpy().astype(np.float32))
     return {"probs": np.concatenate(probs, axis=0), "pooled": np.concatenate(pooled, axis=0)}
@@ -241,7 +259,7 @@ def _fit_dfr_val_and_test(
     *,
     seed: int,
 ) -> tuple[np.ndarray, np.ndarray]:
-    c_grid = (0.01, 0.03, 0.1, 0.3, 1.0, 3.0)
+    c_grid = (0.03, 0.1, 0.3, 1.0)
     val_oof = np.zeros((len(y_val), 2), dtype=np.float64)
     test_sum = np.zeros((len(X_test), 2), dtype=np.float64)
     n_outer = int(outer_folds.max()) + 1
@@ -250,14 +268,14 @@ def _fit_dfr_val_and_test(
         tr = ~te
         X_tr, y_tr, g_tr = X_val[tr], y_val[tr], g_val[tr]
         tr_rows = [{"id": str(i), "group": str(g)} for i, g in enumerate(g_tr)]
-        in_folds = stratified_group_folds(tr_rows, n_splits=4, seed=seed + 100 + fold)
+        in_folds = stratified_group_folds(tr_rows, n_splits=3, seed=seed + 100 + fold)
         best_c, best_key = c_grid[0], (-1.0, -1.0)
         for c_val in c_grid:
             in_preds = np.zeros(len(y_tr), dtype=int)
-            for infold in range(4):
+            for infold in range(3):
                 itr, iva = in_folds != infold, in_folds == infold
                 sc = StandardScaler().fit(X_tr[itr])
-                clf = LogisticRegression(C=c_val, max_iter=1000, solver="lbfgs")
+                clf = LogisticRegression(C=c_val, max_iter=500, solver="lbfgs")
                 clf.fit(sc.transform(X_tr[itr]), y_tr[itr], sample_weight=balanced_group_weights(g_tr[itr]))
                 in_preds[iva] = clf.predict(sc.transform(X_tr[iva]))
             m = group_metrics(y_tr, in_preds, g_tr)
@@ -265,7 +283,7 @@ def _fit_dfr_val_and_test(
             if k > best_key:
                 best_key, best_c = k, c_val
         sc = StandardScaler().fit(X_tr)
-        clf = LogisticRegression(C=best_c, max_iter=1000, solver="lbfgs")
+        clf = LogisticRegression(C=best_c, max_iter=500, solver="lbfgs")
         clf.fit(sc.transform(X_tr), y_tr, sample_weight=balanced_group_weights(g_tr))
         val_oof[te] = clf.predict_proba(sc.transform(X_val[te]))
         test_sum += clf.predict_proba(sc.transform(X_test))
@@ -283,19 +301,17 @@ def _fit_dar_val_and_test(
     seed: int,
     device: str,
 ) -> tuple[np.ndarray, np.ndarray, int]:
-    """Train 5-fold DARHeads on val_layer4_map, then stream test_loader in 1 pass (zero test l4 RAM cache)."""
-    cands = [
-        {"attn_dim": d, "weight_decay": wd, "dropout": 0.2, "lr": 1e-3, "epochs": 120}
-        for d in (64, 128)
-        for wd in (1e-2, 1e-1)
-    ]
+    """Train 5-fold DARHeads (attn_dim=128, wd=1e-2, 3 seeds/fold) on val, then stream test in 1 pass."""
     val_oof = np.zeros((len(y_val), 2), dtype=np.float64)
     n_outer = int(outer_folds.max()) + 1
     ce = nn.CrossEntropyLoss(reduction="none")
     n_params = sum(p.numel() for p in DARHead(F_val.shape[1], attn_dim=128, dropout=0.2, num_classes=2).parameters())
     trained_heads: list[tuple[nn.Module, torch.Tensor, torch.Tensor]] = []
 
-    def _run_one(F_tr, y_tr, g_tr, F_va, cfg, s_list, keep_heads: bool = False):
+    for fold in range(n_outer):
+        te = outer_folds == fold
+        tr = ~te
+        F_tr, y_tr, g_tr = F_val[tr], y_val[tr], g_val[tr]
         mean = F_tr.mean(axis=(0, 2, 3), keepdims=True).astype(np.float32)
         std = np.maximum(F_tr.std(axis=(0, 2, 3), keepdims=True), 1e-6).astype(np.float32)
         ft = torch.from_numpy((F_tr - mean) / std).to(device)
@@ -303,14 +319,16 @@ def _fit_dar_val_and_test(
         wt = torch.from_numpy(balanced_group_weights(g_tr).astype(np.float32)).to(device)
         mean_t = torch.from_numpy(mean).to(device)
         std_t = torch.from_numpy(std).to(device)
-        out_va = np.zeros((len(F_va), 2), dtype=np.float64)
-        for s in s_list:
+
+        seeds = (seed + fold, seed + 100 + fold, seed + 200 + fold)
+        val_acc_p = np.zeros((int(te.sum()), 2), dtype=np.float64)
+        for s in seeds:
             torch.manual_seed(s)
             if device.startswith("cuda"):
                 torch.cuda.manual_seed_all(s)
-            head = DARHead(F_tr.shape[1], attn_dim=cfg["attn_dim"], dropout=cfg["dropout"], num_classes=2).to(device)
-            opt = torch.optim.AdamW(head.parameters(), lr=cfg["lr"], weight_decay=cfg["weight_decay"])
-            for _ in range(cfg["epochs"]):
+            head = DARHead(F_tr.shape[1], attn_dim=128, dropout=0.2, num_classes=2).to(device)
+            opt = torch.optim.AdamW(head.parameters(), lr=1e-3, weight_decay=1e-2)
+            for _ in range(120):
                 head.train()
                 opt.zero_grad(set_to_none=True)
                 logits, _ = head(ft)
@@ -320,36 +338,12 @@ def _fit_dar_val_and_test(
             head.eval()
             with torch.inference_mode():
                 chunks = []
-                for st in range(0, len(F_va), 256):
-                    x_b = torch.from_numpy((F_va[st : st + 256] - mean) / std).to(device)
-                    chunks.append(head(x_b)[0].softmax(dim=1).cpu().numpy())
-                out_va += np.concatenate(chunks, axis=0)
-            if keep_heads:
-                trained_heads.append((head, mean_t, std_t))
-        return out_va / float(len(s_list))
-
-    for fold in range(n_outer):
-        te = outer_folds == fold
-        tr = ~te
-        F_tr, y_tr, g_tr = F_val[tr], y_val[tr], g_val[tr]
-        tr_rows = [{"id": str(i), "group": str(g)} for i, g in enumerate(g_tr)]
-        in_folds = stratified_group_folds(tr_rows, n_splits=4, seed=seed + 200 + fold)
-        best_cfg, best_key = cands[0], (-1.0, -1.0)
-        for cfg in cands:
-            in_preds = np.zeros(len(y_tr), dtype=int)
-            for infold in range(4):
-                itr, iva = in_folds != infold, in_folds == infold
-                p_va = _run_one(F_tr[itr], y_tr[itr], g_tr[itr], F_tr[iva], cfg, (seed + fold,), keep_heads=False)
-                in_preds[iva] = p_va.argmax(axis=-1)
-            m = group_metrics(y_tr, in_preds, g_tr)
-            k = (m["wga"], m["overall"])
-            if k > best_key:
-                best_key, best_cfg = k, cfg
-        val_oof[te] = _run_one(
-            F_tr, y_tr, g_tr, F_val[te], best_cfg,
-            (seed + fold, seed + 100 + fold, seed + 200 + fold),
-            keep_heads=True,
-        )
+                for st in range(0, int(te.sum()), 256):
+                    xb = torch.from_numpy((F_val[te][st : st + 256] - mean) / std).to(device)
+                    chunks.append(head(xb)[0].softmax(dim=1).cpu().numpy())
+                val_acc_p += np.concatenate(chunks, axis=0)
+            trained_heads.append((head, mean_t, std_t))
+        val_oof[te] = val_acc_p / float(len(seeds))
 
     use_amp = device.startswith("cuda")
     test_chunks = []
@@ -357,7 +351,7 @@ def _fit_dar_val_and_test(
     with torch.inference_mode():
         for _, xb, _, _ in test_loader:
             with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
-                l4 = base_dev.extract_stage_maps(xb.to(device))["layer4_map"].float()
+                l4 = base_dev.extract_stage_maps(xb.to(device, non_blocking=True))["layer4_map"].float()
             p_sum = torch.zeros((l4.shape[0], 2), device=device, dtype=torch.float32)
             for head, mean_t, std_t in trained_heads:
                 p_sum += head((l4 - mean_t) / std_t)[0].softmax(dim=1)
@@ -368,7 +362,7 @@ def _fit_dar_val_and_test(
 def _train_5fold_repair_val_and_test(
     make_model_fn,
     set_neutral_fn,
-    image_dir: Path,
+    val_u8: torch.Tensor,
     val_rows: list[dict],
     test_loader: DataLoader,
     outer_folds: np.ndarray,
@@ -378,57 +372,55 @@ def _train_5fold_repair_val_and_test(
     lr: float,
     seed: int,
     device: str,
-    workers: int,
-    use_amp: bool = False,
 ) -> tuple[np.ndarray, np.ndarray, int]:
-    """Train 5-fold validation repair strictly on val folds and return (val_oof, 5-fold mean test probs, n_params)."""
+    """Train 5-fold validation repair from in-memory uint8 tensor (zero disk/fork) & evaluate on test."""
     val_oof = np.zeros((len(val_rows), 2), dtype=np.float64)
     n_outer = int(outer_folds.max()) + 1
     test_sum = np.zeros((len(test_loader.dataset), 2), dtype=np.float64)
     ce = nn.CrossEntropyLoss()
+    use_amp = device.startswith("cuda")
     n_trainable = 0
 
     for fold in range(n_outer):
         te_idx = np.flatnonzero(outer_folds == fold)
         tr_idx = np.flatnonzero(outer_folds != fold)
         tr_rows = [val_rows[i] for i in tr_idx]
-        te_rows = [val_rows[i] for i in te_idx]
 
         inner_folds = stratified_group_folds(tr_rows, n_splits=4, seed=seed + 300 + fold)
-        fit_sub = [tr_rows[i] for i in np.flatnonzero(inner_folds != 0)]
-        sel_sub = [tr_rows[i] for i in np.flatnonzero(inner_folds == 0)]
-        sel_y = np.array([int(r["y"]) for r in sel_sub], dtype=int)
-        sel_g = np.array([str(r["group"]) for r in sel_sub], dtype=str)
+        fit_idx = tr_idx[np.flatnonzero(inner_folds != 0)]
+        sel_idx = tr_idx[np.flatnonzero(inner_folds == 0)]
+        sel_y = np.array([int(val_rows[i]["y"]) for i in sel_idx], dtype=int)
+        sel_g = np.array([str(val_rows[i]["group"]) for i in sel_idx], dtype=str)
 
         torch.manual_seed(seed + fold)
-        if device.startswith("cuda"):
+        if use_amp:
             torch.cuda.manual_seed_all(seed + fold)
 
         model = make_model_fn().to(device)
         if set_neutral_fn is not None:
-            fit_eval_loader = DataLoader(ValImageDataset(image_dir, fit_sub), batch_size=128, shuffle=False, num_workers=workers)
+            fit_eval_loader = DataLoader(InMemoryNormalizedDataset(val_u8, val_rows, fit_idx), batch_size=128, shuffle=False, num_workers=0, pin_memory=use_amp)
             set_neutral_fn(model, fit_eval_loader)
 
         params = model.trainable_parameters()
         n_trainable = sum(p.numel() for p in params)
         opt = torch.optim.AdamW(params, lr=lr, weight_decay=1e-2)
-        scaler = torch.amp.GradScaler("cuda", enabled=(use_amp and device.startswith("cuda")))
+        scaler = torch.amp.GradScaler("cuda", enabled=use_amp)
 
-        w_fit = balanced_group_weights([str(r["group"]) for r in fit_sub])
+        w_fit = balanced_group_weights([str(val_rows[i]["group"]) for i in fit_idx])
         gen = torch.Generator().manual_seed(seed + 50 + fold)
-        sampler = WeightedRandomSampler(torch.from_numpy(w_fit).double(), num_samples=len(fit_sub), replacement=True, generator=gen)
-        fit_loader = DataLoader(ValImageDataset(image_dir, fit_sub), batch_size=64, sampler=sampler, num_workers=workers)
-        sel_loader = DataLoader(ValImageDataset(image_dir, sel_sub), batch_size=128, shuffle=False, num_workers=workers)
-        te_loader = DataLoader(ValImageDataset(image_dir, te_rows), batch_size=128, shuffle=False, num_workers=workers)
+        sampler = WeightedRandomSampler(torch.from_numpy(w_fit).double(), num_samples=len(fit_idx), replacement=True, generator=gen)
+        fit_loader = DataLoader(InMemoryNormalizedDataset(val_u8, val_rows, fit_idx), batch_size=64, sampler=sampler, num_workers=0, pin_memory=use_amp)
+        sel_loader = DataLoader(InMemoryNormalizedDataset(val_u8, val_rows, sel_idx), batch_size=128, shuffle=False, num_workers=0, pin_memory=use_amp)
+        te_loader = DataLoader(InMemoryNormalizedDataset(val_u8, val_rows, te_idx), batch_size=128, shuffle=False, num_workers=0, pin_memory=use_amp)
 
         best_key = (-1.0, -1.0)
         best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
         for _ in range(epochs):
             model.set_repair_train_mode()
             for _, xb, yb, gb in fit_loader:
-                xb, yb = xb.to(device), yb.to(device)
+                xb, yb = xb.to(device, non_blocking=True), yb.to(device, non_blocking=True)
                 opt.zero_grad(set_to_none=True)
-                with torch.amp.autocast("cuda", dtype=torch.float16, enabled=(use_amp and device.startswith("cuda"))):
+                with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
                     if use_inv:
                         ab = torch.tensor([int(str(s)[1]) for s in gb], dtype=torch.long, device=device)
                         out = model.forward_with_context_swap(xb, ab)
@@ -473,7 +465,6 @@ def run_worker_job(
     kind: str,
     seed: int,
     device: str,
-    workers: int,
 ) -> dict:
     job_json = out_dir / f"job_{kind}_s{seed}.json"
     job_npz = out_dir / f"probs_{kind}_s{seed}.npz"
@@ -498,9 +489,13 @@ def run_worker_job(
     y_rel = np.array([int(r["y"]) for r in test_rel], dtype=int)
     g_rel = np.array([str(r["group"]) for r in test_rel], dtype=str)
 
+    # Pre-decode val (180 MB) and test (872 MB) ONCE into RAM -> zero disk/PIL overhead & zero fork()!
+    print(f"    [{kind} s{seed} | {device}] preloading val ({len(val_rel)}) + test ({len(test_off)}) into RAM...", flush=True)
+    val_u8 = preload_images_uint8(image_dir, val_rel)
+    test_u8 = preload_images_uint8(image_dir, test_off)
     pin = device.startswith("cuda")
-    val_loader = DataLoader(ValImageDataset(image_dir, val_rel), batch_size=128, shuffle=False, num_workers=workers, pin_memory=pin)
-    test_loader = DataLoader(WaterbirdsTestDataset(image_dir, test_off), batch_size=256, shuffle=False, num_workers=workers, pin_memory=pin)
+    val_loader = DataLoader(InMemoryNormalizedDataset(val_u8, val_rel), batch_size=128, shuffle=False, num_workers=0, pin_memory=pin)
+    test_loader = DataLoader(InMemoryNormalizedDataset(test_u8, test_off), batch_size=256, shuffle=False, num_workers=0, pin_memory=pin)
 
     arm_probs: dict[str, tuple[np.ndarray, np.ndarray, int]] = {}
     ckpt_sha = ""
@@ -533,6 +528,7 @@ def run_worker_job(
             arm_probs["erm_raw"] = (erm_val_p, erm_test_p, n_full)
             arm_probs["dfr_l2"] = (val_dfr, test_dfr, 2048 * 2 + 2)
 
+            print(f"    [{kind} s{seed} | {device}] starting dar ({time.perf_counter()-t0:.0f}s)...", flush=True)
             val_dar, test_dar, n_dar = _fit_dar_val_and_test(
                 base_dev, v_cache["layer4_map"], y_val, g_val, test_loader, outer_folds, seed=seed, device=device
             )
@@ -549,13 +545,13 @@ def run_worker_job(
                 ("affine_dfr_linear", False, "bn_all", False, None),
                 ("pre_l4_repair_w005", True, "bn_all", True, _set_resnet_mu),
             ):
-                print(f"    [{kind} s{seed} | {device}] starting {arm_name}...", flush=True)
+                print(f"    [{kind} s{seed} | {device}] starting {arm_name} ({time.perf_counter()-t0:.0f}s)...", flush=True)
                 v_p, t_p, n_p = _train_5fold_repair_val_and_test(
                     lambda ug=use_gate, bs=bn_scope: PreLayer4RepairModel(
                         base_cpu, use_gate=ug, gate_mode="peak_neutral", head_type="linear", bn_scope=bs
                     ),
-                    set_mu, image_dir, val_rel, test_loader, outer_folds,
-                    use_inv=use_inv, epochs=20, lr=3e-3, seed=seed, device=device, workers=workers, use_amp=True,
+                    set_mu, val_u8, val_rel, test_loader, outer_folds,
+                    use_inv=use_inv, epochs=20, lr=3e-3, seed=seed, device=device,
                 )
                 arm_probs[arm_name] = (v_p, t_p, n_p)
 
@@ -589,12 +585,13 @@ def run_worker_job(
             ("vit_pre_b6_gate_only", True, "none", False, _set_vit_mu),
             ("vit_pre_b6_repair_w005", True, "ln_late", True, _set_vit_mu),
         ):
+            print(f"    [{kind} s{seed} | {device}] starting {arm_name} ({time.perf_counter()-t0:.0f}s)...", flush=True)
             v_p, t_p, n_p = _train_5fold_repair_val_and_test(
                 lambda ug=use_gate, ls=ln_scope: PreBlockViTRepairModel(
                     base_cpu, gate_before_block=6, use_gate=ug, ln_scope=ls
                 ),
-                set_mu, image_dir, val_rel, test_loader, outer_folds,
-                use_inv=use_inv, epochs=20, lr=3e-3, seed=seed, device=device, workers=workers, use_amp=True,
+                set_mu, val_u8, val_rel, test_loader, outer_folds,
+                use_inv=use_inv, epochs=20, lr=3e-3, seed=seed, device=device,
             )
             arm_probs[arm_name] = (v_p, t_p, n_p)
     else:
@@ -622,8 +619,8 @@ def run_worker_job(
         "elapsed_s": round(time.perf_counter() - t0, 1),
         "rows": rows,
     }
-    (out_dir / f"job_{kind}_s{seed}.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    np.savez_compressed(out_dir / f"probs_{kind}_s{seed}.npz", **prob_store)
+    job_json.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    np.savez_compressed(job_npz, **prob_store)
     return payload
 
 
@@ -671,7 +668,6 @@ def _aggregate_group(rows: list[dict], arm_order: tuple[str, ...], ref_arm: str 
 def plot_step7c_waterbirds(res_agg: list[dict], vit_agg: list[dict], out_path: Path):
     fig, axes = plt.subplots(1, 2, figsize=(14.2, 5.4), layout="constrained")
 
-    # Panel A: ResNet-50 Held-Out Test WGA (Official & Cleaned) + Min-AUC
     ax = axes[0]
     r_arms = [r["arm"] for r in res_agg]
     x = np.arange(len(r_arms))
@@ -697,7 +693,6 @@ def plot_step7c_waterbirds(res_agg: list[dict], vit_agg: list[dict], out_path: P
     ax.spines[["top", "right"]].set_visible(False)
     ax.legend(frameon=False, fontsize=7.5)
 
-    # Panel B: ViT-B/16 Cross-Architecture Transfer (Val OOF vs Cleaned Test WGA & Min-AUC)
     ax = axes[1]
     v_arms = [r["arm"] for r in vit_agg]
     vx = np.arange(len(v_arms))
@@ -749,10 +744,9 @@ def main(argv=None):
         if args.worker_seed is None:
             raise ValueError("--worker-seed required with --worker-kind")
         dev = _resolve_device(args.device)
-        run_worker_job(work_dir, out_dir, kind=args.worker_kind, seed=args.worker_seed, device=dev, workers=args.workers)
+        run_worker_job(work_dir, out_dir, kind=args.worker_kind, seed=args.worker_seed, device=dev)
         return
 
-    # Parent orchestrator prepares all assets once so parallel GPU workers never race.
     ensure_waterbirds_images(work_dir / "waterbirds")
     recover_backbones(work_dir / "backbones", cohorts=("standard_erm",), seeds={"standard_erm": list(args.std_seeds)}, workers=4)
     recover_backbones(work_dir / "backbones", cohorts=("erm_star",), seeds={"erm_star": list(args.erm_star_seeds)}, workers=2)
@@ -808,7 +802,7 @@ def main(argv=None):
                 fut.result()
     else:
         for k_name, s_val in jobs:
-            run_worker_job(work_dir, out_dir, kind=k_name, seed=s_val, device=base_dev, workers=args.workers)
+            run_worker_job(work_dir, out_dir, kind=k_name, seed=s_val, device=base_dev)
 
     resnet_rows, vit_rows, ckpt_records = [], [], []
     prob_store: dict[str, np.ndarray] = {}

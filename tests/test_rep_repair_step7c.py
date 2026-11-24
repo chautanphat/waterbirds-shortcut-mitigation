@@ -132,34 +132,71 @@ class Step7cTests(unittest.TestCase):
             self.assertEqual(resolved["vit_b16_backbones/vit_b16_s0_ckpt_last.pt"], f1.resolve())
             self.assertEqual(resolved["vit_b16_backbones/vit_b16_s1_ckpt_last.pt"], f2.resolve())
 
-    def test_streaming_dar_test_inference_matches_shapes_and_probabilities(self):
+    def test_in_memory_preload_matches_eval_transform_and_single_pass_ood_eval(self):
         import numpy as np
-        from torch.utils.data import DataLoader, TensorDataset
-        from scripts.analysis.rep_repair_step7c_waterbirds_test import _fit_dar_val_and_test
-        from scripts.analysis.rep_repair_step7c_spawrious_test import _fit_dar_val_and_ood
+        from sklearn.linear_model import LogisticRegression
+        from sklearn.preprocessing import StandardScaler
+        from src.methods.rep_repair.phase_b_assets import eval_image_transform
+        from scripts.analysis.rep_repair_step7c_waterbirds_test import (
+            InMemoryNormalizedDataset,
+            _fit_dar_val_and_test,
+            preload_images_uint8,
+        )
+        from scripts.analysis.rep_repair_step7c_spawrious_test import (
+            ARM_ORDER,
+            _fit_dar_5fold,
+            evaluate_all_arms_single_ood_pass,
+        )
 
-        class _TinyStageModel(nn.Module):
-            def __init__(self, channels: int = 8):
-                super().__init__()
-                self.channels = channels
-            def extract_stage_maps(self, x: torch.Tensor):
-                b = x.shape[0]
-                return {"layer4_map": torch.randn(b, self.channels, 7, 7, device=x.device)}
+        # 1) Verify preload_images_uint8 + InMemoryNormalizedDataset matches eval_image_transform() to <1e-5.
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "bird.png"
+            rng = np.random.RandomState(42)
+            raw = rng.randint(0, 256, size=(300, 320, 3), dtype=np.uint8)
+            Image.fromarray(raw).save(p)
+            rows = [{"id": "bird.png", "y": 1, "group": "10"}]
+            u8 = preload_images_uint8(Path(tmp), rows)
+            ds = InMemoryNormalizedDataset(u8, rows)
+            _, x_mem, y_mem, g_mem = ds[0]
+            with Image.open(p) as im:
+                x_ref = eval_image_transform()(im.convert("RGB"))
+            self.assertEqual(y_mem, 1)
+            self.assertEqual(g_mem, "10")
+            self.assertLess(float((x_mem - x_ref).abs().max()), 1e-5)
 
-        # Verify Spawrious 4-class streaming DAR on 16 synthetic samples (2 folds, 8 groups).
+        # 2) Verify single-pass OOD evaluation across ALL 6 arms (ERM, DFR, DAR, 3 neural arms).
         torch.manual_seed(7)
+        base4 = ResNetClassifier(weights=None, num_classes=4)
+        base4.eval()
         F_val = np.random.randn(16, 2048, 7, 7).astype(np.float32)
         y_val = np.array([0, 0, 1, 1, 2, 2, 3, 3] * 2, dtype=int)
         g_val = np.array(["0_spur", "0_beach", "1_spur", "1_beach", "2_spur", "2_beach", "3_spur", "3_beach"] * 2)
         folds = np.array([0] * 8 + [1] * 8, dtype=int)
-        ood_loader = [(torch.arange(4), torch.randn(4, 3, 16, 16), torch.zeros(4, dtype=torch.long), ["0_spur"] * 4)]
-        val_p, ood_p, n_p = _fit_dar_val_and_ood(
-            _TinyStageModel(2048), F_val, y_val, g_val, ood_loader, folds, seed=0, device="cpu"
-        )
-        self.assertEqual(val_p.shape, (16, 4))
-        self.assertEqual(ood_p.shape, (4, 4))
-        self.assertTrue(np.allclose(ood_p.sum(axis=1), 1.0, atol=1e-4))
-        self.assertGreater(n_p, 0)
+        val_dar, dar_heads, n_dar = _fit_dar_5fold(F_val, y_val, g_val, folds, seed=0, device="cpu")
+        self.assertEqual(val_dar.shape, (16, 4))
+        self.assertGreater(n_dar, 0)
+
+        sc = StandardScaler().fit(np.random.randn(16, 2048).astype(np.float32))
+        clf = LogisticRegression(max_iter=50).fit(sc.transform(np.random.randn(16, 2048).astype(np.float32)), y_val)
+        rep = PreLayer4RepairModel(base4, use_gate=True, gate_mode="peak_neutral", head_type="linear", bn_scope="bn_all")
+        neural_arms = {"affine_dfr_bn_l4": [base4], "affine_dfr_bn_all": [base4], "pre_l4_repair_w005": [rep]}
+        ood_loader = [(torch.arange(4), torch.randn(4, 3, 224, 224), torch.zeros(4, dtype=torch.long), ["0_spur"] * 4)]
+        ood_out = evaluate_all_arms_single_ood_pass(base4, [(sc, clf)], dar_heads, neural_arms, ood_loader, "cpu")
+        self.assertEqual(set(ood_out.keys()), set(ARM_ORDER))
+        for arm, arr in ood_out.items():
+            self.assertEqual(arr.shape, (4, 4))
+            self.assertTrue(np.isfinite(arr).all(), f"Non-finite output for {arm}")
+            self.assertTrue(np.allclose(arr.sum(axis=1), 1.0, atol=1e-4))
+
+        # 3) Verify Waterbirds streaming DAR helper (2 classes).
+        base2 = ResNetClassifier(weights=None, num_classes=2)
+        y2 = np.array([0, 0, 1, 1] * 2, dtype=int)
+        g2 = np.array(["00", "01", "10", "11"] * 2)
+        f2 = np.array([0, 0, 0, 0, 1, 1, 1, 1], dtype=int)
+        val_p2, test_p2, _ = _fit_dar_val_and_test(base2, F_val[:8], y2, g2, ood_loader, f2, seed=0, device="cpu")
+        self.assertEqual(val_p2.shape, (8, 2))
+        self.assertEqual(test_p2.shape, (4, 2))
+        self.assertTrue(np.allclose(test_p2.sum(axis=1), 1.0, atol=1e-4))
 
 
 if __name__ == "__main__":
