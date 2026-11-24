@@ -216,3 +216,37 @@ def spawrious_group_metrics(y_true, y_pred, groups) -> dict:
         "groups": per_group,
         "counts": counts,
     }
+
+
+def load_o2o_hard_ood_test_rows(data_root: Path) -> list[dict]:
+    """Load official Spawrious o2o_hard shifted-background OOD test split (Step 7c final confirmation ONLY)."""
+    data_root = Path(data_root).resolve()
+    if (data_root / "spawrious224").is_dir() and not (data_root / "0").is_dir():
+        data_root = data_root / "spawrious224"
+
+    rows: list[dict] = []
+    for domain in (0, 1):
+        for cls_name in CLASSES:
+            y = CLASS_TO_IDX[cls_name]
+            location = TEST_SHIFTED_BG[cls_name]
+            folder = data_root / str(domain) / location / cls_name
+            if not folder.is_dir():
+                raise FileNotFoundError(f"Missing Spawrious o2o_hard OOD test folder: {folder}")
+            files = sorted(
+                [p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXTS],
+                key=lambda p: p.name,
+            )
+            for p in files:
+                rows.append(
+                    {
+                        "id": f"{domain}/{location}/{cls_name}/{p.name}",
+                        "path": str(p),
+                        "y": y,
+                        "bg": location,
+                        "domain": domain,
+                        "group": f"{cls_name}@{location}",
+                        "split": "test_ood",
+                    }
+                )
+    rows.sort(key=lambda r: r["id"])
+    return rows

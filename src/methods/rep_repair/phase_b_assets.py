@@ -189,6 +189,75 @@ def load_val_mask_224(seg_root: Path, img_rel_path: str) -> np.ndarray:
     return (np.asarray(cropped, dtype=np.float32) / 255.0).clip(0.0, 1.0)
 
 
+def recover_kaggle_kernel_files(
+    slug: str,
+    wanted_members: list[str],
+    dest_dir: Path,
+    *,
+    user_name: str = "noerula",
+    input_search_root: Path = Path("/kaggle/input"),
+    workers: int = 3,
+) -> dict[str, Path]:
+    """Locate saved .pt checkpoints in dest_dir or /kaggle/input, else fetch via public Kaggle API (early-stop)."""
+    import urllib.parse
+
+    dest_dir = Path(dest_dir).resolve()
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    resolved: dict[str, Path] = {}
+    missing: list[str] = []
+
+    for member in wanted_members:
+        fname = PurePosixPath(member).name
+        local = dest_dir / fname
+        if local.is_file():
+            resolved[member] = local
+            continue
+        found_input = None
+        if input_search_root.is_dir():
+            matches = list(input_search_root.rglob(fname))
+            if matches:
+                found_input = matches[0].resolve()
+        if found_input is not None:
+            resolved[member] = found_input
+        else:
+            missing.append(member)
+
+    if missing:
+        wanted_set = set(missing)
+        url_map: dict[str, str] = {}
+        token = None
+        while wanted_set - set(url_map):
+            query = {"userName": user_name, "kernelSlug": slug}
+            if token:
+                query["pageToken"] = token
+            api_url = "https://www.kaggle.com/api/v1/kernels/output?" + urllib.parse.urlencode(query)
+            req = urllib.request.Request(api_url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                data = json.load(resp)
+            for row in data.get("files", []):
+                name = row.get("fileName", "")
+                if name in wanted_set:
+                    url_map[name] = row["url"]
+            if not data.get("hasNextPageToken"):
+                break
+            token = data["nextPageToken"]
+
+        still_missing = sorted(wanted_set - set(url_map))
+        if still_missing:
+            raise FileNotFoundError(f"Members not found in Kaggle output {user_name}/{slug}: {still_missing}")
+
+        def _fetch(member: str) -> tuple[str, Path]:
+            dest = dest_dir / PurePosixPath(member).name
+            print(f"Downloading {slug}/{member} -> {dest.name}...", flush=True)
+            _download_with_headers((url_map[member],), dest)
+            return member, dest
+
+        with ThreadPoolExecutor(max_workers=min(workers, len(missing))) as pool:
+            for member, path in pool.map(_fetch, missing):
+                resolved[member] = path
+    return resolved
+
+
 def downsample_mask_to_grid(mask_224: np.ndarray, grid: int = 7) -> np.ndarray:
     """Area-average [224, 224] foreground mask into a [grid, grid] spatial map."""
     t = torch.from_numpy(mask_224)[None, None, :, :]

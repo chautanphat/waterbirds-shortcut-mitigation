@@ -329,11 +329,11 @@ def context_invariance_loss(
     min_gate_mean: float = 0.20,
 ) -> dict[str, torch.Tensor]:
     """Penalize layer4 foreground-cell feature drift + logit shift under layer3.5 BG swaps."""
-    # Downsample detached 14x14 gate -> 7x7 foreground weighting for layer4.
-    m7 = F.avg_pool2d(gate_map.detach(), kernel_size=2, stride=2)  # [B, 1, 7, 7]
-    w7 = m7 / m7.sum(dim=(2, 3), keepdim=True).clamp_min(1e-4)
-    fg_orig = (l4_map * w7).sum(dim=(2, 3))       # [B, 2048]
-    fg_swap = (l4_map_swap * w7).sum(dim=(2, 3))  # [B, 2048]
+    # Match detached gate resolution to target feature map (14x14 -> 7x7 for ResNet layer4; 14x14 -> 14x14 for ViT).
+    m_tgt = F.adaptive_avg_pool2d(gate_map.detach(), l4_map.shape[-2:])
+    w_tgt = m_tgt / m_tgt.sum(dim=(2, 3), keepdim=True).clamp_min(1e-4)
+    fg_orig = (l4_map * w_tgt).sum(dim=(2, 3))       # [B, C]
+    fg_swap = (l4_map_swap * w_tgt).sum(dim=(2, 3))  # [B, C]
 
     num = (fg_orig - fg_swap).pow(2).sum(dim=1)
     den = fg_orig.detach().pow(2).sum(dim=1).clamp_min(1e-4)
