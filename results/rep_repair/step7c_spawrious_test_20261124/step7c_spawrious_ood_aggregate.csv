@@ -1,0 +1,7 @@
+arm,n_seeds,trainable_params,val_wga_mean,val_beach_acc_mean,ood_mean_acc_mean,ood_mean_acc_sd,ood_worst_class_acc_mean,ood_worst_class_acc_sd,ood_macro_auc_mean,delta_ood_mean_vs_dfr,delta_ood_mean_vs_affine,mean_wins_vs_affine,delta_ood_worst_vs_affine,ood_bulldog_mountain_mean,ood_corgi_jungle_mean,ood_dachshund_snow_mean,ood_labrador_desert_mean
+erm_raw,3,23516228,87.72,94.74,83.43,0.53,63.15,1.96,94.17,-3.64,-1.41,0/3,-2.18,88.5,99.33,63.15,82.75
+dfr_l2,3,8196,93.42,95.72,87.07,0.16,72.36,0.54,96.46,0.0,2.23,3/3,7.02,88.91,99.46,72.36,87.55
+dar,3,274693,87.72,93.86,88.03,0.11,69.41,0.83,97.53,0.96,3.19,3/3,4.07,93.28,99.55,69.41,89.88
+affine_dfr_bn_l4,3,30724,92.98,96.05,83.66,1.19,59.58,3.86,95.28,-3.41,-1.18,0/3,-5.76,86.94,99.31,59.58,88.83
+affine_dfr_bn_all,3,61316,88.16,94.08,84.84,0.69,65.34,2.07,95.57,-2.23,0.0,0/3,0.0,86.47,99.31,65.34,88.25
+pre_l4_repair_w005,3,129029,87.72,93.86,88.14,0.62,70.92,1.78,97.24,1.07,3.3,3/3,5.58,90.85,99.51,70.92,91.28

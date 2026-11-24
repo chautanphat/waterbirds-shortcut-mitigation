@@ -1,0 +1,11 @@
+cohort,block,skip_fg_drift,residual_conv_fg_drift,post_relu_fg_drift,residual_delta_share,fg_relu_flip_rate
+standard_erm,layer3.0,0.2665,0.3483,0.2287,0.6116,0.1556
+standard_erm,layer3.5,0.3758,0.243,0.3726,0.538,0.1815
+standard_erm,layer4.0,0.3262,0.415,0.6279,0.575,0.1357
+standard_erm,layer4.1,0.6279,0.4445,0.77,0.7376,0.1623
+standard_erm,layer4.2,0.77,0.5996,0.8512,0.7546,0.2086
+erm_star,layer3.0,0.2255,0.3131,0.2055,0.6267,0.1438
+erm_star,layer3.5,0.3131,0.2123,0.3129,0.5514,0.1504
+erm_star,layer4.0,0.2801,0.33,0.5434,0.5394,0.1107
+erm_star,layer4.1,0.5434,0.3902,0.6708,0.7643,0.1329
+erm_star,layer4.2,0.6708,0.5236,0.6862,0.7802,0.1814

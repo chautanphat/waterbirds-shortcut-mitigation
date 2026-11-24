@@ -1,0 +1,7 @@
+arm,n_seeds,ood_mean_acc_mean,ood_mean_acc_sd,ood_worst_class_acc_mean,ood_worst_class_acc_sd,ood_macro_auc_mean,spur_bull_mtn_mean,spur_bull_mtn_sd,spur_corgi_jungle_mean,spur_corgi_jungle_sd,spur_dach_snow_mean,spur_dach_snow_sd,spur_lab_desert_mean,spur_lab_desert_sd,ood_spur_confusion_mean,ood_spur_confusion_sd,ood_non_spur_err_mean,spur_share_of_errors_pct
+erm_raw,3,83.43,0.53,63.15,1.96,94.17,11.34,1.14,0.58,0.11,36.75,1.98,3.62,0.64,13.07,0.46,3.49,78.9
+dfr_l2,3,87.07,0.16,72.36,0.54,96.46,10.57,0.19,0.47,0.04,27.5,0.55,3.4,0.16,10.48,0.21,2.45,81.1
+dar,3,88.03,0.11,69.41,0.83,97.53,5.46,0.36,0.35,0.05,30.33,0.79,1.09,0.11,9.31,0.18,2.66,77.7
+affine_dfr_bn_l4,3,83.66,1.19,59.58,3.86,95.28,12.81,0.95,0.62,0.16,40.35,3.89,3.61,0.81,14.35,1.25,1.99,87.8
+affine_dfr_bn_all,3,84.84,0.69,65.34,2.07,95.57,13.34,1.56,0.62,0.1,34.65,2.06,2.56,0.28,12.79,0.45,2.37,84.4
+pre_l4_repair_w005,3,88.14,0.62,70.92,1.78,97.24,8.97,1.31,0.43,0.04,29.01,1.76,1.77,0.54,10.04,0.84,1.82,84.6

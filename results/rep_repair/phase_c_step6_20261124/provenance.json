@@ -1,0 +1,63 @@
+{
+  "step": "phase_c_step6_repair_ablation",
+  "split": "val_only_split1",
+  "test_files_accessed": 0,
+  "device": "cuda",
+  "hyperparams": {
+    "drift_weight": 1.0,
+    "cons_weight": 0.5,
+    "gate_sparsity": 0.05
+  },
+  "environment": {
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130"
+  },
+  "backbones": [
+    {
+      "cohort": "standard_erm",
+      "seed": 0,
+      "source_id": "standard_erm_s0",
+      "kaggle_slug": "dpe-mlp-dropout-verification",
+      "member": "dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/backbones/standard/seed0/ckpt_last.pt",
+      "path": "/kaggle/working/phase_c_assets/backbones/standard_erm_s0_ckpt_last.pt",
+      "sha256": "d58957af68b5e119b801fd04b3ff2a0c4314c206a0dc57aa603e41092c8bc137"
+    },
+    {
+      "cohort": "standard_erm",
+      "seed": 1,
+      "source_id": "standard_erm_s1",
+      "kaggle_slug": "dpe-mlp-dropout-verification",
+      "member": "dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/backbones/standard/seed1/ckpt_last.pt",
+      "path": "/kaggle/working/phase_c_assets/backbones/standard_erm_s1_ckpt_last.pt",
+      "sha256": "298abab3ff5f16785376d35d3e7bb3bae20c8f2dfd9d769dc8e741dcc28e2123"
+    },
+    {
+      "cohort": "standard_erm",
+      "seed": 2,
+      "source_id": "standard_erm_s2",
+      "kaggle_slug": "dpe-mlp-dropout-verification",
+      "member": "dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/backbones/standard/seed2/ckpt_last.pt",
+      "path": "/kaggle/working/phase_c_assets/backbones/standard_erm_s2_ckpt_last.pt",
+      "sha256": "36530f7bb350dcae2713afa15b29b572b24185c3332c0e1a003f3cde070e5396"
+    },
+    {
+      "cohort": "standard_erm",
+      "seed": 3,
+      "source_id": "standard_erm_s3",
+      "kaggle_slug": "dpe-mlp-dropout-verification",
+      "member": "dpe_five_seed_verification/additional_sources/backbones/standard/seed3/ckpt_last.pt",
+      "path": "/kaggle/working/phase_c_assets/backbones/standard_erm_s3_ckpt_last.pt",
+      "sha256": "f498212957c3cf780adee5ebac98dcf9344352eecf0a61ee20b0bb7c15cd9718"
+    },
+    {
+      "cohort": "standard_erm",
+      "seed": 4,
+      "source_id": "standard_erm_s4",
+      "kaggle_slug": "dpe-mlp-dropout-verification",
+      "member": "dpe_five_seed_verification/additional_sources/backbones/standard/seed4/ckpt_last.pt",
+      "path": "/kaggle/working/phase_c_assets/backbones/standard_erm_s4_ckpt_last.pt",
+      "sha256": "a15e0218dd2c7c26446df1c9d4b6269d9a268009ae8a90bc28cee1bac8e5ec1d"
+    }
+  ]
+}

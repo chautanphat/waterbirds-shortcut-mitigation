@@ -1,0 +1,34 @@
+{
+  "step": "phase_c_step7c_spawrious_ood_one_shot_test",
+  "one_shot_test_unsealing": true,
+  "frozen_repair_hparams": {
+    "gate_mode": "peak_neutral",
+    "bn_scope": "bn_all",
+    "drift_weight": 0.05,
+    "cons_weight": 0.1,
+    "gate_sparsity": 0.005
+  },
+  "gpus_used": 2,
+  "checkpoints": [
+    {
+      "seed": 0,
+      "path": "/tmp/step7c_spawrious_assets/spawrious_backbones/resnet50_o2o_hard_s0_ckpt_last.pt",
+      "sha256": "daf87f4cb2c63a89cd9163f498279948b2cc3f39fc7ed6c0bb96fda2cb5cc0a6"
+    },
+    {
+      "seed": 1,
+      "path": "/tmp/step7c_spawrious_assets/spawrious_backbones/resnet50_o2o_hard_s1_ckpt_last.pt",
+      "sha256": "9f4eccea89e11c1117cb37c0fa426d9522fd187f1e870176c9adb3d9746c99d3"
+    },
+    {
+      "seed": 2,
+      "path": "/tmp/step7c_spawrious_assets/spawrious_backbones/resnet50_o2o_hard_s2_ckpt_last.pt",
+      "sha256": "97f45b80d93389eaf6d2d710576bf92a42b31ac82b3b14411fd6b8344516904d"
+    }
+  ],
+  "environment": {
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130"
+  }
+}

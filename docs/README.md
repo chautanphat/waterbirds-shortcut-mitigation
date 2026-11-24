@@ -44,6 +44,9 @@ waterbirds-shortcut-mitigation/
 | --- | --- |
 | [`CONTRIBUTING.md`](../CONTRIBUTING.md) | Contributor operating rules, repository structure, baseline lifecycle, and workflow conventions. |
 | [`research_protocol.md`](research_protocol.md) | Fair-comparison, validation, testing, and reporting rules. |
+| [`REP_REPAIR_STUDY.md`](REP_REPAIR_STUDY.md) | Complete Phases A–C scientific report for Mechanism-Based Representation Repair (`rep_repair`). |
+| [Rep-Repair Method Guide](../src/methods/rep_repair/README.md) | Architecture, frozen hyperparameters, checkpoint provenance, and reproduction commands for `rep_repair`. |
+| [Rep-Repair Results Index](../results/rep_repair/README.md) | Master index of all Phases A–C (Steps 1–7d) tables, CSVs, and diagnostic plots. |
 | [`dataset.md`](dataset.md) | Waterbirds source, groups, splits, local-data expectations, and verification. |
 | [`methods.md`](methods.md) | Method inventory and the rule for documenting a baseline. |
 | [`experiment_log.md`](experiment_log.md) | Traceable index of meaningful runs. |

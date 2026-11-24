@@ -1,0 +1,11 @@
+{
+  "persistent_std_dfr_orig_acc": 6.92,
+  "persistent_std_dfr_matched_bg_acc": 96.15,
+  "persistent_std_dfr_neutral_gray_acc": 76.15,
+  "persistent_std_dfr_ood_bg_acc": 86.92,
+  "persistent_std_oracle_orig_acc": 40.77,
+  "persistent_std_oracle_neutral_gray_acc": 81.54,
+  "persistent_ermstar_dfr_orig_acc": 100.0,
+  "persistent_ermstar_dfr_ood_bg_acc": 98.08,
+  "causal_bg_flip_gate_pass": true
+}
