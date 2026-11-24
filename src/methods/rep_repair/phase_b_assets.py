@@ -231,8 +231,7 @@ def recover_kaggle_kernel_files(
             if token:
                 query["pageToken"] = token
             api_url = "https://www.kaggle.com/api/v1/kernels/output?" + urllib.parse.urlencode(query)
-            req = urllib.request.Request(api_url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(req, timeout=60) as resp:
+            with urllib.request.urlopen(api_url, timeout=60) as resp:
                 data = json.load(resp)
             for row in data.get("files", []):
                 name = row.get("fileName", "")
