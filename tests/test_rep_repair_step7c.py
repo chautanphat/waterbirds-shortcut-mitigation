@@ -132,6 +132,35 @@ class Step7cTests(unittest.TestCase):
             self.assertEqual(resolved["vit_b16_backbones/vit_b16_s0_ckpt_last.pt"], f1.resolve())
             self.assertEqual(resolved["vit_b16_backbones/vit_b16_s1_ckpt_last.pt"], f2.resolve())
 
+    def test_streaming_dar_test_inference_matches_shapes_and_probabilities(self):
+        import numpy as np
+        from torch.utils.data import DataLoader, TensorDataset
+        from scripts.analysis.rep_repair_step7c_waterbirds_test import _fit_dar_val_and_test
+        from scripts.analysis.rep_repair_step7c_spawrious_test import _fit_dar_val_and_ood
+
+        class _TinyStageModel(nn.Module):
+            def __init__(self, channels: int = 8):
+                super().__init__()
+                self.channels = channels
+            def extract_stage_maps(self, x: torch.Tensor):
+                b = x.shape[0]
+                return {"layer4_map": torch.randn(b, self.channels, 7, 7, device=x.device)}
+
+        # Verify Spawrious 4-class streaming DAR on 16 synthetic samples (2 folds, 8 groups).
+        torch.manual_seed(7)
+        F_val = np.random.randn(16, 2048, 7, 7).astype(np.float32)
+        y_val = np.array([0, 0, 1, 1, 2, 2, 3, 3] * 2, dtype=int)
+        g_val = np.array(["0_spur", "0_beach", "1_spur", "1_beach", "2_spur", "2_beach", "3_spur", "3_beach"] * 2)
+        folds = np.array([0] * 8 + [1] * 8, dtype=int)
+        ood_loader = [(torch.arange(4), torch.randn(4, 3, 16, 16), torch.zeros(4, dtype=torch.long), ["0_spur"] * 4)]
+        val_p, ood_p, n_p = _fit_dar_val_and_ood(
+            _TinyStageModel(2048), F_val, y_val, g_val, ood_loader, folds, seed=0, device="cpu"
+        )
+        self.assertEqual(val_p.shape, (16, 4))
+        self.assertEqual(ood_p.shape, (4, 4))
+        self.assertTrue(np.allclose(ood_p.sum(axis=1), 1.0, atol=1e-4))
+        self.assertGreater(n_p, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -11,12 +11,14 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import os
 import platform
 import queue
 import subprocess
 import sys
+import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import matplotlib
@@ -273,13 +275,15 @@ def _train_5fold_repair_val_and_ood(
         params = model.trainable_parameters()
         n_trainable = sum(p.numel() for p in params)
         opt = torch.optim.AdamW(params, lr=3e-3, weight_decay=1e-2)
+        use_amp = device.startswith("cuda")
+        scaler = torch.amp.GradScaler("cuda", enabled=use_amp)
 
         w_fit = spawrious_balanced_weights([str(r["group"]) for r in fit_sub])
         gen = torch.Generator().manual_seed(seed + 50 + fold)
         sampler = WeightedRandomSampler(torch.from_numpy(w_fit).double(), num_samples=len(fit_sub), replacement=True, generator=gen)
-        fit_loader = DataLoader(SpawriousImageDataset(fit_sub), batch_size=64, sampler=sampler, num_workers=workers)
-        sel_loader = DataLoader(SpawriousImageDataset(sel_sub), batch_size=128, shuffle=False, num_workers=workers)
-        te_loader = DataLoader(SpawriousImageDataset(te_rows), batch_size=128, shuffle=False, num_workers=workers)
+        fit_loader = DataLoader(SpawriousImageDataset(fit_sub), batch_size=64, sampler=sampler, num_workers=workers, pin_memory=use_amp)
+        sel_loader = DataLoader(SpawriousImageDataset(sel_sub), batch_size=128, shuffle=False, num_workers=workers, pin_memory=use_amp)
+        te_loader = DataLoader(SpawriousImageDataset(te_rows), batch_size=128, shuffle=False, num_workers=workers, pin_memory=use_amp)
 
         best_key = (-1.0, -1.0)
         best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
@@ -288,20 +292,26 @@ def _train_5fold_repair_val_and_ood(
             for idx_b, xb, yb, _ in fit_loader:
                 xb, yb = xb.to(device), yb.to(device)
                 opt.zero_grad(set_to_none=True)
-                if use_inv:
-                    ab = torch.tensor([bg_to_int[str(fit_sub[int(i)]["bg"])] for i in idx_b], dtype=torch.long, device=device)
-                    out = model.forward_with_context_swap(xb, ab)
-                    loss_ce = ce(out["logits"], yb)
-                    inv = context_invariance_loss(
-                        out["logits"], out["logits_swap"],
-                        out["layer4_map"], out["layer4_map_swap"], out["gate_map"],
-                        drift_weight=0.05, cons_weight=0.10, gate_sparsity=0.005,
-                    )
-                    loss = loss_ce + inv["total"]
+                with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
+                    if use_inv:
+                        ab = torch.tensor([bg_to_int[str(fit_sub[int(i)]["bg"])] for i in idx_b], dtype=torch.long, device=device)
+                        out = model.forward_with_context_swap(xb, ab)
+                        loss_ce = ce(out["logits"].float(), yb)
+                        inv = context_invariance_loss(
+                            out["logits"].float(), out["logits_swap"].float(),
+                            out["layer4_map"].float(), out["layer4_map_swap"].float(), out["gate_map"].float(),
+                            drift_weight=0.05, cons_weight=0.10, gate_sparsity=0.005,
+                        )
+                        loss = loss_ce + inv["total"]
+                    else:
+                        loss = ce(model(xb).float(), yb)
+                if scaler.is_enabled():
+                    scaler.scale(loss).backward()
+                    scaler.step(opt)
+                    scaler.update()
                 else:
-                    loss = ce(model(xb), yb)
-                loss.backward()
-                opt.step()
+                    loss.backward()
+                    opt.step()
 
             sel_probs = _predict_loader(model, sel_loader, device)
             sel_m = spawrious_group_metrics(sel_y, sel_probs.argmax(axis=1), sel_g)
@@ -353,6 +363,12 @@ def run_single_seed(
     device: str,
     workers: int,
 ) -> dict:
+    seed_json = out_dir / f"seed_{seed}_ood_results.json"
+    seed_npz = out_dir / f"seed_{seed}_ood_probs.npz"
+    if seed_json.is_file() and seed_npz.is_file():
+        print(f"    [spawrious s{seed}] Reusing completed seed output", flush=True)
+        return json.loads(seed_json.read_text(encoding="utf-8"))
+
     _, val_rows = load_o2o_hard_train_val_rows(data_root, val_fraction=0.15, split_seed=0)
     ood_rows = load_o2o_hard_ood_test_rows(data_root)
     y_val = np.array([int(r["y"]) for r in val_rows], dtype=int)
@@ -366,8 +382,9 @@ def run_single_seed(
     base_cpu = load_resnet_checkpoint(ckpt_path, device="cpu", num_classes=4)
     base_dev = copy.deepcopy(base_cpu).to(device)
 
-    val_loader = DataLoader(SpawriousImageDataset(val_rows), batch_size=128, shuffle=False, num_workers=workers)
-    ood_loader = DataLoader(SpawriousImageDataset(ood_rows), batch_size=128, shuffle=False, num_workers=workers)
+    pin = device.startswith("cuda")
+    val_loader = DataLoader(SpawriousImageDataset(val_rows), batch_size=128, shuffle=False, num_workers=workers, pin_memory=pin)
+    ood_loader = DataLoader(SpawriousImageDataset(ood_rows), batch_size=256, shuffle=False, num_workers=workers, pin_memory=pin)
     v_cache = _extract_resnet_cache(base_dev, val_loader, device, include_l4=True)
     o_cache = _extract_resnet_cache(base_dev, ood_loader, device, include_l4=False)
 
@@ -376,7 +393,9 @@ def run_single_seed(
         base_dev, v_cache["layer4_map"], y_val, g_val, ood_loader, outer_folds, seed=seed, device=device
     )
     erm_val_p, erm_ood_p = v_cache["probs"], o_cache["probs"]
-    del v_cache, o_cache
+    del v_cache, o_cache, base_dev
+    if device.startswith("cuda"):
+        torch.cuda.empty_cache()
 
     arm_outputs = {
         "erm_raw": (erm_val_p, erm_ood_p, sum(p.numel() for p in base_cpu.parameters())),
@@ -476,7 +495,7 @@ def main(argv=None):
     parser.add_argument("--work-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
-    parser.add_argument("--adapt-epochs", type=int, default=15)
+    parser.add_argument("--adapt-epochs", type=int, default=10)
     parser.add_argument("--device", type=str, default="auto")
     parser.add_argument("--max-gpus", type=int, default=2)
     parser.add_argument("--workers", type=int, default=2)
@@ -510,10 +529,16 @@ def main(argv=None):
         gpu_q: queue.Queue[str] = queue.Queue()
         for gid in range(n_gpus):
             gpu_q.put(f"cuda:{gid}")
+        abort_event = threading.Event()
+        child_env = {**os.environ, "PYTHONUNBUFFERED": "1"}
 
         def _launch(s: int):
+            if abort_event.is_set():
+                return
             dev_id = gpu_q.get()
             try:
+                if abort_event.is_set():
+                    return
                 cmd = [
                     sys.executable, "-B", "-m", "scripts.analysis.rep_repair_step7c_spawrious_test",
                     "--work-dir", str(work_dir), "--output", str(out_dir),
@@ -521,12 +546,18 @@ def main(argv=None):
                     "--device", dev_id, "--workers", str(args.workers), "--worker-seed", str(s),
                 ]
                 print(f"Launching Spawrious OOD seed {s} on {dev_id}...", flush=True)
-                subprocess.run(cmd, check=True)
+                proc = subprocess.run(cmd, env=child_env)
+                if proc.returncode != 0:
+                    abort_event.set()
+                    raise RuntimeError(f"Spawrious OOD seed {s} on {dev_id} failed with exit code {proc.returncode}")
+                print(f"[DONE] Spawrious OOD seed {s} on {dev_id}", flush=True)
             finally:
                 gpu_q.put(dev_id)
 
         with ThreadPoolExecutor(max_workers=n_gpus) as pool:
-            list(pool.map(_launch, args.seeds))
+            futs = [pool.submit(_launch, s) for s in args.seeds]
+            for fut in as_completed(futs):
+                fut.result()
     else:
         for s in args.seeds:
             run_single_seed(

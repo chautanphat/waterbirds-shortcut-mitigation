@@ -15,12 +15,14 @@ import argparse
 import copy
 import csv
 import json
+import os
 import platform
 import queue
 import subprocess
 import sys
+import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import matplotlib
@@ -271,33 +273,37 @@ def _fit_dfr_val_and_test(
 
 
 def _fit_dar_val_and_test(
+    base_dev: nn.Module,
     F_val: np.ndarray,
     y_val: np.ndarray,
     g_val: np.ndarray,
-    F_test: np.ndarray,
+    test_loader: DataLoader,
     outer_folds: np.ndarray,
     *,
     seed: int,
     device: str,
 ) -> tuple[np.ndarray, np.ndarray, int]:
+    """Train 5-fold DARHeads on val_layer4_map, then stream test_loader in 1 pass (zero test l4 RAM cache)."""
     cands = [
         {"attn_dim": d, "weight_decay": wd, "dropout": 0.2, "lr": 1e-3, "epochs": 120}
         for d in (64, 128)
         for wd in (1e-2, 1e-1)
     ]
     val_oof = np.zeros((len(y_val), 2), dtype=np.float64)
-    test_sum = np.zeros((len(F_test), 2), dtype=np.float64)
     n_outer = int(outer_folds.max()) + 1
     ce = nn.CrossEntropyLoss(reduction="none")
     n_params = sum(p.numel() for p in DARHead(F_val.shape[1], attn_dim=128, dropout=0.2, num_classes=2).parameters())
+    trained_heads: list[tuple[nn.Module, torch.Tensor, torch.Tensor]] = []
 
-    def _run_one(F_tr, y_tr, g_tr, F_eval_list, cfg, s_list):
-        mean = F_tr.mean(axis=(0, 2, 3), keepdims=True)
-        std = np.maximum(F_tr.std(axis=(0, 2, 3), keepdims=True), 1e-6)
-        ft = torch.from_numpy(((F_tr - mean) / std).astype(np.float32)).to(device)
+    def _run_one(F_tr, y_tr, g_tr, F_va, cfg, s_list, keep_heads: bool = False):
+        mean = F_tr.mean(axis=(0, 2, 3), keepdims=True).astype(np.float32)
+        std = np.maximum(F_tr.std(axis=(0, 2, 3), keepdims=True), 1e-6).astype(np.float32)
+        ft = torch.from_numpy((F_tr - mean) / std).to(device)
         yt = torch.from_numpy(y_tr.astype(np.int64)).to(device)
         wt = torch.from_numpy(balanced_group_weights(g_tr).astype(np.float32)).to(device)
-        outs = [np.zeros((len(arr), 2), dtype=np.float64) for arr in F_eval_list]
+        mean_t = torch.from_numpy(mean).to(device)
+        std_t = torch.from_numpy(std).to(device)
+        out_va = np.zeros((len(F_va), 2), dtype=np.float64)
         for s in s_list:
             torch.manual_seed(s)
             if device.startswith("cuda"):
@@ -306,20 +312,21 @@ def _fit_dar_val_and_test(
             opt = torch.optim.AdamW(head.parameters(), lr=cfg["lr"], weight_decay=cfg["weight_decay"])
             for _ in range(cfg["epochs"]):
                 head.train()
-                opt.zero_grad()
+                opt.zero_grad(set_to_none=True)
                 logits, _ = head(ft)
                 loss = (ce(logits, yt) * wt).mean()
                 loss.backward()
                 opt.step()
             head.eval()
             with torch.inference_mode():
-                for idx_arr, arr in enumerate(F_eval_list):
-                    chunks = []
-                    for st in range(0, len(arr), 256):
-                        x_b = torch.from_numpy(((arr[st : st + 256] - mean) / std).astype(np.float32)).to(device)
-                        chunks.append(head(x_b)[0].softmax(dim=1).cpu().numpy())
-                    outs[idx_arr] += np.concatenate(chunks, axis=0)
-        return [o / float(len(s_list)) for o in outs]
+                chunks = []
+                for st in range(0, len(F_va), 256):
+                    x_b = torch.from_numpy((F_va[st : st + 256] - mean) / std).to(device)
+                    chunks.append(head(x_b)[0].softmax(dim=1).cpu().numpy())
+                out_va += np.concatenate(chunks, axis=0)
+            if keep_heads:
+                trained_heads.append((head, mean_t, std_t))
+        return out_va / float(len(s_list))
 
     for fold in range(n_outer):
         te = outer_folds == fold
@@ -332,19 +339,30 @@ def _fit_dar_val_and_test(
             in_preds = np.zeros(len(y_tr), dtype=int)
             for infold in range(4):
                 itr, iva = in_folds != infold, in_folds == infold
-                [p_va] = _run_one(F_tr[itr], y_tr[itr], g_tr[itr], [F_tr[iva]], cfg, (seed + fold,))
+                p_va = _run_one(F_tr[itr], y_tr[itr], g_tr[itr], F_tr[iva], cfg, (seed + fold,), keep_heads=False)
                 in_preds[iva] = p_va.argmax(axis=-1)
             m = group_metrics(y_tr, in_preds, g_tr)
             k = (m["wga"], m["overall"])
             if k > best_key:
                 best_key, best_cfg = k, cfg
-        p_val, p_test = _run_one(
-            F_tr, y_tr, g_tr, [F_val[te], F_test], best_cfg,
+        val_oof[te] = _run_one(
+            F_tr, y_tr, g_tr, F_val[te], best_cfg,
             (seed + fold, seed + 100 + fold, seed + 200 + fold),
+            keep_heads=True,
         )
-        val_oof[te] = p_val
-        test_sum += p_test
-    return val_oof, test_sum / float(n_outer), n_params
+
+    use_amp = device.startswith("cuda")
+    test_chunks = []
+    base_dev.eval()
+    with torch.inference_mode():
+        for _, xb, _, _ in test_loader:
+            with torch.amp.autocast("cuda", dtype=torch.float16, enabled=use_amp):
+                l4 = base_dev.extract_stage_maps(xb.to(device))["layer4_map"].float()
+            p_sum = torch.zeros((l4.shape[0], 2), device=device, dtype=torch.float32)
+            for head, mean_t, std_t in trained_heads:
+                p_sum += head((l4 - mean_t) / std_t)[0].softmax(dim=1)
+            test_chunks.append((p_sum / float(len(trained_heads))).cpu().numpy())
+    return val_oof, np.concatenate(test_chunks, axis=0), n_params
 
 
 def _train_5fold_repair_val_and_test(
@@ -457,6 +475,12 @@ def run_worker_job(
     device: str,
     workers: int,
 ) -> dict:
+    job_json = out_dir / f"job_{kind}_s{seed}.json"
+    job_npz = out_dir / f"probs_{kind}_s{seed}.npz"
+    if job_json.is_file() and job_npz.is_file():
+        print(f"    [{kind} s{seed}] Reusing completed job output", flush=True)
+        return json.loads(job_json.read_text(encoding="utf-8"))
+
     t0 = time.perf_counter()
     image_dir = ensure_waterbirds_images(work_dir / "waterbirds")
     meta_path = image_dir / "metadata.csv"
@@ -474,8 +498,9 @@ def run_worker_job(
     y_rel = np.array([int(r["y"]) for r in test_rel], dtype=int)
     g_rel = np.array([str(r["group"]) for r in test_rel], dtype=str)
 
-    val_loader = DataLoader(ValImageDataset(image_dir, val_rel), batch_size=128, shuffle=False, num_workers=workers)
-    test_loader = DataLoader(WaterbirdsTestDataset(image_dir, test_off), batch_size=128, shuffle=False, num_workers=workers)
+    pin = device.startswith("cuda")
+    val_loader = DataLoader(ValImageDataset(image_dir, val_rel), batch_size=128, shuffle=False, num_workers=workers, pin_memory=pin)
+    test_loader = DataLoader(WaterbirdsTestDataset(image_dir, test_off), batch_size=256, shuffle=False, num_workers=workers, pin_memory=pin)
 
     arm_probs: dict[str, tuple[np.ndarray, np.ndarray, int]] = {}
     ckpt_sha = ""
@@ -484,30 +509,37 @@ def run_worker_job(
     if kind in ("resnet_std", "resnet_star"):
         cohort = "standard_erm" if kind == "resnet_std" else "erm_star"
         cohort_label = cohort
-        recs = recover_backbones(work_dir / "backbones", cohorts=(cohort,), seeds={cohort: [seed]}, workers=1)
-        ckpt_path = Path(recs[0]["path"])
-        ckpt_sha = recs[0]["sha256"]
+        ckpt_path = work_dir / "backbones" / f"{cohort}_s{seed}_ckpt_last.pt"
+        if not ckpt_path.is_file():
+            recs = recover_backbones(work_dir / "backbones", cohorts=(cohort,), seeds={cohort: [seed]}, workers=1)
+            ckpt_path = Path(recs[0]["path"])
+        ckpt_sha = file_sha256(ckpt_path)
         base_cpu = load_resnet_checkpoint(ckpt_path, device="cpu")
         base_dev = copy.deepcopy(base_cpu).to(device)
 
         v_cache = _extract_resnet_cache(base_dev, val_loader, device, include_l4=(kind == "resnet_std"))
-        t_cache = _extract_resnet_cache(base_dev, test_loader, device, include_l4=(kind == "resnet_std"))
+        t_cache = _extract_resnet_cache(base_dev, test_loader, device, include_l4=False)
         n_full = sum(p.numel() for p in base_cpu.parameters())
 
         val_dfr, test_dfr = _fit_dfr_val_and_test(
             v_cache["pooled"], y_val, g_val, t_cache["pooled"], outer_folds, seed=seed
         )
+        erm_val_p, erm_test_p = v_cache["probs"], t_cache["probs"]
         if kind == "resnet_star":
-            arm_probs["erm_star_raw"] = (v_cache["probs"], t_cache["probs"], n_full)
+            del v_cache, t_cache, base_dev
+            arm_probs["erm_star_raw"] = (erm_val_p, erm_test_p, n_full)
             arm_probs["erm_star_dfr_l2"] = (val_dfr, test_dfr, 2048 * 2 + 2)
         else:
-            arm_probs["erm_raw"] = (v_cache["probs"], t_cache["probs"], n_full)
+            arm_probs["erm_raw"] = (erm_val_p, erm_test_p, n_full)
             arm_probs["dfr_l2"] = (val_dfr, test_dfr, 2048 * 2 + 2)
 
             val_dar, test_dar, n_dar = _fit_dar_val_and_test(
-                v_cache["layer4_map"], y_val, g_val, t_cache["layer4_map"], outer_folds, seed=seed, device=device
+                base_dev, v_cache["layer4_map"], y_val, g_val, test_loader, outer_folds, seed=seed, device=device
             )
             arm_probs["dar"] = (val_dar, test_dar, n_dar)
+            del v_cache, t_cache, base_dev
+            if device.startswith("cuda"):
+                torch.cuda.empty_cache()
 
             def _set_resnet_mu(mod: PreLayer4RepairModel, fit_l: DataLoader):
                 mod.set_neutral_c3(compute_group_balanced_layer3_mean(base_cpu, fit_l, device))
@@ -522,7 +554,7 @@ def run_worker_job(
                         base_cpu, use_gate=ug, gate_mode="peak_neutral", head_type="linear", bn_scope=bs
                     ),
                     set_mu, image_dir, val_rel, test_loader, outer_folds,
-                    use_inv=use_inv, epochs=20, lr=3e-3, seed=seed, device=device, workers=workers, use_amp=False,
+                    use_inv=use_inv, epochs=20, lr=3e-3, seed=seed, device=device, workers=workers, use_amp=True,
                 )
                 arm_probs[arm_name] = (v_p, t_p, n_p)
 
@@ -544,6 +576,9 @@ def run_worker_job(
         )
         arm_probs["vit_erm_raw"] = (v_cache["probs"], t_cache["probs"], n_full)
         arm_probs["vit_dfr_l2"] = (val_dfr, test_dfr, 768 * 2 + 2)
+        del v_cache, t_cache, base_dev
+        if device.startswith("cuda"):
+            torch.cuda.empty_cache()
 
         def _set_vit_mu(mod: PreBlockViTRepairModel, fit_l: DataLoader):
             mod.set_neutral_tokens(compute_group_balanced_vit_block_mean(base_cpu, fit_l, device, gate_before_block=6))
@@ -740,11 +775,17 @@ def main(argv=None):
         gpu_q: queue.Queue[str] = queue.Queue()
         for gid in range(n_gpus):
             gpu_q.put(f"cuda:{gid}")
+        abort_event = threading.Event()
+        child_env = {**os.environ, "PYTHONUNBUFFERED": "1"}
 
         def _launch(job: tuple[str, int]):
             k_name, s_val = job
+            if abort_event.is_set():
+                return
             dev_id = gpu_q.get()
             try:
+                if abort_event.is_set():
+                    return
                 cmd = [
                     sys.executable, "-B", "-m", "scripts.analysis.rep_repair_step7c_waterbirds_test",
                     "--work-dir", str(work_dir), "--output", str(out_dir),
@@ -752,12 +793,18 @@ def main(argv=None):
                     "--worker-kind", k_name, "--worker-seed", str(s_val),
                 ]
                 print(f"Launching ({k_name}, seed={s_val}) on {dev_id}...", flush=True)
-                subprocess.run(cmd, check=True)
+                proc = subprocess.run(cmd, env=child_env)
+                if proc.returncode != 0:
+                    abort_event.set()
+                    raise RuntimeError(f"Worker ({k_name}, s{s_val}) on {dev_id} failed with exit code {proc.returncode}")
+                print(f"[DONE] ({k_name}, seed={s_val}) on {dev_id}", flush=True)
             finally:
                 gpu_q.put(dev_id)
 
         with ThreadPoolExecutor(max_workers=n_gpus) as pool:
-            list(pool.map(_launch, jobs))
+            futs = [pool.submit(_launch, j) for j in jobs]
+            for fut in as_completed(futs):
+                fut.result()
     else:
         for k_name, s_val in jobs:
             run_worker_job(work_dir, out_dir, kind=k_name, seed=s_val, device=base_dev, workers=args.workers)
