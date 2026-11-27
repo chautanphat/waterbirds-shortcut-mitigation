@@ -194,3 +194,25 @@ Mean over seeds (paper: mean ± std over 5 seeds). Per-run and per-group numbers
 ## DPE prediction-aggregation verification: five-source evidence
 
 The [completed five-seed report](../results/dpe/five_seed_verification_20261112/README.md) is the current evidence for this extension. Dropout MLP gains about 0.62–0.63 percentage points over uniform on the primary partition, while plain MLP has the higher mean. Gains are partition-sensitive and dropout-specific superiority is not established. This comparison concerns the preserved implementation's uniform head aggregator, not every published DPE result. Historical three-source reports remain available through the [results index](../results/dpe/README.md).
+
+## Interaction-Targeted Minimal Representation Repair (`pre_l4_repair`)
+
+### Overview
+- **Full name:** Interaction-Targeted Pre-Layer4 Spatial Gating & Context-Invariance Repair
+- **Paper:** Project-owned original mechanism study ([`docs/REP_REPAIR_STUDY.md`](REP_REPAIR_STUDY.md))
+- **Source:** [`src/methods/rep_repair/README.md`](../src/methods/rep_repair/README.md)
+- **Year:** 2026
+- **Implementation location:** [`src/methods/rep_repair/`](../src/methods/rep_repair/) (`PreLayer4RepairModel`, `PreLayer4SpatialGate`, `context_invariance_loss`)
+
+### Mechanism
+Causal block patching shows ResNet-50 preserves spatial FG–BG separation through `layer3.5` ($14\times 14$) before $3\times 3$ residual convs in `layer4.{0,1,2}` leak background context into foreground cells. `pre_l4_repair_w005` freezes 100% of convolutional filters and inserts a mask-free $14\times 14$ `peak_neutral` spatial gate before `layer4` ($\mathbf{g}' = \mathbf{g}/\max(\mathbf{g})$, blending attenuated regions toward validation-fold group-balanced `neutral_c3`), jointly adapting all BatchNorm affine parameters (`bn_all`) and linear classifier weights with `drift_w=0.05`, `cons_w=0.10`, and `gate_sparsity=0.005`.
+
+### Implementation
+- **Backbone:** ResNet-50 (100% frozen convs; `124,931` trainable params on 2-class Waterbirds, `129,029` on 4-class Spawrious); ViT-B/16 cross-architecture transfer uses late-block LayerNorm adaptation (`vit_ln_dfr_late`, `15,362` params).
+- **Loss function:** Balanced Cross-Entropy + cosine `layer4` invariance drift (`0.05`) + symmetric JS consistency (`0.10`) + gate L1 sparsity (`0.005`).
+- **Training procedure:** Fitted strictly on validation splits (`20` epochs, AdamW `lr=3e-3`, batch size `64`, class/group-balanced sampling) using saved Stage-0 ERM checkpoints.
+
+### Experimental Settings & Evaluation
+- **Waterbirds Held-Out Test (`5,794` rows, 5 `standard_erm` seeds):** Official WGA `89.91 ± 1.81%`, Raw `p=0.5` Cleaned WGA `91.22 ± 0.44%`, Val-Thr Cleaned WGA `92.52 ± 1.06%`, Min-Grp AUROC `98.95%` (`5/5` seeds over `Affine-DFR`), post-hoc ceiling `95.24%`.
+- **Spawrious (`o2o_hard`) Sealed OOD Test (`25,344` rows, 3 seeds):** OOD Mean Acc `88.14 ± 0.62%` (`3/3` over `Affine-DFR` `+3.30 pp`), OOD Worst-Class `70.92 ± 1.78%` (`+5.58 pp` over `Affine-DFR`), OOD Macro-AUC `97.24%`.
+- **Step 7d Post-Hoc Audit & Traceability:** [`results/rep_repair/README.md`](../results/rep_repair/README.md), [`docs/REP_REPAIR_STUDY.md`](REP_REPAIR_STUDY.md).

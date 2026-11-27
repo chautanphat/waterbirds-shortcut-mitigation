@@ -1,0 +1,80 @@
+{
+  "step": "phase_c_step7c_waterbirds_one_shot_test_confirmation",
+  "one_shot_test_unsealing": true,
+  "frozen_repair_hparams": {
+    "gate_mode": "peak_neutral",
+    "bn_scope": "bn_all",
+    "ln_scope": "ln_late",
+    "drift_weight": 0.05,
+    "cons_weight": 0.1,
+    "gate_sparsity": 0.005
+  },
+  "gpus_used": 2,
+  "checkpoints": [
+    {
+      "kind": "resnet_std",
+      "seed": 0,
+      "path": "/tmp/step7c_wb_assets/backbones/standard_erm_s0_ckpt_last.pt",
+      "sha256": "d58957af68b5e119b801fd04b3ff2a0c4314c206a0dc57aa603e41092c8bc137"
+    },
+    {
+      "kind": "resnet_std",
+      "seed": 1,
+      "path": "/tmp/step7c_wb_assets/backbones/standard_erm_s1_ckpt_last.pt",
+      "sha256": "298abab3ff5f16785376d35d3e7bb3bae20c8f2dfd9d769dc8e741dcc28e2123"
+    },
+    {
+      "kind": "resnet_std",
+      "seed": 2,
+      "path": "/tmp/step7c_wb_assets/backbones/standard_erm_s2_ckpt_last.pt",
+      "sha256": "36530f7bb350dcae2713afa15b29b572b24185c3332c0e1a003f3cde070e5396"
+    },
+    {
+      "kind": "resnet_std",
+      "seed": 3,
+      "path": "/tmp/step7c_wb_assets/backbones/standard_erm_s3_ckpt_last.pt",
+      "sha256": "f498212957c3cf780adee5ebac98dcf9344352eecf0a61ee20b0bb7c15cd9718"
+    },
+    {
+      "kind": "resnet_std",
+      "seed": 4,
+      "path": "/tmp/step7c_wb_assets/backbones/standard_erm_s4_ckpt_last.pt",
+      "sha256": "a15e0218dd2c7c26446df1c9d4b6269d9a268009ae8a90bc28cee1bac8e5ec1d"
+    },
+    {
+      "kind": "resnet_star",
+      "seed": 0,
+      "path": "/tmp/step7c_wb_assets/backbones/erm_star_s0_ckpt_last.pt",
+      "sha256": "bce28dc72c3737ae19ffa057ba056e03d3f531180e7ad55e0b3c93bf4ea4bcaa"
+    },
+    {
+      "kind": "resnet_star",
+      "seed": 1,
+      "path": "/tmp/step7c_wb_assets/backbones/erm_star_s1_ckpt_last.pt",
+      "sha256": "12861acaaf2dab8c852957f3534a6d7f35489f7f34c5bb9178a5a34cbf4af74e"
+    },
+    {
+      "kind": "vit",
+      "seed": 0,
+      "path": "/tmp/step7c_wb_assets/vit_backbones/vit_b16_s0_ckpt_last.pt",
+      "sha256": "26e54b1e2bd719d2b95374be786676a648c1ebe9606561124ae9d01eab4b5b8e"
+    },
+    {
+      "kind": "vit",
+      "seed": 1,
+      "path": "/tmp/step7c_wb_assets/vit_backbones/vit_b16_s1_ckpt_last.pt",
+      "sha256": "54ffc54cd3cbf8499a53b2ac427d5829141f5798aac9c447f8d955a09325af68"
+    },
+    {
+      "kind": "vit",
+      "seed": 2,
+      "path": "/tmp/step7c_wb_assets/vit_backbones/vit_b16_s2_ckpt_last.pt",
+      "sha256": "d17395f82e5d900cf5ae6ad023cce9ddfe4025c820946a22954c98c5b84bb351"
+    }
+  ],
+  "environment": {
+    "platform": "Linux-6.18.55+-x86_64-with-glibc2.39",
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130"
+  }
+}

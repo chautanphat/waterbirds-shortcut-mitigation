@@ -1,0 +1,262 @@
+{
+  "study_id": "exp-rep-repair-phase-a-20261123",
+  "step": "phase_a_step1_failure_audit",
+  "split": "val_only_split1",
+  "test_files_accessed": 0,
+  "command": [
+    "python",
+    "-B",
+    "-m",
+    "scripts.analysis.rep_repair_failure_audit",
+    "--config",
+    "configs/rep_repair/phase_a_audit.json",
+    "--output",
+    "results/rep_repair/phase_a_20261123"
+  ],
+  "environment": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.1",
+    "numpy": "2.2.1"
+  },
+  "config_sha256": "86157eea14af82165db27f1ed6c2777fc5121d2211633507fe3eec91b6046b6d",
+  "sources": [
+    {
+      "source_id": "standard_erm_s0",
+      "inputs": [
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed0/checkpoints/ensemble.pt",
+          "sha256": "e6296e5470f68cb18c4e4cf63875218b6c703390e72e9a1300bf373f1ebfe8f6"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed0/experiment/manifest.json",
+          "sha256": "8b2f5ea4256d7ae7048221ddaf4fc582a655414c2e7cacdf2469e74891239e7a"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed0/experiment/heads.json",
+          "sha256": "3f6dad2dd18844bf9e178da4590553c424562c8e7dc6b1cc844639ba8fac9c34"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed0/experiment/predictions/combiner_training.npz",
+          "sha256": "d4778d9bd418424370780ae0d96c685785a68f3bedab407926ad3e5aac7b1e77"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/features/standard/seed0-94a41692f6/val_raw.npz",
+          "sha256": "542c61513bcc9e73c36d42df678859f170767145e0f9de670777f5ee566bbe5c"
+        }
+      ]
+    },
+    {
+      "source_id": "standard_erm_s1",
+      "inputs": [
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed1/checkpoints/ensemble.pt",
+          "sha256": "7c57c33067f521b6724e9ebcba8e9c554e68daa32a93b8d49365a7d07611abfa"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed1/experiment/manifest.json",
+          "sha256": "4f22b14c90047e69962ee156fca51f74940e6eaa1785b373f475dd00959b2139"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed1/experiment/heads.json",
+          "sha256": "7b7b0e606d5dacc770921f5a4126be44e01ef7ee790ea2521372825c8529707b"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed1/experiment/predictions/combiner_training.npz",
+          "sha256": "f4ae7199d64cd6f9f8e3f027def0513b9c5db7d8054fca17d48679a7b8fa5f23"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/features/standard/seed1-94a41692f6/val_raw.npz",
+          "sha256": "e8df2a0bb13306d87333228110bb902a7bcbc145b8cf7bbe0dabe2e26742c8a4"
+        }
+      ]
+    },
+    {
+      "source_id": "standard_erm_s2",
+      "inputs": [
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed2/checkpoints/ensemble.pt",
+          "sha256": "5346ed02a401d6e0cefb7e0895230837f0bcaffd7b76cea7eeb15a6f24710eb7"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed2/experiment/manifest.json",
+          "sha256": "29bcd93c42c3450bd830aca642ac40a63f79611e4196f0a996f08edf39deb19a"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed2/experiment/heads.json",
+          "sha256": "09f8fdbbe127ccb50bf614e12253db5b9b60e3e764b1784398f09b13a6b69ed2"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed2/experiment/predictions/combiner_training.npz",
+          "sha256": "e3bed42a64155ca2460f1dcd39fccd15970bb404943da2657a0070b55c749c74"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/original_evidence/dpe_head_aggregation_session/features/standard/seed2-94a41692f6/val_raw.npz",
+          "sha256": "4a1617873cdfd0cc443990077710c7ec9d9819e3cd0143a855e878e4be3a2e1b"
+        }
+      ]
+    },
+    {
+      "source_id": "standard_erm_s3",
+      "inputs": [
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed3/checkpoints/ensemble.pt",
+          "sha256": "e032881876c4a698383049856fca7254770428810381c27cf8febfc111057392"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed3/experiment/manifest.json",
+          "sha256": "3f2e087891b412a267bfce4f7e9cd9b0d1aad43c7929652ec99578eb9a550cc1"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed3/experiment/heads.json",
+          "sha256": "cb4e312c4d9994254b877bb08f63d6c9779dcd13d9e5eee935394034e1b69fe6"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed3/experiment/predictions/combiner_training.npz",
+          "sha256": "6089290b123b784b6bb958d0df7b1a443eed020f37c74422df8c4d0883d107e2"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/additional_sources/features/standard/seed3-94a41692f6/val_raw.npz",
+          "sha256": "ca234e3224dfcd146bb8df4513539da2e5333d4466a0621519ac58be516b2810"
+        }
+      ]
+    },
+    {
+      "source_id": "standard_erm_s4",
+      "inputs": [
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed4/checkpoints/ensemble.pt",
+          "sha256": "a05e6c63ed5f696239a4433eb24265aade59674f7ad02d4aa0a8adfe4475b46c"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed4/experiment/manifest.json",
+          "sha256": "fe4d8454d2665107729287dad4efb5b9a8f009ad06309f8e3103176d79c3ae2c"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed4/experiment/heads.json",
+          "sha256": "90dd3fdeeef9b7011e91d03ff37547494ea09ca1fb9a4a0d9aec2bc6c1fad428"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/results/five_seed_verification-f01228278c/source_bundles/seed4/experiment/predictions/combiner_training.npz",
+          "sha256": "d4323b814c8af3f2e9c2b62c3438561a0e8d30b5c020dcd5af746f7211c624d7"
+        },
+        {
+          "path": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification/additional_sources/features/standard/seed4-94a41692f6/val_raw.npz",
+          "sha256": "b5b90d88413affceded204aff351de40a7fb168bceae747bea9200c0e3f7a65b"
+        }
+      ]
+    },
+    {
+      "source_id": "erm_star_s0",
+      "inputs": [
+        {
+          "path": "outputs/recovered/dpe-exploration/dpe_ermstar/jobs/seed0/neural_split/ensemble.pt",
+          "sha256": "632d73c6d02d41fc31433608c2a6c1bf541b94c5aa7cb2c3f2e36d1fa27bb240"
+        },
+        {
+          "path": "outputs/recovered/dpe-exploration/dpe_ermstar/jobs/seed0/neural_split/partition.json",
+          "sha256": "306251d076fc543079a38a1071c399fb0ba3f9ee9898a7dbe0c7266da7f0258d"
+        },
+        {
+          "path": "outputs/recovered/dpe-exploration/dpe_ermstar/jobs/seed0/neural_split/combiner_training.npz",
+          "sha256": "8fb66e79df89397d67c062172927d8d670fc6d83094bd5b7e10a0748842cbb54"
+        },
+        {
+          "path": "outputs/recovered/dpe-exploration/dpe_ermstar/jobs/seed0/features/val.npz",
+          "sha256": "2bb3bc2dfba62cbd584960045e98a451dacc9f4508be21ffcc86fde5067ef7c7"
+        }
+      ]
+    },
+    {
+      "source_id": "erm_star_s1",
+      "inputs": [
+        {
+          "path": "outputs/recovered/dpe-exploration/dpe_ermstar/jobs/seed1/neural_split/ensemble.pt",
+          "sha256": "31a6dd76e9d8a439905fb254651a8a58d5b17d2835c68f5eec32f719eb165929"
+        },
+        {
+          "path": "outputs/recovered/dpe-exploration/dpe_ermstar/jobs/seed1/neural_split/partition.json",
+          "sha256": "306251d076fc543079a38a1071c399fb0ba3f9ee9898a7dbe0c7266da7f0258d"
+        },
+        {
+          "path": "outputs/recovered/dpe-exploration/dpe_ermstar/jobs/seed1/neural_split/combiner_training.npz",
+          "sha256": "20e54c090c0dd8eafcb7e6ca3b0fe1088213929629639728bb8fdf95aa360b9c"
+        },
+        {
+          "path": "outputs/recovered/dpe-exploration/dpe_ermstar/jobs/seed1/features/val.npz",
+          "sha256": "c7848f11c341a64587526df91062027df3e45a7dcfb3ddb3e1e427e50ef119a1"
+        }
+      ]
+    }
+  ],
+  "audit_stats": {
+    "total_val_rows": 1199,
+    "tern_val_rows": 18,
+    "persistent_erm_only_minority_count": 26,
+    "persistent_erm_only_by_group": {
+      "01": 13,
+      "10": 13
+    },
+    "persistent_erm_only_in_held479": 8,
+    "shared_both_fail_minority_count": 13,
+    "shared_both_fail_by_group": {
+      "01": 8,
+      "10": 5
+    },
+    "persistent_val_indices": [
+      286,
+      39,
+      863,
+      265,
+      560,
+      36,
+      645,
+      138,
+      471,
+      47,
+      970,
+      462,
+      322,
+      377,
+      87,
+      491,
+      250,
+      48,
+      294,
+      272,
+      934,
+      280,
+      835,
+      468,
+      106,
+      833
+    ],
+    "persistent_ids": [
+      "051.Horned_Grebe/Horned_Grebe_0098_34662.jpg",
+      "007.Parakeet_Auklet/Parakeet_Auklet_0047_795956.jpg",
+      "147.Least_Tern/Least_Tern_0048_153550.jpg",
+      "048.European_Goldfinch/European_Goldfinch_0097_794688.jpg",
+      "097.Orchard_Oriole/Orchard_Oriole_0039_91267.jpg",
+      "006.Least_Auklet/Least_Auklet_0024_795120.jpg",
+      "111.Loggerhead_Shrike/Loggerhead_Shrike_0090_106461.jpg",
+      "026.Bronzed_Cowbird/Bronzed_Cowbird_0002_796244.jpg",
+      "083.White_breasted_Kingfisher/White_Breasted_Kingfisher_0024_73736.jpg",
+      "008.Rhinoceros_Auklet/Rhinoceros_Auklet_0038_797544.jpg",
+      "163.Cape_May_Warbler/Cape_May_Warbler_0069_162980.jpg",
+      "081.Pied_Kingfisher/Pied_Kingfisher_0106_71404.jpg",
+      "057.Rose_breasted_Grosbeak/Rose_Breasted_Grosbeak_0042_39158.jpg",
+      "066.Western_Gull/Western_Gull_0117_44697.jpg",
+      "016.Painted_Bunting/Painted_Bunting_0001_16585.jpg",
+      "086.Pacific_Loon/Pacific_Loon_0054_75543.jpg",
+      "044.Frigatebird/Frigatebird_0070_43516.jpg",
+      "008.Rhinoceros_Auklet/Rhinoceros_Auklet_0010_797545.jpg",
+      "052.Pied_billed_Grebe/Pied_Billed_Grebe_0120_35764.jpg",
+      "049.Boat_tailed_Grackle/Boat_Tailed_Grackle_0027_33743.jpg",
+      "158.Bay_breasted_Warbler/Bay_Breasted_Warbler_0020_159737.jpg",
+      "050.Eared_Grebe/Eared_Grebe_0079_34342.jpg",
+      "142.Black_Tern/Black_Tern_0080_144130.jpg",
+      "082.Ringed_Kingfisher/Ringed_Kingfisher_0016_73029.jpg",
+      "020.Yellow_breasted_Chat/Yellow_Breasted_Chat_0106_22032.jpg",
+      "142.Black_Tern/Black_Tern_0004_143881.jpg"
+    ]
+  }
+}

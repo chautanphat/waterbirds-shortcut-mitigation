@@ -392,3 +392,30 @@ published on `experiment/dpe-ermstar-neural`, the notebook’s default Kaggle ch
 - **Command:** `python -B -m scripts.analysis.dpe_head_diversity --config configs/dpe_head_diversity/pilot.json --output results/dpe/head_diversity_20261122`. The [configuration](../configs/dpe_head_diversity/pilot.json) records the saved source seeds and decision thresholds. No training ran.
 - **Result:** No-go for the proposed near-identical-boundary mechanism. Zero of 735 pairs met either the primary or relaxed mismatch criteria. The rescaling and cancellation diagnostics showed the raw penalty can change while head decisions stay fixed.
 - **Artifacts:** [Pilot report, tables, plot, and run provenance](../results/dpe/head_diversity_20261122/README.md). Six focused tests passed. Guarded replay verified that the official test split stayed untouched.
+
+---
+
+## Direction 2 (`rep_repair`) Chronological Investigation Log — 2026-11-23 to 2026-11-24
+
+All validation studies (`Phases A–C Steps 1–7b`) maintained **zero test-split leakage**. Held-out Waterbirds and Spawrious OOD test splits were unsealed **once** in `Step 7c` with frozen Step 6b hyperparameters. Full narrative: [`docs/REP_REPAIR_STUDY.md`](REP_REPAIR_STUDY.md); master artifact index: [`results/rep_repair/README.md`](../results/rep_repair/README.md).
+
+### `rep_repair_phase_a` & `rep_repair_phase_b` — 2026-11-23
+- **Scripts / Notebooks:** [`rep_repair_failure_audit.py`](../scripts/analysis/rep_repair_failure_audit.py), [`rep_repair_frozen_readouts.py`](../scripts/analysis/rep_repair_frozen_readouts.py), [`rep_repair_phase_b_controls.py`](../scripts/analysis/rep_repair_phase_b_controls.py), [`rep_repair_phase_b_counterfactuals.py`](../scripts/analysis/rep_repair_phase_b_counterfactuals.py).
+- **Dataset & Split:** Cleaned (`relabel`) Waterbirds validation (`1,199` rows, 5-fold group-stratified CV; `0` test access) across `5 standard_erm` + `2 erm_star` ResNet-50 backbones.
+- **Results:** Isolated `26` persistent ERM-only minority failures and `18` CUB `"tern"` label errors; falsified post-GAP readouts (`DFR-L2` `90.18%`, `Frozen MLP` `91.31%`, `RBF-SVM` `89.67%`, `DPE` `92.06%`) and pre-GAP attention (`DAR` `90.17%`, `Oracle-Mask-Pool` `91.67%`); `Affine-DFR` (`53k` BN) reached `92.66%`. 5-view CUB counterfactuals showed background-swap recovery (`DFR-L2` `6.9% -> 96.2%`) and FG drift exploding `0.064 (L1) -> 0.851 (L4)`.
+
+### `rep_repair_phase_c_step5` & `step6/6b` — 2026-11-23 to 2026-11-24
+- **Scripts / Notebooks:** [`rep_repair_phase_c_patching.py`](../scripts/analysis/rep_repair_phase_c_patching.py), [`rep_repair_phase_c_step6.py`](../scripts/analysis/rep_repair_phase_c_step6.py), [`rep_repair_phase_c_step6b.py`](../scripts/analysis/rep_repair_phase_c_step6b.py).
+- **Results (Val Only):** Causal patching localized spatial breakdown from `layer3.5` (`70.0%` `bg_only`) into `layer4.{0,1,2}` (`54.6%`, `73.8%–75.5%` $3\times 3$ residual conv drift) and falsified observational channel pruning (Spearman `0.116–0.150`). Step 6b froze **`pre_l4_repair_w005`** (`124,931` params, `peak_neutral` Pre-`layer4` gate + `bn_all` + invariance): **`93.28 ± 0.90%` OOF-Thr WGA** (`4/5` seeds vs. `affine_dfr_linear` `92.70 ± 0.59%`), Layer-4 FG drift `0.6424` (`< ERM* 0.6862`), mask-free gate `FG=0.84 / BG=0.34`.
+
+### `rep_repair_step7a_vit` & `rep_repair_step7b_spawrious` — 2026-11-24
+- **Scripts / Notebooks:** [`rep_repair_step7a_vit_diag.py`](../scripts/analysis/rep_repair_step7a_vit_diag.py), [`rep_repair_step7b_spawrious.py`](../scripts/analysis/rep_repair_step7b_spawrious.py).
+- **Checkpoints Saved Publicly:** `noerula/rep-repair-step7a-vit-kaggle` (`ViT-B/16`, 3 seeds) and `noerula/rep-repair-step7b-spawrious-kaggle` (`Spawrious o2o_hard` ResNet-50, 3 seeds).
+- **Results (Val Only):** `ViT-B/16` confirmed late crossover at `block_6..8` and `[CLS]` drift `1.255` vs. `0.508`; `vit_ln_dfr_late` reached `91.16 ± 1.29%`. Spawrious `85/15` val (`3,800` imgs, `0` OOD access) gave `dfr_l2` `93.42%`, `affine_dfr_bn_l4` `92.98%`, `affine_dfr_bn_all` `91.23%`, `dar` `87.72%`.
+
+### `rep_repair_step7c` (One-Shot Held-Out Test) & `step7d` (Zero-GPU Audit) — 2026-11-24
+- **Scripts / Results:** [`rep_repair_step7c_waterbirds_test.py`](../scripts/analysis/rep_repair_step7c_waterbirds_test.py), [`rep_repair_step7c_spawrious_test.py`](../scripts/analysis/rep_repair_step7c_spawrious_test.py), [`rep_repair_step7d_posthoc_audit.py`](../scripts/analysis/rep_repair_step7d_posthoc_audit.py), [`results/rep_repair/step7c_waterbirds_test_20261124/`](../results/rep_repair/step7c_waterbirds_test_20261124/README.md), [`results/rep_repair/step7c_spawrious_test_20261124/`](../results/rep_repair/step7c_spawrious_test_20261124/README.md), [`results/rep_repair/step7d_posthoc_audit_20261124/`](../results/rep_repair/step7d_posthoc_audit_20261124/README.md).
+- **Results (Final Held-Out Confirmation):**
+  - **Waterbirds ResNet-50 (`5,794` test):** `pre_l4_repair_w005` leads Official WGA (`89.91 ± 1.81%`), Raw `p=0.5` Cleaned WGA (`91.22%`, CI `[+0.33, +2.00]` vs. `Affine-DFR`), Min-Grp AUROC (`98.95%`, `5/5` seeds, CI `[+0.06, +0.29]`), and post-hoc ceiling (`95.24%`, matching `ERM*` `95.22%`), while `val_thresh` variance yields `92.52%` vs. `93.75%`. `pre_l4_gate_only` (`71.8k`) beats `DAR` (`270.6k`) by `+2.53 pp` Val-Thr WGA / `+5.91 pp` Raw WGA (`5/5` seeds).
+  - **Waterbirds `ViT-B/16` Test:** `vit_ln_dfr_late` (`15.4k`) wins (`91.52 ± 0.60%` Cln WGA, `98.39%` Min-AUC); early `[CLS]` leakage limits patch-only gating (`88.16%`).
+  - **Spawrious `o2o_hard` Sealed OOD (`25,344` images):** `Affine-DFR` collapses (`84.84%` Mean / `65.34%` Worst-Cls); **`pre_l4_repair_w005` wins OOD Mean (`88.14 ± 0.62%`, `+3.30 pp` `3/3` over `Affine-DFR`)**, rescues `+5.58 pp` Worst-Cls (`70.92%`), and cuts spurious-background distractor confusion (`10.04%` vs. `12.79%`).

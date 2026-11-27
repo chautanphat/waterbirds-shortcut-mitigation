@@ -33,3 +33,20 @@ The self-contained corrected notebook is in
 It fixes inner-CV nesting and threshold controls. Use CPU, enable Internet and
 Save & Run All. The corrected Waterbirds rerun is pending; synthetic tests passed.
 [Audit and interpretation](../docs/dpe_nested_audit_and_rerun.md).
+
+## Direction 2 · Representation Repair (`rep_repair`) Kaggle Notebooks
+
+All Direction 2 notebooks clone branch `spurious_correlation_mechanisms` cleanly on Kaggle (`Internet: On`) and run the corresponding script under `scripts/analysis/`:
+
+| Step | Notebook | Hardware | Approx Runtime | Public Checkpoint Inputs | Output Archive |
+|---|---|---|---|---|---|
+| **Phase A** | [rep_repair_phase_a_kaggle.ipynb](rep_repair_phase_a_kaggle.ipynb) | CPU / 1× T4 | ~5 min | `noerula/dpe-mlp-dropout-verification`, `noerula/dpe-exploration` | `results/rep_repair/phase_a_20261123/` |
+| **Phase B · Controls** | [rep_repair_phase_b_controls_kaggle.ipynb](rep_repair_phase_b_controls_kaggle.ipynb) | 1× T4 | ~25 min | Same ResNet-50 backbones | `results/rep_repair/phase_b_controls_20261123/` |
+| **Phase B · Counterfactuals** | [rep_repair_phase_b_counterfactuals_kaggle.ipynb](rep_repair_phase_b_counterfactuals_kaggle.ipynb) | 1× T4 | ~15 min | Same ResNet-50 backbones + CUB masks | `results/rep_repair/phase_b_counterfactuals_20261123/` |
+| **Phase C · Step 5** | [rep_repair_phase_c_patching_kaggle.ipynb](rep_repair_phase_c_patching_kaggle.ipynb) | 1× T4 | ~25 min | Same ResNet-50 backbones + CUB masks | `results/rep_repair/phase_c_step5_20261123/` |
+| **Phase C · Step 6** | [rep_repair_phase_c_step6_kaggle.ipynb](rep_repair_phase_c_step6_kaggle.ipynb) | 1× T4 | ~30 min | Same ResNet-50 backbones | `results/rep_repair/phase_c_step6_20261124/` |
+| **Phase C · Step 6b** | [rep_repair_phase_c_step6b_kaggle.ipynb](rep_repair_phase_c_step6b_kaggle.ipynb) | 1× T4 | ~30 min | Same ResNet-50 backbones | `results/rep_repair/phase_c_step6b_20261124/` |
+| **Phase C · Step 7a** | [rep_repair_step7a_vit_kaggle.ipynb](rep_repair_step7a_vit_kaggle.ipynb) | 1× T4 | ~45 min | Trains & saves `ViT-B/16` seeds 0–2 | `results/rep_repair/step7a_vit_20261124/` |
+| **Phase C · Step 7b** | [rep_repair_step7b_spawrious_kaggle.ipynb](rep_repair_step7b_spawrious_kaggle.ipynb) | 2× T4 | ~45 min | Trains & saves Spawrious ResNet-50 seeds 0–2 | `results/rep_repair/step7b_spawrious_20261124/` |
+| **Phase C · Step 7c-1** | [rep_repair_step7c_waterbirds_test_kaggle.ipynb](rep_repair_step7c_waterbirds_test_kaggle.ipynb) | 2× T4 | ~12 min | Waterbirds ResNet (`std` + `star`) + `ViT-B/16` | `results/rep_repair/step7c_waterbirds_test_20261124/` |
+| **Phase C · Step 7c-2** | [rep_repair_step7c_spawrious_test_kaggle.ipynb](rep_repair_step7c_spawrious_test_kaggle.ipynb) | 2× T4 | ~50 min | `noerula/rep-repair-step7b-spawrious-kaggle` | `results/rep_repair/step7c_spawrious_test_20261124/` |

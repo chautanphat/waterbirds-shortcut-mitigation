@@ -1,0 +1,16 @@
+model_tag,condition,acc_pct,mean_p_true
+base_dfr_l2,orig,6.92,0.2124
+base_dfr_l2,matched_bg,96.15,0.8219
+base_dfr_l2,flipped_bg,69.23,0.6644
+base_dfr_l2,neutral_gray,76.15,0.748
+base_dfr_l2,ood_bg,86.92,0.8118
+affine_dfr_bn_all,orig,66.15,0.6176
+affine_dfr_bn_all,matched_bg,93.08,0.8495
+affine_dfr_bn_all,flipped_bg,86.15,0.7994
+affine_dfr_bn_all,neutral_gray,90.77,0.8474
+affine_dfr_bn_all,ood_bg,90.77,0.8667
+affine_dfr_bn_l3_l4,orig,61.54,0.5692
+affine_dfr_bn_l3_l4,matched_bg,96.15,0.8803
+affine_dfr_bn_l3_l4,flipped_bg,86.92,0.8004
+affine_dfr_bn_l3_l4,neutral_gray,93.85,0.8834
+affine_dfr_bn_l3_l4,ood_bg,94.62,0.8847

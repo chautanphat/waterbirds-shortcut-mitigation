@@ -1,0 +1,70 @@
+{
+  "study_id": "exp-rep-repair-phase-a-20261123",
+  "asset_root": "E:/APCS/SC203/waterbirds-shortcut-mitigation",
+  "image_dir": "data/waterbirds/waterbird_complete95_forest2water2",
+  "metadata_path": "data/waterbirds/waterbird_complete95_forest2water2/metadata.csv",
+  "tern_species": [
+    "021.Eastern_Towhee",
+    "088.Western_Meadowlark",
+    "102.Western_Wood_Pewee"
+  ],
+  "cohorts": [
+    {
+      "name": "standard_erm",
+      "root": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification",
+      "source_pattern": "results/five_seed_verification-f01228278c/source_bundles/seed{seed}",
+      "feature_sets": [
+        {
+          "seeds": [0, 1, 2],
+          "pattern": "original_evidence/dpe_head_aggregation_session/features/standard/seed{seed}-94a41692f6/val_raw.npz"
+        },
+        {
+          "seeds": [3, 4],
+          "pattern": "additional_sources/features/standard/seed{seed}-94a41692f6/val_raw.npz"
+        }
+      ]
+    },
+    {
+      "name": "erm_star",
+      "root": "outputs/recovered/dpe-exploration/dpe_ermstar",
+      "source_pattern": "jobs/seed{seed}",
+      "feature_sets": [
+        {
+          "seeds": [0, 1],
+          "pattern": "jobs/seed{seed}/features/val.npz"
+        }
+      ]
+    }
+  ],
+  "cv": {
+    "outer_folds": 5,
+    "inner_folds": 4,
+    "split_seed": 0,
+    "conditions": ["relabel", "drop"]
+  },
+  "failure_audit": {
+    "min_std_fail_count": 4,
+    "min_ermstar_pass_count": 2,
+    "contact_sheet_max_images": 24
+  },
+  "readouts": {
+    "dfr_l2_C": [0.01, 0.03, 0.1, 0.3, 1.0, 3.0],
+    "dfr_l1_C": [0.01, 0.03, 0.1, 0.3, 1.0, 3.0],
+    "rbf_svm_C": [0.3, 1.0, 3.0, 10.0],
+    "rbf_svm_gamma": ["scale", "auto"],
+    "rbf_svm_norm": ["col_zscore", "l2_unit"],
+    "mlp_hidden": [128, 256],
+    "mlp_dropout": [0.2, 0.5],
+    "mlp_weight_decay": [0.01, 0.1],
+    "mlp_lr": 0.001,
+    "mlp_epochs": 150,
+    "mlp_seeds": [0, 1, 2],
+    "knn_k": [5, 11, 21, 41],
+    "run_dpe_oof": true
+  },
+  "gate1": {
+    "min_wga_gap_pp": 1.5,
+    "min_unresolved_fraction": 0.50,
+    "min_standard_seeds": 4
+  }
+}

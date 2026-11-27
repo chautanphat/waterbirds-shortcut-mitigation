@@ -1,0 +1,14 @@
+{
+  "standard_erm_dfr_l2_wga": 81.6393,
+  "standard_erm_dar_wga": 80.3279,
+  "standard_erm_oracle_mask_pool_wga": 87.541,
+  "standard_erm_h2t_dfr_wga": 82.1311,
+  "standard_erm_bn_stat_only_wga": 80.8197,
+  "standard_erm_affine_dfr_wga": 89.3443,
+  "standard_erm_layer4_ft_wga": 86.0656,
+  "erm_star_dfr_l2_wga": 92.623,
+  "erm_star_dar_wga": 90.5737,
+  "gap_ermstar_minus_std_dar_pp": 12.2951,
+  "gap_ermstar_minus_std_oracle_mask_pp": 5.082,
+  "controls_survive_dar_gate": true
+}
