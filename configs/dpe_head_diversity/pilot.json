@@ -1,0 +1,30 @@
+{
+  "study_id": "exp-dpe-head-diversity-20261122",
+  "cohorts": [
+    {
+      "name": "standard_erm",
+      "root": "outputs/recovered/dpe-mlp-dropout-verification/dpe_five_seed_verification",
+      "source_pattern": "results/five_seed_verification-f01228278c/source_bundles/seed{seed}",
+      "feature_sets": [
+        {"seeds": [0, 1, 2], "pattern": "original_evidence/dpe_head_aggregation_session/features/standard/seed{seed}-94a41692f6/val_raw.npz"},
+        {"seeds": [3, 4], "pattern": "additional_sources/features/standard/seed{seed}-94a41692f6/val_raw.npz"}
+      ]
+    },
+    {
+      "name": "erm_star",
+      "root": "outputs/recovered/dpe-exploration/dpe_ermstar",
+      "source_pattern": "jobs/seed{seed}",
+      "feature_sets": [{"seeds": [0, 1], "pattern": "jobs/seed{seed}/features/val.npz"}]
+    }
+  ],
+  "replay_probability_atol": 0.000001,
+  "min_pairs_per_comparison": 3,
+  "min_shared_error_rows": 3,
+  "min_oracle_gain_gap_rows": 2,
+  "min_standard_seeds": 3,
+  "thresholds": {
+    "primary": {"max_prototype_similarity": 0.50, "min_boundary_similarity": 0.95, "max_control_boundary_similarity": 0.80},
+    "relaxed": {"max_prototype_similarity": 0.60, "min_boundary_similarity": 0.90, "max_control_boundary_similarity": 0.85},
+    "strict": {"max_prototype_similarity": 0.40, "min_boundary_similarity": 0.98, "max_control_boundary_similarity": 0.75}
+  }
+}

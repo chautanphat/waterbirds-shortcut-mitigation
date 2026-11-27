@@ -1,0 +1,11 @@
+\begin{tikzpicture}[dpe diagram]
+\node[dpe box,minimum width=1.5cm] (im) at (0.8,0) {Bird + scene};
+\node[dpe box,minimum width=2.5cm] (net) at (4,0) {ResNet reads\\the whole image};
+\node[dpe box,draw=dpewater,fill=dpewater!7,minimum width=2.4cm] (pool) at (7.8,0) {Give bird cells\\more weight};
+\node[dpe box,minimum width=1.5cm] (out) at (11,0) {Classifier\\answer};
+\draw[dpe arrow] (im) -- (net);
+\draw[dpe arrow] (net) -- (pool);
+\draw[dpe arrow] (pool) -- (out);
+\node[align=center,text width=3.5cm] at (4,-1.05) {Scene information can affect\\the features at bird locations};
+\node[align=center,text width=3.5cm] at (7.8,-1.05) {The supplied bird mask\\is used at this step};
+\end{tikzpicture}
