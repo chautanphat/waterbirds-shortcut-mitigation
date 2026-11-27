@@ -1,0 +1,9 @@
+\begin{tikzpicture}[dpe diagram]
+\node[dpe box,minimum width=2.4cm] (s) at (1.2,0.6) {Five standard models\\Wrong in at least four};
+\node[dpe box,minimum width=2.4cm] (e) at (1.2,-0.7) {Two enhanced models\\Right in both};
+\node[dpe box,minimum width=2.5cm,minimum height=1.2cm] (same) at (5.5,0) {Check the same\\validation bird};
+\node[dpe box,draw=dpewater,fill=dpewater!7,minimum width=3cm] (keep) at (10,0) {26 recurring failures\\13 landbirds on water\\13 waterbirds on land};
+\draw[dpe arrow] (s.east) -- (same.west);
+\draw[dpe arrow] (e.east) -- (same.west);
+\draw[dpe arrow] (same.east) -- (keep.west);
+\end{tikzpicture}

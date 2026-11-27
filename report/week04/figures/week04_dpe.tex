@@ -1,0 +1,12 @@
+\begin{tikzpicture}[dpe diagram]
+  \node[dpe box,minimum width=1.1cm] (image) at (0.5,0) {Bird\\image};
+  \node[dpe box,minimum width=2.1cm] (net) at (3,0)
+    {Fixed ResNet-50\\Image features};
+  \node[dpe box,minimum width=3.2cm,minimum height=1.7cm] (heads) at (6.6,0)
+    {Head 1: land point + water point\\Head 2: land point + water point\\$\vdots$\\Head 15: land point + water point};
+  \node[dpe box,minimum width=2.1cm] (avg) at (10.4,0)
+    {Average 15 answers\\Landbird or waterbird};
+  \draw[dpe arrow] (image) -- (net);
+  \draw[dpe arrow] (net) -- (heads);
+  \draw[dpe arrow] (heads) -- (avg);
+\end{tikzpicture}

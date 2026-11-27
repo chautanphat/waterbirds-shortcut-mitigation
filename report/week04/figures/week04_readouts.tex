@@ -1,0 +1,13 @@
+\begin{tikzpicture}[dpe diagram]
+\node[dpe box,minimum height=1.4cm] (fixed) at (1.5,0)
+ {Same saved ResNet\\Same image features};
+\node[dpe box,minimum width=2.5cm] (linear) at (6,1) {Linear classifier};
+\node[dpe box,minimum width=2.5cm] (mlp) at (6,0) {Small neural network};
+\node[dpe box,minimum width=2.5cm] (dpe) at (6,-1) {15 DPE heads};
+\node[dpe box,minimum height=1.4cm] (check) at (10.5,0)
+ {Check the same\\26 recurring failures};
+\foreach \head in {linear,mlp,dpe}{
+ \draw[dpe arrow] (fixed.east) -- (\head.west);
+ \draw[dpe arrow] (\head.east) -- (check.west);
+}
+\end{tikzpicture}

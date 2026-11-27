@@ -1,0 +1,64 @@
+\begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily\small,
+  >=Stealth,line width=0.6pt]
+\definecolor{scene}{HTML}{77A9CD}
+\definecolor{bird}{HTML}{D28A42}
+\definecolor{ink}{HTML}{273747}
+
+\node[font=\sffamily\bfseries,text=ink] at (1.35,2.3) {Input image};
+\node[font=\sffamily\bfseries,text=ink] at (6,2.3) {ResNet features};
+\node[font=\sffamily\bfseries,text=ink] at (10.65,2.3) {Weight bird cells};
+
+\filldraw[fill=scene!35,draw=scene] (0,0) rectangle (2.7,1.8);
+\node[text=ink] at (1.35,1.5) {Scene};
+\filldraw[fill=bird!80,draw=bird] (1.35,0.65) ellipse (0.72 and 0.45);
+\node[text=ink] at (1.35,0.65) {Bird};
+
+\draw[->,draw=ink] (2.95,0.9) -- (4.55,0.9);
+\node[align=center,text=ink] at (3.75,1.5) {Read the\\whole image};
+
+\foreach \row in {0,...,6}{
+  \foreach \col in {0,...,6}{
+    \filldraw[fill=scene!40,draw=white]
+      ({4.95+0.3*\col},{-0.15+0.3*\row})
+      rectangle ++(0.3,0.3);
+  }
+}
+\foreach \row in {2,3,4}{
+  \foreach \col in {2,3,4}{
+    \fill[bird!85] ({4.95+0.3*\col},{-0.15+0.3*\row})
+      rectangle ++(0.3,0.3);
+    \fill[scene!80] ({4.95+0.3*\col},{-0.15+0.3*\row})
+      -- ++(0.3,0) -- ++(0,0.3) -- cycle;
+    \draw[white] ({4.95+0.3*\col},{-0.15+0.3*\row})
+      rectangle ++(0.3,0.3);
+  }
+}
+
+\draw[->,draw=ink] (7.3,0.9) -- (9.05,0.9);
+\node[align=center,text=ink] at (8.15,1.5) {Use the\\bird mask};
+
+\foreach \row in {0,...,6}{
+  \foreach \col in {0,...,6}{
+    \filldraw[fill=scene!8,draw=white]
+      ({9.6+0.3*\col},{-0.15+0.3*\row})
+      rectangle ++(0.3,0.3);
+  }
+}
+\foreach \row in {2,3,4}{
+  \foreach \col in {2,3,4}{
+    \fill[bird!85] ({9.6+0.3*\col},{-0.15+0.3*\row})
+      rectangle ++(0.3,0.3);
+    \fill[scene!80] ({9.6+0.3*\col},{-0.15+0.3*\row})
+      -- ++(0.3,0) -- ++(0,0.3) -- cycle;
+    \draw[white] ({9.6+0.3*\col},{-0.15+0.3*\row})
+      rectangle ++(0.3,0.3);
+  }
+}
+\draw[bird,line width=1pt] (10.2,0.45) rectangle (11.1,1.35);
+\node[align=center,text=ink,text width=3.5cm,
+  font=\sffamily\footnotesize] at (6,-0.8)
+  {Cells over the bird can already\\reflect the scene.};
+\node[align=center,text=ink,text width=3.5cm,
+  font=\sffamily\footnotesize] at (10.65,-0.8)
+  {More weight can also keep\\that scene information.};
+\end{tikzpicture}
