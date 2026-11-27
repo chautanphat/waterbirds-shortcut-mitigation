@@ -1,0 +1,310 @@
+% Week 5 progress report (AutoBackSwap extension); keeps the Week 1/2/4 Springer LNCS template.
+% Numerical sources (all in the workspace repo ndmhuy/AutoBackSwap-repro, private; the same files are summarised in docs/AUDIT_HANDOFF.md there):
+%   Waterbirds: analysis/w1_scores.md, w2_scores.md, w3_scores.md, w4_scores.md; results/kaggle_w{1,2,3,4}/
+%   UrbanCars:  results/kaggle_u1b/report.md, results/kaggle_u0/ (contact sheets)
+% Photographs (not drawn): figures/abs_triplets.jpg (Kaggle step sheet, ABS default loose 0.9),
+%   abs_recomposed.jpg (W1 smoke, oracle masks), bank_birds.jpg (W2 bird-detector hand check), urbancars_sheet.jpg (U0).
+\documentclass[runningheads]{llncs}
+\IfFileExists{vietnam.sty}{\usepackage[utf8,nocaptions]{vietnam}}{\usepackage[utf8]{inputenc}}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{url}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit}
+\usepackage[hidelinks]{hyperref}
+\setlength{\intextsep}{5pt}
+\setlength{\tabcolsep}{4pt}
+\setlength{\emergencystretch}{1em}
+\definecolor{dpeland}{HTML}{A65320}
+\definecolor{dpewater}{HTML}{216B9B}
+\definecolor{dpeink}{HTML}{263747}
+\tikzset{
+  d/.style={font=\sffamily\scriptsize,text=dpeink,>=Stealth,line width=0.55pt},
+  b/.style={draw=dpeink!45,rounded corners=2pt,fill=dpeink!3,align=center,inner sep=4pt},
+  hl/.style={draw=dpewater,rounded corners=2pt,fill=dpewater!10,align=center,inner sep=4pt},
+  ar/.style={->,draw=dpeink!75}
+}
+\hypersetup{pdftitle={Background Shortcut Learning Mitigation for Waterbirds - Week 5 Progress Report},
+  pdfauthor={Nguyen Dinh Minh Huy}}
+
+\begin{document}
+\title{Background Shortcut Learning Mitigation for Waterbirds\texorpdfstring{\\}{: }
+Week 5 Progress Report: Extending AutoBackSwap}
+\titlerunning{Waterbirds: Week 5 Progress Report}
+\author{Nguyen Dinh Minh Huy\inst{1,2}}
+\authorrunning{N. D. M. Huy}
+\institute{Faculty of Information Technology, University of Science, Ho Chi Minh City, Vietnam \and
+Vietnam National University, Ho Chi Minh City, Vietnam}
+\maketitle
+\raggedbottom
+
+\begin{abstract}
+We reproduced AutoBackSwap (ABS) on Waterbirds in earlier weeks and matched the
+paper's worst-group accuracy. This week we used the reproduction to ask what ABS
+actually changes in an image, and where it might still leak the shortcut.
+We report five observations, five hypotheses and the experiments run so far.
+The strongest result is on a second dataset: on UrbanCars, where a background
+and a co-occurring object are both shortcuts, a matched ERM model loses 74 points
+on the hardest group while binary ABS loses 1 point, so the planned
+three-way ABS has no failure to fix. On Waterbirds, shrinking the inpainted hole
+looks helpful on corrected labels (+2.2 points at 3 seeds, +1.8 at a new
+detector seed) but is not statistically significant and does not appear on the
+official labels. We say what would settle it.
+\end{abstract}
+
+\section{Where the previous report stopped}
+
+The personal report of 17~November closed the AutoBackSwap reproduction
+(ten runs, WGA within $2\sigma$ of the paper in all four settings) and left four
+items open. Table~\ref{tab:open} says what happened to each.
+
+\begin{table}[H]
+\centering
+\caption{Open items of the previous report and their status.}
+\label{tab:open}
+\small
+\begin{tabular}{@{}p{3.6cm}p{8.4cm}@{}}
+\toprule
+Open item & Status now\\
+\midrule
+ABS accuracy 94.0--94.7 vs paper 95.1 & Still unexplained. Seed-0 retrain on Kaggle is bit-identical to the earlier run, so it is not noise.\\
+Three mislabelled species (90 test images) & Measured. Re-scoring 21 prediction files with the 90 images corrected changes ERM WGA by up to $+3.3$ and ABS by $-0.8$ to $+1.7$ points. We now report official, corrected and clean views together.\\
+Perturb test backgrounds & Not done; replaced by oracle-mask and hole-size controls (Section~\ref{sec:res}).\\
+More seeds, with-minority & Not done for ABS with-minority (seed 0 only).\\
+Second dataset & New: UrbanCars generated with the official script and trained (Section~\ref{sec:urban}).\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{What we observed}
+
+\textbf{O1. The labels hide the sign of the effect.}
+Three species with ``tern'' in the name (90 test, 72 train, 18 validation
+images) are landbirds labelled as waterbirds. ABS without minority trains on
+68 of them. When a model correctly says ``landbird'' for one of these test
+images, the official metric counts it wrong, so the worst group of a better
+model can move to a different group (verified per group for W3).
+
+\textbf{O2. The hole is much larger than the bird.}
+ABS removes the foreground by inpainting a ``loose'' mask. Figure~\ref{fig:trip}
+shows original, loose mask and inpainted result for ABS as shipped. Averaged over
+4{,}555 bank images the hole covers 77.7 of 256 patches, while the bird mask from the CUB segmentation (coverage above 0.25) covers 42.1.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/abs_triplets.jpg}
+\caption{Waterbirds images, in triples: original, loose mask (white = inpainted),
+inpainted result. The white region is clearly larger than the bird and the fill
+is blurry texture.}
+\label{fig:trip}
+\end{figure}
+
+\textbf{O3. Birds remain in the background bank.}
+Hole sizes are generous, yet 27--29\% of bank images still keep at least one
+true-bird patch outside the hole, and a COCO bird detector flags 3.25\% of the
+inpainted images at score 0.5 (Figure~\ref{fig:bank}). The bank is built from
+exactly these images.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/bank_birds.jpg}
+\caption{Inpainted bank images the COCO bird detector flags (red boxes): small
+birds elsewhere in the scene, reflections, or parts of the original bird.}
+\label{fig:bank}
+\end{figure}
+
+\textbf{O4. The composed training image is not natural.}
+Figure~\ref{fig:rec} shows ABS-style recomposed images (from the smoke test,
+oracle masks): a bird cut-out is pasted on another image's background with visible
+seams and cropped parts. A classifier could learn the seam or leftover
+border instead of the species.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{figures/abs_recomposed.jpg}
+\caption{Recomposed training images (smoke test, oracle foreground): hard edges,
+duplicated background fragments, remains of the original bird behind the paste.}
+\label{fig:rec}
+\end{figure}
+
+\textbf{O5. A matched ERM collapses on two shortcuts; ABS does not.}
+UrbanCars (Figure~\ref{fig:urbsheet}) has a car with a context background and a
+co-occurring object (fire hydrant, parking meter). With the paper's recipe, ERM
+drops by 74 points on the group where both shortcuts disagree with the label.
+ABS drops by 1 point.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\linewidth]{figures/urbancars_sheet.jpg}
+\caption{UrbanCars test images, our generated copy (red = car mask): a car on a
+country road with an urban co-occurring object.}
+\label{fig:urbsheet}
+\end{figure}
+
+\section{Hypotheses}
+
+\begin{description}
+\item[H1] (from O2) A smaller inpainted hole improves ABS, because less real
+background is destroyed and the composed image is closer to natural.
+\item[H2] (from O3, O2) A hole that is too small leaves enough of the bird in the bank
+to leak the label, so the gain reverses below some size. The curve has an optimum.
+\item[H3] (from O4, and the shape of H2) The classifier can use seams or leftover
+border pixels as a cue. This is a mechanism for H2 and is untested.
+\item[H4] (from O5) Binary ABS already handles two simultaneous shortcuts when the
+second shortcut lies in the background region; the co-object lies in the pasted
+foreground in 0 of 8{,}000 training images.
+\item[H5] (from O1) Part of every reported gain in this setting is label noise, so
+claims must hold on official, corrected and clean views together.
+\end{description}
+
+\section{Method: the knob we changed}
+
+\begin{figure}[H]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[d,node distance=5mm]
+\node[b] (img) {train image};
+\node[b,right=of img] (det) {foreground\\detector\\(EfficientNet-B0,\\200 images)};
+\node[hl,right=of det] (thr) {\textbf{loose threshold}\\0.9 (default)\\0.75, 0.6, 0.45\\$\Rightarrow$ hole size};
+\node[b,right=of thr] (inp) {AOT-GAN\\inpaint hole};
+\node[b,right=of inp] (bank) {background\\bank};
+\node[b,right=of bank] (comp) {paste bird on\\bank background\\(tight mask 0.33)};
+\node[b,right=of comp] (clf) {ResNet-50};
+\draw[ar] (img)--(det);\draw[ar] (det)--(thr);\draw[ar] (thr)--(inp);\draw[ar] (inp)--(bank);\draw[ar] (bank)--(comp);\draw[ar] (comp)--(clf);
+\end{tikzpicture}}
+\caption{ABS pipeline. We vary only the loose threshold (the highlighted box).
+Lower threshold gives a smaller hole, hence more original background and more
+bird remnants in the bank.}
+\label{fig:pipe}
+\end{figure}
+
+In plain terms: a smaller hole keeps more of the real scene but risks leaving part
+of the bird in the bank image. H1 and H2 say the two effects compete.
+
+\section{Experiments and results so far}\label{sec:res}
+
+All runs: ResNet-50, ABS without minority, official code at \texttt{b060532}, Kaggle T4.
+Scores are worst-group test accuracy (WGA, \%) on three label views.
+
+\begin{table}[H]
+\centering
+\caption{Waterbirds WGA by experiment (mean over seeds; seeds in brackets).}
+\label{tab:wb}
+\small
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Exp. & Arm & Hole & Official & Corrected & Clean\\
+\midrule
+W1 (2) & ABS detector (3) & 77.7 & 92.33 & 91.69 & 92.33\\
+ & soft oracle mask & 50.2 & 93.30 & 94.20 & 95.01\\
+W2 (2) & oracle, hard 0.25 & 42.1 & 93.69 & 93.16 & 93.97\\
+ & oracle dilated, same hole as ABS & 83.6 & 92.27 & 92.62 & 93.30\\
+W3 (3) & loose 0.75 & 56.0 & 92.40 & 92.57 & 93.24\\
+ & loose 0.6 & 46.5 & 91.90 & 93.93 & 94.39\\
+W4 (1) & loose 0.9, own detector & 78.1 & 93.39 & 92.53 & 93.39\\
+ & loose 0.6 & 45.2 & 92.52 & 94.35 & 94.81\\
+ & loose 0.45 & 37.9 & 86.76 & 92.49 & 92.49\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\linewidth]{figures/fig_hole_wga.pdf}
+\caption{Corrected-label WGA of every run against the inpainted hole size.
+Smaller holes score higher down to about 45 patches; the single point at 37.9 is lower.}
+\label{fig:hole}
+\end{figure}
+
+\textbf{W1/W2: the oracle gain is mostly hole size.}
+Replacing the detector by the CUB segmentation gives $+0.97$ points on official
+labels (inconclusive on the pre-registered rule). Giving the oracle the same hole size
+as ABS removes the gap on official labels ($-0.06$) and leaves $+0.9$ on corrected labels
+(standard error about 1.3). This supports H1 and says the mask accuracy is not the bottleneck.
+
+\textbf{W3: tighter loose mask.} With a shared seed-0 detector and bank, loose 0.6
+raises corrected WGA by $+2.24$ points (per seed $+2.69$, $+0.83$, $+3.22$), the
+pre-registered rule is met, but: paired $t$ gives $p\approx0.09$, the exact permutation
+test with 3 vs 3 runs has minimum $p=0.10$, and on official labels the change is
+$-0.43$. The seed spread of the new arms (1.2--1.4) is five to six times that of ABS (0.22).
+An external audit reached the same conclusion; W3 is \emph{suggestive}, not a finding.
+
+\textbf{W4: a new detector and a point below 0.6.} Seed 3 with its own detector, all
+three thresholds from that detector (one classifier per arm): $0.6$ is $+1.82$ over $0.9$
+on corrected labels, $0.45$ is $-0.04$ over $0.9$ and $-1.87$ under $0.6$. Both
+pre-registered rules (replication $\ge+1$ point; turning point $\ge1$ point below 0.6)
+hold, with $n=1$. On official labels $0.45$ is $-6.6$ points, again mostly from the
+mislabelled images.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{figures/fig_leak.pdf}
+\caption{Share of the target bird (CUB segmentation) left outside the hole, train
+bank. It grows as the hole shrinks, from about 2\% to 17\%; images with at least one
+bird patch left go from 27--29\% (loose 0.9) to 87--91\% (loose 0.6) and 98\% (0.45).}
+\label{fig:leak}
+\end{figure}
+
+Together, W3 and W4 are consistent with H1 and H2 (an optimum near 0.6), and
+the leakage in Figure~\ref{fig:leak} is a plausible reason for the turn. None of it is
+established.
+
+\subsection{UrbanCars: two shortcuts}\label{sec:urban}
+
+We generated UrbanCars with the official script (8000 train, 1000 val, 1000 test;
+the paper says 500). The first ERM with the repository recipe lost only 36 points on
+the BG+CoObj group, much less than the paper (about 69). The gap came from the
+training recipe, not the number of epochs or checkpoint choice: the paper-matched
+recipe (official transforms, SGD lr $10^{-3}$, batch 128 as $2{\times}64$, 150 epochs)
+gives $-74.06$ (95\% CI $[-79.2,-68.8]$).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{figures/fig_urbancars.pdf}
+\caption{BG+CoObj gap on UrbanCars (95\% bootstrap CIs, one seed). Values: ERM
+$-36.4$ and $-74.1$, ABS $+1.7$ and $-1.0$.}
+\label{fig:urban}
+\end{figure}
+
+Binary ABS has I.D. accuracy 97.83 and gap $-1.03$ ($[-3.67,1.62]$), $+73$ points over
+the matched ERM. Mask statistics show the co-object lies in the pasted foreground in
+0.07\% of pixels and in 0 of 8{,}000 images, so it is swapped with the background.
+This is H4. The three-way ABS branch of the plan loses its motivation.
+Caveats: one seed, $n=125$ per composition, and the ABS I.D. accuracy moves from 97.83 to
+96.39 when the checkpoint rule changes.
+
+\section{Proposed experiments}
+
+\begin{table}[H]
+\centering
+\caption{Next experiments. GPU-hours are Kaggle T4$\times$2 estimates from W3/W4 timings.}
+\label{tab:prop}
+\small
+\begin{tabular}{@{}p{0.9cm}p{4.2cm}p{4.7cm}p{2.2cm}@{}}
+\toprule
+ID & Question and design & Decision rule & Cost\\
+\midrule
+P1 & Is the loose-threshold effect real? 5 detectors, each generating loose $\{0.9,0.6,0.5,0.45\}$, one classifier per arm, report all three label views & 0.6 beats 0.9 by $\ge1$ point on corrected \emph{and} not worse than $-1$ on official, same sign in $\ge4$ of 5 detectors & about 12--15 h\\
+P2 & Does the bank leak the label? Probe classifier trained on inpainted bank images only, per hole size (class from remnant bird) & probe accuracy above place-only baseline grows as the hole shrinks & about 0.5 h\\
+P3 & Do seams or borders carry the label (H3)? Probe that detects ``composed vs. real''; mask dilation $r=0,1,2$ with feathered paste & composed-image detector is easy and correlates with the class & about 1 h per variant\\
+P4 & UrbanCars ERM and ABS, seeds 1--2, official worst-group checkpoint named in advance & ABS gap within $\pm5$ at all seeds: three-way ABS stays dropped & about 5.4 h per seed\\
+P5 & Binary ABS when the second shortcut touches the foreground (move the co-object into the car mask in synthetic UrbanCars) & gap worse than $-15$: this is where three-way ABS could matter & design first, then 2--3 h\\
+P6 & ABS features with DPE heads; compare to MaskTune on corrected labels & report only; no gate & about 3 h\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+P1 comes first and is the only one that can turn W3--W4 into a claim. P2 and P3 are cheap and
+explain \emph{why}; they need no new detector. The Kaggle weekly GPU quota has about 2 hours
+left, so P1 and P4 wait for the reset; P2 and P3 fit now.
+
+\section{Limits}
+
+W3 and W4 are the same method family with few seeds; the new arms share detectors or have a single
+classifier. The primary endpoint of W3 was fixed in \texttt{docs/W\_STATUS.md} before launch, but the corrected view itself was chosen after the label bug was known. The paper's
+numbers were taken from earlier notes, not re-read from the PDF. All text results, scoring
+scripts and prediction files are in the workspace repository; the weights are
+on a private disk.
+
+\end{document}
